@@ -6,8 +6,13 @@ import '../App.css'
 // import axios from 'axios';
 import { Button, Box, Image, Flex } from '@chakra-ui/react'
 
-export default function Login() {
+export default function Home() {
     // const [count, setCount] = useState(0)
+    const printToken = () => {
+      console.log('Home page');
+      const jwt = localStorage.getItem("jwt");
+      console.log("jwt:", jwt);
+    }
     
   
     return (
@@ -24,7 +29,7 @@ export default function Login() {
           <h1 style={{  fontWeight: 'bold' }}>R | P Admin LOGGED IN</h1>
         </Box>
   
-        <Button colorScheme='red'>Logged In</Button>
+        <Button colorScheme='red' onClick={printToken} >Logged In</Button>
         {/* <div>
           <a href="https://vitejs.dev" target="_blank">
             <img src={viteLogo} className="logo" alt="Vite logo" />

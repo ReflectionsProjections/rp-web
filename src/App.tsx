@@ -20,7 +20,7 @@ function App() {
           <Route path="/auth/" element = {<Auth />}> </Route>
           <Route path="/home/" element={<Home />} />
           <Route path="/" element={<Login />} />
-          <Route path="*" element={<Navigate to="/" replace={true} />} />
+          <Route path="*" element={<Navigate to="/auth/" replace={true} />} />
         </Routes>
       </HashRouter>
     </ChakraProvider>
