@@ -18,27 +18,25 @@ import {
   MenuItem,
   MenuDivider,
   Stack,
+  useColorMode,
   useColorModeValue,
-  Link,
-  StatGroup,
-  StatLabel,
-  Stat,
-  StatNumber,
-  StatHelpText,
-  StatArrow,
-  Card,
-  CardHeader,
-  Heading,
-  CardBody,
-  StackDivider
+  Link
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 
-const Links = ['Dashboard', 'Editing', 'TBD'];
+const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
+import Dashboard from './pages/Dashboard';
+import Roles from './pages/Roles';
 
-const NavLink = ({ children }: { children: ReactNode }) => (
+/**
+ * NavLink component.
+ *
+ * @param children - The content of the NavLink.
+ * @param onClick - The click event handler for the NavLink.
+ */
+const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => void }) => (
   <Link
     px={2}
     py={1}
@@ -47,21 +45,42 @@ const NavLink = ({ children }: { children: ReactNode }) => (
       textDecoration: 'none',
       bg: useColorModeValue('gray.200', 'gray.700'),
     }}
-    href={'#'}>
+    onClick={onClick}
+    cursor="pointer">
     {children}
   </Link>
 );
 
-export default function Login() {
-    // const [count, setCount] = useState(0)
-    
-  
+export default function Home() {
     const printToken = () => {
       console.log('Home page');
       const jwt = localStorage.getItem("jwt");
       console.log("jwt:", jwt);
     }
+
+    const { colorMode, toggleColorMode } = useColorMode();
     const { isOpen, onOpen, onClose } = useDisclosure();
+    const [selectedLink, setSelectedLink] = useState('Dashboard');
+
+    const renderComponent = () => {
+      switch (selectedLink) {
+        case 'Dashboard':
+          return <Dashboard />;
+        // case 'Stats':
+        //   return <Stats />;
+        // case 'Events':
+        //   return <Events />;
+        // case 'Mail':
+        //   return <Mail />;
+        // case 'Notifications':
+        //   return <Notifications />;
+        case 'Roles':
+          return <Roles />;
+        default:
+          return <Dashboard />;
+      }
+    };
+  
 
     return (
       <>
@@ -76,22 +95,22 @@ export default function Login() {
         >
           <Flex h={16} alignItems={'center'} justifyContent={'space-between'} bg={useColorModeValue('gray.100', 'gray.900')}>
             <IconButton
-              size={'md'}
+              size={'lg'}
               icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
               aria-label={'Open Menu'}
               display={{ md: 'none' }}
               onClick={isOpen ? onClose : onOpen}
             />
             <HStack spacing={8} alignItems={'center'}>
-              <Flex align="center" mr={5}>
-                <img src={rpLogo} alt='R|P Logo' style={{ width: '50px' }} />
+              <Flex align="center" mr={5} maxWidth={50}>
+                <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} />
               </Flex>
               <HStack
                 as={'nav'}
                 spacing={4}
                 display={{ base: 'none', md: 'flex' }}>
                 {Links.map((link) => (
-                  <NavLink key={link}>{link}</NavLink>
+                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
                 ))}
               </HStack>
             </HStack>
@@ -112,7 +131,7 @@ export default function Login() {
                 </MenuButton>
                 <MenuList>
                   <MenuItem onClick={printToken}>Print JWT</MenuItem>
-                  <MenuItem>Link 2</MenuItem>
+                  <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                   <MenuDivider />
                   <MenuItem>Sign Out</MenuItem>
                 </MenuList>
@@ -124,70 +143,15 @@ export default function Login() {
             <Box pb={4} display={{ md: 'none' }}>
               <Stack as={'nav'} spacing={4}>
                 {Links.map((link) => (
-                  <NavLink key={link}>{link}</NavLink>
+                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
                 ))}
               </Stack>
             </Box>
           ) : null}
         </Box>
 
-        <Box mt={16} flex="1" display="flex" flexDirection="column" height='94vh' width='90vw'>
-          <Box flex="1" p={4}>
-            <Card>
-              <CardHeader>
-                <Heading size='md'>Welcome to R|P Admin</Heading>
-              </CardHeader>
-
-              <CardBody>
-                <Stack divider={<StackDivider />} spacing='4'>
-                  <Box>
-                    <Heading size='xs' textTransform='uppercase'>
-                      Dashboard
-                    </Heading>
-                    <span>
-                      View a summary of all your statistics.
-                    </span>
-                  </Box>
-                  <Box>
-                    <Heading size='xs' textTransform='uppercase'>
-                      Editing
-                    </Heading>
-                    <span>
-                      Edit events, emails, and other content.
-                    </span>
-                  </Box>
-                  <Box>
-                    <Heading size='xs' textTransform='uppercase'>
-                      TBD
-                    </Heading>
-                    <span>
-                      Yup. To be decided
-                    </span>
-                  </Box>
-                </Stack>
-              </CardBody>
-            </Card>
-            <br />
-            <StatGroup>
-              <Stat>
-                <StatLabel>Sent</StatLabel>
-                <StatNumber>345,670</StatNumber>
-                <StatHelpText>
-                  <StatArrow type='increase' />
-                  23.36%
-                </StatHelpText>
-              </Stat>
-
-              <Stat>
-                <StatLabel>Clicked</StatLabel>
-                <StatNumber>45</StatNumber>
-                <StatHelpText>
-                  <StatArrow type='decrease' />
-                  9.05%
-                </StatHelpText>
-              </Stat>
-            </StatGroup>
-          </Box>
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
+          {renderComponent()}
         </Box>
       </>
     );
