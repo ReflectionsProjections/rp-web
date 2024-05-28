@@ -26,6 +26,14 @@ import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 
+export default function Home() {
+    // const [count, setCount] = useState(0)
+    const printToken = () => {
+      console.log('Home page');
+      const jwt = localStorage.getItem("jwt");
+      console.log("jwt:", jwt);
+    }
+    
 const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Roles from './pages/Roles';
@@ -80,7 +88,7 @@ export default function Home() {
           return <Dashboard />;
       }
     };
-  
+
 
     return (
       <>
