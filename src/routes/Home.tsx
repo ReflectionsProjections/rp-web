@@ -28,6 +28,7 @@ import { ReactNode, useState } from 'react';
 
 const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
+import Stats from './pages/Stats';
 import Roles from './pages/Roles';
 
 /**
@@ -66,8 +67,8 @@ export default function Home() {
       switch (selectedLink) {
         case 'Dashboard':
           return <Dashboard />;
-        // case 'Stats':
-        //   return <Stats />;
+        case 'Stats':
+          return <Stats />;
         // case 'Events':
         //   return <Events />;
         // case 'Mail':
