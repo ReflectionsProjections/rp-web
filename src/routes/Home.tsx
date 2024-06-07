@@ -25,6 +25,7 @@ import {
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 import Dashboard from './pages/Dashboard';
 import Roles from './pages/Roles';
+import Events from './pages/Events'
 import { ReactNode, useState } from 'react';
     
 const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
@@ -67,8 +68,8 @@ export default function Home() {
       return <Dashboard />;
       // case 'Stats':
       //   return <Stats />;
-      // case 'Events':
-      //   return <Events />;
+      case 'Events':
+        return <Events />;
       // case 'Mail':
       //   return <Mail />;
       // case 'Notifications':
