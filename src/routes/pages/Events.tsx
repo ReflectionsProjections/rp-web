@@ -6,7 +6,7 @@ import {
   CardBody,
   Text,
   Image,
-  Divider, CardFooter, Button, ButtonGroup, Badge
+  CardFooter, Button, Badge
 } from '@chakra-ui/react';
 import {EditIcon} from "@chakra-ui/icons";
 

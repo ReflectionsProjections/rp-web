@@ -68,8 +68,8 @@ export default function Home() {
       return <Dashboard />;
       // case 'Stats':
       //   return <Stats />;
-      case 'Events':
-        return <Events />;
+    case 'Events':
+      return <Events />;
       // case 'Mail':
       //   return <Mail />;
       // case 'Notifications':
