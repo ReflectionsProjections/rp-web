@@ -80,6 +80,12 @@ export default function Home() {
     }
   };
 
+  const signOut = () => {
+    localStorage.removeItem("jwt");
+    window.location.href = "/";
+  }
+    
+
 
   return (
     <>
@@ -132,7 +138,7 @@ export default function Home() {
                 <MenuItem onClick={printToken}>Print JWT</MenuItem>
                 <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                 <MenuDivider />
-                <MenuItem>Sign Out</MenuItem>
+                <MenuItem onClick={signOut}>Sign Out</MenuItem>
               </MenuList>
             </Menu>
           </Flex>
