@@ -4,12 +4,13 @@
 // import viteLogo from '/vite.svg'
 import './App.css'
 // import axios from 'axios';
-import { ChakraProvider, theme } from "@chakra-ui/react"
-import { HashRouter, Navigate, Route, Routes } from "react-router-dom"
+import {ChakraProvider, theme} from "@chakra-ui/react"
+import {HashRouter, Route, Routes} from "react-router-dom"
 
 import Auth from "./routes/Auth"
 import Login from "./routes/Login"
 import Home from "./routes/Home"
+import ProtectedRoute from "./routes/ProtectedRoute"
 
 
 function App() {
@@ -17,10 +18,12 @@ function App() {
     <ChakraProvider theme={theme}>
       <HashRouter>
         <Routes>
-          <Route path="/auth/" element = {<Auth />}> </Route>
-          <Route path="/home/" element={<Home />} />
-          <Route path="/" element={<Login />} />
-          <Route path="*" element={<Navigate to="/auth/" replace={true} />} />
+          <Route path="/auth/" element={<Auth/>}> </Route>
+          <Route element={<ProtectedRoute/>}>
+            <Route path="/home/" element={<Home/>}/>
+            <Route path="/" element={<Login/>}/>
+            <Route path="*"/>
+          </Route>
         </Routes>
       </HashRouter>
     </ChakraProvider>
