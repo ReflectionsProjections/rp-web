@@ -26,7 +26,7 @@ import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 
-const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
+const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Roles from './pages/Roles';

@@ -17,10 +17,156 @@ import {
     Th,
     Tbody,
     Td,
-    Tfoot
+    Tfoot,
+    NumberInput,
+    NumberInputField,
+    NumberInputStepper,
+    NumberIncrementStepper,
+    NumberDecrementStepper,
+    CardHeader
   } from '@chakra-ui/react';
 
+import { Bar } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
+
+// Register Chart.js components
+Chart.register(...registerables);
+
+
+import { Config } from "../../config";
+import axios from "axios";
+import React from 'react';
+
 function Stats() {
+
+    const [checkInStats, setCheckInStats] = React.useState(0);
+    const [priorityAttendees, setPriorityAttendees] = React.useState(0);
+    // const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
+    const [eventAttendance, setEventAttendance] = React.useState(0);
+    const [eligiblePrize, setEligiblePrize] = React.useState(0);
+
+    const getStats = async () => {
+
+        const jwt = localStorage.getItem("jwt");
+
+        axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+            headers: {
+                Authorization: jwt
+            }
+        })
+        .then(function (response) {
+            // handle success
+            console.log(response.data.count);
+            setCheckInStats(response.data.count);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+
+        axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+            headers: {
+                Authorization: jwt
+            }
+          })
+        .then(function (response) {
+            // handle success
+            console.log(response.data.count);
+            setPriorityAttendees(response.data.count);
+          })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+
+        // axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
+        //     headers: {
+        //         Authorization: jwt
+        //     }
+        //   })
+        // .then(function (response) {
+        //     // handle success
+        //     console.log(response.data);
+        //     setDietaryRestrictions(response.data.count);
+        //   })
+        // .catch(function (error) {
+        //     // handle error
+        //     console.log(error);
+        // })
+        
+    }
+
+    const handleEventAttendanceChange = (valueAsString: string) => {
+        setEventAttendance(parseInt(valueAsString));
+    }
+
+    const handleEligiblePrizeChange = (valueAsString: string) => {
+        setEligiblePrize(parseInt(valueAsString));
+    }
+
+    React.useEffect(() => {
+        getStats();
+    }, []);
+
+    const data = {
+        allergies: 10,
+        allergyCounts: { "Peanuts": 4, "Dairy": 3, "Gluten": 3 },
+        both: 5,
+        dietaryRestrictionCounts: { "Vegetarian": 2, "Vegan": 3 },
+        dietaryRestrictions: 8,
+        none: 15
+      };
+
+
+
+      const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
+        <StatGroup>
+            <Stat>
+                <StatLabel>Allergies</StatLabel>
+                <StatNumber>{data.allergies}</StatNumber>
+            </Stat>
+            <Stat>
+                <StatLabel>Dietary Restrictions</StatLabel>
+                <StatNumber>{data.dietaryRestrictions}</StatNumber>
+            </Stat>
+            <Stat>
+                <StatLabel>Both</StatLabel>
+                <StatNumber>{data.both}</StatNumber>
+            </Stat>
+            <Stat>
+                <StatLabel>None</StatLabel>
+                <StatNumber>{data.none}</StatNumber>
+            </Stat>
+        </StatGroup>
+    );
+
+      const AllergiesChart = ({ data }: { data: { allergyCounts: { [key: string]: number } } }) => {
+        const chartData = {
+            labels: Object.keys(data.allergyCounts),
+            datasets: [{
+              label: 'Allergies',
+              data: Object.values(data.allergyCounts),
+              backgroundColor: 'rgba(75, 192, 192, 0.6)',
+            }]
+          };
+        
+          return <Bar data={chartData} />;
+      };
+      
+      const DietaryRestrictionsChart = ({ data }: { data: { dietaryRestrictionCounts: { [key: string]: number } } }) => {
+        const chartData = {
+            labels: Object.keys(data.dietaryRestrictionCounts),
+            datasets: [{
+              label: 'Dietary Restrictions',
+              data: Object.values(data.dietaryRestrictionCounts),
+              backgroundColor: 'rgba(153, 102, 255, 0.6)',
+            }]
+          };
+        
+          return <Bar data={chartData} />;
+      };
+
+
     return (
         <Box flex="1" p={4}>
             <Heading size="lg">Stats</Heading>
@@ -29,11 +175,11 @@ function Stats() {
                 <Card m={5} minWidth='40%'>
                     <CardBody>
                         <Stat>
-                        <StatLabel>Sent</StatLabel>
-                        <StatNumber>345,670</StatNumber>
+                        <StatLabel>Number Checked-In</StatLabel>
+                        <StatNumber>{checkInStats}</StatNumber>
                         <StatHelpText>
-                            <StatArrow type='increase' />
-                            23.36%
+                            {/* <StatArrow type='increase' />
+                            23.36% */}
                         </StatHelpText>
                         </Stat>
                     </CardBody>
@@ -41,52 +187,103 @@ function Stats() {
                 <Card m={5} minWidth='40%'>
                     <CardBody>
                         <Stat>
-                        <StatLabel>Clicked</StatLabel>
-                        <StatNumber>45</StatNumber>
+                        <StatLabel>Priority Attendees</StatLabel>
+                        <StatNumber>{priorityAttendees}</StatNumber>
                         <StatHelpText>
-                            <StatArrow type='decrease' />
-                            9.05%
+                            {/* <StatArrow type='decrease' />
+                            9.05% */}
                         </StatHelpText>
                         </Stat>
                     </CardBody>
                 </Card>
+                <Card m={5} minWidth='40%'>
+                    <CardBody>
+                        <Stat>
+                        <StatLabel display="flex" alignItems="center">
+                            Past Event Attendance: 
+                            <NumberInput 
+                            size="sm"
+                            maxW="100px"
+                            ml="4"
+                            value={eventAttendance}
+                            onChange={handleEventAttendanceChange}
+                            min={0}
+                            >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                                <NumberIncrementStepper />
+                                <NumberDecrementStepper />
+                            </NumberInputStepper>
+                            </NumberInput>
+                        </StatLabel>
+                        <StatNumber>{eventAttendance}</StatNumber>
+                        <StatHelpText>
+                            {/* Add any additional info or icons here */}
+                        </StatHelpText>
+                        </Stat>
+                    </CardBody>
+                    </Card>
+
+                    <Card m={5} minWidth='40%'>
+                    <CardBody>
+                        <Stat>
+                        <StatLabel display="flex" alignItems="center">
+                            Eligible for Prizes $
+                            <NumberInput 
+                            size="sm"
+                            maxW="100px"
+                            ml="4"
+                            value={eligiblePrize}
+                            onChange={handleEligiblePrizeChange}
+                            min={0}
+                            >
+                            <NumberInputField />
+                            <NumberInputStepper>
+                                <NumberIncrementStepper />
+                                <NumberDecrementStepper />
+                            </NumberInputStepper>
+                            </NumberInput>
+                        </StatLabel>
+                        <StatNumber>{eligiblePrize}</StatNumber>
+                        <StatHelpText>
+                            {/* Add any additional info or icons here */}
+                        </StatHelpText>
+                        </Stat>
+                    </CardBody>
+                    </Card>
                 <Card m={5} minWidth='90%'>
-                    <TableContainer>
-                        <Table variant='striped' colorScheme='teal'>
-                            <TableCaption>Imperial to metric conversion factors</TableCaption>
-                            <Thead>
-                            <Tr>
-                                <Th>To convert</Th>
-                                <Th>into</Th>
-                                <Th isNumeric>multiply by</Th>
-                            </Tr>
-                            </Thead>
-                            <Tbody>
-                            <Tr>
-                                <Td>inches</Td>
-                                <Td>millimetres (mm)</Td>
-                                <Td isNumeric>25.4</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>feet</Td>
-                                <Td>centimetres (cm)</Td>
-                                <Td isNumeric>30.48</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>yards</Td>
-                                <Td>metres (m)</Td>
-                                <Td isNumeric>0.91444</Td>
-                            </Tr>
-                            </Tbody>
-                            <Tfoot>
-                            <Tr>
-                                <Th>To convert</Th>
-                                <Th>into</Th>
-                                <Th isNumeric>multiply by</Th>
-                            </Tr>
-                            </Tfoot>
-                        </Table>
-                    </TableContainer>
+                    <CardHeader>
+                        <b>Dietary Restrictions</b>
+                    </CardHeader>
+                    <SummaryStats data={data} />
+                    <StatGroup>
+                        <Card m={5} minWidth='40%'>
+                            <CardBody>
+                                <Stat>
+                                <StatLabel>Allergy Breakdown</StatLabel>
+                                <AllergiesChart data={data} />
+                                </Stat>
+                            </CardBody>
+                        </Card>
+                        <Card m={5} minWidth='40%'>
+                            <CardBody>
+                                <Stat>
+                                <StatLabel>Dietary Restrictions Breakdown</StatLabel>
+                                <DietaryRestrictionsChart data={data} />
+                                </Stat>
+                            </CardBody>
+                        </Card>
+                    </StatGroup>
+
+                    {/* <Box mb={4}>
+                    <Heading size='md' mb={2}>Allergy Breakdown</Heading>
+                    <AllergiesChart data={data} />
+                    </Box>
+
+                    <Box>
+                    <Heading size='md' mb={2}>Dietary Restrictions Breakdown</Heading>
+                    <DietaryRestrictionsChart data={data} />
+                    </Box> */}
                 </Card>
             </StatGroup>
         </Box>
