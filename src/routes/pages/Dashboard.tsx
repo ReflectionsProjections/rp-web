@@ -13,20 +13,24 @@ import {
   Heading,
   CardBody,
   StackDivider,
-  Badge
+  Badge,
+  useBreakpointValue
 } from '@chakra-ui/react';
 
 import rpLogo from '../../assets/rp_logo.png'
 
 function Dashboard({ name }: { name: string }) {
+
+  const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
+  
   return (
     <Box p={4}>
       <Heading size='2xl' fontWeight='bold' mb={4} textAlign='left'>
             Welcome, {name}!
       </Heading>
 
-      <Flex justify="space-between">
-        <Box flex="1" mr={2}>
+      <Flex direction={flexDirection == 'column' ? 'column' : 'row' } justify="space-between">
+        <Box flex="1" mr={flexDirection == 'column' ? 0 : 2}>
           <Card>
             <CardHeader>
               <Heading size='md'>Overall Stats</Heading>
@@ -83,7 +87,7 @@ function Dashboard({ name }: { name: string }) {
 
         </Box>
 
-        <Box flex="1" ml={2}>
+        <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 2 : 0}>
           <Card>
             <CardHeader>
               <Heading size='md'>Upcoming Events</Heading>

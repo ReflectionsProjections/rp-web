@@ -12,7 +12,7 @@ function Notifications() {
       </Box>
       <br />
       <Flex justify="center">
-        <img src="https://media4.giphy.com/media/EIiJp9cQ3GeEU/200w.gif?cid=6c09b9521v3xilt7ask9eq8tusgnq6h6nmidxvgefftk6r57&ep=v1_gifs_search&rid=200w.gif&ct=g" alt="Under Construction" />
+        <img src="https://i.pinimg.com/originals/f9/28/e2/f928e27b6513d0d9c25a1b80293b12d1.png" alt="Under Construction" />
       </Flex>
     </Box>
   )

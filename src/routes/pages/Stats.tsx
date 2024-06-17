@@ -9,15 +9,6 @@ import {
   Card,
   Heading,
   CardBody,
-  TableContainer,
-  Table,
-  TableCaption,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
-  Tfoot,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -185,7 +176,7 @@ function Stats() {
 
 
   return (
-    <Box flex="1" p={4} minHeight='120vh'>
+    <Box flex="1" p={4} >
       <Heading size="lg">Stats</Heading>
       <br />
       <StatGroup>
@@ -233,7 +224,7 @@ function Stats() {
                   </NumberInputStepper>
                 </NumberInput>
               </StatLabel>
-              <StatNumber>{20*eventAttendance}</StatNumber>
+              <StatNumber>{32*eventAttendance}</StatNumber>
               <StatHelpText>
                 {/* Add any additional info or icons here */}
               </StatHelpText>
