@@ -12,8 +12,11 @@ import {
     CardHeader,
     Heading,
     CardBody,
-    StackDivider
+    StackDivider,
+    Badge
   } from '@chakra-ui/react';
+
+import rpLogo from '../../assets/rp_logo.png'
 
 function Dashboard({ name }: { name: string }) {
     return (
@@ -26,7 +29,7 @@ function Dashboard({ name }: { name: string }) {
             <Box flex="1" mr={2}>
                 <Card>
                 <CardHeader>
-                    <Heading size='md'>R|P Stats</Heading>
+                    <Heading size='md'>Overall Stats</Heading>
                 </CardHeader>
                 <CardBody>
                     {/* <Stack divider={<StackDivider />} spacing='4'>
@@ -87,6 +90,26 @@ function Dashboard({ name }: { name: string }) {
                 </CardHeader>
                 <CardBody>
                     {/* Add content for Events here */}
+                    <Card>
+                        <CardBody>
+                            <Flex flexDirection="column" align="center">
+                                <img src={rpLogo} alt='R|P Logo' style={{ width: '150px' }} />
+                            </Flex>
+                            <Stack mt='6' spacing='3'>
+                            <Heading size='md'>R|P Opening Event</Heading>
+                            <Badge borderRadius="full" px="2" colorScheme={"green"}>
+                                Virtual
+                            </Badge>
+                            <p>
+                                June 17th, 9:30 PM - 10:30 PM
+                            </p>
+                            <p>
+                                Points: 10
+                            </p>
+                            <p>Get ready to learn all about R|P 2024!</p>
+                            </Stack>
+                        </CardBody>
+                    </Card>
                     Details about upcoming events will go here.
                 </CardBody>
                 </Card>

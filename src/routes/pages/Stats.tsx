@@ -45,8 +45,8 @@ function Stats() {
     const [checkInStats, setCheckInStats] = React.useState(0);
     const [priorityAttendees, setPriorityAttendees] = React.useState(0);
     // const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
-    const [eventAttendance, setEventAttendance] = React.useState(40);
-    const [eligiblePrize, setEligiblePrize] = React.useState(10);
+    const [eventAttendance, setEventAttendance] = React.useState(2);
+    const [eligiblePrize, setEligiblePrize] = React.useState(15);
 
     const showToast = (message: string) => {
         toast({
@@ -230,7 +230,7 @@ function Stats() {
                             </NumberInputStepper>
                             </NumberInput>
                         </StatLabel>
-                        <StatNumber>{eventAttendance}</StatNumber>
+                        <StatNumber>{20*eventAttendance}</StatNumber>
                         <StatHelpText>
                             {/* Add any additional info or icons here */}
                         </StatHelpText>
@@ -258,7 +258,7 @@ function Stats() {
                             </NumberInputStepper>
                             </NumberInput>
                         </StatLabel>
-                        <StatNumber>{eligiblePrize}</StatNumber>
+                        <StatNumber>{20-eligiblePrize}</StatNumber>
                         <StatHelpText>
                             {/* Add any additional info or icons here */}
                         </StatHelpText>

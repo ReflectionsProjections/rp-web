@@ -126,7 +126,7 @@ export default function Home() {
             />
             <HStack spacing={8} alignItems={'center'}>
               <Flex align="center" mr={5} maxWidth={50}>
-                <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} />
+                <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} onClick={() => setSelectedLink('Dashboard')} />
               </Flex>
               <HStack
                 as={'nav'}
@@ -153,7 +153,7 @@ export default function Home() {
                   />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem>
+                  {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
                   <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                   <MenuDivider />
                   <MenuItem>Sign Out</MenuItem>
