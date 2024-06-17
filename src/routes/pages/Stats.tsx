@@ -23,11 +23,13 @@ import {
     NumberInputStepper,
     NumberIncrementStepper,
     NumberDecrementStepper,
-    CardHeader
+    CardHeader,
+    useToast,
   } from '@chakra-ui/react';
 
 import { Bar } from 'react-chartjs-2';
 import { Chart, registerables } from 'chart.js';
+
 
 // Register Chart.js components
 Chart.register(...registerables);
@@ -38,12 +40,22 @@ import axios from "axios";
 import React from 'react';
 
 function Stats() {
+    const toast = useToast();
 
     const [checkInStats, setCheckInStats] = React.useState(0);
     const [priorityAttendees, setPriorityAttendees] = React.useState(0);
     // const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
-    const [eventAttendance, setEventAttendance] = React.useState(0);
-    const [eligiblePrize, setEligiblePrize] = React.useState(0);
+    const [eventAttendance, setEventAttendance] = React.useState(40);
+    const [eligiblePrize, setEligiblePrize] = React.useState(10);
+
+    const showToast = (message: string) => {
+        toast({
+            title: message,
+            status: "error",
+            duration: 9000,
+            isClosable: true,
+        });
+    }
 
     const getStats = async () => {
 
@@ -51,7 +63,7 @@ function Stats() {
 
         axios.get(Config.API_BASE_URL + "/stats/check-in/", {
             headers: {
-                Authorization: jwt
+            Authorization: jwt
             }
         })
         .then(function (response) {
@@ -62,11 +74,12 @@ function Stats() {
         .catch(function (error) {
             // handle error
             console.log(error);
+            showToast("Failed to fetch check-in stats");
         })
 
         axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
             headers: {
-                Authorization: jwt
+            Authorization: jwt
             }
           })
         .then(function (response) {
@@ -77,6 +90,7 @@ function Stats() {
         .catch(function (error) {
             // handle error
             console.log(error);
+            showToast("Failed to fetch priority attendees stats");
         })
 
         // axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
