@@ -86,30 +86,31 @@ function Roles() {
 
 
 
-  
-    const renderNamesWithButtons = (names: string[]) => {
-        return names.map((name) => (
-            <Flex key={name} justifyContent="space-between" alignItems="center">
-                <Box>{name}</Box>
-                <IconButton
-                    size={'md'}
-                    icon={ <CloseIcon /> }
-                    aria-label={'Open Menu'}
-                />
-            </Flex>
-        ));
-    };
 
-    const renderInputField = () => (
-        <Flex mb={4}>
-          <Input placeholder="Enter email" mr={2} />
-          <IconButton
-                size={'md'}
-                icon={ <CheckIcon /> }
-                aria-label={'Open Menu'}
-            />
-        </Flex>
-      );
+  
+  const renderNamesWithButtons = (names: string[]) => {
+    return names.map((name) => (
+      <Flex key={name} justifyContent="space-between" alignItems="center">
+        <Box>{name}</Box>
+        <IconButton
+          size={'md'}
+          icon={ <CloseIcon /> }
+          aria-label={'Open Menu'}
+        />
+      </Flex>
+    ));
+  };
+
+  const renderInputField = () => (
+    <Flex mb={4}>
+      <Input placeholder="Enter email" mr={2} />
+      <IconButton
+        size={'md'}
+        icon={ <CheckIcon /> }
+        aria-label={'Open Menu'}
+      />
+    </Flex>
+  );
   
     return (
         <Box flex="1" minW='90vw' p={4}>
@@ -153,5 +154,6 @@ function Roles() {
           </Box>
       )
   }
+
 
 export default Roles;

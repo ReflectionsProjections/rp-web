@@ -26,12 +26,11 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
-
 const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Roles from './pages/Roles';
-import React from 'react';
+
 
 /**
  * NavLink component.
@@ -55,7 +54,6 @@ const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => vo
 );
 
 export default function Home() {
-  
     const [userName, setUserName] = useState('Please Sign-In');
     const [selectedLink, setSelectedLink] = useState('Dashboard');
     const { colorMode, toggleColorMode } = useColorMode();
@@ -73,12 +71,13 @@ export default function Home() {
       }
     }
 
+  const printToken = () => {
+    console.log('Home page');
+    const jwt = localStorage.getItem("jwt");
+    console.log("jwt:", jwt);
+  }
+ 
 
-    const printToken = () => {
-      console.log('Home page');
-      const jwt = localStorage.getItem("jwt");
-      console.log("jwt:", jwt);
-    }
 
     React.useEffect(() => {
       decodeToken();
@@ -103,6 +102,11 @@ export default function Home() {
           return <Dashboard name={userName} />;
       }
     };
+            
+    const signOut = () => {
+      localStorage.removeItem("jwt");
+      window.location.href = "/";
+    }
   
 
     return (
@@ -156,26 +160,26 @@ export default function Home() {
                   {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
                   <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                   <MenuDivider />
-                  <MenuItem>Sign Out</MenuItem>
-                </MenuList>
-              </Menu>
-            </Flex>
+                  <MenuItem onClick={signOut}>Sign Out</MenuItem>
+              </MenuList>
+            </Menu>
           </Flex>
+        </Flex>
 
-          {isOpen ? (
-            <Box pb={4} display={{ md: 'none' }}>
-              <Stack as={'nav'} spacing={4}>
-                {Links.map((link) => (
-                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
-                ))}
-              </Stack>
-            </Box>
-          ) : null}
-        </Box>
+        {isOpen ? (
+          <Box pb={4} display={{ md: 'none' }}>
+            <Stack as={'nav'} spacing={4}>
+              {Links.map((link) => (
+                <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+              ))}
+            </Stack>
+          </Box>
+        ) : null}
+      </Box>
 
-        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
-          {renderComponent()}
-        </Box>
-      </>
-    );
-  }
+      <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
+        {renderComponent()}
+      </Box>
+    </>
+  );
+}
