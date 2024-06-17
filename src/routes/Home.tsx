@@ -30,6 +30,8 @@ const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Roles from './pages/Roles';
+import React from 'react';
+import Notifications from './pages/Notifications';
 
 
 /**
@@ -54,10 +56,10 @@ const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => vo
 );
 
 export default function Home() {
-    const [userName, setUserName] = useState('Please Sign-In');
-    const [selectedLink, setSelectedLink] = useState('Dashboard');
-    const { colorMode, toggleColorMode } = useColorMode();
-    const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userName, setUserName] = useState('Please Sign-In');
+  const [selectedLink, setSelectedLink] = useState('Dashboard');
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   
     interface JwtPayload {
       displayName: string;
@@ -71,11 +73,11 @@ export default function Home() {
       }
     }
 
-  const printToken = () => {
-    console.log('Home page');
-    const jwt = localStorage.getItem("jwt");
-    console.log("jwt:", jwt);
-  }
+    // const printToken = () => {
+    //   console.log('Home page');
+    //   const jwt = localStorage.getItem("jwt");
+    //   console.log("jwt:", jwt);
+    // }
  
 
 
@@ -86,20 +88,20 @@ export default function Home() {
 
     const renderComponent = () => {
       switch (selectedLink) {
-        case 'Dashboard':
-          return <Dashboard name={userName} />;
-        case 'Stats':
-          return <Stats />;
+      case 'Dashboard':
+        return <Dashboard name={userName} />;
+      case 'Stats':
+        return <Stats />;
         // case 'Events':
         //   return <Events />;
         // case 'Mail':
         //   return <Mail />;
-        // case 'Notifications':
-        //   return <Notifications />;
-        case 'Roles':
-          return <Roles />;
-        default:
-          return <Dashboard name={userName} />;
+      case 'Notifications':
+        return <Notifications />;
+      case 'Roles':
+        return <Roles />;
+      default:
+        return <Dashboard name={userName} />;
       }
     };
             
@@ -161,25 +163,25 @@ export default function Home() {
                   <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                   <MenuDivider />
                   <MenuItem onClick={signOut}>Sign Out</MenuItem>
-              </MenuList>
-            </Menu>
+                </MenuList>
+              </Menu>
+            </Flex>
           </Flex>
-        </Flex>
 
-        {isOpen ? (
-          <Box pb={4} display={{ md: 'none' }}>
-            <Stack as={'nav'} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null}
-      </Box>
+          {isOpen ? (
+            <Box pb={4} display={{ md: 'none' }}>
+              <Stack as={'nav'} spacing={4}>
+                {Links.map((link) => (
+                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                ))}
+              </Stack>
+            </Box>
+          ) : null}
+        </Box>
 
-      <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
-        {renderComponent()}
-      </Box>
-    </>
-  );
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
+          {renderComponent()}
+        </Box>
+      </>
+    );
 }
