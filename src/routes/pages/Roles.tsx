@@ -12,11 +12,80 @@ import {
     IconButton,
     Input
   } from '@chakra-ui/react';
+import axios from 'axios';
+import React from 'react';
+import { Config } from '../../config';
 
 function Roles() {
-    const adminNames = ['Admin1', 'Admin2', 'Admin3', 'Admin4', 'Admin5', 'Admin6', 'Admin7', 'Admin8', 'Admin9', 'Admin10'];
-    const staffNames = ['Staff1', 'Staff2', 'Staff3'];
-    const corporateNames = ['Corporate1', 'Corporate2', 'Corporate3'];
+    // const adminNames = ['Admin1', 'Admin2', 'Admin3', 'Admin4', 'Admin5', 'Admin6', 'Admin7', 'Admin8', 'Admin9', 'Admin10'];
+    const [adminList, setAdminList] = React.useState([]);
+    const [staffList, setStaffList] = React.useState([]);
+    const [corpList, setCorpList] = React.useState([]);
+
+    const getRoles = async () => {
+
+        const jwt = localStorage.getItem("jwt");
+
+        axios.get(Config.API_BASE_URL + "/auth/ADMIN", {
+            headers: {
+                Authorization: jwt
+            }
+        })
+        .then(function (response) {
+            // handle success
+            const names = response.data.map((item: Record<string, string>) => item.email);
+            // console.log(names);
+            setAdminList(names);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+
+        axios.get(Config.API_BASE_URL + "/auth/STAFF", {
+            headers: {
+                Authorization: jwt
+            }
+        })
+        .then(function (response) {
+            // handle success
+            const names = response.data.map((item: Record<string, string>) => item.email);
+            // console.log(names);
+            setStaffList(names);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+
+        axios.get(Config.API_BASE_URL + "/auth/CORPORATE", {
+            headers: {
+                Authorization: jwt
+            }
+        })
+        .then(function (response) {
+            // handle success
+            const names = response.data.map((item: Record<string, string>) => item.email);
+            // console.log(names);
+            setCorpList(names);
+        })
+        .catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+
+    }
+
+    React.useEffect(() => {
+        getRoles();
+    }, []);
+
+    const removeFromRole = (role: string, email: string) => {
+        
+    }
+
+
+
   
     const renderNamesWithButtons = (names: string[]) => {
         return names.map((name) => (
@@ -52,7 +121,7 @@ function Roles() {
                   <CardBody>
                   {renderInputField()}
                   <Stack divider={<StackDivider />} spacing='4'>
-                      {renderNamesWithButtons(adminNames)}
+                      {renderNamesWithButtons(adminList)}
                   </Stack>
                   </CardBody>
               </Card>
@@ -64,7 +133,7 @@ function Roles() {
                   <CardBody>
                   {renderInputField()}
                   <Stack divider={<StackDivider />} spacing='4'>
-                      {renderNamesWithButtons(staffNames)}
+                      {renderNamesWithButtons(staffList)}
                   </Stack>
                   </CardBody>
               </Card>
@@ -76,7 +145,7 @@ function Roles() {
                   <CardBody>
                   {renderInputField()}
                   <Stack divider={<StackDivider />} spacing='4'>
-                      {renderNamesWithButtons(corporateNames)}
+                      {renderNamesWithButtons(corpList)}
                   </Stack>
                   </CardBody>
               </Card>

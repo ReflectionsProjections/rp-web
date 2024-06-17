@@ -22,14 +22,16 @@ import {
   useColorModeValue,
   Link
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon, AddIcon } from '@chakra-ui/icons';
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
+import { jwtDecode } from "jwt-decode";
 
 const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Roles from './pages/Roles';
+import React from 'react';
 
 /**
  * NavLink component.
@@ -53,20 +55,40 @@ const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => vo
 );
 
 export default function Home() {
+  
+    const [userName, setUserName] = useState('Please Sign-In');
+    const [selectedLink, setSelectedLink] = useState('Dashboard');
+    const { colorMode, toggleColorMode } = useColorMode();
+    const { isOpen, onOpen, onClose } = useDisclosure();
+  
+    interface JwtPayload {
+      displayName: string;
+    }
+
+    const decodeToken = () => {
+      const jwt = localStorage.getItem("jwt");
+      if (jwt) {
+        const decodedToken = jwtDecode(jwt) as JwtPayload;
+        setUserName(decodedToken.displayName);
+      }
+    }
+
+
     const printToken = () => {
       console.log('Home page');
       const jwt = localStorage.getItem("jwt");
       console.log("jwt:", jwt);
     }
 
-    const { colorMode, toggleColorMode } = useColorMode();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const [selectedLink, setSelectedLink] = useState('Dashboard');
+    React.useEffect(() => {
+      decodeToken();
+    });
+
 
     const renderComponent = () => {
       switch (selectedLink) {
         case 'Dashboard':
-          return <Dashboard />;
+          return <Dashboard name={userName} />;
         case 'Stats':
           return <Stats />;
         // case 'Events':
@@ -78,7 +100,7 @@ export default function Home() {
         case 'Roles':
           return <Roles />;
         default:
-          return <Dashboard />;
+          return <Dashboard name={userName} />;
       }
     };
   
@@ -131,7 +153,7 @@ export default function Home() {
                   />
                 </MenuButton>
                 <MenuList>
-                  <MenuItem onClick={printToken}>Print JWT</MenuItem>
+                  <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem>
                   <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
                   <MenuDivider />
                   <MenuItem>Sign Out</MenuItem>
