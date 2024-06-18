@@ -87,7 +87,7 @@ function Dashboard({ name }: { name: string }) {
 
         </Box>
 
-        <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 2 : 0}>
+        <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 4 : 0}>
           <Card>
             <CardHeader>
               <Heading size='md'>Upcoming Events</Heading>

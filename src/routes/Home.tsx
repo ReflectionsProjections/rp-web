@@ -29,6 +29,7 @@ import { jwtDecode } from "jwt-decode";
 const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
+import Events from './pages/Events';
 import Roles from './pages/Roles';
 import React from 'react';
 import Notifications from './pages/Notifications';
@@ -40,7 +41,7 @@ import Notifications from './pages/Notifications';
  * @param children - The content of the NavLink.
  * @param onClick - The click event handler for the NavLink.
  */
-const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => void }) => (
+const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink: boolean, onClick: () => void }) => (
   <Link
     px={2}
     py={1}
@@ -50,7 +51,9 @@ const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => vo
       bg: useColorModeValue('gray.200', 'gray.700'),
     }}
     onClick={onClick}
-    cursor="pointer">
+    cursor="pointer"
+    padding={'6px 12px'}
+    border={selectedLink ? '1px solid black' : 'none'}>
     {children}
   </Link>
 );
@@ -92,8 +95,8 @@ export default function Home() {
         return <Dashboard name={userName} />;
       case 'Stats':
         return <Stats />;
-        // case 'Events':
-        //   return <Events />;
+      case 'Events':
+        return <Events />;
         // case 'Mail':
         //   return <Mail />;
       case 'Notifications':
@@ -139,7 +142,7 @@ export default function Home() {
                 spacing={4}
                 display={{ base: 'none', md: 'flex' }}>
                 {Links.map((link) => (
-                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                  <NavLink key={link} selectedLink={link===selectedLink} onClick={() => setSelectedLink(link)}>{link}</NavLink>
                 ))}
               </HStack>
             </HStack>
@@ -179,7 +182,7 @@ export default function Home() {
           ) : null}
         </Box>
 
-        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='93vh'>
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='120vh'>
           {renderComponent()}
         </Box>
       </>
