@@ -1,7 +1,14 @@
 import {
+  Badge,
   Box,
   Stack,
   Card,
+  CardBody,
+  CardFooter,
+  Flex,
+  Grid,
+  Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select,
+  Stack, Textarea, useDisclosure,
   Heading,
   CardBody,
   Text,
@@ -155,6 +162,64 @@ function getEvents() {
 
   return events;
 
+}
+
+import { EditIcon } from '@chakra-ui/icons';
+
+function ManualClose() {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  return (
+    <>
+      <Button leftIcon={<EditIcon/>} colorScheme="teal" variant="solid" onClick={onOpen}>
+        Edit
+      </Button>
+      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Edit event</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody pb={6}>
+            <Input
+              placeholder="Event Name"
+              value=""
+              mb={4}
+            />
+            <Select
+              placeholder="Select Event Type"
+              value=""
+              mb={4}
+            >
+              <option value="Virtual">Virtual</option>
+              <option value="In-Person">In-Person</option>
+            </Select>
+            <Input
+              type="datetime-local"
+              value=""
+              mb={4}
+            />
+            <Input
+              placeholder="Points"
+              value=""
+              mb={4}
+            />
+            <Textarea
+              placeholder="Description"
+              value=""
+              mb={4}
+            />
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme='blue' mr={3}>
+                Save
+            </Button>
+            <Button onClick={onClose}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
+  )
 }
 
 function Events() {
