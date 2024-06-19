@@ -268,7 +268,7 @@ function Events() {
     <Box flex="1" minW='90vw' p={4}>
       <Heading size="lg">Events</Heading>
       <br />
-      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}  gap={6}>
+      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} justifyItems='center' gap={6}>
         {eventData.map((event) => EventCard({event}))}
       </Grid>
     </Box>

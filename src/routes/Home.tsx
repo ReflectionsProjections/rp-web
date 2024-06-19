@@ -23,12 +23,17 @@ import {
   Link
 } from '@chakra-ui/react';
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import Dashboard from './pages/Dashboard';
-import Roles from './pages/Roles';
-import Events from './pages/Events'
+
 import { ReactNode, useState } from 'react';
-    
-const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles'];
+import { jwtDecode } from "jwt-decode";
+const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
+import Dashboard from './pages/Dashboard';
+import Stats from './pages/Stats';
+import Events from './pages/Events';
+import Roles from './pages/Roles';
+import React from 'react';
+import Notifications from './pages/Notifications';
+
 
 /**
  * NavLink component.
@@ -36,7 +41,7 @@ const Links = ['Dashboard', 'Stats', 'Events', 'Mail', 'Notifications', 'Roles']
  * @param children - The content of the NavLink.
  * @param onClick - The click event handler for the NavLink.
  */
-const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => void }) => (
+const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink?: boolean, onClick: () => void }) => (
   <Link
     px={2}
     py={1}
@@ -46,119 +51,141 @@ const NavLink = ({ children, onClick }: { children: ReactNode, onClick: () => vo
       bg: useColorModeValue('gray.200', 'gray.700'),
     }}
     onClick={onClick}
-    cursor="pointer">
+    cursor="pointer"
+    padding={'6px 12px'}
+    border={selectedLink ? '1px solid' : 'none'}
+    border-color={useColorModeValue('gray.700', 'gray.200')}>
     {children}
   </Link>
 );
 
 export default function Home() {
-  const printToken = () => {
-    console.log('Home page');
-    const jwt = localStorage.getItem("jwt");
-    console.log("jwt:", jwt);
-  }
-
-  const {toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [userName, setUserName] = useState('Please Sign-In');
   const [selectedLink, setSelectedLink] = useState('Dashboard');
-
-  const renderComponent = () => {
-    switch (selectedLink) {
-    case 'Dashboard':
-      return <Dashboard />;
-      // case 'Stats':
-      //   return <Stats />;
-    case 'Events':
-      return <Events />;
-      // case 'Mail':
-      //   return <Mail />;
-      // case 'Notifications':
-      //   return <Notifications />;
-    case 'Roles':
-      return <Roles />;
-    default:
-      return <Dashboard />;
+  const { colorMode, toggleColorMode } = useColorMode();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  
+    interface JwtPayload {
+      displayName: string;
     }
-  };
 
-  const signOut = () => {
-    localStorage.removeItem("jwt");
-    window.location.href = "/";
-  }
-    
+    const decodeToken = () => {
+      const jwt = localStorage.getItem("jwt");
+      if (jwt) {
+        const decodedToken = jwtDecode(jwt) as JwtPayload;
+        setUserName(decodedToken.displayName);
+      }
+    }
+
+    // const printToken = () => {
+    //   console.log('Home page');
+    //   const jwt = localStorage.getItem("jwt");
+    //   console.log("jwt:", jwt);
+    // }
+ 
 
 
-  return (
-    <>
-      <Box
-        bg={useColorModeValue('gray.100', 'gray.900')}
-        px={4}
-        position="fixed"
-        top={0}
-        left={0}
-        width="100%"
-        zIndex={1}
-      >
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'} bg={useColorModeValue('gray.100', 'gray.900')}>
-          <IconButton
-            size={'lg'}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label={'Open Menu'}
-            display={{ md: 'none' }}
-            onClick={isOpen ? onClose : onOpen}
-          />
-          <HStack spacing={8} alignItems={'center'}>
-            <Flex align="center" mr={5} maxWidth={50}>
-              <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} />
-            </Flex>
-            <HStack
-              as={'nav'}
-              spacing={4}
-              display={{ base: 'none', md: 'flex' }}>
-              {Links.map((link) => (
-                <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
-              ))}
+    React.useEffect(() => {
+      decodeToken();
+    });
+
+
+    const renderComponent = () => {
+      switch (selectedLink) {
+      case 'Dashboard':
+        return <Dashboard name={userName} />;
+      case 'Stats':
+        return <Stats />;
+      case 'Events':
+        return <Events />;
+        // case 'Mail':
+        //   return <Mail />;
+      case 'Notifications':
+        return <Notifications />;
+      case 'Roles':
+        return <Roles />;
+      default:
+        return <Dashboard name={userName} />;
+      }
+    };
+            
+    const signOut = () => {
+      localStorage.removeItem("jwt");
+      window.location.href = "/";
+    }
+  
+
+    return (
+      <>
+        <Box
+          bg={useColorModeValue('gray.100', 'gray.900')}
+          px={4}
+          position="fixed"
+          top={0}
+          left={0}
+          width="100%"
+          zIndex={1}
+        >
+          <Flex h={16} alignItems={'center'} justifyContent={'space-between'} bg={useColorModeValue('gray.100', 'gray.900')}>
+            <IconButton
+              size={'lg'}
+              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+              aria-label={'Open Menu'}
+              display={{ md: 'none' }}
+              onClick={isOpen ? onClose : onOpen}
+            />
+            <HStack spacing={8} alignItems={'center'}>
+              <Flex align="center" mr={5} maxWidth={50}>
+                <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} onClick={() => setSelectedLink('Dashboard')} />
+              </Flex>
+              <HStack
+                as={'nav'}
+                spacing={4}
+                display={{ base: 'none', md: 'flex' }}>
+                {Links.map((link) => (
+                  <NavLink key={link} selectedLink={link===selectedLink} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                ))}
+              </HStack>
             </HStack>
-          </HStack>
-          <Flex alignItems={'center'}>
-            <Menu>
-              <MenuButton
-                as={Button}
-                rounded={'full'}
-                variant={'link'}
-                cursor={'pointer'}
-                minW={0}>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://cdn-icons-png.freepik.com/512/8742/8742495.png'
-                  }
-                />
-              </MenuButton>
-              <MenuList>
-                <MenuItem onClick={printToken}>Print JWT</MenuItem>
-                <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
-                <MenuDivider />
-                <MenuItem onClick={signOut}>Sign Out</MenuItem>
-              </MenuList>
-            </Menu>
+            <Flex alignItems={'center'}>
+              <Menu>
+                <MenuButton
+                  as={Button}
+                  rounded={'full'}
+                  variant={'link'}
+                  cursor={'pointer'}
+                  minW={0}>
+                  <Avatar
+                    size={'sm'}
+                    src={
+                      'https://cdn-icons-png.freepik.com/512/8742/8742495.png'
+                    }
+                  />
+                </MenuButton>
+                <MenuList>
+                  {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
+                  <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
+                  <MenuDivider />
+                  <MenuItem onClick={signOut}>Sign Out</MenuItem>
+                </MenuList>
+              </Menu>
+            </Flex>
           </Flex>
-        </Flex>
 
-        {isOpen ? (
-          <Box pb={4} display={{ md: 'none' }}>
-            <Stack as={'nav'} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null}
-      </Box>
+          {isOpen ? (
+            <Box pb={4} display={{ md: 'none' }}>
+              <Stack as={'nav'} spacing={4}>
+                {Links.map((link) => (
+                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                ))}
+              </Stack>
+            </Box>
+          ) : null}
+        </Box>
 
-      <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%'>
-        {renderComponent()}
-      </Box>
-    </>
-  );
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='120vh'>
+          {renderComponent()}
+        </Box>
+      </>
+    );
 }
