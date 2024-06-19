@@ -7,12 +7,10 @@ import {
   Stat,
   StatNumber,
   StatHelpText,
-  StatArrow,
   Card,
   CardHeader,
   Heading,
   CardBody,
-  StackDivider,
   Badge,
   useBreakpointValue
 } from '@chakra-ui/react';

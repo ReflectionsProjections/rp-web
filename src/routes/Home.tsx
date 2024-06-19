@@ -39,6 +39,7 @@ import Notifications from './pages/Notifications';
  * NavLink component.
  *
  * @param children - The content of the NavLink.
+ * @param selectedLink - Whether the NavLink is selected.
  * @param onClick - The click event handler for the NavLink.
  */
 const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink: boolean, onClick: () => void }) => (
@@ -61,7 +62,7 @@ const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, sel
 export default function Home() {
   const [userName, setUserName] = useState('Please Sign-In');
   const [selectedLink, setSelectedLink] = useState('Dashboard');
-  const { colorMode, toggleColorMode } = useColorMode();
+  const { toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   
     interface JwtPayload {
@@ -175,7 +176,7 @@ export default function Home() {
             <Box pb={4} display={{ md: 'none' }}>
               <Stack as={'nav'} spacing={4}>
                 {Links.map((link) => (
-                  <NavLink key={link} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                  <NavLink key={link} onClick={() => setSelectedLink(link)} selectedLink={link === selectedLink}>{link}</NavLink>
                 ))}
               </Stack>
             </Box>
