@@ -22,6 +22,16 @@ import rpLogo from '../../assets/rp_logo.png'
 function Dashboard({ name }: { name: string }) {
 
   const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
+
+  const CustomStatBox = ({ label, number, helpText }: { label: string, number: number, helpText: string }) => {
+    return (
+      <Stat boxShadow="0px 1px 2px gray" borderRadius="12px" margin="8px" paddingTop="7px">
+        <StatLabel>{label}</StatLabel>
+        <StatNumber>{number}</StatNumber>
+        <StatHelpText>{helpText}</StatHelpText>
+      </Stat>
+    );
+  };
   
   return (
     <Box p={4}>
@@ -62,24 +72,10 @@ function Dashboard({ name }: { name: string }) {
                         
                     </Box>
                     </Stack> */}
-              <Box mt={4}>
+              <Box mt={0}>
                 <StatGroup>
-                  <Stat>
-                    <StatLabel>Checked-In</StatLabel>
-                    <StatNumber>694</StatNumber>
-                    <StatHelpText>
-                      {/* <StatArrow type='increase' />
-                                23.36% */}
-                    </StatHelpText>
-                  </Stat>
-                  <Stat>
-                    <StatLabel>Priority Status</StatLabel>
-                    <StatNumber>120</StatNumber>
-                    <StatHelpText>
-                      {/* <StatArrow type='decrease' />
-                                9.05% */}
-                    </StatHelpText>
-                  </Stat>
+                  <CustomStatBox label='Checked-In' number={694} helpText='' />
+                  <CustomStatBox label='Priority Status' number={120} helpText='' />
                 </StatGroup>
               </Box>
             </CardBody>
