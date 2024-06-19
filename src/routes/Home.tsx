@@ -41,7 +41,7 @@ import Notifications from './pages/Notifications';
  * @param children - The content of the NavLink.
  * @param onClick - The click event handler for the NavLink.
  */
-const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink: boolean, onClick: () => void }) => (
+const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink?: boolean, onClick: () => void }) => (
   <Link
     px={2}
     py={1}
@@ -53,7 +53,8 @@ const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, sel
     onClick={onClick}
     cursor="pointer"
     padding={'6px 12px'}
-    border={selectedLink ? '1px solid black' : 'none'}>
+    border={selectedLink ? '1px solid' : 'none'}
+    border-color={useColorModeValue('gray.700', 'gray.200')}>
     {children}
   </Link>
 );
@@ -182,7 +183,7 @@ export default function Home() {
           ) : null}
         </Box>
 
-        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='120vh'>
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100vh'>
           {renderComponent()}
         </Box>
       </>
