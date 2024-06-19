@@ -183,7 +183,7 @@ export default function Home() {
           ) : null}
         </Box>
 
-        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100%' height='120vh'>
+        <Box mt={16} flex="1" display="flex" flexDirection="column" minHeight='100vh'>
           {renderComponent()}
         </Box>
       </>
