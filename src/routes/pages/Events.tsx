@@ -4,18 +4,15 @@ import {
   Button,
   Card,
   CardBody,
-  CardFooter,
-  Flex,
-  Grid,
-  Heading, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select,
+  Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select,
   Stack, Textarea, useDisclosure,
   Heading,
-  CardBody,
   Text,
   Image,
-  CardFooter, Button, Badge, Grid
+  Grid, CardFooter, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, NumberInput,
 } from '@chakra-ui/react';
 import {EditIcon} from "@chakra-ui/icons";
+import moment from 'moment-timezone';
 
 const res = "[{\n" +
     "  \"_id\": {\n" +
@@ -152,6 +149,8 @@ const res = "[{\n" +
     "  \"__v\": 0\n" +
     "}]";
 
+const readable = "MMMM Do YYYY, h:mm a"
+
 function getEvents() {
   const response = JSON.parse(res);
   const events = [];
@@ -164,9 +163,45 @@ function getEvents() {
 
 }
 
-import { EditIcon } from '@chakra-ui/icons';
+function convertToCST(date) {
+  const m = moment.utc(date);
+  m.tz('America/Chicago');
+  return m;
+}
 
-function ManualClose() {
+function EventCard({event}) {
+  return (
+    <Card maxW='sm' key={event._id.$oid}>
+      <CardBody>
+        <Image src={event.imageUrl} alt={event.name} borderRadius='lg'/>
+        <Stack mt='6' spacing='3'>
+          <Heading size='md'> {event.name}</Heading>
+          <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
+            {event.isVirtual ? "Virtual" : "In-person"}
+          </Badge>
+          <Text>
+            {convertToCST(event.startTime.$date).format(readable)} - {convertToCST(event.endTime.$date).format(readable)}
+          </Text>
+          <Text>
+            ({moment.duration(convertToCST(event.endTime.$date).diff(convertToCST(event.startTime.$date))).humanize()})
+          </Text>
+          <Text>
+              Points: {event.points}
+          </Text>
+          <Text>
+            {event.description}
+          </Text>
+        </Stack>
+      </CardBody>
+
+      <CardFooter>
+        <EditModal event={event}/>
+      </CardFooter>
+    </Card>
+  )
+}
+
+function EditModal({event}) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -181,31 +216,35 @@ function ManualClose() {
           <ModalCloseButton />
           <ModalBody pb={6}>
             <Input
-              placeholder="Event Name"
-              value=""
+              defaultValue={event.name}
               mb={4}
             />
             <Select
-              placeholder="Select Event Type"
-              value=""
+              defaultValue={event.isVirtual ? "Virtual" : "In-Person"}
               mb={4}
             >
-              <option value="Virtual">Virtual</option>
-              <option value="In-Person">In-Person</option>
+              <option value="true">Virtual</option>
+              <option value="false">In-Person</option>
             </Select>
             <Input
               type="datetime-local"
-              value=""
+              defaultValue={convertToCST(event.startTime.$date).format('yyyy-MM-DDTHH:mm')}
               mb={4}
             />
             <Input
-              placeholder="Points"
-              value=""
+              type="datetime-local"
+              defaultValue={convertToCST(event.endTime.$date).format('yyyy-MM-DDTHH:mm')}
               mb={4}
             />
+            <NumberInput defaultValue={event.points} min={0}>
+              <NumberInputField />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
             <Textarea
-              placeholder="Description"
-              value=""
+              defaultValue={event.description}
               mb={4}
             />
           </ModalBody>
@@ -225,45 +264,12 @@ function ManualClose() {
 function Events() {
   const eventData = getEvents();
 
-  for (const e in eventData) {
-    console.log(eventData[e]);
-  }
-
-  const items = eventData.map(event=>
-    <Card maxW='sm' key={event._id.$oid}>
-      <CardBody>
-        <Image src={event.imageUrl} alt={event.name} borderRadius='lg'/>
-        <Stack mt='6' spacing='3'>
-          <Heading size='md'> {event.name}</Heading>
-          <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
-            {event.isVirtual ? "Virtual" : "In-person"}
-          </Badge>
-          <Text>
-            {new Date(event.startTime.$date).toLocaleString()} - {new Date(event.endTime.$date).toLocaleString()}
-          </Text>
-          <Text>
-              Points: {event.points}
-          </Text>
-          <Text>
-            {event.description}
-          </Text>
-        </Stack>
-      </CardBody>
-
-      <CardFooter>
-        <Button leftIcon={<EditIcon/>} colorScheme="teal" variant="solid">
-            Edit
-        </Button>
-      </CardFooter>
-    </Card>
-  );
-
   return (
     <Box flex="1" minW='90vw' p={4}>
       <Heading size="lg">Events</Heading>
       <br />
       <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}  gap={6}>
-        {items}
+        {eventData.map((event) => EventCard({event}))}
       </Grid>
     </Box>
   );
