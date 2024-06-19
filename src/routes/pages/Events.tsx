@@ -6,7 +6,7 @@ import {
   CardBody,
   Text,
   Image,
-  CardFooter, Button, Badge
+  CardFooter, Button, Badge, Grid
 } from '@chakra-ui/react';
 import {EditIcon} from "@chakra-ui/icons";
 
@@ -194,10 +194,12 @@ function Events() {
   );
 
   return (
-    <Box p={5} overflowY={"scroll"}>
-      <Stack spacing={5}>
+    <Box flex="1" minW='90vw' p={4}>
+      <Heading size="lg">Events</Heading>
+      <br />
+      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}  gap={6}>
         {items}
-      </Stack>
+      </Grid>
     </Box>
   );
 }
