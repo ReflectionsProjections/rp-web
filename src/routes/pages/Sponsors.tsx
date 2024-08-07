@@ -145,7 +145,7 @@ function Sponsors() {
     <Box flex="1" minW='90vw' p={4}>
       <Heading size="lg">Roles</Heading>
       <br/>
-      <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)"}} gap={6}>
+      <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(1, 1fr)", lg: "repeat(1, 1fr)"}} gap={6}>
         <CorporateCard/>
       </Grid>
     </Box>
