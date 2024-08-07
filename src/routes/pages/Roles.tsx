@@ -14,7 +14,6 @@ function Roles() {
       <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }}  gap={6}>
         <RolesCard role="ADMIN" />
         <RolesCard role="STAFF" />
-        <RolesCard role="CORPORATE" />
       </Grid>
     </Box>
   )
