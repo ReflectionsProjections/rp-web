@@ -5,7 +5,6 @@ import {
   Stat,
   StatNumber,
   StatHelpText,
-  StatArrow,
   Card,
   Heading,
   CardBody,
@@ -15,7 +14,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   CardHeader,
-  useToast,
+  // useToast,
 } from '@chakra-ui/react';
 
 import { Bar } from 'react-chartjs-2';
@@ -26,12 +25,10 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 
-import { Config } from "../../config";
-import axios from "axios";
 import React from 'react';
 
 function Stats() {
-  const toast = useToast();
+  // const toast = useToast();
 
   const [checkInStats, setCheckInStats] = React.useState(0);
   const [priorityAttendees, setPriorityAttendees] = React.useState(0);
@@ -39,14 +36,14 @@ function Stats() {
   const [eventAttendance, setEventAttendance] = React.useState(2);
   const [eligiblePrize, setEligiblePrize] = React.useState(15);
 
-  const showToast = (message: string) => {
-    toast({
-      title: message,
-      status: "error",
-      duration: 9000,
-      isClosable: true,
-    });
-  }
+  // const showToast = (message: string) => {
+  //   toast({
+  //     title: message,
+  //     status: "error",
+  //     duration: 9000,
+  //     isClosable: true,
+  //   });
+  // }
 
   const getStats = async () => {
 

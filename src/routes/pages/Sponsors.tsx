@@ -75,7 +75,7 @@ function CorporateCard() {
     }
   }
 
-  const renderSponsors = (sponsors: [{name: string, email: string}]) => {
+  const renderSponsors = (sponsors: {name: string, email: string}[]) => {
     return sponsors.map((sponsor) => (
       <Flex key={sponsor.email} justifyContent="space-between" alignItems="center">
         <Box>{sponsor.name}</Box>
