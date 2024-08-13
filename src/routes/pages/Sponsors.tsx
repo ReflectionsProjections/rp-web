@@ -10,8 +10,9 @@ import {CheckIcon, CloseIcon} from "@chakra-ui/icons";
 
 function CorporateCard() {
   const toast = useToast();
-  const [nameList, setNameList] = React.useState([]);
+  const [sponsorList, setSponsors] = React.useState([]);
   const [email, setEmail] = React.useState('');
+  const [name, setName] = React.useState('');
 
   const showToast = (message: string, error: boolean) => {
     toast({
@@ -22,33 +23,31 @@ function CorporateCard() {
     });
   }
 
-  const getRoles = async () => {
-
-    const jwt = localStorage.getItem("jwt"); //  no way to get corporate roles
-
-    // axios.get(Config.API_BASE_URL + "/auth/" + role, {
-    //   headers: {
-    //     Authorization: jwt
-    //   }
-    // })
-    //   .then(function (response) {
-    //     // handle success
-    //     const names = response.data.map((item: Record<string, string>) => item.email);
-    //     // console.log(names);
-    //     setNameList(names);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //   })
-    // TODO
+  const refreshSponsors = async () => {
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/auth/corporate", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        const sponsorData = response.data.map((item: Record<string, string>) => ({
+          name: item.name,
+          email: item.email,
+        }));
+        setSponsors(sponsorData);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      })
   }
 
   React.useEffect(() => {
     let firstRender = true;
 
     if (firstRender) {
-      getRoles();
+      refreshSponsors();
       firstRender = false;
     }
   }, []);
@@ -57,41 +56,45 @@ function CorporateCard() {
     const jwt = localStorage.getItem("jwt");
 
     try {
-      const response = await axios.delete(Config.API_BASE_URL + '/auth/corporate/' + email,
+      const response = await axios.delete(Config.API_BASE_URL + '/auth/corporate/',
         {
           headers: {
             Authorization: jwt
+          },
+          data: {
+            "email": email,
           }
         });
 
       console.log('User role updated:', response.data);
       showToast(email + ' User Role updated: No longer Corporate role', false);
-      getRoles();
+      refreshSponsors();
     } catch (error) {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
     }
   }
 
-  const renderNamesWithButtons = (names: string[]) => {
-    return names.map((name) => (
-      <Flex key={name} justifyContent="space-between" alignItems="center">
-        <Box>{name}</Box>
+  const renderSponsors = (sponsors: [{name: string, email: string}]) => {
+    return sponsors.map((sponsor) => (
+      <Flex key={sponsor.email} justifyContent="space-between" alignItems="center">
+        <Box>{sponsor.name}</Box>
+        <Box>{sponsor.email}</Box>
         <IconButton
           size={'md'}
           icon={<CloseIcon/>}
           aria-label={'Open Menu'}
-          onClick={() => removeFromRole(name)}
+          onClick={() => removeFromRole(sponsor.email)}
         />
       </Flex>
     ));
   };
 
-  const addToRole = async (email: string) => {
+  const addToRole = async (name:string, email: string) => {
     const jwt = localStorage.getItem("jwt");
 
     try {
-      const response = await axios.post(Config.API_BASE_URL + '/auth/corporate/' + email, {}, {
+      const response = await axios.post(Config.API_BASE_URL + '/auth/corporate', {name: name, email: email}, {
         headers: {
           Authorization: jwt
         }
@@ -99,7 +102,7 @@ function CorporateCard() {
 
       console.log('User role updated:', response.data);
       showToast(email + ' User Role updated: Now Corporate role', false);
-      getRoles();
+      refreshSponsors();
     } catch (error) {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
@@ -107,8 +110,9 @@ function CorporateCard() {
   }
 
   const handleSubmit = () => {
-    addToRole(email); // Replace 'YOUR_ROLE_HERE' with the actual role
+    addToRole(name, email); // Replace 'YOUR_ROLE_HERE' with the actual role
     setEmail('');
+    setName('');
   };
 
   return (
@@ -118,6 +122,12 @@ function CorporateCard() {
       </CardHeader>
       <CardBody>
         <Flex mb={4}>
+          <Input
+            placeholder="Enter name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            mr={2}
+          />
           <Input
             placeholder="Enter email"
             value={email}
@@ -132,7 +142,7 @@ function CorporateCard() {
           />
         </Flex>
         <Stack divider={<StackDivider/>} spacing='4'>
-          {renderNamesWithButtons(nameList)}
+          {renderSponsors(sponsorList)}
         </Stack>
       </CardBody>
     </Card>
