@@ -4,272 +4,321 @@ import {
   Button,
   Card,
   CardBody,
-  Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select,
-  Stack, Textarea, useDisclosure,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Select,
+  Stack,
+  Textarea,
+  useDisclosure,
   Heading,
   Text,
   Image,
-  Grid, CardFooter, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, NumberInput,
+  Grid,
+  CardFooter,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+  NumberInput,
+  Flex,
+  Center,
 } from '@chakra-ui/react';
 import {EditIcon} from "@chakra-ui/icons";
 import moment from 'moment-timezone';
-
-const res = "[{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"66580272e3677bc19cfc4952\"\n" +
-    "  },\n" +
-    "  \"name\": \"Tech Conference 2024 Day 1\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-06-01T10:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-06-01T18:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 50,\n" +
-    "  \"description\": \"Kickoff to the Tech Conference 2024.\",\n" +
-    "  \"isVirtual\": true,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"6475fa93-946b-4faa-b21b-579f383d46d5\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"66580282e3677bc19cfc4954\"\n" +
-    "  },\n" +
-    "  \"name\": \"Tech Conference 2024 Day 2\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-06-02T10:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-06-02T18:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 50,\n" +
-    "  \"description\": \"Second day of the Tech Conference 2024.\",\n" +
-    "  \"isVirtual\": true,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"b9bec496-3815-4823-8076-c5c33820bc71\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"6658028de3677bc19cfc4956\"\n" +
-    "  },\n" +
-    "  \"name\": \"Tech Conference 2024 Day 3\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-06-03T10:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-06-03T18:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 50,\n" +
-    "  \"description\": \"Final day of the Tech Conference 2024.\",\n" +
-    "  \"isVirtual\": true,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"60f772fc-6668-481c-997e-e9eb667eb746\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"6658036d5da2661b5dd1aced\"\n" +
-    "  },\n" +
-    "  \"name\": \"Spring Tech Expo\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-05-28T09:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-05-30T17:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 100,\n" +
-    "  \"description\": \"An expo showcasing the latest in spring tech innovations.\",\n" +
-    "  \"isVirtual\": false,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"91e7107b-c26f-40ff-9d24-0b7b90805852\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"665803785da2661b5dd1acef\"\n" +
-    "  },\n" +
-    "  \"name\": \"Early Summer Workshop\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-06-02T10:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-06-05T16:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 150,\n" +
-    "  \"description\": \"A workshop focusing on early summer trends in technology.\",\n" +
-    "  \"isVirtual\": true,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"fec7ecbb-3079-4c19-ab11-d02a008066a5\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"665803805da2661b5dd1acf1\"\n" +
-    "  },\n" +
-    "  \"name\": \"Tech Future Symposium\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-06-07T11:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-06-10T18:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 200,\n" +
-    "  \"description\": \"A symposium discussing the future of technology and innovation.\",\n" +
-    "  \"isVirtual\": false,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventId\": \"7b94977c-d08d-4d5a-9b37-34b68bd125ed\",\n" +
-    "  \"__v\": 0\n" +
-    "},\n" +
-    "{\n" +
-    "  \"_id\": {\n" +
-    "    \"$oid\": \"665807ddc669692636d7f492\"\n" +
-    "  },\n" +
-    "  \"name\": \"Spring Tech Expo\",\n" +
-    "  \"startTime\": {\n" +
-    "    \"$date\": \"2024-05-28T09:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"endTime\": {\n" +
-    "    \"$date\": \"2024-05-30T17:00:00.000Z\"\n" +
-    "  },\n" +
-    "  \"points\": 100,\n" +
-    "  \"description\": \"An expo showcasing the latest in spring tech innovations.\",\n" +
-    "  \"isVirtual\": false,\n" +
-    "  \"imageUrl\": \"http://localhost:5173/src/assets/rp_logo.png\",\n" +
-    "  \"isVisible\": true,\n" +
-    "  \"eventType\": \"C\",\n" +
-    "  \"eventId\": \"004ee290-daa3-4fbc-888d-b10b5362e231\",\n" +
-    "  \"__v\": 0\n" +
-    "}]";
+import axios from "axios";
+import {Config} from "../../config.ts";
+import React, {useEffect} from "react";
 
 const readable = "MMMM Do YYYY, h:mm a"
 
-function getEvents() {
-  const response = JSON.parse(res);
-  const events = [];
+const jwt = localStorage.getItem("jwt");
 
-  for (const e in response) {
-    events.push(response[e]);
-  }
-
-  return events;
-
-}
-
-function convertToCST(date) {
+function convertToCST(date: string) {
   const m = moment.utc(date);
   m.tz('America/Chicago');
   return m;
 }
 
-function EventCard({event}) {
-  return (
-    <Card maxW='sm' key={event._id.$oid}>
-      <CardBody>
-        <Image src={event.imageUrl} alt={event.name} borderRadius='lg'/>
-        <Stack mt='6' spacing='3'>
-          <Heading size='md'> {event.name}</Heading>
-          <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
-            {event.isVirtual ? "Virtual" : "In-person"}
-          </Badge>
-          <Text>
-            {convertToCST(event.startTime.$date).format(readable)} - {convertToCST(event.endTime.$date).format(readable)}
-          </Text>
-          <Text>
-            ({moment.duration(convertToCST(event.endTime.$date).diff(convertToCST(event.startTime.$date))).humanize()})
-          </Text>
-          <Text>
-              Points: {event.points}
-          </Text>
-          <Text>
-            {event.description}
-          </Text>
-        </Stack>
-      </CardBody>
-
-      <CardFooter>
-        <EditModal event={event}/>
-      </CardFooter>
-    </Card>
-  )
-}
-
-function EditModal({event}) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-
-  return (
-    <>
-      <Button leftIcon={<EditIcon/>} colorScheme="teal" variant="solid" onClick={onOpen}>
-        Edit
-      </Button>
-      <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Edit event</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody pb={6}>
-            <Input
-              defaultValue={event.name}
-              mb={4}
-            />
-            <Select
-              defaultValue={event.isVirtual ? "Virtual" : "In-Person"}
-              mb={4}
-            >
-              <option value="true">Virtual</option>
-              <option value="false">In-Person</option>
-            </Select>
-            <Input
-              type="datetime-local"
-              defaultValue={convertToCST(event.startTime.$date).format('yyyy-MM-DDTHH:mm')}
-              mb={4}
-            />
-            <Input
-              type="datetime-local"
-              defaultValue={convertToCST(event.endTime.$date).format('yyyy-MM-DDTHH:mm')}
-              mb={4}
-            />
-            <NumberInput defaultValue={event.points} min={0}>
-              <NumberInputField />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
-            </NumberInput>
-            <Textarea
-              defaultValue={event.description}
-              mb={4}
-            />
-          </ModalBody>
-
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3}>
-                Save
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
-  )
-}
-
 function Events() {
-  const eventData = getEvents();
+  const [events, setEvents] = React.useState([]);
+  // const { isOpen, onOpen, onClose } = useDisclosure();
+  // const [newEvent, setNewEvent] = React.useState({
+  //   name: '',
+  //   isVirtual: true,
+  //   startTime: '',
+  //   endTime: '',
+  //   points: 0,
+  //   imageUrl: '',
+  //   description: ''
+  // });
+
+  // const createEvent = () => {
+  //   axios.post(Config.API_BASE_URL + "/events", newEvent, {
+  //     headers: {
+  //       Authorization: jwt
+  //     }
+  //   }).then(() => {
+  //     getEvents();
+  //     setNewEvent({
+  //       name: '',
+  //       isVirtual: true,
+  //       startTime: '',
+  //       endTime: '',
+  //       points: 0,
+  //       imageUrl: '',
+  //       description: ''
+  //     });
+  //     onClose(); // Close the modal after creating the event
+  //   });
+  // };
+
+  function getEvents() {
+    axios.get(Config.API_BASE_URL + "/events", {
+      headers: {
+        Authorization: jwt
+      }
+    }).then(function (response) {
+      setEvents(response.data);
+    });
+  }
+
+  function EditModal({event}: {event: { eventId: string,
+      name: string,
+      startTime: string,
+      endTime: string,
+      points: number,
+      description: string,
+      isVirtual: boolean,
+      imageUrl: string,
+      location: string | object,
+      eventType: string}}) {
+    const {isOpen, onOpen, onClose} = useDisclosure()
+    const [updatedValues, setUpdatedValues] = React.useState(event);
+
+    React.useEffect(() => {
+      setUpdatedValues(event);
+    }, [event, isOpen]);
+
+    const handleSave = () => {
+      const updatedValuesUTC = {
+        ...updatedValues,
+        startTime: moment(updatedValues.startTime).utc().format(),
+        endTime: moment(updatedValues.endTime).utc().format()
+      };
+
+      axios.put(Config.API_BASE_URL + "/events/" + event.eventId, {
+        ...updatedValuesUTC
+      }, {
+        headers: {
+          Authorization: jwt
+        }
+      }).then(() => {
+        getEvents();
+        onClose();
+      });
+    };
+
+    return (
+      <>
+        <Button leftIcon={<EditIcon/>} colorScheme="teal" variant="solid" onClick={onOpen}>
+            Edit
+        </Button>
+        <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
+          <ModalOverlay/>
+          <ModalContent>
+            <ModalHeader>Edit event</ModalHeader>
+            <ModalCloseButton/>
+            <ModalBody pb={6}>
+              <Input
+                defaultValue={event.name}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, name: e.target.value})}
+              />
+              <Select
+                defaultValue={event.isVirtual ? "true" : "false"}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, isVirtual: e.target.value === "true"})}
+              >
+                <option value="true">Virtual</option>
+                <option value="false">In-Person</option>
+              </Select>
+              <Input
+                type="datetime-local"
+                defaultValue={convertToCST(event.startTime).format('yyyy-MM-DDTHH:mm')}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, startTime: moment(e.target.value).format()})}
+              />
+              <Input
+                type="datetime-local"
+                defaultValue={convertToCST(event.endTime).format('yyyy-MM-DDTHH:mm')}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, endTime: moment(e.target.value).format()})}
+              />
+              <NumberInput defaultValue={event.points} min={0}
+                onChange={(_, valueAsNumber) => setUpdatedValues({
+                  ...updatedValues,
+                  points: valueAsNumber
+                })}>
+                <NumberInputField/>
+                <NumberInputStepper>
+                  <NumberIncrementStepper/>
+                  <NumberDecrementStepper/>
+                </NumberInputStepper>
+              </NumberInput>
+              <Input
+                defaultValue={event.imageUrl}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, imageUrl: e.target.value})}
+              />
+              <Textarea
+                defaultValue={event.description}
+                mb={4}
+                onChange={(e) => setUpdatedValues({...updatedValues, description: e.target.value})}
+              />
+            </ModalBody>
+
+            <ModalFooter>
+              <Button colorScheme='blue' mr={3} onClick={handleSave}>
+                  Save
+              </Button>
+              <Button onClick={onClose}>Cancel</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </>
+    )
+  }
+
+  const deleteEvent = (eventId: string) => {
+    axios.delete(Config.API_BASE_URL + "/events/" + eventId, {
+      headers: {
+        Authorization: jwt
+      }
+    }).then(() => {
+      getEvents();
+    });
+  };
+
+  function EventCard({event}: {event: { eventId: string,
+      name: string,
+      startTime: string,
+      endTime: string,
+      points: number,
+      description: string,
+      isVirtual: boolean,
+      imageUrl: string,
+      location: string | object,
+      eventType: string}}) {
+    const { isOpen: isDeleteOpen, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+
+    const confirmDelete = () => {
+      deleteEvent(event.eventId);
+      onCloseDelete();
+    };
+
+    return (
+      <Card maxW='sm' key={event.eventId}>
+        <CardBody>
+          <Center>
+            <Image src={event.imageUrl} alt={event.name} borderRadius='lg'/>
+          </Center>
+          <Stack mt='6' spacing='3'>
+            <Heading size='md'> {event.name}</Heading>
+            <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
+              {event.isVirtual ? "Virtual" : "In-person"}
+            </Badge>
+            <Text>
+              {convertToCST(event.startTime).format(readable)} - {convertToCST(event.endTime).format(readable)}
+            </Text>
+            <Text>
+                            ({moment.duration(convertToCST(event.endTime).diff(convertToCST(event.startTime))).humanize()})
+            </Text>
+            <Text>
+                            Points: {event.points}
+            </Text>
+            <Text>
+              {event.description}
+            </Text>
+          </Stack>
+        </CardBody>
+
+        <CardFooter>
+          <Flex justifyContent="space-between" width="100%">
+            <EditModal event={event}/>
+            <Button colorScheme='red' onClick={onOpenDelete}>
+              Delete
+            </Button>
+          </Flex>
+        </CardFooter>
+        <Modal isOpen={isDeleteOpen} onClose={onCloseDelete}>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Confirm Delete</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              Are you sure you want to delete this event?
+            </ModalBody>
+            <ModalFooter>
+              <Button colorScheme="red" mr={3} onClick={confirmDelete}>
+                Delete
+              </Button>
+              <Button onClick={onCloseDelete}>
+                Cancel
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      </Card>
+    )
+  }
+
+  useEffect(() => {
+    getEvents();
+  }, []);
 
   return (
     <Box flex="1" minW='90vw' p={4}>
       <Heading size="lg">Events</Heading>
-      <br />
-      <Grid templateColumns={{ base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)" }} justifyItems='center' gap={6}>
-        {eventData.map((event) => EventCard({event}))}
+      {/*<Button onClick={onOpen}>Create event</Button> /!* Button to open the modal *!/*/}
+      {/*<Modal isOpen={isOpen} onClose={onClose}>*/}
+      {/*  <ModalOverlay />*/}
+      {/*  <ModalContent>*/}
+      {/*    <ModalHeader>Create a new event</ModalHeader>*/}
+      {/*    <ModalCloseButton />*/}
+      {/*    <ModalBody>*/}
+      {/*      <Input*/}
+      {/*        value={newEvent.name}*/}
+      {/*        onChange={(e) => setNewEvent({...newEvent, name: e.target.value})}*/}
+      {/*        placeholder="Event name"*/}
+      {/*      />*/}
+      {/*    </ModalBody>*/}
+      {/*    <ModalFooter>*/}
+      {/*      <Button type="submit" onClick={createEvent}>Create event</Button>*/}
+      {/*      <Button colorScheme="blue" mr={3} onClick={onClose}>*/}
+      {/*        Close*/}
+      {/*      </Button>*/}
+      {/*    </ModalFooter>*/}
+      {/*  </ModalContent>*/}
+      {/*</Modal>*/}
+      <br/>
+      <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)"}}
+        justifyItems='center' gap={6}>
+        {events.map((event: { eventId: string,
+            name: string,
+            startTime: string,
+            endTime: string,
+            points: number,
+            description: string,
+            isVirtual: boolean,
+            imageUrl: string,
+            location: string | object,
+            eventType: string}) => <EventCard event={event} key={event.eventId}/>)}
       </Grid>
     </Box>
   );
