@@ -306,7 +306,7 @@ function Events() {
       <br/>
       <Grid templateColumns={{base: "repeat(1, 1fr)", md: "repeat(2, 1fr)", lg: "repeat(3, 1fr)"}}
         justifyItems='center' gap={6}>
-        {events.map(({event}: {event: { eventId: string,
+        {events.map((event: { eventId: string,
             name: string,
             startTime: string,
             endTime: string,
@@ -315,7 +315,7 @@ function Events() {
             isVirtual: boolean,
             imageUrl: string,
             location: string | object,
-            eventType: string}}) => <EventCard event={event} key={event.eventId}/>)}
+            eventType: string}) => <EventCard event={event} key={event.eventId}/>)}
       </Grid>
     </Box>
   );
