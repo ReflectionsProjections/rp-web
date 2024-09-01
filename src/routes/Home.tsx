@@ -1,8 +1,8 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
-import rpLogo from '../assets/rp_logo.png'
+import rpLogo from '../assets/rp_logo.png';
 // import viteLogo from '/vite.svg'
-import '../App.css'
+import '../App.css';
 // import axios from 'axios';
 import {
   Box,
@@ -77,7 +77,7 @@ export default function Home() {
         const decodedToken = jwtDecode(jwt) as JwtPayload;
         setUserName(decodedToken.displayName);
       }
-    }
+    };
 
     // const printToken = () => {
     //   console.log('Home page');
@@ -116,7 +116,7 @@ export default function Home() {
     const signOut = () => {
       localStorage.removeItem("jwt");
       window.location.href = "/";
-    }
+    };
   
 
     return (

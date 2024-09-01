@@ -16,7 +16,7 @@ function Roles() {
         <RolesCard role="STAFF" />
       </Grid>
     </Box>
-  )
+  );
 }
 
 

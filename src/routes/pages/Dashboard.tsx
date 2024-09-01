@@ -15,7 +15,7 @@ import {
   useBreakpointValue
 } from '@chakra-ui/react';
 
-import rpLogo from '../../assets/rp_logo.png'
+import rpLogo from '../../assets/rp_logo.png';
 
 function Dashboard({ name }: { name: string }) {
 
@@ -115,7 +115,7 @@ function Dashboard({ name }: { name: string }) {
         </Box>
       </Flex>
     </Box>
-  )
+  );
 }
 
 export default Dashboard;

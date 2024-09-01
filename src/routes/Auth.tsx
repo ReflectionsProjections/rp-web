@@ -1,11 +1,11 @@
 import {Navigate, useSearchParams} from "react-router-dom";
 import {Config} from "../config";
 
-const POST_AUTH_URL = "/home/"
+const POST_AUTH_URL = "/home/";
 
 export default function Auth() {
   console.log("Auth component");
-  console.log(window.location.search)
+  console.log(window.location.search);
 
   const [searchParams] = useSearchParams();
 

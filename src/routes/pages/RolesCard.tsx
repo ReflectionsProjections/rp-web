@@ -29,7 +29,7 @@ function RolesCard({ role }: { role: string }) {
       duration: 9000,
       isClosable: true,
     });
-  }
+  };
 
   const getRoles = async () => {
 
@@ -49,17 +49,18 @@ function RolesCard({ role }: { role: string }) {
       .catch(function (error) {
         // handle error
         console.log(error);
-      })
-  }
+      });
+
+  };
 
   React.useEffect(() => {
     let firstRender = true;
 
     if (firstRender) {
-      getRoles();
       firstRender = false;
+      getRoles();
     }
-  }, []);
+  });
 
   const removeFromRole = async (role: string, email: string) => {
     const jwt = localStorage.getItem("jwt");
@@ -82,7 +83,7 @@ function RolesCard({ role }: { role: string }) {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
     }
-  }
+  };
 
   const renderNamesWithButtons = (role: string, names: string[]) => {
     return names.map((name) => (
@@ -118,7 +119,7 @@ function RolesCard({ role }: { role: string }) {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
     }
-  }
+  };
 
   const handleSubmit = () => {
     addToRole(email); // Replace 'YOUR_ROLE_HERE' with the actual role

@@ -5,6 +5,7 @@ import {
   Stat,
   StatNumber,
   StatHelpText,
+  // StatArrow,
   Card,
   Heading,
   CardBody,
@@ -25,6 +26,8 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 
+// import { Config } from "../../config";
+// import axios from "axios";
 import React from 'react';
 
 function Stats() {
@@ -43,7 +46,7 @@ function Stats() {
   //     duration: 9000,
   //     isClosable: true,
   //   });
-  // }
+  // };
 
   const getStats = async () => {
 
@@ -99,15 +102,15 @@ function Stats() {
     //     console.log(error);
     // })
         
-  }
+  };
 
   const handleEventAttendanceChange = (valueAsString: string) => {
     setEventAttendance(parseInt(valueAsString));
-  }
+  };
 
   const handleEligiblePrizeChange = (valueAsString: string) => {
     setEligiblePrize(parseInt(valueAsString));
-  }
+  };
 
   React.useEffect(() => {
     getStats();
@@ -292,7 +295,7 @@ function Stats() {
         </Card>
       </StatGroup>
     </Box>
-  )
+  );
 }
 
 export default Stats;

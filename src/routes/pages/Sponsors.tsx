@@ -21,7 +21,7 @@ function CorporateCard() {
       duration: 9000,
       isClosable: true,
     });
-  }
+  };
 
   const refreshSponsors = async () => {
     const jwt = localStorage.getItem("jwt");
@@ -40,8 +40,8 @@ function CorporateCard() {
       .catch(function (error) {
         // handle error
         console.log(error);
-      })
-  }
+      });
+  };
 
   React.useEffect(() => {
     let firstRender = true;
@@ -73,7 +73,7 @@ function CorporateCard() {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
     }
-  }
+  };
 
   const renderSponsors = (sponsors: {name: string, email: string}[]) => {
     return sponsors.map((sponsor) => (
@@ -107,7 +107,7 @@ function CorporateCard() {
       console.log(error);
       showToast('Failed to update user role. Try again soon!', true);
     }
-  }
+  };
 
   const handleSubmit = () => {
     addToRole(name, email); // Replace 'YOUR_ROLE_HERE' with the actual role
@@ -159,7 +159,7 @@ function Sponsors() {
         <CorporateCard/>
       </Grid>
     </Box>
-  )
+  );
 }
 
 
