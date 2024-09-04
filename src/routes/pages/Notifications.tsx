@@ -15,7 +15,7 @@ function Notifications() {
         <img src="https://i.pinimg.com/originals/f9/28/e2/f928e27b6513d0d9c25a1b80293b12d1.png" alt="Under Construction" />
       </Flex>
     </Box>
-  )
+  );
 }
   
   

@@ -1,8 +1,8 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
-import rpLogo from '../assets/rp_logo.png'
+import rpLogo from '../assets/rp_logo.png';
 // import viteLogo from '/vite.svg'
-import '../App.css'
+import '../App.css';
 // import axios from 'axios';
 import {
   Box,
@@ -26,11 +26,12 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
-const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles'];
+const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles', 'Sponsors'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Events from './pages/Events';
 import Roles from './pages/Roles';
+import Sponsors from './pages/Sponsors';
 import React from 'react';
 import Notifications from './pages/Notifications';
 
@@ -76,7 +77,7 @@ export default function Home() {
         const decodedToken = jwtDecode(jwt) as JwtPayload;
         setUserName(decodedToken.displayName);
       }
-    }
+    };
 
     // const printToken = () => {
     //   console.log('Home page');
@@ -105,6 +106,8 @@ export default function Home() {
         return <Notifications />;
       case 'Roles':
         return <Roles />;
+      case 'Sponsors':
+        return <Sponsors/>;
       default:
         return <Dashboard name={userName} />;
       }
@@ -113,7 +116,7 @@ export default function Home() {
     const signOut = () => {
       localStorage.removeItem("jwt");
       window.location.href = "/";
-    }
+    };
   
 
     return (

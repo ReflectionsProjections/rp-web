@@ -35,7 +35,7 @@ import axios from "axios";
 import {Config} from "../../config.ts";
 import React, {useEffect} from "react";
 
-const readable = "MMMM Do YYYY, h:mm a"
+const readable = "MMMM Do YYYY, h:mm a";
 
 const jwt = localStorage.getItem("jwt");
 
@@ -98,7 +98,7 @@ function Events() {
       imageUrl: string,
       location: string | object,
       eventType: string}}) {
-    const {isOpen, onOpen, onClose} = useDisclosure()
+    const {isOpen, onOpen, onClose} = useDisclosure();
     const [updatedValues, setUpdatedValues] = React.useState(event);
 
     React.useEffect(() => {
@@ -192,7 +192,7 @@ function Events() {
           </ModalContent>
         </Modal>
       </>
-    )
+    );
   }
 
   const deleteEvent = (eventId: string) => {
@@ -275,7 +275,7 @@ function Events() {
           </ModalContent>
         </Modal>
       </Card>
-    )
+    );
   }
 
   useEffect(() => {

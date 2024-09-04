@@ -1,6 +1,6 @@
-import rpLogo from '../assets/rp_logo.png'
-import '../App.css'
-import { Button, Box, Image, Flex } from '@chakra-ui/react'
+import rpLogo from '../assets/rp_logo.png';
+import '../App.css';
+import { Button, Box, Image, Flex } from '@chakra-ui/react';
 
 export default function Login() {
   return (
@@ -13,8 +13,8 @@ export default function Login() {
         <h1 style={{  fontWeight: 'bold' }}>R | P Admin</h1>
       </Box>
   
-      <Button colorScheme='blue' onClick={() => { window.location.href = "/#/auth/" }}>Log In</Button>
-      <Button colorScheme='red' onClick={() => { window.location.href = "/#/home/" }}>Home</Button>
+      <Button colorScheme='blue' onClick={() => { window.location.href = "/#/auth/"; }}>Log In</Button>
+      <Button colorScheme='red' onClick={() => { window.location.href = "/#/home/"; }}>Home</Button>
     </Flex>
-  )
+  );
 }

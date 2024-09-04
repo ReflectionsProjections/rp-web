@@ -2,15 +2,15 @@
 // import reactLogo from './assets/react.svg'
 // import rpLogo from './assets/rp_logo.png'
 // import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
 // import axios from 'axios';
-import {ChakraProvider, theme} from "@chakra-ui/react"
-import {HashRouter, Route, Routes} from "react-router-dom"
+import {ChakraProvider, theme} from "@chakra-ui/react";
+import {HashRouter, Route, Routes} from "react-router-dom";
 
-import Auth from "./routes/Auth"
-import Login from "./routes/Login"
-import Home from "./routes/Home"
-import ProtectedRoute from "./routes/ProtectedRoute"
+import Auth from "./routes/Auth";
+import Login from "./routes/Login";
+import Home from "./routes/Home";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 
 function App() {
@@ -27,7 +27,7 @@ function App() {
         </Routes>
       </HashRouter>
     </ChakraProvider>
-  )
+  );
 }
 
-export default App
+export default App;
