@@ -33,7 +33,7 @@ export default function Auth() {
     return <Navigate to={POST_AUTH_URL} replace={true}/>;
   } else {
     console.log("Redirecting to api login...");
-    window.location.href = Config.API_BASE_URL + "/auth/login/web/";
+    window.location.href = Config.API_BASE_URL + "/auth/login/admin/";
     return null;
   }
 }
