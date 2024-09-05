@@ -56,6 +56,7 @@ function RolesCard({ role }: { role: string }) {
 
   React.useEffect(() => {
     if (firstRender) {
+      console.log("in here!");
       setFirstRender(false);
       getRoles();
     }
