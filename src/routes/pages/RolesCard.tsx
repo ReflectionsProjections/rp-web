@@ -21,6 +21,7 @@ function RolesCard({ role }: { role: string }) {
   const toast = useToast();
   const [nameList, setNameList] = React.useState([]);
   const [email, setEmail] = React.useState('');
+  const [firstRender, setFirstRender] = React.useState(true);
 
   const showToast = (message: string, error: boolean) => {
     toast({
@@ -54,13 +55,11 @@ function RolesCard({ role }: { role: string }) {
   };
 
   React.useEffect(() => {
-    let firstRender = true;
-
     if (firstRender) {
-      firstRender = false;
+      setFirstRender(false);
       getRoles();
     }
-  });
+  }, [firstRender]);
 
   const removeFromRole = async (role: string, email: string) => {
     const jwt = localStorage.getItem("jwt");
