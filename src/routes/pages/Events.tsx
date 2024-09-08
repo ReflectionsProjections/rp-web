@@ -18,7 +18,6 @@ import {
   useDisclosure,
   Heading,
   Text,
-  Image,
   Grid,
   CardFooter,
   NumberInputField,
@@ -27,7 +26,7 @@ import {
   NumberDecrementStepper,
   NumberInput,
   Flex,
-  Center, Checkbox,
+  Checkbox,
 } from '@chakra-ui/react';
 import {EditIcon, AddIcon} from "@chakra-ui/icons";
 import moment from 'moment-timezone';
