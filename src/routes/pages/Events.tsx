@@ -235,9 +235,9 @@ function Events() {
     return (
       <Card maxW='sm' key={event.eventId}>
         <CardBody>
-          <Center>
-            <Image src={event.imageUrl} alt={event.name} borderRadius='lg' />
-          </Center>
+          {/*<Center>*/}
+          {/*<Image src={event.imageUrl} alt={event.name} borderRadius='lg' />*/}
+          {/*</Center>*/}
           <Stack mt='6' spacing='3'>
             <Heading size='md'> {event.name}</Heading>
             <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
