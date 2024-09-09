@@ -10,6 +10,7 @@ import {HashRouter, Route, Routes} from "react-router-dom";
 import Auth from "./routes/Auth";
 import Login from "./routes/Login";
 import Home from "./routes/Home";
+import Unauthorized from './routes/Unauthorized';
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 
@@ -19,11 +20,12 @@ function App() {
       <HashRouter>
         <Routes>
           <Route path="/auth/" element={<Auth/>}> </Route>
+          <Route path="/unauthorized/" element={<Unauthorized/>}/>
           <Route element={<ProtectedRoute/>}>
             <Route path="/home/" element={<Home/>}/>
-            <Route path="/" element={<Login/>}/>
             <Route path="*"/>
           </Route>
+          <Route path="/" element={<Login/>}/>
         </Routes>
       </HashRouter>
     </ChakraProvider>
