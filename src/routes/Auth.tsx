@@ -1,13 +1,18 @@
 import {Navigate, useSearchParams} from "react-router-dom";
 import {Config} from "../config";
-
+import { jwtDecode } from "jwt-decode";
 const POST_AUTH_URL = "/home/";
+const BAD_AUTH_URL = "/unauthorized/";
 
 export default function Auth() {
   console.log("Auth component");
   console.log(window.location.search);
 
   const [searchParams] = useSearchParams();
+
+  interface JwtPayload {
+    roles: string[];
+  }
 
   let jwt = localStorage.getItem("jwt");
   if (!jwt) {
@@ -21,7 +26,12 @@ export default function Auth() {
 
   // jwt found in local storage
   if (jwt) {
-    return <Navigate to={POST_AUTH_URL} replace={true}/>;
+    const decodedToken = jwtDecode(jwt) as JwtPayload;
+    if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
+      return <Navigate to={POST_AUTH_URL} replace={true}/>;
+    }
+    
+    return <Navigate to={BAD_AUTH_URL} replace={true}/>;
   }
 
   jwt = searchParams.get("token");
@@ -29,8 +39,12 @@ export default function Auth() {
 
   if (jwt) {
     localStorage.setItem("jwt", jwt);
-    console.log("Redirecting to post-auth URL...");
-    return <Navigate to={POST_AUTH_URL} replace={true}/>;
+    const decodedToken = jwtDecode(jwt) as JwtPayload;
+    if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
+      console.log("Redirecting to post-auth URL...");
+      return <Navigate to={POST_AUTH_URL} replace={true}/>;
+    }
+    return <Navigate to={BAD_AUTH_URL} replace={true}/>;
   } else {
     console.log("Redirecting to api login...");
     window.location.href = Config.API_BASE_URL + "/auth/login/admin/";

@@ -14,7 +14,7 @@ export default function Login() {
       </Box>
   
       <Button colorScheme='blue' onClick={() => { window.location.href = "/#/auth/"; }}>Log In</Button>
-      <Button colorScheme='red' onClick={() => { window.location.href = "/#/home/"; }}>Home</Button>
+      {/* <Button colorScheme='red' onClick={() => { window.location.href = "/#/home/"; }}>Home</Button> */}
     </Flex>
   );
 }
