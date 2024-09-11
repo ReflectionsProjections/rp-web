@@ -4,7 +4,6 @@ import { jwtDecode } from "jwt-decode";
 
 const POST_AUTH_URL = "/home/";
 const BAD_AUTH_URL = "/unauthorized/";
-const AUTH_URL = "/auth/";
 
 export default function Auth() {
   interface JwtPayload {
