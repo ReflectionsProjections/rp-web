@@ -14,12 +14,14 @@ export default function Auth() {
   
   // JWT not in local storage
   if (!jwt) {
+    console.log("not in local storage!")
     const urlSearchParams = new URLSearchParams(window.location.search);
     window.history.pushState({}, document.title, "/");
     
     // Check if JWT is in our query params    
     jwt = urlSearchParams.get("token");
     if (jwt) {
+      console.log("jwt in search params!")
       localStorage.setItem("jwt", jwt);
     }
   }
