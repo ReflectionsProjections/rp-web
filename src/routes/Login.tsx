@@ -13,7 +13,7 @@ export default function Login() {
         <h1 style={{  fontWeight: 'bold' }}>R | P Admin</h1>
       </Box>
   
-      <Button colorScheme='blue' onClick={() => { window.location.href = "/#/auth/"; }}>Log In</Button>
+      <Button colorScheme='blue' onClick={() => { window.location.href = "/auth/"; }}>Log In</Button>
       {/* <Button colorScheme='red' onClick={() => { window.location.href = "/#/home/"; }}>Home</Button> */}
     </Flex>
   );
