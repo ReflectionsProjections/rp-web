@@ -108,9 +108,9 @@ function Events() {
         endTime: moment(updatedValues.endTime).utc().format()
       };
 
+      const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
       axios.put(Config.API_BASE_URL + "/events/" + event.eventId, {
-        ...updatedValuesUTC,
-        attendanceCount: 0
+        ...valuesWithoutEventId
       }, {
         headers: {
           Authorization: jwt
