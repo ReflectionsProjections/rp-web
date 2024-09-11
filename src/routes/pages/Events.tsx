@@ -189,9 +189,11 @@ function Events() {
                 mb={4}
                 onChange={(e) => setUpdatedValues({ ...updatedValues, eventType: e.target.value })}
               >
-                <option value="A">A</option>
-                <option value="B">B</option>
-                <option value="C">C</option>
+              
+              {Config.EVENT_TYPES.map(e => {
+                <option key={e} value={e}>{e}</option>
+              })}
+                
               </Select>
               <Checkbox
                 isChecked={event.isVisible}
