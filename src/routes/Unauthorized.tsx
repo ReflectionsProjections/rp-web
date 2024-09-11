@@ -7,7 +7,7 @@ export default function Unauthorized() {
   function logOut() {
     console.log("Logging out...");
     localStorage.removeItem("jwt");
-    window.location.href = "/#/auth/";
+    window.location.href = "/auth/";
   }
 
   return (
