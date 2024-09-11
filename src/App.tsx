@@ -5,7 +5,7 @@
 import './App.css';
 // import axios from 'axios';
 import {ChakraProvider, theme} from "@chakra-ui/react";
-import {HashRouter, Route, Routes} from "react-router-dom";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
 
 import Auth from "./routes/Auth";
 import Login from "./routes/Login";
@@ -17,7 +17,7 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 function App() {
   return (
     <ChakraProvider theme={theme}>
-      <HashRouter>
+      <BrowserRouter>
         <Routes>
           <Route path="/auth/" element={<Auth/>}> </Route>
           <Route path="/unauthorized/" element={<Unauthorized/>}/>
@@ -27,7 +27,7 @@ function App() {
           </Route>
           <Route path="/" element={<Login/>}/>
         </Routes>
-      </HashRouter>
+      </BrowserRouter>
     </ChakraProvider>
   );
 }
