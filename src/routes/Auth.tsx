@@ -7,18 +7,15 @@ const BAD_AUTH_URL = "/unauthorized/";
 const AUTH_URL = "/auth/";
 
 export default function Auth() {
-  console.log("Auth component");
-  console.log(window.location.search);
-
   interface JwtPayload {
     roles: string[];
   }
   
-  const urlSearchParams = new URLSearchParams(window.location.search);
   let jwt = localStorage.getItem("jwt");
   
   // JWT not in local storage
   if (!jwt) {
+    const urlSearchParams = new URLSearchParams(window.location.search);
     window.history.pushState({}, document.title, "/");
     
     // Check if JWT is in our query params    
@@ -30,6 +27,7 @@ export default function Auth() {
 
   // jwt in local storage or query params
   if (jwt) {
+    console.log("FOUND JWT!!!")
     const decodedToken = jwtDecode(jwt) as JwtPayload;
     if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
       return <Navigate to={POST_AUTH_URL} replace={true}/>;
@@ -37,14 +35,6 @@ export default function Auth() {
     
     localStorage.removeItem("jwt");
     return <Navigate to={BAD_AUTH_URL} replace={true}/>;
-  }
-
-  jwt = urlSearchParams.get("token");
-  console.log("jwt:", jwt);
-
-  if (jwt) {
-    localStorage.setItem("jwt", jwt)
-    return <Navigate to={AUTH_URL} replace={true}/>;
   } else {
     console.log("Redirecting to api login...");
     window.location.href = Config.API_BASE_URL + "/auth/login/admin/";
