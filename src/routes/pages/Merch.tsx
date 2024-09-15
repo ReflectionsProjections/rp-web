@@ -54,7 +54,7 @@ function Merch() {
     console.log("in here")
     const jwt = localStorage.getItem("jwt");
     axios
-    .get(Config.API_BASE_URL + `/attendee/${userId}`, {
+    .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
       headers: {
         Authorization: jwt,
       },
@@ -113,7 +113,7 @@ function Merch() {
     }
 
     axios
-      .get(Config.API_BASE_URL + `/attendee/${email}`, {
+      .get(Config.API_BASE_URL + `/attendee/email/${email}`, {
         headers: {
           Authorization: jwt,
         },
