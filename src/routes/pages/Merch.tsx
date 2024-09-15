@@ -83,19 +83,13 @@ function Merch() {
   };
 
   // TODO: Write merch submit handler to call POST /attendees merch API endpoint
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+    const jwt = localStorage.getItem("jwt");
     if (eligibleMerch.Button && hasMerch.Button) {
-      const jwt = localStorage.getItem("jwt");
-      console.log("JWT")
-      console.log(jwt)
-      axios
-      .post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", {email: email}, {
         headers: {
-          Authorization: jwt,
+          Authorization: jwt
         },
-        data: {
-          email: email,
-        }
       })
       .then(function () {
         showToast('Successfully updated attendee merch info!', false);
