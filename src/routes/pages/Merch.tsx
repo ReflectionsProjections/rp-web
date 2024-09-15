@@ -12,9 +12,11 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import {Config} from "../../config.ts";
+import { Config } from "../../config.ts";
 import { QrReader } from 'react-qr-reader';
 import axios from "axios";
+import Result from "react-qr-reader";
+import { Scanner } from "@yudiel/react-qr-scanner";
 
 function Merch() {
   const toast = useToast();
@@ -48,8 +50,22 @@ function Merch() {
     });
   };
 
+  // const handleResult = (result?: Result. | undefined | null, error?: Error | undefined | null, codeReader?: BrowserQRCodeReader) => void;) => {
+
+  // }
+  const handleResult = (result: { text: string } | null, error: Error | null) => {
+    if (error) {
+      console.log(error);
+      return;
+    }
+
+    if (result) {
+      console.log(result);
+    }
+  }
+
   const handleScan = (data: string | null) => {
-    if (data){
+    if (data) {
       setQrData(data)
     }
     showToast('Scanned', false);
@@ -71,7 +87,7 @@ function Merch() {
       showToast('Please enter an email.', true);
       return;
     }
-  
+
     axios
       .get(Config.API_BASE_URL + `/attendee/${email}`, {
         headers: {
@@ -80,7 +96,7 @@ function Merch() {
       })
       .then(function (response) {
         const merchInfo = response.data;
-  
+
         // Update the state with the fetched attendee information
         setAttendeeName(merchInfo.attendeeName);
         setAttendeePoints(merchInfo.attendeePoints);
@@ -105,51 +121,51 @@ function Merch() {
       });
   };
 
-  // TODO: Write merch submit handler to call POST /attendees merch API endpoint
+
   const handleSubmit = async () => {
     const jwt = localStorage.getItem("jwt");
     if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", {email: email}, {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", { email: email }, {
         headers: {
           Authorization: jwt
         },
       })
-      .then(function () {
-        showToast('Successfully updated attendee merch info!', false);
-      })
-      .catch(function () {
-        showToast('Error updating attendee merch info. This attendee may have already received a Button.', true);
-      });
+        .then(function () {
+          showToast('Successfully updated attendee merch info!', false);
+        })
+        .catch(function () {
+          showToast('Error updating attendee merch info. This attendee may have already received a Button.', true);
+        });
     }
     if (!redeemedMerch.Cap && eligibleMerch.Cap && hasMerch.Cap) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Cap", {email: email}, {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Cap", { email: email }, {
         headers: {
           Authorization: jwt
         },
       })
-      .then(function () {
-        showToast('Successfully updated attendee merch info!', false);
-      })
-      .catch(function () {
-        showToast('Error updating attendee merch info. This attendee may have already received a Cap.', true);
-      });
+        .then(function () {
+          showToast('Successfully updated attendee merch info!', false);
+        })
+        .catch(function () {
+          showToast('Error updating attendee merch info. This attendee may have already received a Cap.', true);
+        });
     }
     if (!redeemedMerch.ToteBag && eligibleMerch.ToteBag && hasMerch.ToteBag) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tote", {email: email}, {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tote", { email: email }, {
         headers: {
           Authorization: jwt
         },
       })
-      .then(function () {
-        showToast('Successfully updated attendee merch info!', false);
-      })
-      .catch(function () {
-        showToast('Error updating attendee merch info. This attendee may have already received a Tote Bag.', true);
-      });
+        .then(function () {
+          showToast('Successfully updated attendee merch info!', false);
+        })
+        .catch(function () {
+          showToast('Error updating attendee merch info. This attendee may have already received a Tote Bag.', true);
+        });
     }
   };
 
-  return (
+  return <>
     <Box flex="1" minW="90vw" p={4}>
       <Heading size="lg">Merch</Heading>
       <br />
@@ -168,14 +184,12 @@ function Merch() {
           </FormControl>
 
           {showWebcam ? (
-            <Box border="1px solid" height="200px" textAlign="center">
-              <QrReader
-                onScan={handleScan}
-                onError={handleScanError}
-                style={{ width: '100%' }}
-              />
+            // <Box border="1px solid" height="200px" textAlign="center">
+            <>
+              <Scanner allowMultiple={true} onScan={(result) => {console.log(result[0].rawValue);}} />;
               <p>{qrData}</p>
-            </Box>
+            </>
+            // </Box>
           ) : (
             <FormControl>
               <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
@@ -195,14 +209,14 @@ function Merch() {
         {/* Right Side: Attendee Name and Merch Checkboxes */}
         <Box flex="1" p={4} border="1px solid" borderRadius="md">
           <FormControl>
-          <FormLabel
-            htmlFor="attendee-name"
-            textAlign="center"
-            fontWeight="bold"
-            fontSize="xl"
-          >
-            {attendeeName}
-          </FormLabel>
+            <FormLabel
+              htmlFor="attendee-name"
+              textAlign="center"
+              fontWeight="bold"
+              fontSize="xl"
+            >
+              {attendeeName}
+            </FormLabel>
           </FormControl>
 
           <FormControl mb={4}>
@@ -244,7 +258,7 @@ function Merch() {
         </Box>
       </Flex>
     </Box>
-  );
+  </>;
 }
 
 export default Merch;

@@ -15,6 +15,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@types/react-qr-reader": "^2.1.7",
+    "@yudiel/react-qr-scanner": "^2.0.8",
     "axios": "^1.6.8",
     "chart.js": "^4.4.3",
     "framer-motion": "^11.0.24",
