@@ -26,14 +26,14 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
-const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles', 'Sponsors'];
+const Links = ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Events from './pages/Events';
 import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
 import React from 'react';
-import Notifications from './pages/Notifications';
+// import Notifications from './pages/Notifications';
 
 
 /**
@@ -102,8 +102,8 @@ export default function Home() {
         return <Events />;
         // case 'Mail':
         //   return <Mail />;
-      case 'Notifications':
-        return <Notifications />;
+      // case 'Notifications':
+      //   return <Notifications />;
       case 'Roles':
         return <Roles />;
       case 'Sponsors':
