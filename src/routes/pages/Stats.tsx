@@ -15,7 +15,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   CardHeader,
-  // useToast,
+  useToast,
 } from '@chakra-ui/react';
 
 import { Bar } from 'react-chartjs-2';
@@ -26,81 +26,94 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 
-// import { Config } from "../../config";
-// import axios from "axios";
+import { Config } from "../../config";
+import axios from "axios";
 import React from 'react';
 
 function Stats() {
-  // const toast = useToast();
+  const toast = useToast();
 
   const [checkInStats, setCheckInStats] = React.useState(0);
   const [priorityAttendees, setPriorityAttendees] = React.useState(0);
-  // const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
+  const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
   const [eventAttendance, setEventAttendance] = React.useState(2);
   const [eligiblePrize, setEligiblePrize] = React.useState(15);
 
-  // const showToast = (message: string) => {
-  //   toast({
-  //     title: message,
-  //     status: "error",
-  //     duration: 9000,
-  //     isClosable: true,
-  //   });
-  // };
+  const [allergies, setAllergies] = React.useState(0);
+  const [both, setBoth] = React.useState(0);
+  const [none, setNone] = React.useState(0);
+
+  const [allergyCounts, setAllergyCounts] = React.useState<{ [key: string]: number }>({});
+  const [dietaryRestrictionCounts, setDietaryRestrictionCounts] = React.useState<{ [key: string]: number }>({});
+
+  const showToast = (message: string) => {
+    toast({
+      title: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
 
   const getStats = async () => {
 
-    setCheckInStats(694);
-    setPriorityAttendees(120);
+    // setCheckInStats(694);
+    // setPriorityAttendees(120);
 
-    // const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem("jwt");
 
-    // axios.get(Config.API_BASE_URL + "/stats/check-in/", {
-    //   headers: {
-    //     Authorization: jwt
-    //   }
-    // })
-    //   .then(function (response) {
-    //     // handle success
-    //     console.log(response.data.count);
-    //     setCheckInStats(response.data.count);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //     showToast("Failed to fetch check-in stats");
-    //   })
+    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        // handle success
+        console.log("Check-In Response:", response.data);
+        console.log(response.data.count);
+        setCheckInStats(response.data.count);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        showToast("Failed to fetch check-in stats");
+      })
 
-    // axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
-    //   headers: {
-    //     Authorization: jwt
-    //   }
-    // })
-    //   .then(function (response) {
-    //     // handle success
-    //     console.log(response.data.count);
-    //     setPriorityAttendees(response.data.count);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //     showToast("Failed to fetch priority attendees stats");
-    //   })
+    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        // handle success
+        console.log(response.data.count);
+        setPriorityAttendees(response.data.count);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      })
 
-    // axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
-    //     headers: {
-    //         Authorization: jwt
-    //     }
-    //   })
-    // .then(function (response) {
-    //     // handle success
-    //     console.log(response.data);
-    //     setDietaryRestrictions(response.data.count);
-    //   })
-    // .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    // })
+    axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
+        headers: {
+            Authorization: jwt
+        }
+      })
+      .then(function (response) {
+        // handle success
+        console.log(response.data);
+        setDietaryRestrictions(response.data.dietaryRestrictions);
+        setAllergies(response.data.allergies);
+        setBoth(response.data.both);
+        setNone(response.data.none);
+        setAllergyCounts(response.data.allergyCounts);
+        setDietaryRestrictionCounts(response.data.dietaryRestrictionCounts);
+      })
+    .catch(function (error) {
+        // handle error
+        console.log(error);
+    })
         
   };
 
@@ -108,8 +121,19 @@ function Stats() {
     setEventAttendance(parseInt(valueAsString));
   };
 
-  const handleEligiblePrizeChange = (valueAsString: string) => {
-    setEligiblePrize(parseInt(valueAsString));
+  const handleEligiblePrizeChange = async (valueAsString: string) => {
+    const jwt = localStorage.getItem("jwt");
+    const price = parseInt(valueAsString, 10);
+
+    try {
+      const response = await axios.get(Config.API_BASE_URL + "/stats/merch-item/" + price, {
+        headers: { Authorization: jwt }
+      });
+      setEligiblePrize(response.data.count);
+    } catch (error) {
+      showToast("Failed to fetch merch item stats");
+      console.error('Error fetching merch item stats:', error);
+    }
   };
 
   React.useEffect(() => {
@@ -127,23 +151,24 @@ function Stats() {
 
 
 
-  const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
+  // const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
+  const SummaryStats = () => (
     <StatGroup>
       <Stat>
         <StatLabel>Allergies</StatLabel>
-        <StatNumber>{data.allergies}</StatNumber>
+        <StatNumber>{allergies}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>Dietary Restrictions</StatLabel>
-        <StatNumber>{data.dietaryRestrictions}</StatNumber>
+        <StatNumber>{dietaryRestrictions}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>Both</StatLabel>
-        <StatNumber>{data.both}</StatNumber>
+        <StatNumber>{both}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>None</StatLabel>
-        <StatNumber>{data.none}</StatNumber>
+        <StatNumber>{none}</StatNumber>
       </Stat>
     </StatGroup>
   );
@@ -242,7 +267,7 @@ function Stats() {
                   maxW="100px"
                   ml="4"
                   value={eligiblePrize}
-                  onChange={handleEligiblePrizeChange}
+                  onChange={(valueAsString) => handleEligiblePrizeChange(valueAsString)}
                   min={0}
                 >
                   <NumberInputField />
@@ -263,8 +288,8 @@ function Stats() {
           <CardHeader>
             <b>Dietary Restrictions</b>
           </CardHeader>
-          <SummaryStats data={data} />
-          <StatGroup>
+          <SummaryStats/>
+          {/* <StatGroup>
             <Card m={5} minWidth='40%'>
               <CardBody>
                 <Stat>
@@ -281,17 +306,17 @@ function Stats() {
                 </Stat>
               </CardBody>
             </Card>
-          </StatGroup>
+          </StatGroup> */}
 
-          {/* <Box mb={4}>
-                    <Heading size='md' mb={2}>Allergy Breakdown</Heading>
-                    <AllergiesChart data={data} />
+          <Box mb={4}>
+                    <Heading size='md' mb={2} minWidth='40%'>Allergy Breakdown</Heading>
+                    <AllergiesChart data={{allergyCounts}} />
                     </Box>
 
                     <Box>
-                    <Heading size='md' mb={2}>Dietary Restrictions Breakdown</Heading>
-                    <DietaryRestrictionsChart data={data} />
-                    </Box> */}
+                    <Heading size='md' mb={2} minWidth='40%'>Dietary Restrictions Breakdown</Heading>
+                    <DietaryRestrictionsChart data={{dietaryRestrictionCounts}} />
+                    </Box>
         </Card>
       </StatGroup>
     </Box>
