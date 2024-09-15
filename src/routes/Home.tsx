@@ -26,7 +26,7 @@ import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
 
 import { ReactNode, useState } from 'react';
 import { jwtDecode } from "jwt-decode";
-const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles', 'Sponsors'];
+const Links = ['Dashboard', 'Stats', 'Events', 'Notifications', 'Roles', 'Sponsors', 'Merch'];
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Events from './pages/Events';
@@ -34,7 +34,7 @@ import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
 import React from 'react';
 import Notifications from './pages/Notifications';
-
+import Merch from './pages/Merch'
 
 /**
  * NavLink component.
@@ -108,6 +108,8 @@ export default function Home() {
         return <Roles />;
       case 'Sponsors':
         return <Sponsors/>;
+      case 'Merch':
+        return <Merch/>;
       default:
         return <Dashboard name={userName} />;
       }
