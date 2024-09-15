@@ -50,30 +50,54 @@ function Merch() {
     });
   };
 
-  // const handleResult = (result?: Result. | undefined | null, error?: Error | undefined | null, codeReader?: BrowserQRCodeReader) => void;) => {
-
-  // }
-  const handleResult = (result: { text: string } | null, error: Error | null) => {
-    if (error) {
-      console.log(error);
-      return;
-    }
-
-    if (result) {
-      console.log(result);
-    }
+  const getUser = (userId: string) => {
+    console.log("in here")
+    const jwt = localStorage.getItem("jwt");
+    axios
+    .get(Config.API_BASE_URL + `/attendee/${userId}`, {
+      headers: {
+        Authorization: jwt,
+      },
+    })
+    .then(function (response) {
+      const user = response.data;
+      // Update the state with the fetched attendee information
+      setAttendeeName(user.name);
+      setAttendeePoints(user.points);
+      setHasMerch({
+        Button: user.hasRedeemedMerch!["Button"],
+        Cap: user.hasRedeemedMerch!["Cap"],
+        ToteBag: user.hasRedeemedMerch!["Tote"],
+      });
+      setRedeemedMerch({
+        Button: user.hasRedeemedMerch!["Button"],
+        Cap: user.hasRedeemedMerch!["Cap"],
+        ToteBag: user.hasRedeemedMerch!["Tote"],
+      });
+      setEligibleMerch({
+        Button: user.isEligibleMerch!["Button"],
+        Cap: user.isEligibleMerch!["Cap"],
+        ToteBag: user.isEligibleMerch!["Tote"],
+      })
+    })
+    .catch(function () {
+      showToast('Error fetching attendee merch info.', true);
+    });
   }
 
-  const handleScan = (data: string | null) => {
-    if (data) {
-      setQrData(data)
-    }
-    showToast('Scanned', false);
-  }
-
-  const handleScanError = () => {
-    showToast('Failed', true);
-  }
+  const handleScan = (data: string) => {
+    const jwt = localStorage.getItem("jwt");
+    axios
+      .post(Config.API_BASE_URL + "/checkin/scan/merch", {qrCode: data}, {
+        headers: {
+          Authorization: jwt,
+        },
+      })
+      .then(function (response) {
+        const userId = response.data;
+        getUser(userId);
+      })
+  };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
@@ -171,7 +195,7 @@ function Merch() {
       <br />
       <Flex>
         {/* Left Side: Webcam or Email input */}
-        <Box flex="1" p={4} border="1px solid" borderRadius="md" mr={4}>
+        <Box flex="1" p={4} mr={4}>
           <FormControl display="flex" alignItems="center" mb={4}>
             <FormLabel htmlFor="toggle-webcam" mb="0">
               Show Webcam
@@ -186,7 +210,13 @@ function Merch() {
           {showWebcam ? (
             // <Box border="1px solid" height="200px" textAlign="center">
             <>
-              <Scanner allowMultiple={true} onScan={(result) => {console.log(result[0].rawValue);}} />;
+              <Scanner allowMultiple={true} onScan={(result) => {
+                // console.log("HERE");
+                const data = result[0].rawValue;
+                console.log(result[0].rawValue);
+                handleScan(data);
+                }} />;
+              {/* <Scanner allowMultiple={true} onScan={handleScan} />; */}
               <p>{qrData}</p>
             </>
             // </Box>
@@ -207,7 +237,7 @@ function Merch() {
         </Box>
 
         {/* Right Side: Attendee Name and Merch Checkboxes */}
-        <Box flex="1" p={4} border="1px solid" borderRadius="md">
+        <Box flex="1" p={4}>
           <FormControl>
             <FormLabel
               htmlFor="attendee-name"
