@@ -190,7 +190,7 @@ function Events() {
                 onChange={(e) => setUpdatedValues({ ...updatedValues, eventType: e.target.value })}
               >
               
-              {Config.EVENT_TYPES.map(e => <option key={e} value={e}>{e}</option>)}
+                {Config.EVENT_TYPES.map(e => <option key={e} value={e}>{e}</option>)}
                 
               </Select>
               <Checkbox

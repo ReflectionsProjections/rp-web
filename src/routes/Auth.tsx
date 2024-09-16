@@ -14,21 +14,21 @@ export default function Auth() {
   
   // JWT not in local storage
   if (!jwt) {
-    console.log("not in local storage!")
+    console.log("not in local storage!");
     const urlSearchParams = new URLSearchParams(window.location.search);
     window.history.pushState({}, document.title, "/");
     
     // Check if JWT is in our query params    
     jwt = urlSearchParams.get("token");
     if (jwt) {
-      console.log("jwt in search params!")
+      console.log("jwt in search params!");
       localStorage.setItem("jwt", jwt);
     }
   }
 
   // jwt in local storage or query params
   if (jwt) {
-    console.log("FOUND JWT!!!")
+    console.log("FOUND JWT!!!");
     const decodedToken = jwtDecode(jwt) as JwtPayload;
     if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
       return <Navigate to={POST_AUTH_URL} replace={true}/>;

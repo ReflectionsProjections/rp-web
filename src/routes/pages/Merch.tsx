@@ -9,18 +9,14 @@ import {
   Heading,
   Input,
   Switch,
-  Text,
   useToast,
 } from "@chakra-ui/react";
 import { Config } from "../../config.ts";
-import { QrReader } from 'react-qr-reader';
 import axios from "axios";
-import Result from "react-qr-reader";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
 function Merch() {
   const toast = useToast();
-  const [qrData, setQrData] = useState("No result");
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
@@ -51,39 +47,38 @@ function Merch() {
   };
 
   const getUser = (userId: string) => {
-    console.log("in here")
     const jwt = localStorage.getItem("jwt");
     axios
-    .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
-      headers: {
-        Authorization: jwt,
-      },
-    })
-    .then(function (response) {
-      const user = response.data;
-      // Update the state with the fetched attendee information
-      setAttendeeName(user.name);
-      setAttendeePoints(user.points);
-      setHasMerch({
-        Button: user.hasRedeemedMerch!["Button"],
-        Cap: user.hasRedeemedMerch!["Cap"],
-        ToteBag: user.hasRedeemedMerch!["Tote"],
-      });
-      setRedeemedMerch({
-        Button: user.hasRedeemedMerch!["Button"],
-        Cap: user.hasRedeemedMerch!["Cap"],
-        ToteBag: user.hasRedeemedMerch!["Tote"],
-      });
-      setEligibleMerch({
-        Button: user.isEligibleMerch!["Button"],
-        Cap: user.isEligibleMerch!["Cap"],
-        ToteBag: user.isEligibleMerch!["Tote"],
+      .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
+        headers: {
+          Authorization: jwt,
+        },
       })
-    })
-    .catch(function () {
-      showToast('Error fetching attendee merch info.', true);
-    });
-  }
+      .then(function (response) {
+        const user = response.data;
+        // Update the state with the fetched attendee information
+        setAttendeeName(user.name);
+        setAttendeePoints(user.points);
+        setHasMerch({
+          Button: user.hasRedeemedMerch!["Button"],
+          Cap: user.hasRedeemedMerch!["Cap"],
+          ToteBag: user.hasRedeemedMerch!["Tote"],
+        });
+        setRedeemedMerch({
+          Button: user.hasRedeemedMerch!["Button"],
+          Cap: user.hasRedeemedMerch!["Cap"],
+          ToteBag: user.hasRedeemedMerch!["Tote"],
+        });
+        setEligibleMerch({
+          Button: user.isEligibleMerch!["Button"],
+          Cap: user.isEligibleMerch!["Cap"],
+          ToteBag: user.isEligibleMerch!["Tote"],
+        });
+      })
+      .catch(function () {
+        showToast('Error fetching attendee merch info.', true);
+      });
+  };
 
   const handleScan = (data: string) => {
     const jwt = localStorage.getItem("jwt");
@@ -96,7 +91,7 @@ function Merch() {
       .then(function (response) {
         const userId = response.data;
         getUser(userId);
-      })
+      });
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -138,7 +133,7 @@ function Merch() {
           Button: merchInfo.eligibleButton,
           Cap: merchInfo.eligibleCap,
           ToteBag: merchInfo.eligibleTote,
-        })
+        });
       })
       .catch(function () {
         showToast('Error fetching attendee merch info.', true);
@@ -208,18 +203,13 @@ function Merch() {
           </FormControl>
 
           {showWebcam ? (
-            // <Box border="1px solid" height="200px" textAlign="center">
             <>
               <Scanner allowMultiple={true} onScan={(result) => {
-                // console.log("HERE");
                 const data = result[0].rawValue;
                 console.log(result[0].rawValue);
                 handleScan(data);
-                }} />;
-              {/* <Scanner allowMultiple={true} onScan={handleScan} />; */}
-              <p>{qrData}</p>
+              }} />;
             </>
-            // </Box>
           ) : (
             <FormControl>
               <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>

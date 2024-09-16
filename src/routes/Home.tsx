@@ -34,7 +34,7 @@ import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
 import React from 'react';
 import Notifications from './pages/Notifications';
-import Merch from './pages/Merch'
+import Merch from './pages/Merch';
 
 /**
  * NavLink component.
