@@ -21,16 +21,20 @@ function Merch() {
   const [email, setEmail] = useState("");
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
   const [attendeePoints, setAttendeePoints] = useState(0);
+
+  // Indicates whether or not the merch checkbox is checked
   const [hasMerch, setHasMerch] = useState({
     Button: false,
     Cap: false,
     ToteBag: false,
   });
+  // Indicates whether or not the merch item has been redeemed already
   const [redeemedMerch, setRedeemedMerch] = useState({
     Button: false,
     Cap: false,
     ToteBag: false,
   });
+  // Indicates whether or not the merch item is eligible to be redeemed
   const [eligibleMerch, setEligibleMerch] = useState({
     Button: false,
     Cap: false,
@@ -80,6 +84,7 @@ function Merch() {
       });
   };
 
+  // Handle QR code scanner
   const handleScan = (data: string) => {
     const jwt = localStorage.getItem("jwt");
     axios
@@ -140,7 +145,7 @@ function Merch() {
       });
   };
 
-
+  // Handle submitting the merch checkin changes
   const handleSubmit = async () => {
     const jwt = localStorage.getItem("jwt");
     if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
