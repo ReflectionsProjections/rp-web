@@ -277,7 +277,7 @@ function Events() {
         <CardFooter>
           <Flex justifyContent="space-between" width="100%">
             <EditModal event={event} />
-            <Button colorScheme='red' onClick={onOpenDelete} disabled={!canDelete()}>
+            <Button colorScheme='red' onClick={onOpenDelete} isDisabled={!canDelete()}>
                 Delete
             </Button>
           </Flex>
