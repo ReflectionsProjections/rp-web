@@ -36,8 +36,11 @@ function Stats() {
   const [checkInStats, setCheckInStats] = React.useState(0);
   const [priorityAttendees, setPriorityAttendees] = React.useState(0);
   const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
-  const [eventAttendance, setEventAttendance] = React.useState(2);
-  const [eligiblePrize, setEligiblePrize] = React.useState(15);
+  const [eventAttendance, setEventAttendance] = React.useState(0);
+  const [eligiblePrize, setEligiblePrize] = React.useState(0);
+
+  const [inputEventAttendance, setInputEventAttendance] = React.useState(0);
+  const [inputEligiblePrize, setInputEligiblePrize] = React.useState(0);
 
   const [allergies, setAllergies] = React.useState(0);
   const [both, setBoth] = React.useState(0);
@@ -117,23 +120,48 @@ function Stats() {
         
   };
 
-  const handleEventAttendanceChange = (valueAsString: string) => {
-    setEventAttendance(parseInt(valueAsString));
+  const handleEventAttendanceChange = async (valueAsString: string) => {
+    // setEventAttendance(parseInt(valueAsString));
+    const numEvents = parseInt(valueAsString, 10);
+
+    console.log("events num: ", numEvents)
+    setInputEventAttendance(parseInt(valueAsString));
+
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/attendance/:" + numEvents, {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        console.log(response.data.attendanceCounts.length);
+        setEventAttendance(response.data.attendanceCounts.length);
+      })
+      .catch(function (error) {
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      })
   };
 
   const handleEligiblePrizeChange = async (valueAsString: string) => {
-    const jwt = localStorage.getItem("jwt");
-    const price = parseInt(valueAsString, 10);
+    const price = parseInt(valueAsString);
+    console.log("PRICE: ", price)
+    setInputEligiblePrize(parseInt(valueAsString));
 
-    try {
-      const response = await axios.get(Config.API_BASE_URL + "/stats/merch-item/" + price, {
-        headers: { Authorization: jwt }
-      });
-      setEligiblePrize(response.data.count);
-    } catch (error) {
-      showToast("Failed to fetch merch item stats");
-      console.error('Error fetching merch item stats:', error);
-    }
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/merch-item/" + price, {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        console.log(response.data.count);
+        setEligiblePrize(response.data.count);
+      })
+      .catch(function (error) {
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      })
   };
 
   React.useEffect(() => {
@@ -238,7 +266,7 @@ function Stats() {
                   size="sm"
                   maxW="100px"
                   ml="4"
-                  value={eventAttendance}
+                  value={inputEventAttendance}
                   onChange={handleEventAttendanceChange}
                   min={0}
                 >
@@ -249,7 +277,7 @@ function Stats() {
                   </NumberInputStepper>
                 </NumberInput>
               </StatLabel>
-              <StatNumber>{32*eventAttendance}</StatNumber>
+              <StatNumber>{eventAttendance}</StatNumber>
               <StatHelpText>
                 {/* Add any additional info or icons here */}
               </StatHelpText>
@@ -266,8 +294,8 @@ function Stats() {
                   size="sm"
                   maxW="100px"
                   ml="4"
-                  value={eligiblePrize}
-                  onChange={(valueAsString) => handleEligiblePrizeChange(valueAsString)}
+                  value={inputEligiblePrize}
+                  onChange={handleEligiblePrizeChange}
                   min={0}
                 >
                   <NumberInputField />
@@ -277,7 +305,7 @@ function Stats() {
                   </NumberInputStepper>
                 </NumberInput>
               </StatLabel>
-              <StatNumber>{20-eligiblePrize}</StatNumber>
+              <StatNumber>{eligiblePrize}</StatNumber>
               <StatHelpText>
                 {/* Add any additional info or icons here */}
               </StatHelpText>
