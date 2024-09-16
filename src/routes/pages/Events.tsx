@@ -33,10 +33,27 @@ import moment from 'moment-timezone';
 import axios from "axios";
 import {Config} from "../../config.ts";
 import React, {useEffect} from "react";
+import {jwtDecode} from "jwt-decode";
 
 const readable = "MMMM Do YYYY, h:mm a";
 
 const jwt = localStorage.getItem("jwt");
+
+interface JwtPayload {
+  roles: string[];
+}
+
+const canDelete = (): boolean => {
+  const auth = jwt !== null;
+
+  if (!auth) {
+    return false;
+  }
+
+  const decodedToken = jwtDecode(jwt) as JwtPayload;
+
+  return decodedToken.roles.includes("ADMIN");
+};
 
 function convertToCST(date: string) {
   const m = moment.utc(date);
@@ -260,7 +277,7 @@ function Events() {
         <CardFooter>
           <Flex justifyContent="space-between" width="100%">
             <EditModal event={event} />
-            <Button colorScheme='red' onClick={onOpenDelete}>
+            <Button colorScheme='red' onClick={onOpenDelete} isDisabled={!canDelete()}>
                 Delete
             </Button>
           </Flex>
