@@ -117,6 +117,19 @@ function Stats() {
         // handle error
         console.log(error);
     })
+
+    axios.get(Config.API_BASE_URL + '/stats/merch-item/0', {
+        headers: {
+          Authorization: jwt,
+        },
+      })
+      .then((response) => {
+        setEligiblePrize(response.data.count);
+      })
+    .catch((error) => {
+      console.log(error);
+      showToast('Failed to fetch eligible prize stats');
+    });
         
   };
 
