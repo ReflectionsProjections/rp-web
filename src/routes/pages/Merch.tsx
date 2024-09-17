@@ -64,18 +64,18 @@ function Merch() {
     const fetchAttendeeEmails = async () => {
       const jwt = localStorage.getItem("jwt");
       axios
-      .get(Config.API_BASE_URL + '/attendee/emails', {
-        headers: {
-          Authorization: jwt,
-        },
-      })
-      .then(function (response) {
-        const attendeeData = response.data;
-        setAttendeeEmails(attendeeData);
-      })
-      .catch(function () {
-        showToast('Error fetching attendee emails + info.', true);
-      })
+        .get(Config.API_BASE_URL + '/attendee/emails', {
+          headers: {
+            Authorization: jwt,
+          },
+        })
+        .then(function (response) {
+          const attendeeData = response.data;
+          setAttendeeEmails(attendeeData);
+        })
+        .catch(function () {
+          showToast('Error fetching attendee emails + info.', true);
+        });
         
     };
 
@@ -332,11 +332,11 @@ function Merch() {
 
           <FormControl mb={4}>
             <Checkbox
-                name="Tshirt"
-                isChecked={hasMerch.Tshirt}
-                onChange={handleCheckboxChange}
-                isDisabled={!eligibleMerch.Tshirt}
-              >
+              name="Tshirt"
+              isChecked={hasMerch.Tshirt}
+              onChange={handleCheckboxChange}
+              isDisabled={!eligibleMerch.Tshirt}
+            >
                 T-shirt
             </Checkbox>
             <Checkbox
