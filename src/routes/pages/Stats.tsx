@@ -15,7 +15,7 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   CardHeader,
-  // useToast,
+  useToast,
 } from '@chakra-ui/react';
 
 import { Bar } from 'react-chartjs-2';
@@ -26,124 +26,190 @@ import { Chart, registerables } from 'chart.js';
 Chart.register(...registerables);
 
 
-// import { Config } from "../../config";
-// import axios from "axios";
+import { Config } from "../../config";
+import axios from "axios";
 import React from 'react';
 
 function Stats() {
-  // const toast = useToast();
+  const toast = useToast();
 
   const [checkInStats, setCheckInStats] = React.useState(0);
   const [priorityAttendees, setPriorityAttendees] = React.useState(0);
-  // const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
-  const [eventAttendance, setEventAttendance] = React.useState(2);
-  const [eligiblePrize, setEligiblePrize] = React.useState(15);
+  const [dietaryRestrictions, setDietaryRestrictions] = React.useState(0);
+  const [eventAttendance, setEventAttendance] = React.useState(0);
+  const [eligiblePrize, setEligiblePrize] = React.useState(0);
 
-  // const showToast = (message: string) => {
-  //   toast({
-  //     title: message,
-  //     status: "error",
-  //     duration: 9000,
-  //     isClosable: true,
-  //   });
-  // };
+  const [inputEventAttendance, setInputEventAttendance] = React.useState(0);
+  const [inputEligiblePrize, setInputEligiblePrize] = React.useState(0);
+
+  const [allergies, setAllergies] = React.useState(0);
+  const [both, setBoth] = React.useState(0);
+  const [none, setNone] = React.useState(0);
+
+  const [allergyCounts, setAllergyCounts] = React.useState<{ [key: string]: number }>({});
+  const [dietaryRestrictionCounts, setDietaryRestrictionCounts] = React.useState<{ [key: string]: number }>({});
+
+  const showToast = (message: string) => {
+    toast({
+      title: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true,
+    });
+  };
 
   const getStats = async () => {
 
-    setCheckInStats(694);
-    setPriorityAttendees(120);
+    // setCheckInStats(694);
+    // setPriorityAttendees(120);
 
-    // const jwt = localStorage.getItem("jwt");
+    const jwt = localStorage.getItem("jwt");
 
-    // axios.get(Config.API_BASE_URL + "/stats/check-in/", {
-    //   headers: {
-    //     Authorization: jwt
-    //   }
-    // })
-    //   .then(function (response) {
-    //     // handle success
-    //     console.log(response.data.count);
-    //     setCheckInStats(response.data.count);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //     showToast("Failed to fetch check-in stats");
-    //   })
+    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        // handle success
+        console.log("Check-In Response:", response.data);
+        console.log(response.data.count);
+        setCheckInStats(response.data.count);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        showToast("Failed to fetch check-in stats");
+      });
 
-    // axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
-    //   headers: {
-    //     Authorization: jwt
-    //   }
-    // })
-    //   .then(function (response) {
-    //     // handle success
-    //     console.log(response.data.count);
-    //     setPriorityAttendees(response.data.count);
-    //   })
-    //   .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    //     showToast("Failed to fetch priority attendees stats");
-    //   })
+    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        // handle success
+        console.log(response.data.count);
+        setPriorityAttendees(response.data.count);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      });
 
-    // axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
-    //     headers: {
-    //         Authorization: jwt
-    //     }
-    //   })
-    // .then(function (response) {
-    //     // handle success
-    //     console.log(response.data);
-    //     setDietaryRestrictions(response.data.count);
-    //   })
-    // .catch(function (error) {
-    //     // handle error
-    //     console.log(error);
-    // })
+    axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        // handle success
+        console.log(response.data);
+        setDietaryRestrictions(response.data.dietaryRestrictions);
+        setAllergies(response.data.allergies);
+        setBoth(response.data.both);
+        setNone(response.data.none);
+        setAllergyCounts(response.data.allergyCounts);
+        setDietaryRestrictionCounts(response.data.dietaryRestrictionCounts);
+      })
+      .catch(function (error) {
+        // handle error
+        console.log(error);
+      });
+
+    axios.get(Config.API_BASE_URL + '/stats/merch-item/0', {
+      headers: {
+        Authorization: jwt,
+      },
+    })
+      .then((response) => {
+        setEligiblePrize(response.data.count);
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast('Failed to fetch eligible prize stats');
+      });
         
   };
 
-  const handleEventAttendanceChange = (valueAsString: string) => {
-    setEventAttendance(parseInt(valueAsString));
+  const handleEventAttendanceChange = async (valueAsString: string) => {
+    // setEventAttendance(parseInt(valueAsString));
+    const numEvents = parseInt(valueAsString, 10);
+
+    console.log("events num: ", numEvents);
+    setInputEventAttendance(parseInt(valueAsString));
+
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/attendance/:" + numEvents, {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        console.log(response.data.attendanceCounts.length);
+        setEventAttendance(response.data.attendanceCounts.length);
+      })
+      .catch(function (error) {
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      });
   };
 
-  const handleEligiblePrizeChange = (valueAsString: string) => {
-    setEligiblePrize(parseInt(valueAsString));
+  const handleEligiblePrizeChange = async (valueAsString: string) => {
+    const price = parseInt(valueAsString);
+    console.log("PRICE: ", price);
+    setInputEligiblePrize(parseInt(valueAsString));
+
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/merch-item/" + price, {
+      headers: {
+        Authorization: jwt
+      }
+    })
+      .then(function (response) {
+        console.log(response.data.count);
+        setEligiblePrize(response.data.count);
+      })
+      .catch(function (error) {
+        console.log(error);
+        showToast("Failed to fetch priority attendees stats");
+      });
   };
 
   React.useEffect(() => {
     getStats();
   }, []);
 
-  const data = {
-    allergies: 60,
-    allergyCounts: { "Peanuts": 30, "Dairy": 17, "Gluten": 13 },
-    both: 35,
-    dietaryRestrictionCounts: { "Vegetarian": 382, "Vegan": 99 },
-    dietaryRestrictions: 481,
-    none: 213
-  };
+  // const data = {
+  //   allergies: 60,
+  //   allergyCounts: { "Peanuts": 30, "Dairy": 17, "Gluten": 13 },
+  //   both: 35,
+  //   dietaryRestrictionCounts: { "Vegetarian": 382, "Vegan": 99 },
+  //   dietaryRestrictions: 481,
+  //   none: 213
+  // };
 
 
 
-  const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
+  // const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
+  const SummaryStats = () => (
     <StatGroup>
       <Stat>
         <StatLabel>Allergies</StatLabel>
-        <StatNumber>{data.allergies}</StatNumber>
+        <StatNumber>{allergies}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>Dietary Restrictions</StatLabel>
-        <StatNumber>{data.dietaryRestrictions}</StatNumber>
+        <StatNumber>{dietaryRestrictions}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>Both</StatLabel>
-        <StatNumber>{data.both}</StatNumber>
+        <StatNumber>{both}</StatNumber>
       </Stat>
       <Stat>
         <StatLabel>None</StatLabel>
-        <StatNumber>{data.none}</StatNumber>
+        <StatNumber>{none}</StatNumber>
       </Stat>
     </StatGroup>
   );
@@ -213,7 +279,7 @@ function Stats() {
                   size="sm"
                   maxW="100px"
                   ml="4"
-                  value={eventAttendance}
+                  value={inputEventAttendance}
                   onChange={handleEventAttendanceChange}
                   min={0}
                 >
@@ -224,7 +290,7 @@ function Stats() {
                   </NumberInputStepper>
                 </NumberInput>
               </StatLabel>
-              <StatNumber>{32*eventAttendance}</StatNumber>
+              <StatNumber>{eventAttendance}</StatNumber>
               <StatHelpText>
                 {/* Add any additional info or icons here */}
               </StatHelpText>
@@ -241,7 +307,7 @@ function Stats() {
                   size="sm"
                   maxW="100px"
                   ml="4"
-                  value={eligiblePrize}
+                  value={inputEligiblePrize}
                   onChange={handleEligiblePrizeChange}
                   min={0}
                 >
@@ -252,7 +318,7 @@ function Stats() {
                   </NumberInputStepper>
                 </NumberInput>
               </StatLabel>
-              <StatNumber>{20-eligiblePrize}</StatNumber>
+              <StatNumber>{eligiblePrize}</StatNumber>
               <StatHelpText>
                 {/* Add any additional info or icons here */}
               </StatHelpText>
@@ -263,8 +329,8 @@ function Stats() {
           <CardHeader>
             <b>Dietary Restrictions</b>
           </CardHeader>
-          <SummaryStats data={data} />
-          <StatGroup>
+          <SummaryStats/>
+          {/* <StatGroup>
             <Card m={5} minWidth='40%'>
               <CardBody>
                 <Stat>
@@ -281,17 +347,17 @@ function Stats() {
                 </Stat>
               </CardBody>
             </Card>
-          </StatGroup>
+          </StatGroup> */}
 
-          {/* <Box mb={4}>
-                    <Heading size='md' mb={2}>Allergy Breakdown</Heading>
-                    <AllergiesChart data={data} />
-                    </Box>
+          <Box mb={4}>
+            <Heading size='md' mb={2} minWidth='40%'>Allergy Breakdown</Heading>
+            <AllergiesChart data={{allergyCounts}} />
+          </Box>
 
-                    <Box>
-                    <Heading size='md' mb={2}>Dietary Restrictions Breakdown</Heading>
-                    <DietaryRestrictionsChart data={data} />
-                    </Box> */}
+          <Box>
+            <Heading size='md' mb={2} minWidth='40%'>Dietary Restrictions Breakdown</Heading>
+            <DietaryRestrictionsChart data={{dietaryRestrictionCounts}} />
+          </Box>
         </Card>
       </StatGroup>
     </Box>
