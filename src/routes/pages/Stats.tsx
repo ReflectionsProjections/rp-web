@@ -80,7 +80,7 @@ function Stats() {
         // handle error
         console.log(error);
         showToast("Failed to fetch check-in stats");
-      })
+      });
 
     axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
       headers: {
@@ -96,13 +96,13 @@ function Stats() {
         // handle error
         console.log(error);
         showToast("Failed to fetch priority attendees stats");
-      })
+      });
 
     axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
-        headers: {
-            Authorization: jwt
-        }
-      })
+      headers: {
+        Authorization: jwt
+      }
+    })
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -113,23 +113,23 @@ function Stats() {
         setAllergyCounts(response.data.allergyCounts);
         setDietaryRestrictionCounts(response.data.dietaryRestrictionCounts);
       })
-    .catch(function (error) {
+      .catch(function (error) {
         // handle error
         console.log(error);
-    })
+      });
 
     axios.get(Config.API_BASE_URL + '/stats/merch-item/0', {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      headers: {
+        Authorization: jwt,
+      },
+    })
       .then((response) => {
         setEligiblePrize(response.data.count);
       })
-    .catch((error) => {
-      console.log(error);
-      showToast('Failed to fetch eligible prize stats');
-    });
+      .catch((error) => {
+        console.log(error);
+        showToast('Failed to fetch eligible prize stats');
+      });
         
   };
 
@@ -137,7 +137,7 @@ function Stats() {
     // setEventAttendance(parseInt(valueAsString));
     const numEvents = parseInt(valueAsString, 10);
 
-    console.log("events num: ", numEvents)
+    console.log("events num: ", numEvents);
     setInputEventAttendance(parseInt(valueAsString));
 
     const jwt = localStorage.getItem("jwt");
@@ -153,12 +153,12 @@ function Stats() {
       .catch(function (error) {
         console.log(error);
         showToast("Failed to fetch priority attendees stats");
-      })
+      });
   };
 
   const handleEligiblePrizeChange = async (valueAsString: string) => {
     const price = parseInt(valueAsString);
-    console.log("PRICE: ", price)
+    console.log("PRICE: ", price);
     setInputEligiblePrize(parseInt(valueAsString));
 
     const jwt = localStorage.getItem("jwt");
@@ -174,21 +174,21 @@ function Stats() {
       .catch(function (error) {
         console.log(error);
         showToast("Failed to fetch priority attendees stats");
-      })
+      });
   };
 
   React.useEffect(() => {
     getStats();
   }, []);
 
-  const data = {
-    allergies: 60,
-    allergyCounts: { "Peanuts": 30, "Dairy": 17, "Gluten": 13 },
-    both: 35,
-    dietaryRestrictionCounts: { "Vegetarian": 382, "Vegan": 99 },
-    dietaryRestrictions: 481,
-    none: 213
-  };
+  // const data = {
+  //   allergies: 60,
+  //   allergyCounts: { "Peanuts": 30, "Dairy": 17, "Gluten": 13 },
+  //   both: 35,
+  //   dietaryRestrictionCounts: { "Vegetarian": 382, "Vegan": 99 },
+  //   dietaryRestrictions: 481,
+  //   none: 213
+  // };
 
 
 
@@ -350,14 +350,14 @@ function Stats() {
           </StatGroup> */}
 
           <Box mb={4}>
-                    <Heading size='md' mb={2} minWidth='40%'>Allergy Breakdown</Heading>
-                    <AllergiesChart data={{allergyCounts}} />
-                    </Box>
+            <Heading size='md' mb={2} minWidth='40%'>Allergy Breakdown</Heading>
+            <AllergiesChart data={{allergyCounts}} />
+          </Box>
 
-                    <Box>
-                    <Heading size='md' mb={2} minWidth='40%'>Dietary Restrictions Breakdown</Heading>
-                    <DietaryRestrictionsChart data={{dietaryRestrictionCounts}} />
-                    </Box>
+          <Box>
+            <Heading size='md' mb={2} minWidth='40%'>Dietary Restrictions Breakdown</Heading>
+            <DietaryRestrictionsChart data={{dietaryRestrictionCounts}} />
+          </Box>
         </Card>
       </StatGroup>
     </Box>
