@@ -344,6 +344,7 @@ function Merch() {
               isChecked={hasMerch.Button}
               onChange={handleCheckboxChange}
               isDisabled={!eligibleMerch.Button}
+              ml={4}
             >
               Button
             </Checkbox>
