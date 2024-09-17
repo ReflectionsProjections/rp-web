@@ -12,13 +12,67 @@ import {
   Heading,
   CardBody,
   Badge,
-  useBreakpointValue
+  Text,
+  useBreakpointValue,
+  CardFooter,
+  Modal,
+  ModalOverlay
 } from '@chakra-ui/react';
 
 import rpLogo from '../../assets/rp_logo.png';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Config } from '../../config';
+import moment from 'moment-timezone';
+
+const readable = "MMMM Do YYYY, h:mm a";
+
+function convertToCST(date: string) {
+  const m = moment.utc(date);
+  m.tz('America/Chicago');
+  return m;
+}
+
+function EventCard({ event }: { event: { eventId: string, name: string, startTime: string, endTime: string, points: number, description: string, isVirtual: boolean, imageUrl: string, location: string, eventType: string, isVisible: boolean } }) {
+  // const { isOpen: isDeleteOpen, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+
+  return (
+    <Card maxW='sm' key={event.eventId}>
+      <CardBody>
+        {/*<Center>*/}
+        {/*<Image src={event.imageUrl} alt={event.name} borderRadius='lg' />*/}
+        {/*</Center>*/}
+        <Stack mt='6' spacing='3'>
+          <Heading size='md'> {event.name}</Heading>
+          <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
+            {event.isVirtual ? "Virtual" : "In-person"}
+          </Badge>
+          <Text>
+            {convertToCST(event.startTime).format(readable)} - {convertToCST(event.endTime).format(readable)}
+          </Text>
+          <Text>
+              ({moment.duration(convertToCST(event.endTime).diff(convertToCST(event.startTime))).humanize()})
+          </Text>
+          <Text>
+              Points: {event.points}
+          </Text>
+          <Text>
+            {event.description}
+          </Text>
+        </Stack>
+      </CardBody>
+
+      <CardFooter>
+        <Flex justifyContent="space-between" width="100%">
+        </Flex>
+      </CardFooter>
+    </Card>
+  );
+}
 
 function Dashboard({ name }: { name: string }) {
 
+  const [currentEvent, setCurrentEvent] = useState<{ eventId: string, name: string, startTime: string, endTime: string, points: number, description: string, isVirtual: boolean, imageUrl: string, location: string, eventType: string, isVisible: boolean } | null>(null);
   const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
 
   const CustomStatBox = ({ label, number, helpText }: { label: string, number: number, helpText: string }) => {
@@ -30,6 +84,23 @@ function Dashboard({ name }: { name: string }) {
       </Stat>
     );
   };
+
+  function getUpcomingEvent() {
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/events/currentOrNext", {
+      headers: {
+        Authorization: jwt
+      }
+    }).then(function (response) {
+      console.log(response.data);
+      setCurrentEvent(response.data);
+    });
+  }
+
+  useEffect(() => {
+    getUpcomingEvent();
+  }, []);
+  
   
   return (
     <Box p={4}>
@@ -82,32 +153,25 @@ function Dashboard({ name }: { name: string }) {
         </Box>
 
         <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 4 : 0}>
-          <Card>
+          <Card alignItems={'center'}>
             <CardHeader>
               <Heading size='md'>Upcoming Events</Heading>
             </CardHeader>
             <CardBody>
               {/* Add content for Events here */}
-              <Card>
-                <CardBody>
-                  <Flex flexDirection="column" align="center">
-                    <img src={rpLogo} alt='R|P Logo' style={{ width: '150px' }} />
-                  </Flex>
-                  <Stack mt='6' spacing='3'>
-                    <Heading size='md'>R|P Opening Event</Heading>
-                    <Badge borderRadius="full" px="2" colorScheme={"green"}>
-                                Virtual
-                    </Badge>
-                    <p>
-                                June 17th, 9:30 PM - 10:30 PM
-                    </p>
-                    <p>
-                                Points: 10
-                    </p>
-                    <p>Get ready to learn all about R|P 2024!</p>
-                  </Stack>
-                </CardBody>
-              </Card>
+              <EventCard event={{
+                eventId: currentEvent?.eventId || "1",
+                name: currentEvent?.name || "Sample Event",
+                startTime: currentEvent?.startTime || "2023-03-01T10:00:00Z",
+                endTime: currentEvent?.endTime || "2023-03-01T12:00:00Z",
+                points: currentEvent?.points || 10,
+                description: currentEvent?.description || "This is a sample event description.",
+                isVirtual: currentEvent?.isVirtual || true,
+                imageUrl: currentEvent?.imageUrl || "",
+                location: currentEvent?.location || "Online",
+                eventType: currentEvent?.eventType || "Webinar",
+                isVisible: currentEvent?.isVisible || true
+              }} />
               <br />
                     Details about upcoming events will go here.
             </CardBody>
