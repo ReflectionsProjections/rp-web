@@ -92,7 +92,7 @@ function Dashboard({ name }: { name: string }) {
         Authorization: jwt
       }
     }).then(function (response) {
-      console.log(response.data);
+      // console.log(response.data);
       setCurrentEvent(response.data);
     });
   }
