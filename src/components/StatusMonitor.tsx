@@ -14,7 +14,7 @@ const StatusMonitor = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await axios.get('https://api.reflectionsprojections.org/status'); // Replace with your API endpoint
+        const response = await axios.get('https://api.reflectionsprojections.org/status'); 
         if (response.status === 200) {
           if (!status) {
             setOfflineDuration(0); // Reset offline duration only if coming online
