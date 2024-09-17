@@ -23,7 +23,6 @@ import {
   Link
 } from '@chakra-ui/react';
 import {HamburgerIcon, CloseIcon} from '@chakra-ui/icons';
-
 import {ReactNode, useState} from 'react';
 import {jwtDecode} from "jwt-decode";
 import Dashboard from './pages/Dashboard';
@@ -31,9 +30,8 @@ import Stats from './pages/Stats';
 import Events from './pages/Events';
 import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
+import Merch from './pages/Merch';
 import React from 'react';
-
-// import Notifications from './pages/Notifications';
 
 interface JwtPayload {
     roles: string[];
@@ -50,9 +48,9 @@ const Links = (): string[] => {
   const decodedToken = jwtDecode(jwt) as JwtPayload;
 
   if (decodedToken.roles.includes("ADMIN")) {
-    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors'];
+    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Merch'];
   } else if (decodedToken.roles.includes("STAFF")) {
-    return ['Dashboard', 'Stats', 'Events'];
+    return ['Dashboard', 'Stats', 'Events', 'Merch'];
   }
 
   return [];
@@ -133,6 +131,8 @@ export default function Home() {
         return <Roles/>;
       case 'Sponsors':
         return <Sponsors/>;
+      case 'Merch':
+        return <Merch/>;
       default:
         return <Dashboard name={userName}/>;
       }
