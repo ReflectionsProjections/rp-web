@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -8,8 +8,11 @@ import {
   FormLabel,
   Heading,
   Input,
+  List,
+  ListItem,
   Switch,
   useToast,
+  Text
 } from "@chakra-ui/react";
 import { Config } from "../../config.ts";
 import axios from "axios";
@@ -19,6 +22,8 @@ function Merch() {
   const toast = useToast();
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
+  const [filteredEmails, setFilteredEmails] = useState<{ email: string; userId: string }[]>([]);
+  const [attendeeEmails, setAttendeeEmails] = useState<{ email: string; userId: string }[]>([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
   const [attendeePoints, setAttendeePoints] = useState(0);
 
@@ -50,6 +55,29 @@ function Merch() {
     });
   };
 
+  // Fetch all attendee emails + userIds upon loading the page
+  useEffect(() => {
+    const fetchAttendeeEmails = async () => {
+      const jwt = localStorage.getItem("jwt");
+      axios
+      .get(Config.API_BASE_URL + '/attendee/emails', {
+        headers: {
+          Authorization: jwt,
+        },
+      })
+      .then(function (response) {
+        const attendeeData = response.data;
+        setAttendeeEmails(attendeeData);
+      })
+      .catch(function () {
+        showToast('Error fetching attendee emails + info.', true);
+      })
+        
+    };
+
+    fetchAttendeeEmails();
+  }, []);
+
   const getUser = (userId: string) => {
     const jwt = localStorage.getItem("jwt");
     axios
@@ -60,6 +88,7 @@ function Merch() {
       })
       .then(function (response) {
         const user = response.data;
+
         // Update the state with the fetched attendee information
         setAttendeeName(user.name);
         setAttendeePoints(user.points);
@@ -78,6 +107,8 @@ function Merch() {
           Cap: user.isEligibleMerch!["Cap"],
           ToteBag: user.isEligibleMerch!["Tote"],
         });
+
+        showToast('Successfully fetched attendee merch info!', false);
       })
       .catch(function () {
         showToast('Error fetching attendee merch info.', true);
@@ -104,45 +135,44 @@ function Merch() {
     setHasMerch((prevState) => ({ ...prevState, [name]: checked }));
   };
 
+  // Handle the search as the user types
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputEmail = e.target.value;
+    setEmail(inputEmail);
+
+    // Perform prefix search on attendeeEmails
+    if (inputEmail) {
+      const filtered = attendeeEmails.filter((attendee) =>
+        attendee.email.toLowerCase().startsWith(inputEmail.toLowerCase())
+      );
+      setFilteredEmails(filtered);
+    } else {
+      setFilteredEmails([]);
+    }
+  };
+
+  // Handle selecting an email from the dropdown
+  const handleSelectEmail = (selectedEmail: string) => {
+    setEmail(selectedEmail);
+    setFilteredEmails([]); // Hide the dropdown after selecting
+  };
+
   // Get attendee merch info via their email
   const handleSearch = async () => {
-    const jwt = localStorage.getItem("jwt");
     if (!email) {
       showToast('Please enter an email.', true);
       return;
     }
 
-    axios
-      .get(Config.API_BASE_URL + `/attendee/email/${email}`, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
-      .then(function (response) {
-        const merchInfo = response.data;
+    // .find() could be a bit slow, possibly change to Map/something else later
+    const selectedAttendee = attendeeEmails.find((attendee) => attendee.email === email);
+    if (!selectedAttendee) {
+      showToast('This email is not registered as an R|P attendee.', true);
+      return;
+    }
 
-        // Update the state with the fetched attendee information
-        setAttendeeName(merchInfo.attendeeName);
-        setAttendeePoints(merchInfo.attendeePoints);
-        setHasMerch({
-          Button: merchInfo.hasButton,
-          Cap: merchInfo.hasCap,
-          ToteBag: merchInfo.hasTote,
-        });
-        setRedeemedMerch({
-          Button: merchInfo.hasButton,
-          Cap: merchInfo.hasCap,
-          ToteBag: merchInfo.hasTote,
-        });
-        setEligibleMerch({
-          Button: merchInfo.eligibleButton,
-          Cap: merchInfo.eligibleCap,
-          ToteBag: merchInfo.eligibleTote,
-        });
-      })
-      .catch(function () {
-        showToast('Error fetching attendee merch info.', true);
-      });
+    const userId = selectedAttendee.userId;
+    getUser(userId);
   };
 
   // Handle submitting the merch checkin changes
@@ -222,11 +252,42 @@ function Merch() {
                 id="email"
                 placeholder="Email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={handleEmailChange}
+                autoComplete="off"
               />
+              
+              {filteredEmails.length > 0 && (
+                <Box 
+                  mt={1} 
+                  border="1px solid #ccc" 
+                  borderRadius="md" 
+                  maxH="200px" 
+                  overflowY="auto" 
+                  position="absolute" 
+                  width="100%" 
+                  bg="white" 
+                  zIndex={10}
+                >
+                  <List>
+                    {filteredEmails.map((attendee) => (
+                      <ListItem 
+                        key={attendee.userId}
+                        p={2}
+                        _hover={{ bg: 'gray.100', cursor: 'pointer' }}
+                        onClick={() => handleSelectEmail(attendee.email)}
+                        color='black'
+                      >
+                        {attendee.email}
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
+
               <Button mt={4} colorScheme="blue" onClick={handleSearch}>
                 Search Attendee
               </Button>
+
             </FormControl>
           )}
         </Box>
@@ -277,9 +338,13 @@ function Merch() {
             </Checkbox>
           </FormControl>
 
-          <Button colorScheme="blue" onClick={handleSubmit}>
+          <Button colorScheme="blue" onClick={handleSubmit} mb={4}>
             Submit
           </Button>
+
+          <Text fontSize="sm" fontStyle="italic" mt={2}>
+            NOTE: Once you hit submit and check-in an attendee for merch, you cannot undo this!
+          </Text>
         </Box>
       </Flex>
     </Box>

@@ -48,9 +48,9 @@ const Links = (): string[] => {
   const decodedToken = jwtDecode(jwt) as JwtPayload;
 
   if (decodedToken.roles.includes("ADMIN")) {
-    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors'];
+    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Merch'];
   } else if (decodedToken.roles.includes("STAFF")) {
-    return ['Dashboard', 'Stats', 'Events'];
+    return ['Dashboard', 'Stats', 'Events', 'Merch'];
   }
 
   return [];
