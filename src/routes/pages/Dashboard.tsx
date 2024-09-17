@@ -14,12 +14,10 @@ import {
   Badge,
   Text,
   useBreakpointValue,
-  CardFooter,
-  Modal,
-  ModalOverlay
+  CardFooter
 } from '@chakra-ui/react';
 
-import rpLogo from '../../assets/rp_logo.png';
+// import rpLogo from '../../assets/rp_logo.png';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Config } from '../../config';
