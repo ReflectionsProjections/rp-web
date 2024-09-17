@@ -22,6 +22,7 @@ function Merch() {
   const toast = useToast();
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
+  const [userId, setUserId] = useState("");
   const [filteredEmails, setFilteredEmails] = useState<{ email: string; userId: string }[]>([]);
   const [attendeeEmails, setAttendeeEmails] = useState<{ email: string; userId: string }[]>([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
@@ -29,18 +30,21 @@ function Merch() {
 
   // Indicates whether or not the merch checkbox is checked
   const [hasMerch, setHasMerch] = useState({
+    Tshirt: false,
     Button: false,
     Cap: false,
     ToteBag: false,
   });
   // Indicates whether or not the merch item has been redeemed already
   const [redeemedMerch, setRedeemedMerch] = useState({
+    Tshirt: false,
     Button: false,
     Cap: false,
     ToteBag: false,
   });
   // Indicates whether or not the merch item is eligible to be redeemed
   const [eligibleMerch, setEligibleMerch] = useState({
+    Tshirt: false,
     Button: false,
     Cap: false,
     ToteBag: false,
@@ -91,18 +95,22 @@ function Merch() {
 
         // Update the state with the fetched attendee information
         setAttendeeName(user.name);
+        setUserId(user.userId);
         setAttendeePoints(user.points);
         setHasMerch({
+          Tshirt: user.hasRedeemedMerch!["Tshirt"],
           Button: user.hasRedeemedMerch!["Button"],
           Cap: user.hasRedeemedMerch!["Cap"],
           ToteBag: user.hasRedeemedMerch!["Tote"],
         });
         setRedeemedMerch({
+          Tshirt: user.hasRedeemedMerch!["Tshirt"],
           Button: user.hasRedeemedMerch!["Button"],
           Cap: user.hasRedeemedMerch!["Cap"],
           ToteBag: user.hasRedeemedMerch!["Tote"],
         });
         setEligibleMerch({
+          Tshirt: user.isEligibleMerch!["Tshirt"],
           Button: user.isEligibleMerch!["Button"],
           Cap: user.isEligibleMerch!["Cap"],
           ToteBag: user.isEligibleMerch!["Tote"],
@@ -178,40 +186,53 @@ function Merch() {
   // Handle submitting the merch checkin changes
   const handleSubmit = async () => {
     const jwt = localStorage.getItem("jwt");
-    if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", { email: email }, {
+    if (!redeemedMerch.Tshirt && eligibleMerch.Tshirt && hasMerch.Tshirt) {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tshirt", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
       })
         .then(function () {
-          showToast('Successfully updated attendee merch info!', false);
+          showToast('Successfully redeemed a T-Shirt!', false);
+        })
+        .catch(function () {
+          showToast('Error updating attendee merch info. This attendee may have already received a T-shirt.', true);
+        });
+    }
+    if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", { userId: userId }, {
+        headers: {
+          Authorization: jwt
+        },
+      })
+        .then(function () {
+          showToast('Successfully redeemed a Button!', false);
         })
         .catch(function () {
           showToast('Error updating attendee merch info. This attendee may have already received a Button.', true);
         });
     }
     if (!redeemedMerch.Cap && eligibleMerch.Cap && hasMerch.Cap) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Cap", { email: email }, {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Cap", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
       })
         .then(function () {
-          showToast('Successfully updated attendee merch info!', false);
+          showToast('Successfully redeemed a Cap!', false);
         })
         .catch(function () {
           showToast('Error updating attendee merch info. This attendee may have already received a Cap.', true);
         });
     }
     if (!redeemedMerch.ToteBag && eligibleMerch.ToteBag && hasMerch.ToteBag) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tote", { email: email }, {
+      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tote", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
       })
         .then(function () {
-          showToast('Successfully updated attendee merch info!', false);
+          showToast('Successfully redeemed a Tote Bag!', false);
         })
         .catch(function () {
           showToast('Error updating attendee merch info. This attendee may have already received a Tote Bag.', true);
@@ -310,6 +331,14 @@ function Merch() {
           </FormControl>
 
           <FormControl mb={4}>
+            <Checkbox
+                name="Tshirt"
+                isChecked={hasMerch.Tshirt}
+                onChange={handleCheckboxChange}
+                isDisabled={!eligibleMerch.Tshirt}
+              >
+                T-shirt
+            </Checkbox>
             <Checkbox
               name="Button"
               isChecked={hasMerch.Button}
