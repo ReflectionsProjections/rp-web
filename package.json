@@ -14,6 +14,7 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@fontsource/roboto-slab": "^5.1.0",
     "@types/react-qr-reader": "^2.1.7",
     "@yudiel/react-qr-scanner": "^2.0.8",
     "axios": "^1.6.8",

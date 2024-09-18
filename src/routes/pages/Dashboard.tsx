@@ -13,12 +13,14 @@ import {
   CardBody,
   Badge,
   Text,
+  Image,
+  Center,
   useBreakpointValue,
   CardFooter
 } from '@chakra-ui/react';
 
-<<<<<<< dev/sdagg9/stats
-// import rpLogo from '../../assets/rp_logo.png';
+import rpLogo from '../../assets/rp_logo.svg';
+import StatusMonitor from '../../components/StatusMonitor';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Config } from '../../config';
@@ -38,9 +40,9 @@ function EventCard({ event }: { event: { eventId: string, name: string, startTim
   return (
     <Card maxW='sm' key={event.eventId}>
       <CardBody>
-        {/*<Center>*/}
-        {/*<Image src={event.imageUrl} alt={event.name} borderRadius='lg' />*/}
-        {/*</Center>*/}
+        <Center>
+          <Image src={rpLogo} alt={event.name} borderRadius='lg' maxW='15vw'/>
+        </Center>
         <Stack mt='6' spacing='3'>
           <Heading size='md'> {event.name}</Heading>
           <Badge borderRadius="full" px="2" colorScheme={event.isVirtual ? "green" : "blue"}>
@@ -68,10 +70,9 @@ function EventCard({ event }: { event: { eventId: string, name: string, startTim
     </Card>
   );
 }
-=======
-import rpLogo from '../../assets/rp_logo.png';
-import StatusMonitor from '../../components/StatusMonitor';
->>>>>>> main
+
+
+
 
 function Dashboard({ name }: { name: string }) {
 
@@ -90,7 +91,6 @@ function Dashboard({ name }: { name: string }) {
     );
   };
 
-<<<<<<< dev/sdagg9/stats
   function getUpcomingEvent() {
     const jwt = localStorage.getItem("jwt");
     axios.get(Config.API_BASE_URL + "/events/currentOrNext", {
@@ -132,8 +132,6 @@ function Dashboard({ name }: { name: string }) {
   }, []);
   
   
-=======
->>>>>>> main
   return (
     <Box p={4}>
       <Heading size='2xl' fontWeight='bold' mb={4} textAlign='left'>
@@ -144,7 +142,7 @@ function Dashboard({ name }: { name: string }) {
         <Box flex="1" mr={flexDirection == 'column' ? 0 : 2}>
           <Card>
             <CardHeader>
-              <Heading size='md'>Overall Stats</Heading>
+              <Heading size='lg'>Overall Stats</Heading>
             </CardHeader>
             <CardBody>
               {/* <Stack divider={<StackDivider />} spacing='4'>
@@ -188,11 +186,10 @@ function Dashboard({ name }: { name: string }) {
         <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 4 : 0}>
           <Card alignItems={'center'}>
             <CardHeader>
-              <Heading size='md'>Upcoming Events</Heading>
+              <Heading size='lg'>Upcoming Events</Heading>
             </CardHeader>
             <CardBody>
               {/* Add content for Events here */}
-<<<<<<< dev/sdagg9/stats
               <EventCard event={{
                 eventId: currentEvent?.eventId || "1",
                 name: currentEvent?.name || "Sample Event",
@@ -206,28 +203,6 @@ function Dashboard({ name }: { name: string }) {
                 eventType: currentEvent?.eventType || "Webinar",
                 isVisible: currentEvent?.isVisible || true
               }} />
-=======
-              <Card>
-                <CardBody>
-                  <Flex flexDirection="column" align="center">
-                    <img src={rpLogo} alt='R|P Logo' style={{ width: '150px' }} />
-                  </Flex>
-                  <Stack mt='6' spacing='3'>
-                    <Heading size='md'>R|P Opening Event</Heading>
-                    <Badge borderRadius="full" px="2" colorScheme={"green"}>
-                      Virtual
-                    </Badge>
-                    <p>
-                      June 17th, 9:30 PM - 10:30 PM
-                    </p>
-                    <p>
-                      Points: 10
-                    </p>
-                    <p>Get ready to learn all about R|P 2024!</p>
-                  </Stack>
-                </CardBody>
-              </Card>
->>>>>>> main
               <br />
               Details about upcoming events will go here.
             </CardBody>
