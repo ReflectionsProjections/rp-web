@@ -138,6 +138,11 @@ export default function Home() {
       }
     };
 
+    function selectNavLink(link: string) {
+      onClose();
+      setSelectedLink(link);
+    }
+
     const signOut = () => {
       localStorage.removeItem("jwt");
       window.location.href = "/";
@@ -167,7 +172,7 @@ export default function Home() {
             <HStack spacing={8} alignItems={'center'}>
               <Flex align="center" mr={5} maxWidth={50}>
                 <img src={rpLogo} className='logo' alt='R|P Logo' style={{width: '50px'}}
-                  onClick={() => setSelectedLink('Dashboard')}/>
+                  onClick={() => selectNavLink('Dashboard')}/>
               </Flex>
               <HStack
                 as={'nav'}
@@ -175,7 +180,7 @@ export default function Home() {
                 display={{base: 'none', md: 'flex'}}>
                 {Links().map((link) => (
                   <NavLink key={link} selectedLink={link === selectedLink}
-                    onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                    onClick={() => }>{link}</NavLink>
                 ))}
               </HStack>
             </HStack>
@@ -208,7 +213,7 @@ export default function Home() {
             <Box pb={4} display={{md: 'none'}}>
               <Stack as={'nav'} spacing={4}>
                 {Links().map((link) => (
-                  <NavLink key={link} onClick={() => setSelectedLink(link)}
+                  <NavLink key={link} onClick={() => selectNavLink(link)}
                     selectedLink={link === selectedLink}>{link}</NavLink>
                 ))}
               </Stack>

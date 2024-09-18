@@ -195,7 +195,7 @@ function Dashboard({ name }: { name: string }) {
                 name: currentEvent?.name || "Sample Event",
                 startTime: currentEvent?.startTime || "2023-03-01T10:00:00Z",
                 endTime: currentEvent?.endTime || "2023-03-01T12:00:00Z",
-                points: currentEvent?.points || 10,
+                points: currentEvent?.points || 0,
                 description: currentEvent?.description || "This is a sample event description.",
                 isVirtual: currentEvent?.isVirtual || true,
                 imageUrl: currentEvent?.imageUrl || "",
