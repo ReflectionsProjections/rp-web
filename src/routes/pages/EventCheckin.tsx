@@ -184,7 +184,7 @@ function EventCheckin() {
 
     const jwt = localStorage.getItem("jwt");
     axios
-      .post(Config.API_BASE_URL + "/checkin/event", { eventId: selectedEventId, userId: userId, isCheckin: false }, {
+      .post(Config.API_BASE_URL + "/checkin/event", { eventId: selectedEventId, userId: userId }, {
         headers: {
           Authorization: jwt,
         },
