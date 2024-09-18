@@ -183,7 +183,7 @@ export default function Home() {
                 display={{base: 'none', md: 'flex'}}>
                 {Links().map((link) => (
                   <NavLink key={link} selectedLink={link === selectedLink}
-                    onClick={() => }>{link}</NavLink>
+                    onClick={() => selectNavLink(link)}>{link}</NavLink>
                 ))}
               </HStack>
             </HStack>
