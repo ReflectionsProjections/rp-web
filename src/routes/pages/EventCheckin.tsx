@@ -102,13 +102,13 @@ function EventCheckin() {
         console.log(err);
         showToast('Error fetching attendee.', true);
       });
-  }, [userId])
+  }, [userId]);
 
 
   // Handle scan
   useEffect(() => {
     if (qrData == "") {
-      console.log("NO QR DATA")
+      console.log("NO QR DATA");
       return;
     }
 
@@ -127,14 +127,14 @@ function EventCheckin() {
       .then((response) => {
         const userId = response.data;
         setUserId(userId);
-        showQuickToast(`Checked ${attendeeName} into event!`, false)
+        showQuickToast(`Checked ${attendeeName} into event!`, false);
       })
       .catch((err) => {
         console.log(err.response);
         if (err.response.status == 403) {
-          showQuickToast('Attendee has already checked in.', true)
+          showQuickToast('Attendee has already checked in.', true);
         } else {
-          showQuickToast('Woah there, something went wrong! Find dev team please :/', true)
+          showQuickToast('Woah there, something went wrong! Find dev team please :/', true);
         }
       });
     setQrData("");
@@ -191,10 +191,10 @@ function EventCheckin() {
         },
       })
       .then(function () {
-        showQuickToast(`Succesfully checked into event!`, false)
+        showQuickToast(`Succesfully checked into event!`, false);
       })
       .catch(function (error) {
-        showQuickToast('Could not check in attendee to event. Please try again.', true)
+        showQuickToast('Could not check in attendee to event. Please try again.', true);
         console.log(error);
       });
   };
@@ -224,7 +224,7 @@ function EventCheckin() {
                 // const data = result[0].rawValue;
                 // console.log("QR CO"result[0].rawValue);
                 // handleScan(data, selectedEvent, selectedEventId);
-                setQrData(result[0].rawValue)
+                setQrData(result[0].rawValue);
               }} />;
             </>
           ) : (
