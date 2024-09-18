@@ -22,19 +22,39 @@ import {
   useColorModeValue,
   Link
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-
-import { ReactNode, useState } from 'react';
-import { jwtDecode } from "jwt-decode";
-const Links = ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors'];
+import {HamburgerIcon, CloseIcon} from '@chakra-ui/icons';
+import {ReactNode, useState} from 'react';
+import {jwtDecode} from "jwt-decode";
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Events from './pages/Events';
 import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
+import Merch from './pages/Merch';
 import React from 'react';
-// import Notifications from './pages/Notifications';
 
+interface JwtPayload {
+    roles: string[];
+}
+
+const Links = (): string[] => {
+  const jwt = localStorage.getItem('jwt');
+  const auth = jwt !== null;
+
+  if (!auth) {
+    return [];
+  }
+
+  const decodedToken = jwtDecode(jwt) as JwtPayload;
+
+  if (decodedToken.roles.includes("ADMIN")) {
+    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Merch'];
+  } else if (decodedToken.roles.includes("STAFF")) {
+    return ['Dashboard', 'Stats', 'Events', 'Merch'];
+  }
+
+  return [];
+};
 
 /**
  * NavLink component.
@@ -43,7 +63,11 @@ import React from 'react';
  * @param selectedLink - Whether the NavLink is selected.
  * @param onClick - The click event handler for the NavLink.
  */
-const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, selectedLink?: boolean, onClick: () => void }) => (
+const NavLink = ({children, selectedLink, onClick}: {
+    children: ReactNode,
+    selectedLink?: boolean,
+    onClick: () => void
+}) => (
   <Link
     px={2}
     py={1}
@@ -64,11 +88,11 @@ const NavLink = ({ children, selectedLink, onClick }: { children: ReactNode, sel
 export default function Home() {
   const [userName, setUserName] = useState('Please Sign-In');
   const [selectedLink, setSelectedLink] = useState('Dashboard');
-  const { toggleColorMode } = useColorMode();
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  
+  const {toggleColorMode} = useColorMode();
+  const {isOpen, onOpen, onClose} = useDisclosure();
+
     interface JwtPayload {
-      displayName: string;
+        displayName: string;
     }
 
     const decodeToken = () => {
@@ -84,7 +108,6 @@ export default function Home() {
     //   const jwt = localStorage.getItem("jwt");
     //   console.log("jwt:", jwt);
     // }
- 
 
 
     React.useEffect(() => {
@@ -95,29 +118,31 @@ export default function Home() {
     const renderComponent = () => {
       switch (selectedLink) {
       case 'Dashboard':
-        return <Dashboard name={userName} />;
+        return <Dashboard name={userName}/>;
       case 'Stats':
-        return <Stats />;
+        return <Stats/>;
       case 'Events':
-        return <Events />;
+        return <Events/>;
         // case 'Mail':
         //   return <Mail />;
-      // case 'Notifications':
-      //   return <Notifications />;
+        // case 'Notifications':
+        //   return <Notifications />;
       case 'Roles':
-        return <Roles />;
+        return <Roles/>;
       case 'Sponsors':
         return <Sponsors/>;
+      case 'Merch':
+        return <Merch/>;
       default:
-        return <Dashboard name={userName} />;
+        return <Dashboard name={userName}/>;
       }
     };
-            
+
     const signOut = () => {
       localStorage.removeItem("jwt");
       window.location.href = "/";
     };
-  
+
 
     return (
       <>
@@ -130,24 +155,27 @@ export default function Home() {
           width="100%"
           zIndex={1}
         >
-          <Flex h={16} alignItems={'center'} justifyContent={'space-between'} bg={useColorModeValue('gray.100', 'gray.900')}>
+          <Flex h={16} alignItems={'center'} justifyContent={'space-between'}
+            bg={useColorModeValue('gray.100', 'gray.900')}>
             <IconButton
               size={'lg'}
-              icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
+              icon={isOpen ? <CloseIcon/> : <HamburgerIcon/>}
               aria-label={'Open Menu'}
-              display={{ md: 'none' }}
+              display={{md: 'none'}}
               onClick={isOpen ? onClose : onOpen}
             />
             <HStack spacing={8} alignItems={'center'}>
               <Flex align="center" mr={5} maxWidth={50}>
-                <img src={rpLogo} className='logo' alt='R|P Logo' style={{ width: '50px' }} onClick={() => setSelectedLink('Dashboard')} />
+                <img src={rpLogo} className='logo' alt='R|P Logo' style={{width: '50px'}}
+                  onClick={() => setSelectedLink('Dashboard')}/>
               </Flex>
               <HStack
                 as={'nav'}
                 spacing={4}
-                display={{ base: 'none', md: 'flex' }}>
-                {Links.map((link) => (
-                  <NavLink key={link} selectedLink={link===selectedLink} onClick={() => setSelectedLink(link)}>{link}</NavLink>
+                display={{base: 'none', md: 'flex'}}>
+                {Links().map((link) => (
+                  <NavLink key={link} selectedLink={link === selectedLink}
+                    onClick={() => setSelectedLink(link)}>{link}</NavLink>
                 ))}
               </HStack>
             </HStack>
@@ -169,7 +197,7 @@ export default function Home() {
                 <MenuList>
                   {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
                   <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
-                  <MenuDivider />
+                  <MenuDivider/>
                   <MenuItem onClick={signOut}>Sign Out</MenuItem>
                 </MenuList>
               </Menu>
@@ -177,10 +205,11 @@ export default function Home() {
           </Flex>
 
           {isOpen ? (
-            <Box pb={4} display={{ md: 'none' }}>
+            <Box pb={4} display={{md: 'none'}}>
               <Stack as={'nav'} spacing={4}>
-                {Links.map((link) => (
-                  <NavLink key={link} onClick={() => setSelectedLink(link)} selectedLink={link === selectedLink}>{link}</NavLink>
+                {Links().map((link) => (
+                  <NavLink key={link} onClick={() => setSelectedLink(link)}
+                    selectedLink={link === selectedLink}>{link}</NavLink>
                 ))}
               </Stack>
             </Box>

@@ -17,6 +17,7 @@ import {
   CardFooter
 } from '@chakra-ui/react';
 
+<<<<<<< dev/sdagg9/stats
 // import rpLogo from '../../assets/rp_logo.png';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
@@ -67,6 +68,10 @@ function EventCard({ event }: { event: { eventId: string, name: string, startTim
     </Card>
   );
 }
+=======
+import rpLogo from '../../assets/rp_logo.png';
+import StatusMonitor from '../../components/StatusMonitor';
+>>>>>>> main
 
 function Dashboard({ name }: { name: string }) {
 
@@ -85,6 +90,7 @@ function Dashboard({ name }: { name: string }) {
     );
   };
 
+<<<<<<< dev/sdagg9/stats
   function getUpcomingEvent() {
     const jwt = localStorage.getItem("jwt");
     axios.get(Config.API_BASE_URL + "/events/currentOrNext", {
@@ -126,13 +132,15 @@ function Dashboard({ name }: { name: string }) {
   }, []);
   
   
+=======
+>>>>>>> main
   return (
     <Box p={4}>
       <Heading size='2xl' fontWeight='bold' mb={4} textAlign='left'>
-            Welcome, {name}!
+        Welcome, {name}!
       </Heading>
 
-      <Flex direction={flexDirection == 'column' ? 'column' : 'row' } justify="space-between">
+      <Flex direction={flexDirection == 'column' ? 'column' : 'row'} justify="space-between">
         <Box flex="1" mr={flexDirection == 'column' ? 0 : 2}>
           <Card>
             <CardHeader>
@@ -170,6 +178,7 @@ function Dashboard({ name }: { name: string }) {
                   <CustomStatBox label='Checked-In' number={stats} helpText='' />
                   <CustomStatBox label='Priority Status' number={status} helpText='' />
                 </StatGroup>
+                <StatusMonitor />
               </Box>
             </CardBody>
           </Card>
@@ -183,6 +192,7 @@ function Dashboard({ name }: { name: string }) {
             </CardHeader>
             <CardBody>
               {/* Add content for Events here */}
+<<<<<<< dev/sdagg9/stats
               <EventCard event={{
                 eventId: currentEvent?.eventId || "1",
                 name: currentEvent?.name || "Sample Event",
@@ -196,8 +206,30 @@ function Dashboard({ name }: { name: string }) {
                 eventType: currentEvent?.eventType || "Webinar",
                 isVisible: currentEvent?.isVisible || true
               }} />
+=======
+              <Card>
+                <CardBody>
+                  <Flex flexDirection="column" align="center">
+                    <img src={rpLogo} alt='R|P Logo' style={{ width: '150px' }} />
+                  </Flex>
+                  <Stack mt='6' spacing='3'>
+                    <Heading size='md'>R|P Opening Event</Heading>
+                    <Badge borderRadius="full" px="2" colorScheme={"green"}>
+                      Virtual
+                    </Badge>
+                    <p>
+                      June 17th, 9:30 PM - 10:30 PM
+                    </p>
+                    <p>
+                      Points: 10
+                    </p>
+                    <p>Get ready to learn all about R|P 2024!</p>
+                  </Stack>
+                </CardBody>
+              </Card>
+>>>>>>> main
               <br />
-                    Details about upcoming events will go here.
+              Details about upcoming events will go here.
             </CardBody>
           </Card>
         </Box>
