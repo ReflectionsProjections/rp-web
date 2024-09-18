@@ -16,7 +16,6 @@ import {
 import { Config } from "../../config.ts";
 import axios from "axios";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import { useCallback } from 'react';
 
 function EventCheckin() {
   const toast = useToast();
