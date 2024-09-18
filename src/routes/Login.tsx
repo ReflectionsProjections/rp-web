@@ -1,10 +1,10 @@
 import rpLogo from '../assets/rp_logo.svg';
 import '../App.css';
 
-import '@fontsource/roboto-slab'
-import '@fontsource/nunito'
+import '@fontsource/roboto-slab';
+import '@fontsource/nunito';
 
-import { Box, Button, Flex, Heading, Image, Text, VStack, Center, HStack, useMediaQuery } from '@chakra-ui/react';
+import { Box, Button, Flex, Image, Text, VStack, Center, HStack, useMediaQuery } from '@chakra-ui/react';
 
 export default function Login() {
   const [isMedium] = useMediaQuery("(max-width: 850px)");
