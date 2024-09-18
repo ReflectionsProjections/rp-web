@@ -126,7 +126,7 @@ function EventCheckin() {
       .then((response) => {
         const userId = response.data;
         setUserId(userId);
-        showQuickToast(`Checked ${attendeeName} into event!`, false);
+        showQuickToast(`Succesfully checked into event!`, false);
       })
       .catch((err) => {
         console.log(err.response);
