@@ -23,6 +23,7 @@ function EventCheckin() {
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
+  const [qrData, setQrData] = useState("");
   const [filteredEmails, setFilteredEmails] = useState<{ email: string; userId: string }[]>([]);
   const [attendeeEmails, setAttendeeEmails] = useState<{ email: string; userId: string }[]>([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
@@ -49,52 +50,42 @@ function EventCheckin() {
     });
   };
 
-  // Fetch all attendee emails + userIds upon loading the page
   useEffect(() => {
-    const fetchAttendeeEmails = async () => {
-      const jwt = localStorage.getItem("jwt");
-      axios
-        .get(Config.API_BASE_URL + '/attendee/emails', {
-          headers: {
-            Authorization: jwt,
-          },
-        })
-        .then(function (response) {
-          const attendeeData = response.data;
-          setAttendeeEmails(attendeeData);
-        })
-        .catch(function () {
-          showToast('Error fetching attendee emails + info.', true);
-        });
+    const jwt = localStorage.getItem("jwt");
 
-    };
+    axios
+      .get(Config.API_BASE_URL + '/attendee/emails', {
+        headers: {
+          Authorization: jwt,
+        },
+      })
+      .then(function (response) {
+        const attendeeData = response.data;
+        setAttendeeEmails(attendeeData);
+      })
+      .catch(function () {
+        showToast('Error fetching attendee emails + info.', true);
+      });
 
-    fetchAttendeeEmails();
+    axios
+      .get(Config.API_BASE_URL + "/events", {
+        headers: {
+          Authorization: jwt,
+        },
+      })
+      .then(function (response) {
+        const eventData = response.data;
+        setEvents(eventData);
+      })
+      .catch(function () {
+        showToast("Error fetching events.", true);
+      });
   }, []);
 
-  // Fetch all events to display on the right side of the screen
   useEffect(() => {
-    const fetchEvents = async () => {
-      const jwt = localStorage.getItem("jwt");
-      axios
-        .get(Config.API_BASE_URL + "/events", {
-          headers: {
-            Authorization: jwt,
-          },
-        })
-        .then(function (response) {
-          const eventData = response.data;
-          setEvents(eventData);
-        })
-        .catch(function () {
-          showToast("Error fetching events.", true);
-        });
-    };
-
-    fetchEvents();
-  }, []);
-
-  const getUser = async (userId: string) => {
+    if (userId == "") {
+      return;
+    }
     const jwt = localStorage.getItem("jwt");
     axios
       .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
@@ -102,40 +93,52 @@ function EventCheckin() {
           Authorization: jwt,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         const user = response.data;
         setAttendeeName(user["name"]);
         console.log("NAME: ", attendeeName);
       })
-      .catch(function () {
+      .catch((err) =>  {
+        console.log(err);
         showToast('Error fetching attendee.', true);
       });
-  };
+  }, [userId])
 
-  // Handle QR code scanner
-  const handleScan = (data: string, event: string|null, eventId: string|null) => {
-    if (!event) {
+
+  // Handle scan
+  useEffect(() => {
+    if (qrData == "") {
+      console.log("NO QR DATA")
+      return;
+    }
+
+    if (!selectedEvent) {
       showToast('Please select an event to check in attendees to!', true);
       return;
     }
 
     const jwt = localStorage.getItem("jwt");
-    console.log(event, eventId);
     axios
-      .post(Config.API_BASE_URL + "/checkin/scan/staff", { eventId: eventId, qrCode: data }, {
+      .post(Config.API_BASE_URL + "/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData }, {
         headers: {
           Authorization: jwt,
         },
       })
-      .then(function (response) {
+      .then((response) => {
         const userId = response.data;
-        getUser(userId);
+        setUserId(userId);
         showQuickToast(`Checked ${attendeeName} into event!`, false)
       })
-      .catch(function () {
-        showQuickToast('Could not check in attendee to event. Please try again.', true)
+      .catch((err) => {
+        console.log(err.response);
+        if (err.response.status == 403) {
+          showQuickToast('Attendee has already checked in.', true)
+        } else {
+          showQuickToast('Woah there, something went wrong! Find dev team please :/', true)
+        }
       });
-  };
+    setQrData("");
+  }, [qrData]);
 
   // Handle the search as the user types
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -178,7 +181,7 @@ function EventCheckin() {
     }
 
     const userId = selectedAttendee.userId;
-    getUser(userId);
+    setUserId(userId);
 
     const jwt = localStorage.getItem("jwt");
     axios
@@ -188,10 +191,11 @@ function EventCheckin() {
         },
       })
       .then(function () {
-        showQuickToast(`Checked ${attendeeName} into event!`, false)
+        showQuickToast(`Succesfully checked into event!`, false)
       })
-      .catch(function () {
+      .catch(function (error) {
         showQuickToast('Could not check in attendee to event. Please try again.', true)
+        console.log(error);
       });
   };
 
@@ -217,9 +221,10 @@ function EventCheckin() {
           {showWebcam ? (
             <>
               <Scanner allowMultiple={true} onScan={(result) => {
-                const data = result[0].rawValue;
-                console.log("QR CO"result[0].rawValue);
-                handleScan(data, selectedEvent, selectedEventId);
+                // const data = result[0].rawValue;
+                // console.log("QR CO"result[0].rawValue);
+                // handleScan(data, selectedEvent, selectedEventId);
+                setQrData(result[0].rawValue)
               }} />;
             </>
           ) : (
@@ -289,7 +294,7 @@ function EventCheckin() {
                   borderRadius="md"
                   _hover={{ bg: "gray.100", cursor: "pointer", color: "black" }}
                   onClick={() => {
-                    console.log("CLICKED");
+                    setQrData("");
                     setSelectedEvent(event["name"]);
                     setSelectedEventId(event["eventId"]);
                   }}
