@@ -206,7 +206,7 @@ function EventCheckin() {
       <Flex>
         {/* Left Side: Webcam or Email input */}
         <Box flex="1" p={4} mr={4}>
-          <FormControl display="flex" alignItems="center" mb={4}>
+          <FormControl display="flex" alignItems="center" mb={4} mt="0)">
             <FormLabel htmlFor="toggle-webcam" mb="0">
               Show Webcam
             </FormLabel>
@@ -218,14 +218,11 @@ function EventCheckin() {
           </FormControl>
 
           {showWebcam ? (
-            <>
-              <Scanner allowMultiple={true} onScan={(result) => {
-                // const data = result[0].rawValue;
-                // console.log("QR CO"result[0].rawValue);
-                // handleScan(data, selectedEvent, selectedEventId);
+            <Box>
+              <Scanner allowMultiple={true} styles={{}} onScan={(result) => {
                 setQrData(result[0].rawValue);
               }} />;
-            </>
+            </ Box>
           ) : (
             <FormControl>
               <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
