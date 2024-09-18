@@ -1160,7 +1160,12 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.57.0.tgz#a5417ae8427873f1dd08b70b3574b453e67b5f7f"
   integrity sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==
 
-"@fontsource/roboto-slab@^5.1.0":
+"@fontsource/nunito@^5.0.18":
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/nunito/-/nunito-5.1.0.tgz#545e703b2c0b6015a34748f628f6027e89ffb611"
+  integrity sha512-+FuA/uyHXZPHAgNOmLq0GtsCAqx9IQjNnUyuGJYDl6xe+B2UIQO2pUFbWiWPfpYM7UfiPU9DBIT7s7Z9iGFoRw==
+
+"@fontsource/roboto-slab@^5.0.20":
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/@fontsource/roboto-slab/-/roboto-slab-5.1.0.tgz#e8054375ff464aa631e48e9ec5964a0a5b2bfc74"
   integrity sha512-qLqqRm5nwNVgxcfkwL7loyCZr5R5ZR0Vo5vZFgem+zrSKdufB8zQAcOFR3i3ZGnFjuQc2izWSXheY8FSqJ8UoQ==
