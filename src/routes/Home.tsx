@@ -1,6 +1,6 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
-import rpLogo from '../assets/rp_logo.png';
+import rpLogo from '../assets/rp_logo.svg';
 // import viteLogo from '/vite.svg'
 import '../App.css';
 // import axios from 'axios';

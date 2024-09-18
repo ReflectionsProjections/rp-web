@@ -7,5 +7,6 @@ export const Config = {
     "SPECIAL",
     "PARTNERS",
     "MEALS",
+    "CHECKIN",
   ]
 };
