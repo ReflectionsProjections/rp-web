@@ -42,6 +42,7 @@ export default function Login() {
         size="lg"
         fontWeight="bold"
         onClick={() => { window.location.href = "/auth/"; }}
+        fontFamily={"Roboto Slab"}
       >
         Log In
       </Button>
