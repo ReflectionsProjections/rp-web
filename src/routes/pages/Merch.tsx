@@ -327,7 +327,7 @@ function Merch() {
           </FormControl>
 
           <FormControl mb={4}>
-            <FormLabel htmlFor="attendee-name" textAlign="center">Points: {attendeePoints}</FormLabel>
+            <FormLabel htmlFor="points" textAlign="center">Points: {attendeePoints}</FormLabel>
           </FormControl>
 
           <FormControl mb={4}>
