@@ -73,7 +73,7 @@ function Events() {
     imageUrl: '',
     description: '',
     location: '',
-    eventType: 'A',
+    eventType: 'SPEAKER',
     isVisible: true
   });
 
@@ -380,9 +380,7 @@ function Events() {
               onChange={(e) => setNewEvent({ ...newEvent, eventType: e.target.value })}
               mb={4}
             >
-              <option value="A">A</option>
-              <option value="B">B</option>
-              <option value="C">C</option>
+              {Config.EVENT_TYPES.map(e => <option key={e} value={e}>{e}</option>)}
             </Select>
             <Checkbox
               isChecked={newEvent.isVisible}
