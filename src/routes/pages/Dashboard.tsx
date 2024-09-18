@@ -71,6 +71,8 @@ function EventCard({ event }: { event: { eventId: string, name: string, startTim
 function Dashboard({ name }: { name: string }) {
 
   const [currentEvent, setCurrentEvent] = useState<{ eventId: string, name: string, startTime: string, endTime: string, points: number, description: string, isVirtual: boolean, imageUrl: string, location: string, eventType: string, isVisible: boolean } | null>(null);
+  const [stats, setStats] = useState(0);
+  const [status, setStatus] = useState(0);
   const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
 
   const CustomStatBox = ({ label, number, helpText }: { label: string, number: number, helpText: string }) => {
@@ -95,8 +97,32 @@ function Dashboard({ name }: { name: string }) {
     });
   }
 
+  function getStats() {
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+      headers: {
+        Authorization: jwt
+      }
+    }).then((response) => {
+      setStats(response.data.count);
+    });
+  }
+
+  function getStatus() {
+    const jwt = localStorage.getItem("jwt");
+    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+      headers: {
+        Authorization: jwt
+      }
+    }).then((response) => {
+      setStatus(response.data.count);
+    });
+  }
+
   useEffect(() => {
     getUpcomingEvent();
+    getStats();
+    getStatus();
   }, []);
   
   
@@ -141,8 +167,8 @@ function Dashboard({ name }: { name: string }) {
                     </Stack> */}
               <Box mt={0}>
                 <StatGroup>
-                  <CustomStatBox label='Checked-In' number={694} helpText='' />
-                  <CustomStatBox label='Priority Status' number={120} helpText='' />
+                  <CustomStatBox label='Checked-In' number={stats} helpText='' />
+                  <CustomStatBox label='Priority Status' number={status} helpText='' />
                 </StatGroup>
               </Box>
             </CardBody>
