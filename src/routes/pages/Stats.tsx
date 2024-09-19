@@ -141,14 +141,23 @@ function Stats() {
     setInputEventAttendance(parseInt(valueAsString));
 
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/attendance/:" + numEvents, {
+    axios.get(Config.API_BASE_URL + "/stats/attendance/" + numEvents, {
       headers: {
         Authorization: jwt
       }
     })
       .then(function (response) {
-        console.log(response.data.attendanceCounts.length);
-        setEventAttendance(response.data.attendanceCounts.length);
+        console.log(response.data.attendanceCounts);
+        let sum = 0;
+
+        // Sum the first numEvents elements
+        for (let i = 0; i < Math.min(numEvents, response.data.attendanceCounts.length); i++) {
+          if (typeof response.data.attendanceCounts[i] === 'number') {
+            sum += response.data.attendanceCounts[i];
+          }
+        }
+    
+        setEventAttendance(sum);
       })
       .catch(function (error) {
         console.log(error);
