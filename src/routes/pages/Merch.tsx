@@ -351,15 +351,6 @@ function Merch() {
               Button
             </Checkbox>
             <Checkbox
-              name="Cap"
-              isChecked={hasMerch.Cap}
-              onChange={handleCheckboxChange}
-              isDisabled={!eligibleMerch.Cap}
-              ml={4}
-            >
-              Cap
-            </Checkbox>
-            <Checkbox
               name="ToteBag"
               isChecked={hasMerch.ToteBag}
               onChange={handleCheckboxChange}
@@ -367,6 +358,15 @@ function Merch() {
               ml={4}
             >
               Tote Bag
+            </Checkbox>
+            <Checkbox
+              name="Cap"
+              isChecked={hasMerch.Cap}
+              onChange={handleCheckboxChange}
+              isDisabled={!eligibleMerch.Cap}
+              ml={4}
+            >
+              Cap
             </Checkbox>
           </FormControl>
 
