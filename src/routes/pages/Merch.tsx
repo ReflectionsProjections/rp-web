@@ -12,13 +12,15 @@ import {
   ListItem,
   Switch,
   useToast,
-  Text
+  Text,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { Config } from "../../config.ts";
 import axios from "axios";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
 function Merch() {
+  const [isSmall] = useMediaQuery("(max-width: 600px)");
   const toast = useToast();
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
@@ -244,7 +246,7 @@ function Merch() {
     <Box flex="1" minW="90vw" p={4}>
       <Heading size="lg">Merch</Heading>
       <br />
-      <Flex>
+      <Flex direction={isSmall ? 'column' : 'row'}>
         {/* Left Side: Webcam or Email input */}
         <Box flex="1" p={4} mr={4}>
           <FormControl display="flex" alignItems="center" mb={4}>

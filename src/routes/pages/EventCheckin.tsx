@@ -11,13 +11,17 @@ import {
   ListItem,
   Switch,
   useToast,
-  Text
+  Text,
+  useMediaQuery
 } from "@chakra-ui/react";
 import { Config } from "../../config.ts";
 import axios from "axios";
 import { Scanner } from "@yudiel/react-qr-scanner";
 
 function EventCheckin() {
+
+  const [isSmall] = useMediaQuery("(max-width: 600px)");
+
   const toast = useToast();
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
@@ -201,11 +205,11 @@ function EventCheckin() {
 
   return <>
     <Box flex="1" minW="90vw" p={4}>
-      <Heading size="lg">Merch</Heading>
+      <Heading size="lg">Event Checkin</Heading>
       <br />
-      <Flex>
+      <Flex direction={isSmall ? 'column' : 'row'}>
         {/* Left Side: Webcam or Email input */}
-        <Box flex="1" p={4} mr={4}>
+        <Box flex="1"  p={4} mr={4}>
           <FormControl display="flex" alignItems="center" mb={4} mt="0)">
             <FormLabel htmlFor="toggle-webcam" mb="0">
               Show Webcam
