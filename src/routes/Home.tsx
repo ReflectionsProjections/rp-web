@@ -34,6 +34,7 @@ import Merch from './pages/Merch';
 import React from 'react';
 import EventCheckin from './pages/EventCheckin';
 import StaffAttendanceDetails from './pages/StaffAttendanceDetails';
+import Attendance from './pages/Attendance';
 
 interface JwtPayload {
     roles: string[];
@@ -50,7 +51,7 @@ const Links = (): string[] => {
   const decodedToken = jwtDecode(jwt) as JwtPayload;
 
   if (decodedToken.roles.includes("ADMIN")) {
-    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Event Checkin', 'Merch'];
+    return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Event Checkin', 'Merch', 'Attendance'];
   } else if (decodedToken.roles.includes("STAFF")) {
     return ['Dashboard', 'Stats', 'Events', 'Event Checkin', 'Merch'];
   }
@@ -137,6 +138,8 @@ export default function Home() {
         return <Merch/>;
       case 'Event Checkin':
         return <EventCheckin/>;
+      case 'Attendance':
+        return <Attendance/>;
       default:
         return <Dashboard name={userName}/>;
       }
