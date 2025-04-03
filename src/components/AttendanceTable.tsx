@@ -139,8 +139,8 @@ type AttendanceTableProps = {
 const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, handleStaffSelect }) => {
   const [meetingDate, setMeetingDate] = useState(meetingDates[0]);
 
-  const handleMeetingDateChange: React.ChangeEventHandler<HTMLSelectElement> = (event) => {
-    setMeetingDate(event.target.value);
+  const handleMeetingDateChange = (date: string) => {
+    setMeetingDate(date);
   }
 
   // TODO: switch from selects to menus
@@ -151,13 +151,18 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
           <Tr>
             <Th>Name</Th>
             <Th>
-              <Select variant="flushed" value={meetingDate} onChange={handleMeetingDateChange}>
-                {meetingDates.map((date, index) => {
-                  return (
-                    <option key={index} value={date}>{date}</option>
-                  )
-                })}
-              </Select>
+              <Menu>
+                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} >
+                  {meetingDate}
+                </MenuButton>
+                <MenuList>
+                  {meetingDates.map((date, index) => {
+                    return (
+                      <MenuItem key={index} onClick={() => handleMeetingDateChange(date)}>{date}</MenuItem>
+                    )
+                  })}
+                </MenuList>
+              </Menu>
             </Th>
             <Th>Attendance</Th>
           </Tr>
