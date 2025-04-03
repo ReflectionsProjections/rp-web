@@ -119,7 +119,7 @@ const AttendanceBox = () => {
         </VStack>)
         : (
           <Flex justify="center">
-            <Tabs size="lg" minW="50vw">
+            <Tabs size="lg" minW="60vw">
               <TabList justifyContent="center">
                 <Tab>Full Team</Tab>
                 <Tab>Design</Tab>
@@ -209,14 +209,14 @@ type AttendanceBarProps = {
 
 const AttendanceBar: React.FC<AttendanceBarProps> = ({ present, absent, excused }) => {
   const total = present + absent + excused;
-  const minPercent = 5;
+  const minPercent = 10;
 
   const presentPercent = present == 0 ? 0 : Math.max((present / total) * 100 || 0, minPercent);
   const absentPercent = absent == 0 ? 0 : Math.max((absent / total) * 100 || 0, minPercent);
   const excusedPercent = excused == 0 ? 0 : Math.max((excused / total) * 100 || 0, minPercent);
 
   return (
-    <Flex w="200px" h="20px" borderRadius="md" overflow="hidden" border="1px solid #ccc">
+    <Flex w="25vw" h="20px" borderRadius="md" overflow="hidden" border="1px solid #ccc">
       <Tooltip label={`${present} Present`} hasArrow>
         <Box w={`${presentPercent}%`} bg="green.400" h="full" />
       </Tooltip>
