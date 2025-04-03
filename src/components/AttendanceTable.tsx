@@ -1,5 +1,5 @@
-import { Box, Button, Flex, HStack, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tr, useDisclosure, useMediaQuery, VStack } from "@chakra-ui/react"
-import { useMemo, useState } from "react";
+import { Box, Button, Flex, HStack, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useMediaQuery, VStack } from "@chakra-ui/react"
+import React, { useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 
@@ -25,6 +25,18 @@ const staff = [
   {
     name: "Design Team 1",
     team: "design"
+  },
+  {
+    name: "Content Team 1",
+    team: "content"
+  },
+  {
+    name: "Marketing Team 1",
+    team: "marketing"
+  },
+  {
+    name: "Corporate Team 1",
+    team: "corporate"
   }
 ];
 
@@ -107,8 +119,8 @@ const AttendanceBox = () => {
         </VStack>)
         : (
           <Flex justify="center">
-            <Tabs size="lg">
-              <TabList>
+            <Tabs size="lg" minW="50vw">
+              <TabList justifyContent="center">
                 <Tab>Full Team</Tab>
                 <Tab>Design</Tab>
                 <Tab>Dev</Tab>
@@ -149,7 +161,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
       <Table variant='simple' size="lg">
         <Thead>
           <Tr>
-            <Th>Name</Th>
+            <Th minW="15vw">Name</Th>
             <Th>
               <Menu>
                 <MenuButton as={Button} rightIcon={<ChevronDownIcon />} >
@@ -179,7 +191,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
                     <option>🔵 Excused</option>
                   </Select>
                 </Td>
-                <Td>attendance data</Td>
+                <Td><AttendanceBar present={500} absent={1} excused={1000} /></Td>
               </Tr>
             )
           })}
@@ -188,5 +200,35 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
     </TableContainer>
   )
 }
+
+type AttendanceBarProps = {
+  present: number;
+  absent: number;
+  excused: number
+};
+
+const AttendanceBar: React.FC<AttendanceBarProps> = ({ present, absent, excused }) => {
+  const total = present + absent + excused;
+  const minPercent = 5;
+
+  const presentPercent = present == 0 ? 0 : Math.max((present / total) * 100 || 0, minPercent);
+  const absentPercent = absent == 0 ? 0 : Math.max((absent / total) * 100 || 0, minPercent);
+  const excusedPercent = excused == 0 ? 0 : Math.max((excused / total) * 100 || 0, minPercent);
+
+  return (
+    <Flex w="200px" h="20px" borderRadius="md" overflow="hidden" border="1px solid #ccc">
+      <Tooltip label={`${present} Present`} hasArrow>
+        <Box w={`${presentPercent}%`} bg="green.400" h="full" />
+      </Tooltip>
+      <Tooltip label={`${absent} Absent`} hasArrow>
+        <Box w={`${absentPercent}%`} bg="red.400" h="full" />
+      </Tooltip>
+      <Tooltip label={`${excused} Excused`} hasArrow>
+        <Box w={`${excusedPercent}%`} bg="blue.400" h="full" />
+      </Tooltip>
+    </Flex>
+  );
+};
+
 
 export default AttendanceBox;
