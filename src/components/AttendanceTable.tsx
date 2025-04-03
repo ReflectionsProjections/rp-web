@@ -1,4 +1,4 @@
-import { Box, Button, Flex, HStack, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useMediaQuery, VStack } from "@chakra-ui/react"
+import { Box, Button, Flex, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useMediaQuery } from "@chakra-ui/react"
 import React, { useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -6,15 +6,6 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 type StaffType = {
   name: string;
   team: string;
-}
-
-const teamNames = {
-  full: "Full Team",
-  design: "Design",
-  dev: "Dev",
-  content: "Content",
-  marketing: "Marketing",
-  corporate: "Corporate"
 }
 
 const staff = [
@@ -42,7 +33,6 @@ const staff = [
 
 const AttendanceBox = () => {
   const [isSmall] = useMediaQuery('(max-width: 768px)');
-  const [selectedTeam, setSelectedTeam] = useState<keyof typeof teamNames>("full");
   const [selectedStaff, setSelectedStaff] = useState(staff[0]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -65,58 +55,15 @@ const AttendanceBox = () => {
 
   const dates = ["3/29", "3/24"];
 
-  const [date, setDate] = useState(dates[0]);
-
   return (
     <>
       <AttendanceModal isOpen={isOpen} onClose={onClose} staff={selectedStaff} />
 
       {isSmall
-        ? (<VStack gap="2rem">
-          <HStack w="100%" justifyContent="center">
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                {teamNames[selectedTeam]}
-              </MenuButton>
-              <MenuList>
-                {Object.entries(teamNames).map(([teamId, teamName]) => {
-                  return (<MenuItem onClick={() => setSelectedTeam(teamId as keyof typeof teamNames)}>{teamName}</MenuItem>)
-                })}
-              </MenuList>
-            </Menu>
-            <Menu>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                {date}
-              </MenuButton>
-              <MenuList>
-                {dates.map((date, index) => {
-                  return (
-                    <MenuItem key={index} onClick={() => setDate(date)}>{date}</MenuItem>
-                  )
-                })}
-              </MenuList>
-            </Menu>
-          </HStack>
-          <VStack align="stretch">
-            {staffTeams[selectedTeam].map((staffMember, index) => {
-              return (<HStack key={index} onClick={() => handleStaffSelect(staffMember)}>
-                <Box minW="200px">
-                  <h3>{staffMember.name}</h3>
-                </Box>
-                <Menu>
-                  <MenuButton as={Button} rightIcon={<ChevronDownIcon />} onClick={(event) => event.stopPropagation()}>
-                    🔴
-                  </MenuButton>
-                  <MenuList onClick={(event) => event.stopPropagation()}>
-                    <MenuItem>🔴 Absent</MenuItem>
-                    <MenuItem>🟢 Present</MenuItem>
-                    <MenuItem>🔵 Excused</MenuItem>
-                  </MenuList>
-                </Menu>
-              </HStack>)
-            })}
-          </VStack>
-        </VStack>)
+        ? (
+          // Mobile stuff here
+          <></>
+        )
         : (
           <Flex justify="center">
             <Tabs size="lg" minW="60vw">

@@ -1,5 +1,3 @@
-import { Badge, Box, Flex, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react"
-
 type StaffType = {
   name: string;
   team: string;
@@ -11,25 +9,10 @@ type AttendanceModalProps = {
   staff?: StaffType
 }
 
-const AttendanceModal: React.FC<AttendanceModalProps> = ({ isOpen, onClose, staff }) => {
+const AttendanceModal: React.FC<AttendanceModalProps> = () => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
-          <Flex alignItems="center">
-            <Box>{staff?.name}</Box>
-            {staff?.team && (
-              <Badge ml={2} colorScheme="blue">{staff.team}</Badge>
-            )}
-          </Flex>
-        </ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-
-        </ModalBody>
-      </ModalContent>
-    </Modal>
+    // Modal stuff here
+    <></>
   )
 }
 
