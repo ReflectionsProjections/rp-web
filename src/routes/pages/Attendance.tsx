@@ -1,21 +1,15 @@
-import {
-  Box,
-  Flex,
-  Heading,
-} from '@chakra-ui/react';
+import { Box, Heading } from '@chakra-ui/react';
+import AttendanceBox from '../../components/AttendanceTable';
     
-function Notifications() {
-      
+const Attendance = () => {
   return (
-    <Box flex="1" minW='90vw' p={4}>
-      <Heading size="lg">Attendance</Heading>
-      <br />
-      <Flex justify="center">
-          
-      </Flex>
-    </Box>
-  );
+      <Box flex="1" minW='90vw' p={4}>
+        <Heading size="lg">Attendance</Heading>
+        <br />
+        <AttendanceBox />
+      </Box>
+    );
 }
     
     
-export default Notifications;
+export default Attendance;
