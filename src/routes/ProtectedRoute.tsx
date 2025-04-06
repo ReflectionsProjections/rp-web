@@ -1,10 +1,5 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
-
-interface JwtPayload {
-  roles: string[];
-  exp: number; // in seconds
-}
+import { verifyJwt } from '../util/jwt';
 
 const ProtectedRoute = () => {
   const jwt = localStorage.getItem('jwt');
@@ -14,9 +9,9 @@ const ProtectedRoute = () => {
     return <Navigate to='/auth'/>;
   }
 
-  const decodedToken = jwtDecode(jwt) as JwtPayload;
+  const decodedToken = verifyJwt(jwt);
   
-  if (decodedToken.exp < Date.now() / 1000) {
+  if (decodedToken === null) {
     localStorage.removeItem("jwt");
     return <Navigate to='/auth' />;
   }

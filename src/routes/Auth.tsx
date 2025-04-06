@@ -1,15 +1,34 @@
 import { Navigate } from "react-router-dom";
 import { Config } from "../config";
 import { jwtDecode } from "jwt-decode";
+import { verifyJwt } from "../util/jwt";
 
 const POST_AUTH_URL = "/home/";
 const BAD_AUTH_URL = "/unauthorized/";
+
+const DEV_JWT = import.meta.env.VITE_DEV_JWT;
 
 export default function Auth() {
   interface JwtPayload {
     roles: string[];
   }
-  
+
+  if (DEV_JWT) {
+    const decoded = verifyJwt(DEV_JWT);
+
+    if (decoded === null) {
+      alert('DEV_JWT is invalid or expired');
+      return;
+    }
+
+    if (!decoded.roles || !decoded.roles.includes('ADMIN')) {
+      alert('DEV_JWT does not have ADMIN role');
+      return;
+    }
+
+    localStorage.setItem('jwt', DEV_JWT);
+  }
+
   let jwt = localStorage.getItem("jwt");
   
   // JWT not in local storage
