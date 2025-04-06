@@ -25,10 +25,8 @@ import { Chart, registerables } from 'chart.js';
 // Register Chart.js components
 Chart.register(...registerables);
 
-
-import { Config } from "../../config";
-import axios from "axios";
 import React from 'react';
+import api from '../../util/api';
 
 function Stats() {
   const toast = useToast();
@@ -65,7 +63,7 @@ function Stats() {
 
     const jwt = localStorage.getItem("jwt");
 
-    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+    api.get("/stats/check-in/", {
       headers: {
         Authorization: jwt
       }
@@ -82,7 +80,7 @@ function Stats() {
         showToast("Failed to fetch check-in stats");
       });
 
-    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+    api.get("/stats/priority-attendee/", {
       headers: {
         Authorization: jwt
       }
@@ -98,7 +96,7 @@ function Stats() {
         showToast("Failed to fetch priority attendees stats");
       });
 
-    axios.get(Config.API_BASE_URL + "/stats/dietary-restrictions/", {
+    api.get("/stats/dietary-restrictions/", {
       headers: {
         Authorization: jwt
       }
@@ -118,7 +116,7 @@ function Stats() {
         console.log(error);
       });
 
-    axios.get(Config.API_BASE_URL + '/stats/merch-item/0', {
+    api.get('/stats/merch-item/0', {
       headers: {
         Authorization: jwt,
       },
@@ -141,7 +139,7 @@ function Stats() {
     setInputEventAttendance(parseInt(valueAsString));
 
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/attendance/" + numEvents, {
+    api.get("/stats/attendance/" + numEvents, {
       headers: {
         Authorization: jwt
       }
@@ -171,7 +169,7 @@ function Stats() {
     setInputEligiblePrize(parseInt(valueAsString));
 
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/merch-item/" + price, {
+    api.get("/stats/merch-item/" + price, {
       headers: {
         Authorization: jwt
       }

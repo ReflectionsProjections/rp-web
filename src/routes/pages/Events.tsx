@@ -30,10 +30,10 @@ import {
 } from '@chakra-ui/react';
 import {EditIcon, AddIcon} from "@chakra-ui/icons";
 import moment from 'moment-timezone';
-import axios from "axios";
 import {Config} from "../../config.ts";
 import React, {useEffect} from "react";
 import {jwtDecode} from "jwt-decode";
+import api from '../../util/api.ts';
 
 const readable = "MMMM Do YYYY, h:mm a";
 
@@ -78,7 +78,7 @@ function Events() {
   });
 
   const createEvent = () => {
-    axios.post(Config.API_BASE_URL + "/events", { ...newEvent, attendanceCount: 0 }, {
+    api.post("/events", { ...newEvent, attendanceCount: 0 }, {
       headers: {
         Authorization: jwt
       }
@@ -101,7 +101,7 @@ function Events() {
   };
 
   function getEvents() {
-    axios.get(Config.API_BASE_URL + "/events", {
+    api.get("/events", {
       headers: {
         Authorization: jwt
       }
@@ -126,7 +126,7 @@ function Events() {
       };
 
       const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
-      axios.put(Config.API_BASE_URL + "/events/" + event.eventId, {
+      api.put("/events/" + event.eventId, {
         ...valuesWithoutEventId
       }, {
         headers: {
@@ -231,7 +231,7 @@ function Events() {
   }
 
   const deleteEvent = (eventId: string) => {
-    axios.delete(Config.API_BASE_URL + "/events/" + eventId, {
+    api.delete("/events/" + eventId, {
       headers: {
         Authorization: jwt
       }

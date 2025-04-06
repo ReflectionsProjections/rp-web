@@ -1,6 +1,6 @@
 import { Box, Text } from '@chakra-ui/react';
-import axios from 'axios';
 import { useEffect, useState } from 'react';
+import api from '../util/api';
 
 const StatusMonitor = () => {
   const [status, setStatus] = useState<boolean>(true);
@@ -14,7 +14,7 @@ const StatusMonitor = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await axios.get('https://api.reflectionsprojections.org/status'); 
+        const response = await api.get('/status'); 
         if (response.status === 200) {
           if (!status) {
             setOfflineDuration(0); // Reset offline duration only if coming online

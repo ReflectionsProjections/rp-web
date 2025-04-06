@@ -15,9 +15,8 @@ import {
   Text,
   useMediaQuery
 } from "@chakra-ui/react";
-import { Config } from "../../config.ts";
-import axios from "axios";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import api from "../../util/api.ts";
 
 function Merch() {
   const [isSmall] = useMediaQuery("(max-width: 600px)");
@@ -65,8 +64,8 @@ function Merch() {
   useEffect(() => {
     const fetchAttendeeEmails = async () => {
       const jwt = localStorage.getItem("jwt");
-      axios
-        .get(Config.API_BASE_URL + '/attendee/emails', {
+      api
+        .get('/attendee/emails', {
           headers: {
             Authorization: jwt,
           },
@@ -86,8 +85,8 @@ function Merch() {
 
   const getUser = (userId: string) => {
     const jwt = localStorage.getItem("jwt");
-    axios
-      .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
+    api
+      .get(`/attendee/id/${userId}`, {
         headers: {
           Authorization: jwt,
         },
@@ -128,8 +127,8 @@ function Merch() {
   // Handle QR code scanner
   const handleScan = (data: string) => {
     const jwt = localStorage.getItem("jwt");
-    axios
-      .post(Config.API_BASE_URL + "/checkin/scan/merch", {qrCode: data}, {
+    api
+      .post("/checkin/scan/merch", {qrCode: data}, {
         headers: {
           Authorization: jwt,
         },
@@ -189,7 +188,7 @@ function Merch() {
   const handleSubmit = async () => {
     const jwt = localStorage.getItem("jwt");
     if (!redeemedMerch.Tshirt && eligibleMerch.Tshirt && hasMerch.Tshirt) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tshirt", { userId: userId }, {
+      api.post("/attendee/redeemMerch/Tshirt", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
@@ -202,7 +201,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Button", { userId: userId }, {
+      api.post("/attendee/redeemMerch/Button", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
@@ -215,7 +214,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.Cap && eligibleMerch.Cap && hasMerch.Cap) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Cap", { userId: userId }, {
+      api.post("/attendee/redeemMerch/Cap", { userId: userId }, {
         headers: {
           Authorization: jwt
         },
@@ -228,7 +227,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.ToteBag && eligibleMerch.ToteBag && hasMerch.ToteBag) {
-      axios.post(Config.API_BASE_URL + "/attendee/redeemMerch/Tote", { userId: userId }, {
+      api.post("/attendee/redeemMerch/Tote", { userId: userId }, {
         headers: {
           Authorization: jwt
         },

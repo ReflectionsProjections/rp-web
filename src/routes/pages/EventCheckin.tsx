@@ -14,9 +14,8 @@ import {
   Text,
   useMediaQuery
 } from "@chakra-ui/react";
-import { Config } from "../../config.ts";
-import axios from "axios";
 import { Scanner } from "@yudiel/react-qr-scanner";
+import api from "../../util/api.ts";
 
 function EventCheckin() {
 
@@ -56,8 +55,8 @@ function EventCheckin() {
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
 
-    axios
-      .get(Config.API_BASE_URL + '/attendee/emails', {
+    api
+      .get('/attendee/emails', {
         headers: {
           Authorization: jwt,
         },
@@ -70,8 +69,8 @@ function EventCheckin() {
         showToast('Error fetching attendee emails + info.', true);
       });
 
-    axios
-      .get(Config.API_BASE_URL + "/events", {
+    api
+      .get("/events", {
         headers: {
           Authorization: jwt,
         },
@@ -90,8 +89,8 @@ function EventCheckin() {
       return;
     }
     const jwt = localStorage.getItem("jwt");
-    axios
-      .get(Config.API_BASE_URL + `/attendee/id/${userId}`, {
+    api
+      .get(`/attendee/id/${userId}`, {
         headers: {
           Authorization: jwt,
         },
@@ -121,8 +120,8 @@ function EventCheckin() {
     }
 
     const jwt = localStorage.getItem("jwt");
-    axios
-      .post(Config.API_BASE_URL + "/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData }, {
+    api
+      .post("/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData }, {
         headers: {
           Authorization: jwt,
         },
@@ -187,8 +186,8 @@ function EventCheckin() {
     setUserId(userId);
 
     const jwt = localStorage.getItem("jwt");
-    axios
-      .post(Config.API_BASE_URL + "/checkin/event", { eventId: selectedEventId, userId: userId }, {
+    api
+      .post("/checkin/event", { eventId: selectedEventId, userId: userId }, {
         headers: {
           Authorization: jwt,
         },

@@ -22,9 +22,8 @@ import {
 import rpLogo from '../../assets/rp_logo.svg';
 import StatusMonitor from '../../components/StatusMonitor';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Config } from '../../config';
 import moment from 'moment-timezone';
+import api from '../../util/api';
 
 const readable = "MMMM Do YYYY, h:mm a";
 
@@ -93,7 +92,7 @@ function Dashboard({ name }: { name: string }) {
 
   function getUpcomingEvent() {
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/events/currentOrNext", {
+    api.get("/events/currentOrNext", {
       headers: {
         Authorization: jwt
       }
@@ -105,7 +104,7 @@ function Dashboard({ name }: { name: string }) {
 
   function getStats() {
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
+    api.get("/stats/check-in/", {
       headers: {
         Authorization: jwt
       }
@@ -116,7 +115,7 @@ function Dashboard({ name }: { name: string }) {
 
   function getStatus() {
     const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
+    api.get("/stats/priority-attendee/", {
       headers: {
         Authorization: jwt
       }

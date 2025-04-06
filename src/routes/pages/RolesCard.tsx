@@ -12,10 +12,8 @@ import {
   Input,
   useToast,
 } from '@chakra-ui/react';
-
-import axios from 'axios';
 import React from 'react';
-import { Config } from '../../config';
+import api from '../../util/api';
 
 function RolesCard({ role }: { role: string }) {
   const toast = useToast();
@@ -36,7 +34,7 @@ function RolesCard({ role }: { role: string }) {
 
     const jwt = localStorage.getItem("jwt");
 
-    axios.get(Config.API_BASE_URL + "/auth/" + role, {
+    api.get("/auth/" + role, {
       headers: {
         Authorization: jwt
       }
@@ -66,7 +64,7 @@ function RolesCard({ role }: { role: string }) {
     const jwt = localStorage.getItem("jwt");
     
     try {
-      const response = await axios.delete(Config.API_BASE_URL + '/auth/', {
+      const response = await api.delete('/auth/', {
         data: {
           email,
           role
@@ -103,7 +101,7 @@ function RolesCard({ role }: { role: string }) {
     const jwt = localStorage.getItem("jwt");
     
     try {
-      const response = await axios.put(Config.API_BASE_URL + '/auth/', {
+      const response = await api.put('/auth/', {
         email,
         role
       }, {
