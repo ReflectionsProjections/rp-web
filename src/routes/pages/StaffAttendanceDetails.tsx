@@ -1,6 +1,6 @@
 import { CalendarIcon } from "@chakra-ui/icons";
 import { Box, Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text, useDisclosure } from "@chakra-ui/react";
-import AttendanceView, { StaffAttendance } from "../../components/Attendanceview";
+import AttendanceView, { StaffAttendance } from "../../components/AttendanceView";
 
 const DUMMY_ATTENDANCE_DATA: StaffAttendance[] = [
   // October 2023
@@ -166,7 +166,9 @@ function StaffAttendanceDetails() {
         <ModalContent px={2}>
           <ModalHeader>Ronit Anandani - Attendance</ModalHeader>
           {/* Make a rectangular box with gray background and text inside of it */}
-          <Box w={"fit-content"}  mx={6} bgColor="gray.200" p={3} borderRadius={8} mb={5}>
+          <Box w={"fit-content"}  mx={6} bgColor="gray.200" _dark={{
+            bgColor: 'gray.600'
+          }} p={3} borderRadius={8} mb={5}>
             <Text fontWeight={"medium"}>{"🖥️  Development Team"}</Text>
           </Box>
 

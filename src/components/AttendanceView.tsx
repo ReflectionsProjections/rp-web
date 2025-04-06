@@ -16,6 +16,13 @@ const ATTENDANCE_STATUS_COLORS = {
   'No Meeting': 'gray.500'
 };
 
+const ATTENDANCE_STATUS_COLORS_DARK = {
+  Absent: 'red.400',
+  Excused: 'blue.400',
+  Present: 'green.300',
+  'No Meeting': 'gray.300'
+};
+
 function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
   const [attendanceItems, setAttendanceItems] = useState<{
         [meetingType: string]: {
@@ -23,6 +30,7 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
             month: string,
             year: number,
             weekNumber: number,
+            meetingDate?: Date,
             hadMeeting: boolean,
             attendanceStatus: 'Absent' | 'Excused' | 'Present',
             isHeaderItem?: boolean
@@ -31,10 +39,15 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
 
   useEffect(() => {
     // Get the range of dates in the attendance data
-    console.log('attendanceData', attendanceData);
     const dates = attendanceData.map(item => moment(item.meetingDate));
     const startDate = moment.min(dates);
     const endDate = moment.max(dates);
+    
+    // If there are less than 8 weeks of data, make endDate 8 weeks after startDate
+    const weeksDifference = endDate.diff(startDate, 'weeks');
+    if (weeksDifference < 8) {
+      endDate.add(8 - weeksDifference, 'weeks');
+    }
 
     // Get unique meeting types
     const meetingTypes = Array.from(new Set(attendanceData.map(item => item.meetingType)));
@@ -46,6 +59,7 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
                 month: string,
                 year: number,
                 weekNumber: number,
+                meetingDate?: Date,
                 hadMeeting: boolean,
                 attendanceStatus: 'Absent' | 'Excused' | 'Present',
                 isHeaderItem?: boolean
@@ -77,6 +91,7 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
           month,
           year: currentDate.year(),
           weekNumber,
+          meetingDate: meetingInWeek?.meetingDate, 
           hadMeeting: !!meetingInWeek,
           attendanceStatus: meetingInWeek ? meetingInWeek.attendanceStatus : 'Absent'
         });
@@ -118,26 +133,33 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
     date: string,
     month: string,
     year: number,
+    meetingDate?: Date,
     weekNumber: number,
     hadMeeting: boolean,
     attendanceStatus: 'Absent' | 'Excused' | 'Present',
     isHeaderItem?: boolean
   } }) => {
-    const formattedDate = moment(item.date).format('MMMM D, YYYY');
+    const formattedDate = item.meetingDate ? moment(item.meetingDate).format('MMMM D, YYYY') : '';
     const status = item.hadMeeting ? item.attendanceStatus : "No Meeting";
     const statusColor = ATTENDANCE_STATUS_COLORS[status as keyof typeof ATTENDANCE_STATUS_COLORS];
+    const darkStatusColor = ATTENDANCE_STATUS_COLORS_DARK[status as keyof typeof ATTENDANCE_STATUS_COLORS_DARK];
         
     return (
       <VStack spacing={1} align="left" p={1}>
         <Text fontWeight="bold">{formattedDate}</Text>
         <Text>{meetingType}</Text>
-        <Text color={statusColor} fontWeight="medium">{status}</Text>
+        <Text color={statusColor} _dark={{
+          color: darkStatusColor
+        }} fontWeight="medium">{status}</Text>
       </VStack>
     );
   };
 
   return (
-    <Box overflowX={"auto"} mx={6} px={4} py={4} pb={6} bgColor={"gray.50"} borderColor="gray.200" borderWidth={1} borderRadius={"10px"}>
+    <Box overflowX={"auto"} mx={6} px={4} py={4} pb={6} bgColor='gray.50' _dark={{
+      bg: 'gray.800',
+      borderColor: 'gray.500'
+    }} borderColor="gray.200" borderWidth={1} borderRadius={"10px"}>
       {/* Show the dates at the top */}
       <Box mb={2} display="flex" gap={0}>
         <Box minWidth={"200px"} width={"200px"} fontWeight="bold"></Box>
@@ -159,11 +181,16 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
               <Tooltip 
                 key={index}
                 label={<TooltipContent meetingType={meetingType} item={item} />}
+                isDisabled={!item.hadMeeting}
                 placement="top"
-                hasArrow
                 bg="white"
                 color="black"
                 borderColor="gray.200"
+                _dark={{
+                  bg: 'gray.700',
+                  color: 'white',
+                  borderColor: 'gray.600'
+                }}
                 borderWidth="1px"
               >
                 <Box 
@@ -172,13 +199,18 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
                   minWidth={"40px"}
                   minHeight={"40px"}
                   bgColor={item.hadMeeting ? ATTENDANCE_STATUS_COLORS[item.attendanceStatus] : 'gray.300'} 
+                  _dark={{
+                    bg: item.hadMeeting ? ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus] : 'gray.600'
+                  }}
                   p={2} 
                   borderRadius="sm" 
                   mb={0.5}
                   mr={0.5}
                   display="flex"
                   justifyContent="space-between"
-                  cursor="pointer">
+                  cursor={
+                    item.hadMeeting ? 'pointer' : 'not-allowed'
+                  }>
                 </Box>
               </Tooltip>
             ))}
