@@ -60,35 +60,35 @@ const Stats = () => {
           justify="space-between" 
           textAlign="center"
         >
-          <VStack spacing={1} width="20%">
+          <VStack spacing={1} width={{ base: "auto", md: "20%"}}>
             <Heading as="h3" size="xl" fontWeight="bold">
               <AnimatedCounter value='2000' after='+'/>
             </Heading>
             <Text>attendees</Text>
           </VStack>
           
-          <VStack spacing={1} width="20%">
+          <VStack spacing={1} width={{ base: "auto", md: "20%"}}>
             <Heading as="h3" size="xl" fontWeight="bold">
               <AnimatedCounter value='30' after='+'/>
             </Heading>
             <Text>years</Text>
           </VStack>
           
-          <VStack spacing={1} width="20%">
+          <VStack spacing={1} width={{ base: "auto", md: "20%"}}>
             <Heading as="h3" size="xl" fontWeight="bold">
               <AnimatedCounter value='50' after='+'/>
             </Heading>
             <Text>companies</Text>
           </VStack>
           
-          <VStack spacing={1} width="20%">
+          <VStack spacing={1} width={{ base: "auto", md: "20%"}}>
             <Heading as="h3" size="xl" fontWeight="bold">
               <AnimatedCounter value='20' after='+'/>
             </Heading>
             <Text>speakers</Text>
           </VStack>
           
-          <VStack spacing={1} width="20%">
+          <VStack spacing={1} width={{ base: "auto", md: "20%"}}>
             <Heading as="h3" size="xl" fontWeight="bold">
               <AnimatedCounter value='20' after='+'/>
             </Heading>
