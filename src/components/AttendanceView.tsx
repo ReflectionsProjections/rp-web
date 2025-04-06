@@ -3,7 +3,6 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 
 export interface StaffAttendance {
-    // TODO: We most likely need a staff member ID and first/last name here
     meetingType: string, // Full-Team, Dev Team, etc.
     meetingDate: Date,
     attendanceStatus: 'Absent' | 'Excused' | 'Present',
@@ -23,18 +22,23 @@ const ATTENDANCE_STATUS_COLORS_DARK = {
   'No Meeting': 'gray.300'
 };
 
+interface AttendanceItem {
+    weekInfo: {
+      month: string,
+      year: number,
+      weekNumber: number,
+      startOfWeekDate: string,
+    },
+    meetingDate?: Date,
+    hadMeeting: boolean,
+    attendanceStatus: 'Absent' | 'Excused' | 'Present',
+    isHeaderItem?: boolean,
+    isCurrentWeek?: boolean 
+}
+
 function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
   const [attendanceItems, setAttendanceItems] = useState<{
-        [meetingType: string]: {
-            date: string,
-            month: string,
-            year: number,
-            weekNumber: number,
-            meetingDate?: Date,
-            hadMeeting: boolean,
-            attendanceStatus: 'Absent' | 'Excused' | 'Present',
-            isHeaderItem?: boolean
-        }[]
+        [meetingType: string]: AttendanceItem[]
     }>({});
 
   useEffect(() => {
@@ -54,16 +58,7 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
         
     // Initialize the attendance items object
     const newAttendanceItems: {
-            [meetingType: string]: {
-                date: string,
-                month: string,
-                year: number,
-                weekNumber: number,
-                meetingDate?: Date,
-                hadMeeting: boolean,
-                attendanceStatus: 'Absent' | 'Excused' | 'Present',
-                isHeaderItem?: boolean
-            }[]
+            [meetingType: string]: AttendanceItem[]
         } = {};
 
     // Initialize each meeting type with an empty array
@@ -87,13 +82,16 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
 
         // Add entry for this week, whether there was a meeting or not
         newAttendanceItems[meetingType].push({
-          date: currentDate.format('YYYY-MM-DD'),
-          month,
-          year: currentDate.year(),
-          weekNumber,
+          weekInfo: {
+            startOfWeekDate: currentDate.format('YYYY-MM-DD'),
+            month,
+            year: currentDate.year(),
+            weekNumber,
+          },
           meetingDate: meetingInWeek?.meetingDate, 
           hadMeeting: !!meetingInWeek,
-          attendanceStatus: meetingInWeek ? meetingInWeek.attendanceStatus : 'Absent'
+          attendanceStatus: meetingInWeek ? meetingInWeek.attendanceStatus : 'Absent',
+          isCurrentWeek: currentDate.isSame(moment(), 'week'),
         });
       });
             
@@ -111,14 +109,13 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
     for (let i = 0; i < newAttendanceItems[meetingTypeNames[0]].length; i++) {
       const item = newAttendanceItems[meetingTypeNames[0]][i];
       if (i == 0) {
-        if (item.weekNumber < 2) {
+        if (item.weekInfo.weekNumber < 2) {
           newAttendanceItems[meetingTypeNames[0]][i].isHeaderItem = true;
         }
         continue;
       }
       const previousItem = newAttendanceItems[meetingTypeNames[0]][i - 1];
-      console.log('item', item.month);
-      if ((item.month != previousItem.month) && (!previousItem.isHeaderItem )) {
+      if ((item.weekInfo.month != previousItem.weekInfo.month) && (!previousItem.isHeaderItem )) {
         newAttendanceItems[meetingTypeNames[0]][i].isHeaderItem = true;
       }
     }
@@ -128,17 +125,7 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
 
   const meetingTypes = Object.keys(attendanceItems);
 
-  // Custom tooltip component
-  const TooltipContent = ({ meetingType, item }: { meetingType: string, item: {
-    date: string,
-    month: string,
-    year: number,
-    meetingDate?: Date,
-    weekNumber: number,
-    hadMeeting: boolean,
-    attendanceStatus: 'Absent' | 'Excused' | 'Present',
-    isHeaderItem?: boolean
-  } }) => {
+  const TooltipContent = ({ meetingType, item }: { meetingType: string, item: AttendanceItem }) => {
     const formattedDate = item.meetingDate ? moment(item.meetingDate).format('MMMM D, YYYY') : '';
     const status = item.hadMeeting ? item.attendanceStatus : "No Meeting";
     const statusColor = ATTENDANCE_STATUS_COLORS[status as keyof typeof ATTENDANCE_STATUS_COLORS];
@@ -156,66 +143,73 @@ function AttendanceView({attendanceData}: {attendanceData: StaffAttendance[]}) {
   };
 
   return (
-    <Box overflowX={"auto"} mx={6} px={4} py={4} pb={6} bgColor='gray.50' _dark={{
+    <Box mx={6} px={4} py={4} pb={6} bgColor='gray.50' _dark={{
       bg: 'gray.800',
       borderColor: 'gray.500'
-    }} borderColor="gray.200" borderWidth={1} borderRadius={"10px"}>
-      {/* Show the dates at the top */}
-      <Box mb={2} display="flex" gap={0}>
-        <Box minWidth={"200px"} width={"200px"} fontWeight="bold"></Box>
-        {attendanceItems[meetingTypes[0]]?.map((item, index) => (
-          <Box w={"40px"} minW={"40px"} key={index} mr={0.5}>
-            {((item.isHeaderItem)) ? (
-              <Text fontSize={"14px"} whiteSpace="nowrap">{`${item.month} ${item.year}`}</Text>
-            ) : (
-              <></>
-            )}
+    }} borderColor="gray.200" borderWidth={1} borderRadius={"10px"} display="flex">
+      <Box width={"170px"} minWidth={"170px"} pt={"28px"}> 
+        {meetingTypes.map(meetingType => (
+          <Box fontWeight="bold" h={"40px"} verticalAlign={"center"} alignItems={"center"} display="flex">
+            <Text>{meetingType}</Text>
           </Box>
         ))}
       </Box>
-      <Box>
-        {meetingTypes.map(meetingType => (
-          <Box key={meetingType} mb={0} display="flex" gap={0}>
-            <Box width={"200px"} minWidth={"200px"} fontWeight="bold">{meetingType}</Box>
-            {attendanceItems[meetingType].map((item, index) => (
-              <Tooltip 
-                key={index}
-                label={<TooltipContent meetingType={meetingType} item={item} />}
-                isDisabled={!item.hadMeeting}
-                placement="top"
-                bg="white"
-                color="black"
-                borderColor="gray.200"
-                _dark={{
-                  bg: 'gray.700',
-                  color: 'white',
-                  borderColor: 'gray.600'
-                }}
-                borderWidth="1px"
-              >
-                <Box 
-                  w={"40px"}
-                  h={"40px"}
-                  minWidth={"40px"}
-                  minHeight={"40px"}
-                  bgColor={item.hadMeeting ? ATTENDANCE_STATUS_COLORS[item.attendanceStatus] : 'gray.300'} 
+      <Box overflowX={"auto"} flex={1}>
+        <Box h={"28px"} display="flex" gap={0}>
+          {attendanceItems[meetingTypes[0]]?.map((item, index) => (
+            <Box w={"40px"} minW={"40px"} key={index} mr={0.5}>
+              {((item.isHeaderItem)) ? (
+                <Text fontSize={"14px"} whiteSpace="nowrap">{`${item.weekInfo.month} ${item.weekInfo.year}`}</Text>
+              ) : (
+                <></>
+              )}
+            </Box>
+          ))}
+        </Box>
+        <Box  bgColor="gray.200" _dark={{
+          bg: 'gray.600'  
+        }} width={"100%"}>
+          {meetingTypes.map(meetingType => (
+            <Box key={meetingType} mb={0} display="flex" gap={0}>
+              {attendanceItems[meetingType].map((item, index) => (
+                <Tooltip 
+                  key={index}
+                  label={<TooltipContent meetingType={meetingType} item={item} />}
+                  placement="top"
+                  bg="white"
+                  color="black"
+                  borderColor="gray.200"
                   _dark={{
-                    bg: item.hadMeeting ? ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus] : 'gray.600'
+                    bg: 'gray.700',
+                    color: 'white',
+                    borderColor: 'gray.600'
                   }}
-                  p={2} 
-                  borderRadius="sm" 
-                  mb={0.5}
-                  mr={0.5}
-                  display="flex"
-                  justifyContent="space-between"
-                  cursor={
-                    item.hadMeeting ? 'pointer' : 'not-allowed'
-                  }>
-                </Box>
-              </Tooltip>
-            ))}
-          </Box>
-        ))}
+                  borderWidth="1px"
+                >
+                  <Box 
+                    w={"40px"}
+                    h={"40px"}
+                    minWidth={"40px"}
+                    minHeight={"40px"}
+                    bgColor={item.hadMeeting ? ATTENDANCE_STATUS_COLORS[item.attendanceStatus] : 'gray.300'} 
+                    _dark={{
+                      bg: item.hadMeeting ? ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus] : 'gray.600'
+                    }}
+                    p={2} 
+                    borderRadius="sm" 
+                    mb={0.5}
+                    mr={0.5}
+                    display="flex"
+                    justifyContent="space-between"
+                    cursor={
+                      item.hadMeeting ? 'pointer' : 'not-allowed'
+                    }>
+                  </Box>
+                </Tooltip>
+              ))}
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Box>
   );

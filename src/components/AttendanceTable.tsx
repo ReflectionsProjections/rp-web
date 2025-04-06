@@ -1,4 +1,4 @@
-import { Box, Button, Flex, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useMediaQuery } from "@chakra-ui/react"
+import { Box, Button, Flex, Menu, MenuButton, MenuItem, MenuList, Select, Tab, Table, TableContainer, TabList, TabPanel, TabPanels, Tabs, Tbody, Td, Th, Thead, Tooltip, Tr, useDisclosure, useMediaQuery } from "@chakra-ui/react";
 import React, { useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
@@ -40,7 +40,7 @@ const AttendanceBox = () => {
   const handleStaffSelect = (staff: StaffType) => {
     setSelectedStaff(staff);
     onOpen();
-  }
+  };
 
   const staffTeams = useMemo(() => {
     return {
@@ -50,8 +50,8 @@ const AttendanceBox = () => {
       content: staff.filter((member) => member.team === "content"),
       marketing: staff.filter((member) => member.team === "marketing"),
       corporate: staff.filter((member) => member.team === "corporate"),
-    }
-  }, [staff])
+    };
+  }, []);
 
   const dates = ["3/29", "3/24"];
 
@@ -79,15 +79,15 @@ const AttendanceBox = () => {
                 {Object.values(staffTeams).map((team) => {
                   return (<TabPanel>
                     <AttendanceTable staff={team} meetingDates={dates} handleStaffSelect={handleStaffSelect} />
-                  </TabPanel>)
+                  </TabPanel>);
                 })}
               </TabPanels>
             </Tabs>
           </Flex>
         )}
     </>
-  )
-}
+  );
+};
 
 type AttendanceTableProps = {
   staff: StaffType[]; // TODO: change to an API type
@@ -100,7 +100,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
 
   const handleMeetingDateChange = (date: string) => {
     setMeetingDate(date);
-  }
+  };
 
   // TODO: switch from selects to menus
   return (
@@ -118,7 +118,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
                   {meetingDates.map((date, index) => {
                     return (
                       <MenuItem key={index} onClick={() => handleMeetingDateChange(date)}>{date}</MenuItem>
-                    )
+                    );
                   })}
                 </MenuList>
               </Menu>
@@ -140,13 +140,13 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
                 </Td>
                 <Td><AttendanceBar present={500} absent={1} excused={1000} /></Td>
               </Tr>
-            )
+            );
           })}
         </Tbody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
 type AttendanceBarProps = {
   present: number;
