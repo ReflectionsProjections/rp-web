@@ -57,6 +57,7 @@ const Stats = () => {
 
         <Flex 
           direction={{ base: 'column', md: 'row' }} 
+          gap={{ base: 8, md: 0 }}
           justify="space-between" 
           textAlign="center"
         >
