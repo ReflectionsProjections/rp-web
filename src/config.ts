@@ -8,5 +8,5 @@ export const Config = {
     "PARTNERS",
     "MEALS",
     "CHECKIN",
-  ]
+  ],
 };
