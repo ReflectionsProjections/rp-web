@@ -91,35 +91,20 @@ function Dashboard({ name }: { name: string }) {
   };
 
   function getUpcomingEvent() {
-    const jwt = localStorage.getItem("jwt");
-    api.get("/events/currentOrNext", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(function (response) {
+    api.get("/events/currentOrNext").then(function (response) {
       // console.log(response.data);
       setCurrentEvent(response.data);
     });
   }
 
   function getStats() {
-    const jwt = localStorage.getItem("jwt");
-    api.get("/stats/check-in/", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then((response) => {
+    api.get("/stats/check-in/").then((response) => {
       setStats(response.data.count);
     });
   }
 
   function getStatus() {
-    const jwt = localStorage.getItem("jwt");
-    api.get("/stats/priority-attendee/", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then((response) => {
+    api.get("/stats/priority-attendee/").then((response) => {
       setStatus(response.data.count);
     });
   }

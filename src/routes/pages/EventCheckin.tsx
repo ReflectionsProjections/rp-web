@@ -53,14 +53,8 @@ function EventCheckin() {
   };
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-
     api
-      .get('/attendee/emails', {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .get('/attendee/emails')
       .then(function (response) {
         const attendeeData = response.data;
         setAttendeeEmails(attendeeData);
@@ -70,11 +64,7 @@ function EventCheckin() {
       });
 
     api
-      .get("/events", {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .get("/events")
       .then(function (response) {
         const eventData = response.data;
         setEvents(eventData);
@@ -88,13 +78,9 @@ function EventCheckin() {
     if (userId == "") {
       return;
     }
-    const jwt = localStorage.getItem("jwt");
+
     api
-      .get(`/attendee/id/${userId}`, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .get(`/attendee/id/${userId}`)
       .then((response) => {
         const user = response.data;
         setAttendeeName(user["name"]);
@@ -119,13 +105,8 @@ function EventCheckin() {
       return;
     }
 
-    const jwt = localStorage.getItem("jwt");
     api
-      .post("/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData }, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .post("/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData })
       .then((response) => {
         const userId = response.data;
         setUserId(userId);
@@ -185,13 +166,8 @@ function EventCheckin() {
     const userId = selectedAttendee.userId;
     setUserId(userId);
 
-    const jwt = localStorage.getItem("jwt");
     api
-      .post("/checkin/event", { eventId: selectedEventId, userId: userId }, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .post("/checkin/event", { eventId: selectedEventId, userId: userId })
       .then(function () {
         showQuickToast(`Succesfully checked into event!`, false);
       })

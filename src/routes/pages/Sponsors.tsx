@@ -23,12 +23,7 @@ function CorporateCard() {
   };
 
   const refreshSponsors = async () => {
-    const jwt = localStorage.getItem("jwt");
-    api.get("/auth/corporate", {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/auth/corporate")
       .then(function (response) {
         const sponsorData = response.data.map((item: Record<string, string>) => ({
           name: item.name,
@@ -52,14 +47,9 @@ function CorporateCard() {
   }, []);
 
   const removeFromRole = async (email: string) => {
-    const jwt = localStorage.getItem("jwt");
-
     try {
       const response = await api.delete('/auth/corporate/',
         {
-          headers: {
-            Authorization: jwt
-          },
           data: {
             "email": email,
           }
@@ -92,14 +82,8 @@ function CorporateCard() {
   };
 
   const addToRole = async (name:string, email: string) => {
-    const jwt = localStorage.getItem("jwt");
-
     try {
-      const response = await api.post('/auth/corporate', {name: name, email: email}, {
-        headers: {
-          Authorization: jwt
-        }
-      });
+      const response = await api.post('/auth/corporate', {name: name, email: email});
 
       console.log('User role updated:', response.data);
       showToast(email + ' User Role updated: Now Corporate role', false);

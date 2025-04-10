@@ -61,13 +61,7 @@ function Stats() {
     // setCheckInStats(694);
     // setPriorityAttendees(120);
 
-    const jwt = localStorage.getItem("jwt");
-
-    api.get("/stats/check-in/", {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/stats/check-in/")
       .then(function (response) {
         // handle success
         console.log("Check-In Response:", response.data);
@@ -80,11 +74,7 @@ function Stats() {
         showToast("Failed to fetch check-in stats");
       });
 
-    api.get("/stats/priority-attendee/", {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/stats/priority-attendee/")
       .then(function (response) {
         // handle success
         console.log(response.data.count);
@@ -96,11 +86,7 @@ function Stats() {
         showToast("Failed to fetch priority attendees stats");
       });
 
-    api.get("/stats/dietary-restrictions/", {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/stats/dietary-restrictions/")
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -116,11 +102,7 @@ function Stats() {
         console.log(error);
       });
 
-    api.get('/stats/merch-item/0', {
-      headers: {
-        Authorization: jwt,
-      },
-    })
+    api.get('/stats/merch-item/0')
       .then((response) => {
         setEligiblePrize(response.data.count);
       })
@@ -138,12 +120,7 @@ function Stats() {
     console.log("events num: ", numEvents);
     setInputEventAttendance(parseInt(valueAsString));
 
-    const jwt = localStorage.getItem("jwt");
-    api.get("/stats/attendance/" + numEvents, {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/stats/attendance/" + numEvents)
       .then(function (response) {
         console.log(response.data.attendanceCounts);
         let sum = 0;
@@ -168,12 +145,7 @@ function Stats() {
     console.log("PRICE: ", price);
     setInputEligiblePrize(parseInt(valueAsString));
 
-    const jwt = localStorage.getItem("jwt");
-    api.get("/stats/merch-item/" + price, {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/stats/merch-item/" + price)
       .then(function (response) {
         console.log(response.data.count);
         setEligiblePrize(response.data.count);

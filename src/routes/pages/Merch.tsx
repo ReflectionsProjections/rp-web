@@ -63,13 +63,8 @@ function Merch() {
   // Fetch all attendee emails + userIds upon loading the page
   useEffect(() => {
     const fetchAttendeeEmails = async () => {
-      const jwt = localStorage.getItem("jwt");
       api
-        .get('/attendee/emails', {
-          headers: {
-            Authorization: jwt,
-          },
-        })
+        .get('/attendee/emails')
         .then(function (response) {
           const attendeeData = response.data;
           setAttendeeEmails(attendeeData);
@@ -84,13 +79,8 @@ function Merch() {
   }, []);
 
   const getUser = (userId: string) => {
-    const jwt = localStorage.getItem("jwt");
     api
-      .get(`/attendee/id/${userId}`, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .get(`/attendee/id/${userId}`)
       .then(function (response) {
         const user = response.data;
 
@@ -126,13 +116,8 @@ function Merch() {
 
   // Handle QR code scanner
   const handleScan = (data: string) => {
-    const jwt = localStorage.getItem("jwt");
     api
-      .post("/checkin/scan/merch", {qrCode: data}, {
-        headers: {
-          Authorization: jwt,
-        },
-      })
+      .post("/checkin/scan/merch", {qrCode: data})
       .then(function (response) {
         const userId = response.data;
         getUser(userId);
@@ -186,13 +171,8 @@ function Merch() {
 
   // Handle submitting the merch checkin changes
   const handleSubmit = async () => {
-    const jwt = localStorage.getItem("jwt");
     if (!redeemedMerch.Tshirt && eligibleMerch.Tshirt && hasMerch.Tshirt) {
-      api.post("/attendee/redeemMerch/Tshirt", { userId: userId }, {
-        headers: {
-          Authorization: jwt
-        },
-      })
+      api.post("/attendee/redeemMerch/Tshirt", { userId: userId })
         .then(function () {
           showToast('Successfully redeemed a T-Shirt!', false);
         })
@@ -201,11 +181,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
-      api.post("/attendee/redeemMerch/Button", { userId: userId }, {
-        headers: {
-          Authorization: jwt
-        },
-      })
+      api.post("/attendee/redeemMerch/Button", { userId: userId })
         .then(function () {
           showToast('Successfully redeemed a Button!', false);
         })
@@ -214,11 +190,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.Cap && eligibleMerch.Cap && hasMerch.Cap) {
-      api.post("/attendee/redeemMerch/Cap", { userId: userId }, {
-        headers: {
-          Authorization: jwt
-        },
-      })
+      api.post("/attendee/redeemMerch/Cap", { userId: userId })
         .then(function () {
           showToast('Successfully redeemed a Cap!', false);
         })
@@ -227,11 +199,7 @@ function Merch() {
         });
     }
     if (!redeemedMerch.ToteBag && eligibleMerch.ToteBag && hasMerch.ToteBag) {
-      api.post("/attendee/redeemMerch/Tote", { userId: userId }, {
-        headers: {
-          Authorization: jwt
-        },
-      })
+      api.post("/attendee/redeemMerch/Tote", { userId: userId })
         .then(function () {
           showToast('Successfully redeemed a Tote Bag!', false);
         })

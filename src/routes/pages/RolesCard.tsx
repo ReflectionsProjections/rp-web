@@ -31,14 +31,7 @@ function RolesCard({ role }: { role: string }) {
   };
 
   const getRoles = async () => {
-
-    const jwt = localStorage.getItem("jwt");
-
-    api.get("/auth/" + role, {
-      headers: {
-        Authorization: jwt
-      }
-    })
+    api.get("/auth/" + role)
       .then(function (response) {
         // handle success
         const names = response.data.map((item: Record<string, string>) => item.email);
@@ -60,17 +53,12 @@ function RolesCard({ role }: { role: string }) {
     }
   }, [firstRender]);
 
-  const removeFromRole = async (role: string, email: string) => {
-    const jwt = localStorage.getItem("jwt");
-    
+  const removeFromRole = async (role: string, email: string) => {    
     try {
       const response = await api.delete('/auth/', {
         data: {
           email,
           role
-        },
-        headers: {
-          Authorization: jwt
         }
       });
 
@@ -97,17 +85,11 @@ function RolesCard({ role }: { role: string }) {
     ));
   };
 
-  const addToRole = async ( email: string) => {
-    const jwt = localStorage.getItem("jwt");
-    
+  const addToRole = async ( email: string) => {    
     try {
       const response = await api.put('/auth/', {
         email,
         role
-      }, {
-        headers: {
-          Authorization: jwt
-        }
       });
 
       console.log('User role updated:', response.data);

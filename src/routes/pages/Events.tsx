@@ -78,11 +78,7 @@ function Events() {
   });
 
   const createEvent = () => {
-    api.post("/events", { ...newEvent, attendanceCount: 0 }, {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(() => {
+    api.post("/events", { ...newEvent, attendanceCount: 0 }).then(() => {
       getEvents();
       setNewEvent({
         name: '',
@@ -101,11 +97,7 @@ function Events() {
   };
 
   function getEvents() {
-    api.get("/events", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(function (response) {
+    api.get("/events").then(function (response) {
       setEvents(response.data);
     });
   }
@@ -128,10 +120,6 @@ function Events() {
       const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
       api.put("/events/" + event.eventId, {
         ...valuesWithoutEventId
-      }, {
-        headers: {
-          Authorization: jwt
-        }
       }).then(() => {
         getEvents();
         onClose();
@@ -231,11 +219,7 @@ function Events() {
   }
 
   const deleteEvent = (eventId: string) => {
-    api.delete("/events/" + eventId, {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(() => {
+    api.delete("/events/" + eventId).then(() => {
       getEvents();
     });
   };
