@@ -251,7 +251,6 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
               <Td>
                 <Select
                   variant="filled"
-                  bg="#eee"
                   onClick={(event) => event.stopPropagation()}
                   size={showProgressBar ? "md" : "sm"}
                 >
