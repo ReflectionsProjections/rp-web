@@ -11,14 +11,22 @@ import {
   IconButton,
   Input,
   useToast,
+  Select,
+  Text
 } from '@chakra-ui/react';
-import React from 'react';
 import api from '../../util/api';
+import React, { useCallback } from 'react';
+
+const TEAMS = [
+  'CONTENT', 'DEVELOPMENT', 'MARKETING', 'DESIGN', 'OPERATIONS', 'ADMIN'
+];
 
 function RolesCard({ role }: { role: string }) {
   const toast = useToast();
   const [nameList, setNameList] = React.useState([]);
   const [email, setEmail] = React.useState('');
+  const [newTeam, setNewTeam] = React.useState('');
+
   const [firstRender, setFirstRender] = React.useState(true);
 
   const showToast = (message: string, error: boolean) => {
@@ -29,6 +37,10 @@ function RolesCard({ role }: { role: string }) {
       isClosable: true,
     });
   };
+
+  const handleUpdateNewTeam = useCallback((newTeam: string) => {
+    setNewTeam(newTeam);
+  }, []);
 
   const getRoles = async () => {
     api.get("/auth/" + role)
@@ -71,10 +83,33 @@ function RolesCard({ role }: { role: string }) {
     }
   };
 
+  const updateUserTeam = async (name: string, newTeam: string) => {
+    console.log('Update user team:', name, newTeam);
+    // TODO: Connect to API
+  };
+
   const renderNamesWithButtons = (role: string, names: string[]) => {
     return names.map((name) => (
       <Flex key={name} justifyContent="space-between" alignItems="center">
-        <Box>{name}</Box>
+        <Box flex={1} mr={7}>
+          <Text textAlign={"left"}>{name}</Text>
+        </Box>
+        <Select
+          flex={1}
+          placeholder="Select team"
+          value={''}
+          onChange={(e) => {
+            const selectedTeam = e.target.value;
+            if (selectedTeam !== '') {
+              updateUserTeam(name, selectedTeam);
+            }
+          }}
+          mr={2}
+        >
+          {TEAMS.map((team) => (
+            <option key={team} value={team}>{toTitleCase(team)}</option>
+          ))}
+        </Select>
         <IconButton
           size={'md'}
           icon={ <CloseIcon /> }
@@ -128,6 +163,17 @@ function RolesCard({ role }: { role: string }) {
             onChange={(e) => setEmail(e.target.value)}
             mr={2}
           />
+          <Select
+            placeholder="Select team"
+            value={newTeam}
+            onChange={(e) => handleUpdateNewTeam(e.target.value)}
+            mr={2}
+          >
+            {TEAMS.map((team) => (
+              <option key={team} value={team}>{toTitleCase(team)}</option>
+            ))}
+          </Select>
+
           <IconButton
             size={'md'}
             icon={<CheckIcon />}

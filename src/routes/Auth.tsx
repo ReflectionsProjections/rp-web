@@ -14,14 +14,14 @@ async function verifyAuth() {
   }
 
   let jwt = localStorage.getItem("jwt");
-  
+
   // JWT not in local storage
   if (!jwt) {
     console.log("not in local storage!");
     const urlSearchParams = new URLSearchParams(window.location.search);
     window.history.pushState({}, document.title, "/");
-    
-    // Check if JWT is in our query params    
+
+    // Check if JWT is in our query params
     jwt = urlSearchParams.get("token");
     if (jwt) {
       console.log("jwt in search params!");
@@ -39,9 +39,9 @@ async function verifyAuth() {
     if (roles.includes("ADMIN") || roles.includes("STAFF")) {
       return <Navigate to={POST_AUTH_URL} replace={true}/>;
     }
-    
+
     localStorage.removeItem("jwt");
-    return <Navigate to={BAD_AUTH_URL} replace={true}/>;
+    return <Navigate to={BAD_AUTH_URL} replace={true} />;
   } else {
     console.log("Redirecting to api login...");
     window.location.href = Config.API_BASE_URL + "/auth/login/admin/";
