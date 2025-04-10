@@ -30,29 +30,28 @@ import {
 } from '@chakra-ui/react';
 import {EditIcon, AddIcon} from "@chakra-ui/icons";
 import moment from 'moment-timezone';
-import axios from "axios";
 import {Config} from "../../config.ts";
-import React, {useEffect} from "react";
-import {jwtDecode} from "jwt-decode";
+import React, {useEffect, useState} from "react";
+import api from '../../util/api.ts';
 
 const readable = "MMMM Do YYYY, h:mm a";
 
-const jwt = localStorage.getItem("jwt");
+const useCanDelete = (): boolean => {
+  const [roles, setRoles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-interface JwtPayload {
-  roles: string[];
-}
+  useEffect(() => {
+    api.get("/auth/info").then((response) => {
+      setRoles(response.data.roles);
+      setLoading(false);
+    });
+  }, []);
 
-const canDelete = (): boolean => {
-  const auth = jwt !== null;
-
-  if (!auth) {
+  if (loading) {
     return false;
   }
 
-  const decodedToken = jwtDecode(jwt) as JwtPayload;
-
-  return decodedToken.roles.includes("ADMIN");
+  return roles.includes("ADMIN");
 };
 
 function convertToCST(date: string) {
@@ -78,11 +77,7 @@ function Events() {
   });
 
   const createEvent = () => {
-    axios.post(Config.API_BASE_URL + "/events", { ...newEvent, attendanceCount: 0 }, {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(() => {
+    api.post("/events", { ...newEvent, attendanceCount: 0 }).then(() => {
       getEvents();
       setNewEvent({
         name: '',
@@ -101,11 +96,7 @@ function Events() {
   };
 
   function getEvents() {
-    axios.get(Config.API_BASE_URL + "/events", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(function (response) {
+    api.get("/events").then(function (response) {
       setEvents(response.data);
     });
   }
@@ -126,12 +117,8 @@ function Events() {
       };
 
       const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
-      axios.put(Config.API_BASE_URL + "/events/" + event.eventId, {
+      api.put("/events/" + event.eventId, {
         ...valuesWithoutEventId
-      }, {
-        headers: {
-          Authorization: jwt
-        }
       }).then(() => {
         getEvents();
         onClose();
@@ -231,11 +218,7 @@ function Events() {
   }
 
   const deleteEvent = (eventId: string) => {
-    axios.delete(Config.API_BASE_URL + "/events/" + eventId, {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(() => {
+    api.delete("/events/" + eventId).then(() => {
       getEvents();
     });
   };
@@ -277,7 +260,7 @@ function Events() {
         <CardFooter>
           <Flex justifyContent="space-between" width="100%">
             <EditModal event={event} />
-            <Button colorScheme='red' onClick={onOpenDelete} isDisabled={!canDelete()}>
+            <Button colorScheme='red' onClick={onOpenDelete} isDisabled={!useCanDelete()}>
                 Delete
             </Button>
           </Flex>

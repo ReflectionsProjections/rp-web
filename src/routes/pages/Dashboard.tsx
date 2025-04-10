@@ -22,9 +22,8 @@ import {
 import rpLogo from '../../assets/rp_logo.svg';
 import StatusMonitor from '../../components/StatusMonitor';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Config } from '../../config';
 import moment from 'moment-timezone';
+import api from '../../util/api';
 
 const readable = "MMMM Do YYYY, h:mm a";
 
@@ -92,35 +91,20 @@ function Dashboard({ name }: { name: string }) {
   };
 
   function getUpcomingEvent() {
-    const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/events/currentOrNext", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then(function (response) {
+    api.get("/events/currentOrNext").then(function (response) {
       // console.log(response.data);
       setCurrentEvent(response.data);
     });
   }
 
   function getStats() {
-    const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/check-in/", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then((response) => {
+    api.get("/stats/check-in/").then((response) => {
       setStats(response.data.count);
     });
   }
 
   function getStatus() {
-    const jwt = localStorage.getItem("jwt");
-    axios.get(Config.API_BASE_URL + "/stats/priority-attendee/", {
-      headers: {
-        Authorization: jwt
-      }
-    }).then((response) => {
+    api.get("/stats/priority-attendee/").then((response) => {
       setStatus(response.data.count);
     });
   }
@@ -135,7 +119,7 @@ function Dashboard({ name }: { name: string }) {
   return (
     <Box p={4}>
       <Heading size='2xl' fontWeight='bold' mb={4} textAlign='left'>
-        Welcome, {name}!
+        {name == '' ? "Welcome!" : `Welcome, ${name}!`}
       </Heading>
 
       <Flex direction={flexDirection == 'column' ? 'column' : 'row'} justify="space-between">

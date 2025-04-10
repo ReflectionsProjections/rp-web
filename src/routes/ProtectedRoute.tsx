@@ -1,25 +1,28 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { jwtDecode } from "jwt-decode";
+import api from '../util/api';
+import { useEffect, useState } from 'react';
 
-interface JwtPayload {
-  roles: string[];
+async function verifyAuth() {
+  const response = await api.get("/auth/info");
+
+  const roles = response.data.roles;
+
+  if (roles.includes("ADMIN") || roles.includes("STAFF")) {
+    return <Outlet />;
+  }
+
+  localStorage.removeItem("jwt");
+  return <Navigate to='/unauthorized' />;
 }
 
 const ProtectedRoute = () => {
-  const jwt = localStorage.getItem('jwt');
-  const auth = jwt !== null;
-  
-  if (!auth) {
-    return <Navigate to='/auth'/>;
-  }
+  const [redirect, setRedirect] = useState<JSX.Element | null>(null);
 
-  const decodedToken = jwtDecode(jwt) as JwtPayload;
-  if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
-    return <Outlet />;
-  }
-  
+  useEffect(() => {
+    verifyAuth().then((element) => setRedirect(element));
+  }, []);
 
-  return <Navigate to='/unauthorized'/>;
+  return redirect;
 };
 
 export default ProtectedRoute;
