@@ -1,5 +1,7 @@
 import { Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
-import AttendanceView, { StaffAttendance } from "./AttendanceView";
+import moment from "moment";
+import AttendanceView from "./AttendanceView";
+import { StaffAttendance } from "./useAttendanceViewHook";
 
 type StaffType = {
   name: string;
@@ -16,89 +18,129 @@ const DUMMY_ATTENDANCE_DATA: StaffAttendance[] = [
   // October 2023
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-10-01"),
+    meetingDate: moment("2023-10-01").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-10-03"),
+    meetingDate: moment("2023-10-03").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Development Team",
+    meetingDate: moment("2023-10-04").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Development Team",
+    meetingDate: moment("2023-10-04").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Development Team",
+    meetingDate: moment("2023-10-04").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2023-10-05"),
+    meetingDate: moment("2023-10-05").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Product Team",
+    meetingDate: moment("2023-10-05").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-10-08"),
+    meetingDate: moment("2023-10-08").toDate(),
     attendanceStatus: "Absent"
   },
   {
+    meetingType: "Development Team",
+    meetingDate: moment("2023-10-08").toDate(),
+    attendanceStatus: "Absent"
+  },
+  {
+    meetingType: "Development Team",
+    meetingDate: moment("2023-10-08").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-10-09"),
+    meetingDate: moment("2023-10-09").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Full-Team",
+    meetingDate: moment("2023-10-09").toDate(),
+    attendanceStatus: "Present"
+  },
+  {
+    meetingType: "Full-Team",
+    meetingDate: moment("2023-10-09").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2023-10-12"),
+    meetingDate: moment("2023-10-12").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-10-15"),
+    meetingDate: moment("2023-10-15").toDate(),
     attendanceStatus: "Excused"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-10-17"),
+    meetingDate: moment("2023-10-17").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2023-10-19"),
+    meetingDate: moment("2023-10-19").toDate(),
     attendanceStatus: "Absent"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-10-22"),
+    meetingDate: moment("2023-10-22").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-10-24"),
+    meetingDate: moment("2023-10-24").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-10-29"),
+    meetingDate: moment("2023-10-29").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-10-31"),
+    meetingDate: moment("2023-10-31").toDate(),
     attendanceStatus: "Excused"
   },
 
   // November 2023
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-11-05"),
+    meetingDate: moment("2023-11-05").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2023-11-07"),
+    meetingDate: moment("2023-11-07").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-11-09"),
+    meetingDate: moment("2023-11-09").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-11-12"),
+    meetingDate: moment("2023-11-12").toDate(),
     attendanceStatus: "Absent"
   },
 
@@ -107,59 +149,59 @@ const DUMMY_ATTENDANCE_DATA: StaffAttendance[] = [
   // December 2023
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-12-18"),
+    meetingDate: moment("2023-12-18").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-12-19"),
+    meetingDate: moment("2023-12-19").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2023-12-21"),
+    meetingDate: moment("2023-12-21").toDate(),
     attendanceStatus: "Excused"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2023-12-26"),
+    meetingDate: moment("2023-12-26").toDate(),
     attendanceStatus: "Absent"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2023-12-28"),
+    meetingDate: moment("2023-12-28").toDate(),
     attendanceStatus: "Present"
   },
 
   // January 2024
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2024-01-02"),
+    meetingDate: moment("2024-01-02").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2024-01-04"),
+    meetingDate: moment("2024-01-04").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2024-01-07"),
+    meetingDate: moment("2024-01-07").toDate(),
     attendanceStatus: "Excused"
   },
   {
     meetingType: "Full-Team",
-    meetingDate: new Date("2024-01-09"),
+    meetingDate: moment("2024-01-09").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Product Team",
-    meetingDate: new Date("2024-01-11"),
+    meetingDate: moment("2024-01-11").toDate(),
     attendanceStatus: "Present"
   },
   {
     meetingType: "Development Team",
-    meetingDate: new Date("2024-01-14"),
+    meetingDate: moment("2024-01-14").toDate(),
     attendanceStatus: "Present"
   }
 ];
