@@ -1,31 +1,15 @@
 import { Navigate } from "react-router-dom";
 import { Config } from "../config";
-import { jwtDecode } from "jwt-decode";
-import { verifyJwt } from "../util/jwt";
+import api from "../util/api";
+import { useEffect, useState } from "react";
 
 const POST_AUTH_URL = "/home/";
 const BAD_AUTH_URL = "/unauthorized/";
 
 const DEV_JWT = import.meta.env.VITE_DEV_JWT;
 
-export default function Auth() {
-  interface JwtPayload {
-    roles: string[];
-  }
-
+async function verifyAuth() {
   if (DEV_JWT) {
-    const decoded = verifyJwt(DEV_JWT);
-
-    if (decoded === null) {
-      alert('DEV_JWT is invalid or expired');
-      return;
-    }
-
-    if (!decoded.roles || !decoded.roles.includes('ADMIN')) {
-      alert('DEV_JWT does not have ADMIN role');
-      return;
-    }
-
     localStorage.setItem('jwt', DEV_JWT);
   }
 
@@ -48,8 +32,11 @@ export default function Auth() {
   // jwt in local storage or query params
   if (jwt) {
     console.log("FOUND JWT!!!");
-    const decodedToken = jwtDecode(jwt) as JwtPayload;
-    if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
+    const response = await api.get("/auth/info");
+
+    const roles = response.data.roles;
+
+    if (roles.includes("ADMIN") || roles.includes("STAFF")) {
       return <Navigate to={POST_AUTH_URL} replace={true}/>;
     }
     
@@ -60,4 +47,14 @@ export default function Auth() {
     window.location.href = Config.API_BASE_URL + "/auth/login/admin/";
     return null;
   }
+}
+
+export default function Auth() {
+  const [redirect, setRedirect] = useState<JSX.Element | null>(null);
+
+  useEffect(() => {
+    verifyAuth().then((element) => setRedirect(element));
+  }, []);
+
+  return redirect;
 }

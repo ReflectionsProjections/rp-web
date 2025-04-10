@@ -23,35 +23,35 @@ import {
   Link
 } from '@chakra-ui/react';
 import {HamburgerIcon, CloseIcon} from '@chakra-ui/icons';
-import {ReactNode, useState} from 'react';
-import {jwtDecode} from "jwt-decode";
+import {ReactNode, useEffect, useState} from 'react';
 import Dashboard from './pages/Dashboard';
 import Stats from './pages/Stats';
 import Events from './pages/Events';
 import Roles from './pages/Roles';
 import Sponsors from './pages/Sponsors';
 import Merch from './pages/Merch';
-import React from 'react';
 import EventCheckin from './pages/EventCheckin';
 import Attendance from './pages/Attendance';
-
-interface JwtPayload {
-    roles: string[];
-}
+import api from '../util/api';
 
 const Links = (): string[] => {
-  const jwt = localStorage.getItem('jwt');
-  const auth = jwt !== null;
+  const [roles, setRoles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  if (!auth) {
+  useEffect(() => {
+    api.get("/auth/info").then((response) => {
+      setRoles(response.data.roles);
+      setLoading(false);
+    });
+  }, []);
+
+  if (loading) {
     return [];
   }
 
-  const decodedToken = jwtDecode(jwt) as JwtPayload;
-
-  if (decodedToken.roles.includes("ADMIN")) {
+  if (roles.includes("ADMIN")) {
     return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Event Checkin', 'Merch', 'Attendance'];
-  } else if (decodedToken.roles.includes("STAFF")) {
+  } else if (roles.includes("STAFF")) {
     return ['Dashboard', 'Stats', 'Events', 'Event Checkin', 'Merch'];
   }
 
@@ -88,34 +88,16 @@ const NavLink = ({children, selectedLink, onClick}: {
 );
 
 export default function Home() {
-  const [userName, setUserName] = useState('Please Sign-In');
+  const [userName, setUserName] = useState('');
   const [selectedLink, setSelectedLink] = useState('Dashboard');
   const {toggleColorMode} = useColorMode();
   const {isOpen, onOpen, onClose} = useDisclosure();
 
-    interface JwtPayload {
-        displayName: string;
-    }
-
-    const decodeToken = () => {
-      const jwt = localStorage.getItem("jwt");
-      if (jwt) {
-        const decodedToken = jwtDecode(jwt) as JwtPayload;
-        setUserName(decodedToken.displayName);
-      }
-    };
-
-    // const printToken = () => {
-    //   console.log('Home page');
-    //   const jwt = localStorage.getItem("jwt");
-    //   console.log("jwt:", jwt);
-    // }
-
-
-    React.useEffect(() => {
-      decodeToken();
+  useEffect(() => {
+    api.get("/auth/info").then((response) => {
+      setUserName(response.data.displayName);
     });
-
+  }, []);
 
     const renderComponent = () => {
       switch (selectedLink) {

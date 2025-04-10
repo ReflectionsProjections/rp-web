@@ -1,27 +1,28 @@
 import { Navigate, Outlet } from 'react-router-dom';
-import { verifyJwt } from '../util/jwt';
+import api from '../util/api';
+import { useEffect, useState } from 'react';
 
-const ProtectedRoute = () => {
-  const jwt = localStorage.getItem('jwt');
-  const auth = jwt !== null;
-  
-  if (!auth) {
-    return <Navigate to='/auth'/>;
-  }
+async function verifyAuth() {
+  const response = await api.get("/auth/info");
 
-  const decodedToken = verifyJwt(jwt);
-  
-  if (decodedToken === null) {
-    localStorage.removeItem("jwt");
-    return <Navigate to='/auth' />;
-  }
+  const roles = response.data.roles;
 
-  if (decodedToken.roles.includes("ADMIN") || decodedToken.roles.includes("STAFF")) {
+  if (roles.includes("ADMIN") || roles.includes("STAFF")) {
     return <Outlet />;
   }
-  
 
-  return <Navigate to='/unauthorized'/>;
+  localStorage.removeItem("jwt");
+  return <Navigate to='/unauthorized' />;
+}
+
+const ProtectedRoute = () => {
+  const [redirect, setRedirect] = useState<JSX.Element | null>(null);
+
+  useEffect(() => {
+    verifyAuth().then((element) => setRedirect(element));
+  }, []);
+
+  return redirect;
 };
 
 export default ProtectedRoute;

@@ -119,7 +119,7 @@ function Dashboard({ name }: { name: string }) {
   return (
     <Box p={4}>
       <Heading size='2xl' fontWeight='bold' mb={4} textAlign='left'>
-        Welcome, {name}!
+        {name == '' ? "Welcome!" : `Welcome, ${name}!`}
       </Heading>
 
       <Flex direction={flexDirection == 'column' ? 'column' : 'row'} justify="space-between">
