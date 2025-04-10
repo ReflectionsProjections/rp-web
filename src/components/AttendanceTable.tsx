@@ -90,7 +90,7 @@ const AttendanceBox = () => {
 };
 
 type AttendanceTableProps = {
-  staff: StaffType[]; // TODO: change to an API type
+  staff: StaffType[]; 
   meetingDates: string[];
   handleStaffSelect: (staff: StaffType) => void;
 }
@@ -102,7 +102,6 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({ staff, meetingDates, 
     setMeetingDate(date);
   };
 
-  // TODO: switch from selects to menus
   return (
     <TableContainer minW="lg">
       <Table variant='simple' size="lg">
