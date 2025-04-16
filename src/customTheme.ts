@@ -5,4 +5,10 @@ const config: ThemeConfig = {
   useSystemColorMode: false,
 }
 
-export const customTheme = extendTheme({ config })
+export const customTheme = extendTheme({ 
+  config, 
+  fonts: {
+    heading: "'Anonymous Pro', monospace",
+    body: "'Anonymous Pro', monospace",
+  } 
+});
