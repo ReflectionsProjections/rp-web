@@ -2,7 +2,6 @@ import { Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, Mod
 import { useEffect, useState } from "react";
 import api from "../util/api";
 import AttendanceView from "./AttendanceView";
-import { DUMMY_ATTENDANCE_DATA } from "./dummyAttendanceData";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
 
@@ -66,7 +65,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
   if (!staff) {
     return <></>;
   }
-  
+
   return (
     <Modal size={"5xl"} isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
