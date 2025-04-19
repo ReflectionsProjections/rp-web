@@ -15,7 +15,6 @@ import {
   Text,
   Image,
   Center,
-  useBreakpointValue,
   CardFooter
 } from '@chakra-ui/react';
 
@@ -78,7 +77,6 @@ function Dashboard({ name }: { name: string }) {
   const [currentEvent, setCurrentEvent] = useState<{ eventId: string, name: string, startTime: string, endTime: string, points: number, description: string, isVirtual: boolean, imageUrl: string, location: string, eventType: string, isVisible: boolean } | null>(null);
   const [stats, setStats] = useState(0);
   const [status, setStatus] = useState(0);
-  const flexDirection = useBreakpointValue({ base: 'column', md: 'row' });
 
   const CustomStatBox = ({ label, number, helpText }: { label: string, number: number, helpText: string }) => {
     return (
@@ -122,8 +120,8 @@ function Dashboard({ name }: { name: string }) {
         {name == '' ? "Welcome!" : `Welcome, ${name}!`}
       </Heading>
 
-      <Flex direction={flexDirection == 'column' ? 'column' : 'row'} justify="space-between">
-        <Box flex="1" mr={flexDirection == 'column' ? 0 : 2}>
+      <Flex direction={{ base: 'column', md: 'row' }} justify="space-between">
+        <Box flex="1" mr={{ base: 0, md: 2 }}>
           <Card>
             <CardHeader>
               <Heading size='lg'>Overall Stats</Heading>
@@ -167,7 +165,7 @@ function Dashboard({ name }: { name: string }) {
 
         </Box>
 
-        <Box flex="1" ml={flexDirection == 'column' ? 0 : 2} mt={flexDirection == 'column' ? 4 : 0}>
+        <Box flex="1" ml={{ base: 0, md: 2 }} mt={{ base: 4, md: 0 }}>
           <Card alignItems={'center'}>
             <CardHeader>
               <Heading size='lg'>Upcoming Events</Heading>
