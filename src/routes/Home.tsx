@@ -34,17 +34,7 @@ import EventCheckin from './pages/EventCheckin';
 import Attendance from './pages/Attendance';
 import api from '../util/api';
 
-const Links = (): string[] => {
-  const [roles, setRoles] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    api.get("/auth/info").then((response) => {
-      setRoles(response.data.roles);
-      setLoading(false);
-    });
-  }, []);
-
+const Links = (roles: string[], loading: boolean): string[] => {
   if (loading) {
     return [];
   }
@@ -92,6 +82,15 @@ export default function Home() {
   const [selectedLink, setSelectedLink] = useState('Dashboard');
   const {toggleColorMode} = useColorMode();
   const {isOpen, onOpen, onClose} = useDisclosure();
+  const [roles, setRoles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    api.get("/auth/info").then((response) => {
+      setRoles(response.data.roles);
+      setLoading(false);
+    });
+  }, []);
 
   useEffect(() => {
     api.get("/auth/info").then((response) => {
@@ -166,7 +165,7 @@ export default function Home() {
                 as={'nav'}
                 spacing={4}
                 display={{base: 'none', md: 'flex'}}>
-                {Links().map((link) => (
+                {Links(roles, loading).map((link) => (
                   <NavLink key={link} selectedLink={link === selectedLink}
                     onClick={() => selectNavLink(link)}>{link}</NavLink>
                 ))}
@@ -200,7 +199,7 @@ export default function Home() {
           {isOpen ? (
             <Box pb={4} display={{md: 'none'}}>
               <Stack as={'nav'} spacing={4}>
-                {Links().map((link) => (
+                {Links(roles, loading).map((link) => (
                   <NavLink key={link} onClick={() => selectNavLink(link)}
                     selectedLink={link === selectedLink}>{link}</NavLink>
                 ))}
