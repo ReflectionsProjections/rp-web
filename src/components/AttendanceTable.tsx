@@ -178,7 +178,7 @@ const AttendanceBox = () => {
             ))}
           </MenuList>
         </Menu>
-        {(!loading && (teamMeetings[selectedTeam].length === 0 || selectedTeam.length === 0)) ? <p>no meetings yet :(</p> : <AttendanceTable
+        {(!loading && (teamMeetings[selectedTeam].length === 0 || staffTeams[selectedTeam].length === 0)) ? <p>no meetings yet :(</p> : <AttendanceTable
           staff={staffTeams[selectedTeam]}
           meetings={teamMeetings[selectedTeam]}
           handleStaffSelect={handleStaffSelect}
