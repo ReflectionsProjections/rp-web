@@ -42,7 +42,7 @@ const Links = (roles: string[], loading: boolean): string[] => {
   if (roles.includes("ADMIN")) {
     return ['Dashboard', 'Stats', 'Events', 'Roles', 'Sponsors', 'Event Checkin', 'Merch', 'Attendance'];
   } else if (roles.includes("STAFF")) {
-    return ['Dashboard', 'Stats', 'Events', 'Event Checkin', 'Merch'];
+    return ['Dashboard'];
   }
 
   return [];
