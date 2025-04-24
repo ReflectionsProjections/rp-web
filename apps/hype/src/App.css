@@ -1,0 +1,158 @@
+/* Global Styles */
+body {
+  background-color: black;
+  color: white;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: "Nunito", sans-serif;
+}
+
+.app-wrapper {
+  position: relative;
+  min-height: 100vh;
+  background-color: black;
+  overflow: hidden;
+}
+
+/* Background Grid with a Stronger, Closer-Spaced Pattern */
+.background-grid {
+  min-width: 100vw;
+  min-height: 100vh;
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+
+  /* Increase line opacity, decrease spacing to 50px for a denser grid */
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.3) 2px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 2px, transparent 1px);
+  background-size: 100px 100px;
+
+  background-position: center;
+
+  /* Larger spotlight radius (250px) and more abrupt fade */
+  mask-image: radial-gradient(
+    circle 250px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+    white 0%,
+    transparent 70%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 250px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
+    white 0%,
+    transparent 70%
+  );
+
+  z-index: 2;
+}
+
+/* Main Container */
+.app-container {
+  background-color: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.gif-container {
+  position: relative;
+  width: 60vh;
+  display: flex;
+  justify-content: center;
+  top: 0;
+  overflow: hidden;
+}
+
+.centered-gif {
+  /* width: 80%; */
+  max-width: 60vh;
+  height: auto;
+  object-position: center 15%;
+  object-fit: cover;
+}
+
+.title-container {
+  margin-top: 0vh;
+  text-align: center;
+  width: 100%;
+  color: #b9b8b8;
+  z-index: 3;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowSweep {
+  0% {
+    background-position: -200%;
+  }
+  100% {
+    background-position: 200%;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 1.8s ease-out both;
+}
+
+.glow-text {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: glowSweep 14s linear infinite;
+  display: inline-block;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .gif-container {
+    top: 10vh;
+  }
+
+  .centered-gif {
+    max-width: 90%;
+    object-position: center 20%;
+  }
+
+  .title-container {
+    margin-top: 8vh;
+  }
+}
+
+@media (max-height: 600px) {
+  .gif-container {
+    top: 0vh;
+    width: 80vh;
+  }
+
+  .centered-gif {
+    max-width: 90%;
+    object-position: center 20%;
+  }
+
+  .title-container {
+    margin-top: 0vh;
+    transform: translateY(-50px);
+  }
+}
