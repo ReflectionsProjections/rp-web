@@ -1,0 +1,38 @@
+{
+  "name": "@rp/shared",
+  "version": "0.1.0",
+  "private": true,
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc -b tsconfig.json",
+    "dev": "tsc -b --watch tsconfig.json",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "verify": "yarn lint && yarn build"
+  },
+  "peerDependencies": {
+    "@chakra-ui/icons": "*",
+    "@chakra-ui/react": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@eslint/js": "*",
+    "@types/node": "*",
+    "@types/react": "*",
+    "@types/react-autocomplete": "*",
+    "@types/react-dom": "*",
+    "eslint": "*",
+    "eslint-plugin-react-hooks": "*",
+    "eslint-plugin-react-refresh": "*",
+    "globals": "*",
+    "prettier": "*",
+    "tsup": "^8.4.0",
+    "typescript": "*",
+    "typescript-eslint": "*"
+  }
+}
