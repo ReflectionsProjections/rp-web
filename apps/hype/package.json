@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build:dependencies": "yarn workspaces foreach -Rt --from @rp/template --exclude @rp/template run build",
+    "build:dependencies": "yarn workspaces foreach -Rt --from @rp/hype --exclude @rp/hype run build",
     "build": "yarn build:dependencies && vite build",
     "dev": "yarn build:dependencies && vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
