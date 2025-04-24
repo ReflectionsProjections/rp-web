@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "yarn workspaces foreach -tAp run build",
-    "verify": "yarn workspaces foreach -tAp run verify && npx prettier . --check",
+    "verify": "yarn workspaces foreach -tAp run verify",
     "format": "npx prettier . --write",
     "lint-staged:workspaces": "yarn workspaces foreach --exclude \"rp-web\" --since -tp run verify && npx prettier . --check",
     "prepare": "husky"
