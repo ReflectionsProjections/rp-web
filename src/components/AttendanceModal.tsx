@@ -32,7 +32,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
     setLoading(true);
     const meetings = await api.get('/meetings/');
     const meetingsData = meetings.data as Meeting[];
-    console.log('meetingsData', meetingsData);
     const newStaffAttendances: StaffAttendance[] = [];
     for (const meeting of meetingsData) {
       const meetingId = meeting.meetingId;
@@ -46,8 +45,6 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
         attendanceStatus
       });
     }
-
-    console.log('newStaffAttendances', newStaffAttendances);
 
     setStaffAttendances(newStaffAttendances);
     setLoading(false);

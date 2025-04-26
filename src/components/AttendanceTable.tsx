@@ -30,7 +30,7 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import api from "../util/api";
 
 export type AttendanceStatus = 'ABSENT' | 'PRESENT' | 'EXCUSED';
-export type AttendanceType = 'ABSENT' | 'PRESENT' | 'EXCUSED' | undefined;
+export type AttendanceType = AttendanceStatus | undefined;
 type TeamType = 'FULL TEAM' | 'DESIGN' | 'DEV' | 'CONTENT' | 'MARKETING' | 'CORPORATE';
 
 const Teams: TeamType[] = ['FULL TEAM', 'DESIGN', 'DEV', 'CONTENT', 'MARKETING', 'CORPORATE'];
