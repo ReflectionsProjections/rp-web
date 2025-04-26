@@ -31,7 +31,7 @@ import api from "../util/api";
 
 export type AttendanceStatus = 'ABSENT' | 'PRESENT' | 'EXCUSED';
 export type AttendanceType = AttendanceStatus | undefined;
-type TeamType = 'FULL TEAM' | 'DESIGN' | 'DEV' | 'CONTENT' | 'MARKETING' | 'CORPORATE';
+export type TeamType = 'FULL TEAM' | 'DESIGN' | 'DEV' | 'CONTENT' | 'MARKETING' | 'CORPORATE';
 
 const Teams: TeamType[] = ['FULL TEAM', 'DESIGN', 'DEV', 'CONTENT', 'MARKETING', 'CORPORATE'];
 
@@ -59,16 +59,6 @@ type ParsedMeeting = {
   committeeType: TeamType;
   startTime: Date;
 }
-
-export const TEAM_DISPLAY_NAME: Record<TeamType, String>  = {
-  'DEV': '💻 Development Team',
-  'DESIGN': '🎨 Design Team',
-  'CONTENT': '📝 Content Team',
-  'MARKETING': '📢 Marketing Team',
-  'CORPORATE': '💼 Corporate Team',
-  'FULL TEAM': '👥 Full Team',
-};
-
 
 const meetingSortFunction = ({ startTime: a }: { startTime: Date }, { startTime: b }: { startTime: Date }) => { return b.getTime() - a.getTime(); };
 

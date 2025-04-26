@@ -4,7 +4,16 @@ import api from "../util/api";
 import AttendanceView from "./AttendanceView";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
-import { Staff, TEAM_DISPLAY_NAME } from "./AttendanceTable";
+import { Staff, TeamType } from "./AttendanceTable";
+
+const TEAM_DISPLAY_NAME: Record<TeamType, string>  = {
+  'DEV': '💻 Development Team',
+  'DESIGN': '🎨 Design Team',
+  'CONTENT': '📝 Content Team',
+  'MARKETING': '📢 Marketing Team',
+  'CORPORATE': '💼 Corporate Team',
+  'FULL TEAM': '👥 Full Team',
+};
 
 type AttendanceModalProps = {
   isOpen: boolean;
@@ -59,7 +68,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
       <ModalContent px={2}>
         <ModalHeader>{staff.name} - Attendance</ModalHeader>
         {staffTeamDisplayName && (
-          <Box w={"fit-content"}  mx={6} bgColor="gray.200" _dark={{
+          <Box w={"fit-content"} mx={6} bgColor="gray.200" _dark={{
             bgColor: 'gray.600'
           }} p={3} borderRadius={8} mb={5}>
             <Text fontWeight={"medium"}>{staffTeamDisplayName}</Text>
