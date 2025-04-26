@@ -60,6 +60,16 @@ type ParsedMeeting = {
   startTime: Date;
 }
 
+export const TEAM_DISPLAY_NAME: Record<TeamType, String>  = {
+  'DEV': '💻 Development Team',
+  'DESIGN': '🎨 Design Team',
+  'CONTENT': '📝 Content Team',
+  'MARKETING': '📢 Marketing Team',
+  'CORPORATE': '💼 Corporate Team',
+  'FULL TEAM': '👥 Full Team',
+};
+
+
 const meetingSortFunction = ({ startTime: a }: { startTime: Date }, { startTime: b }: { startTime: Date }) => { return b.getTime() - a.getTime(); };
 
 const teamTypeToDisplayText = (team: TeamType) => {

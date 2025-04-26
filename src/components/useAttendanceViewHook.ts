@@ -149,7 +149,7 @@ export const useAttendanceViewHook = (
 
   React.useEffect(() => {
     handleLoadData();
-  }, []);
+  }, [attendanceData]);
 
   return{
     weeksData

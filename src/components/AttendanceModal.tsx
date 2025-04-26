@@ -4,7 +4,7 @@ import api from "../util/api";
 import AttendanceView from "./AttendanceView";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
-import { Staff } from "./AttendanceTable";
+import { Staff, TEAM_DISPLAY_NAME } from "./AttendanceTable";
 
 type AttendanceModalProps = {
   isOpen: boolean;
@@ -12,21 +12,13 @@ type AttendanceModalProps = {
   staff?: Staff
 }
 
-const TEAM_DISPLAY_NAME = {
-  'dev': '💻 Development Team',
-  'design': '🎨 Design Team',
-  'content': '📝 Content Team',
-  'marketing': '📢 Marketing Team',
-  'corporate': '💼 Corporate Team'
-};
-
 const AttendanceModal: React.FC<AttendanceModalProps> = ({
   isOpen, onClose, staff
 }) => {
   const [loading, setLoading] = useState(false);
   const [staffAttendances, setStaffAttendances] = useState<StaffAttendance[]>([]);
 
-  const staffTeamDisplayName = TEAM_DISPLAY_NAME[staff?.team as keyof typeof TEAM_DISPLAY_NAME] || '';
+  const staffTeamDisplayName = staff?.team ? TEAM_DISPLAY_NAME[staff.team] : '';
 
   const handleLoadStaffAttendances = async () => {
     setLoading(true);
@@ -34,16 +26,19 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
     const meetingsData = meetings.data as Meeting[];
     const newStaffAttendances: StaffAttendance[] = [];
     for (const meeting of meetingsData) {
-      const meetingId = meeting.meetingId;
       const committeeType = meeting.committeeType;
-      const startTime = meeting.startTime;
-      const attendanceStatus = staff?.attendances?.[meetingId] || 'ABSENT';
-      newStaffAttendances.push({
-        meetingId,
-        committeeType,
-        meetingDate: moment(startTime).toDate(),
-        attendanceStatus
-      });
+      if (committeeType == staff?.team || committeeType == 'FULL TEAM') {
+        const meetingId = meeting.meetingId;
+
+        const startTime = meeting.startTime;
+        const attendanceStatus = staff?.attendances?.[meetingId];
+        newStaffAttendances.push({
+          meetingId,
+          committeeType,
+          meetingDate: moment(startTime).toDate(),
+          attendanceStatus
+        });
+      }
     }
 
     setStaffAttendances(newStaffAttendances);
@@ -52,7 +47,7 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
 
   useEffect(() => {
     handleLoadStaffAttendances();
-  }, []);
+  }, [staff]);
 
   if (!staff) {
     return <></>;

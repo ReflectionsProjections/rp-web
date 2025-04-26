@@ -6,9 +6,12 @@ const BOX_SIZE_PX = `${BOX_SIZE}px`;
 
 const TooltipContent = ({ committeeType, item }: { committeeType: string, item: AttendanceItem }) => {
   const formattedDate = item.meetingDate ? moment(item.meetingDate).format('MMMM D, YYYY') : '';
-  const status = item.attendanceStatus;
+  const status = item.attendanceStatus ?? 'Attendance not recorded';
   const statusColor = ATTENDANCE_STATUS_COLORS[status as keyof typeof ATTENDANCE_STATUS_COLORS];
   const darkStatusColor = ATTENDANCE_STATUS_COLORS_DARK[status as keyof typeof ATTENDANCE_STATUS_COLORS_DARK];
+
+  // Statuses are capitalized, so we need to format them
+  const capitalCasedStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
 
   return (
     <VStack spacing={1} align="left" p={1}>
@@ -16,7 +19,7 @@ const TooltipContent = ({ committeeType, item }: { committeeType: string, item: 
       <Text>{committeeType}</Text>
       <Text color={statusColor} _dark={{
         color: darkStatusColor
-      }} fontWeight="medium">{status}</Text>
+      }} fontWeight="medium">{capitalCasedStatus}</Text>
     </VStack>
   );
 };
@@ -43,7 +46,6 @@ const AttendanceSubBox = ({ item, committeeType }: { item: AttendanceItem, commi
         _dark={{
           bgColor: item.attendanceStatus ? ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus] : 'gray.300'
         }} 
-        _hover={{ bgColor: "gray.500" }}
         display="flex"
         justifyContent="space-between"
         borderRadius="sm"
@@ -130,7 +132,6 @@ const AttendanceBox = ({ id, weekData, committeeType }: { id: string, weekData: 
 function AttendanceView({attendanceData, loading}: {attendanceData: StaffAttendance[], loading: boolean}) {
   const attendanceViewHook = useAttendanceViewHook(attendanceData);
   const committeeTypes = Object.keys(attendanceViewHook.weeksData);
-
 
   return (
     <Skeleton isLoaded={!loading}>
