@@ -1,5 +1,6 @@
 import moment from "moment";
 import React from "react";
+import { AttendanceStatus, AttendanceType } from "./AttendanceTable";
 
 export interface Meeting {
   meetingId: string,
@@ -12,28 +13,26 @@ export interface StaffAttendance {
   meetingId: string,
   committeeType: string,
   meetingDate: Date,
-  attendanceStatus: 'Present' | 'Excused' | 'Absent'
+  attendanceStatus: AttendanceType
 }
 
-export const ATTENDANCE_STATUS_COLORS = {
-  Absent: 'red.400',
-  Excused: 'blue.500',
-  Present: 'green.400',
-  'No Meeting': 'gray.500'
+export const ATTENDANCE_STATUS_COLORS: Record<AttendanceStatus, string> = {
+  'ABSENT': 'red.400',
+  'EXCUSED': 'blue.500',
+  'PRESENT': 'green.400',
 };
 
-export const ATTENDANCE_STATUS_COLORS_DARK = {
-  Absent: 'red.400',
-  Excused: 'blue.400',
-  Present: 'green.300',
-  'No Meeting': 'gray.300'
+export const ATTENDANCE_STATUS_COLORS_DARK: Record<AttendanceStatus, string> = {
+  'ABSENT': 'red.400',
+  'EXCUSED': 'blue.400',
+  'PRESENT': 'green.300',
 };
 
 export const BOX_SIZE = 60;
 
 export interface AttendanceItem {
     meetingDate?: Date,
-    attendanceStatus: 'Absent' | 'Excused' | 'Present',
+    attendanceStatus: AttendanceType,
 }
 
 export interface WeekData {

@@ -4,21 +4,12 @@ import api from "../util/api";
 import AttendanceView from "./AttendanceView";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
-
-type StaffType = {
-  name: string;
-  team: string;
-  // Based on the whiteboard discussion from 3/26/2025
-  // TODO: Test with the real API
-  attendances?: {
-    [meetingId: string]: 'Present' | 'Excused'
-  }
-}
+import { Staff } from "./AttendanceTable";
 
 type AttendanceModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  staff?: StaffType
+  staff?: Staff
 }
 
 const TEAM_DISPLAY_NAME = {
@@ -41,12 +32,13 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
     setLoading(true);
     const meetings = await api.get('/meetings/');
     const meetingsData = meetings.data as Meeting[];
+    console.log('meetingsData', meetingsData);
     const newStaffAttendances: StaffAttendance[] = [];
     for (const meeting of meetingsData) {
       const meetingId = meeting.meetingId;
       const committeeType = meeting.committeeType;
       const startTime = meeting.startTime;
-      const attendanceStatus = staff?.attendances?.[meetingId] || 'Absent';
+      const attendanceStatus = staff?.attendances?.[meetingId] || 'ABSENT';
       newStaffAttendances.push({
         meetingId,
         committeeType,
@@ -54,6 +46,9 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
         attendanceStatus
       });
     }
+
+    console.log('newStaffAttendances', newStaffAttendances);
+
     setStaffAttendances(newStaffAttendances);
     setLoading(false);
   };
@@ -71,11 +66,13 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
       <ModalOverlay />
       <ModalContent px={2}>
         <ModalHeader>{staff.name} - Attendance</ModalHeader>
-        <Box w={"fit-content"}  mx={6} bgColor="gray.200" _dark={{
-          bgColor: 'gray.600'
-        }} p={3} borderRadius={8} mb={5}>
-          <Text fontWeight={"medium"}>{staffTeamDisplayName}</Text>
-        </Box>
+        {staffTeamDisplayName && (
+          <Box w={"fit-content"}  mx={6} bgColor="gray.200" _dark={{
+            bgColor: 'gray.600'
+          }} p={3} borderRadius={8} mb={5}>
+            <Text fontWeight={"medium"}>{staffTeamDisplayName}</Text>
+          </Box>
+        )}
         <AttendanceView 
           attendanceData={staffAttendances}
           loading={loading}

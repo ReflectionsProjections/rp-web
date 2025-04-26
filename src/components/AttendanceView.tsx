@@ -39,9 +39,9 @@ const AttendanceSubBox = ({ item, committeeType }: { item: AttendanceItem, commi
       <Box
         height="100%"
         width="100%"
-        bgColor={ATTENDANCE_STATUS_COLORS[item.attendanceStatus]} 
+        bgColor={item.attendanceStatus ? ATTENDANCE_STATUS_COLORS[item.attendanceStatus] : 'gray.500'} 
         _dark={{
-          bgColor: ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus]
+          bgColor: item.attendanceStatus ? ATTENDANCE_STATUS_COLORS_DARK[item.attendanceStatus] : 'gray.300'
         }} 
         _hover={{ bgColor: "gray.500" }}
         display="flex"
