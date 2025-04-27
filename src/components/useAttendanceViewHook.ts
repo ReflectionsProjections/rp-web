@@ -1,31 +1,38 @@
 import moment from "moment";
 import React from "react";
+import { AttendanceStatus, AttendanceType } from "./AttendanceTable";
 
-export interface StaffAttendance {
-    meetingType: string, // Full-Team, Dev Team, etc.
-    meetingDate: Date,
-    attendanceStatus: 'Absent' | 'Excused' | 'Present',
+export interface Meeting {
+  meetingId: string,
+  committeeType: string,
+  startTime: string
 }
 
-export const ATTENDANCE_STATUS_COLORS = {
-  Absent: 'red.400',
-  Excused: 'blue.500',
-  Present: 'green.400',
-  'No Meeting': 'gray.500'
+// Used to mesh together meetings and staff attendances on the frontend
+export interface StaffAttendance {
+  meetingId: string,
+  committeeType: string,
+  meetingDate: Date,
+  attendanceStatus: AttendanceType
+}
+
+export const ATTENDANCE_STATUS_COLORS: Record<AttendanceStatus, string> = {
+  'ABSENT': 'red.400',
+  'EXCUSED': 'blue.500',
+  'PRESENT': 'green.400',
 };
 
-export const ATTENDANCE_STATUS_COLORS_DARK = {
-  Absent: 'red.400',
-  Excused: 'blue.400',
-  Present: 'green.300',
-  'No Meeting': 'gray.300'
+export const ATTENDANCE_STATUS_COLORS_DARK: Record<AttendanceStatus, string> = {
+  'ABSENT': 'red.400',
+  'EXCUSED': 'blue.400',
+  'PRESENT': 'green.300',
 };
 
 export const BOX_SIZE = 60;
 
 export interface AttendanceItem {
     meetingDate?: Date,
-    attendanceStatus: 'Absent' | 'Excused' | 'Present',
+    attendanceStatus: AttendanceType,
 }
 
 export interface WeekData {
@@ -44,10 +51,15 @@ export const useAttendanceViewHook = (
   attendanceData: StaffAttendance[]
 ) => {
   const [weeksData, setWeeksData] = React.useState<{
-        [meetingType: string]: WeekData[]
+        [committeeType: string]: WeekData[]
     }>({});
 
   const handleLoadData = () => {
+    if (!attendanceData || attendanceData.length === 0) {
+      setWeeksData({});  // empty weeksData if no attendance
+      return;
+    }
+    
     // Get the range of dates in the attendance data
     const dates = attendanceData.map(item => moment(item.meetingDate));
     const startDate = moment.min(dates);
@@ -60,15 +72,15 @@ export const useAttendanceViewHook = (
     }
 
     // Get unique meeting types
-    const meetingTypes = Array.from(new Set(attendanceData.map(item => item.meetingType)));
+    const committeeTypes = Array.from(new Set(attendanceData.map(item => item.committeeType)));
             
     // Initialize the attendance items object
     const newWeekData: {
-            [meetingType: string]: WeekData[]
+            [committeeType: string]: WeekData[]
         } = {};
 
     // Initialize each meeting type with an empty array
-    meetingTypes.forEach(type => {
+    committeeTypes.forEach(type => {
       newWeekData[type] = [];
     });
 
@@ -79,9 +91,9 @@ export const useAttendanceViewHook = (
       const month = currentDate.format('MMM');
       const weekNumber = currentDate.week();
 
-      for (const meetingType of meetingTypes) {
+      for (const committeeType of committeeTypes) {
         const meetingsInWeek = attendanceData.filter(item =>
-          item.meetingType === meetingType &&
+          item.committeeType === committeeType &&
                     moment(item.meetingDate).week() === weekNumber
         );
 
@@ -99,7 +111,7 @@ export const useAttendanceViewHook = (
           hadMeeting: meetingsInWeek.length > 0,
         };
 
-        newWeekData[meetingType].push(weekData);
+        newWeekData[committeeType].push(weekData);
       }
 
       // Move to next week
@@ -107,34 +119,34 @@ export const useAttendanceViewHook = (
     }
 
     // Update the isHeaderItem flags
-    const meetingTypeNames = Object.keys(newWeekData);
+    const committeeTypeNames = Object.keys(newWeekData);
 
-    if (newWeekData[meetingTypeNames[0]].length === 0) {
+    if (newWeekData[committeeTypeNames[0]].length === 0) {
       setWeeksData(newWeekData);
       return;
     }
 
-    for (let i = 1; i < newWeekData[meetingTypeNames[0]].length; i++) {
-      const item = newWeekData[meetingTypeNames[0]][i];
-      const previousItem = newWeekData[meetingTypeNames[0]][i - 1];
+    for (let i = 1; i < newWeekData[committeeTypeNames[0]].length; i++) {
+      const item = newWeekData[committeeTypeNames[0]][i];
+      const previousItem = newWeekData[committeeTypeNames[0]][i - 1];
       if ((item.weekInfo.month != previousItem.weekInfo.month) && (!previousItem.isHeaderItem )) {
-        newWeekData[meetingTypeNames[0]][i].isHeaderItem = true;
+        newWeekData[committeeTypeNames[0]][i].isHeaderItem = true;
       }
     }
 
-    const weeksWithHeaderItems = newWeekData[meetingTypeNames[0]].filter(item => item.isHeaderItem);
+    const weeksWithHeaderItems = newWeekData[committeeTypeNames[0]].filter(item => item.isHeaderItem);
     if (weeksWithHeaderItems.length > 0) {
       const firstWeekWithHeaderItem = weeksWithHeaderItems[0];
       const firstWeekWithHeaderItemWeekNumber = firstWeekWithHeaderItem.weekInfo.weekNumber;
-      const firstHeaderItemWeekNumber = newWeekData[meetingTypeNames[0]][0].weekInfo.weekNumber;
+      const firstHeaderItemWeekNumber = newWeekData[committeeTypeNames[0]][0].weekInfo.weekNumber;
       // 2 or more weeks apart
       if (firstWeekWithHeaderItemWeekNumber - firstHeaderItemWeekNumber >= 2) { 
-        newWeekData[meetingTypeNames[0]][0].isHeaderItem = true;
+        newWeekData[committeeTypeNames[0]][0].isHeaderItem = true;
       } else {
-        newWeekData[meetingTypeNames[0]][0].isHeaderItem = false;
+        newWeekData[committeeTypeNames[0]][0].isHeaderItem = false;
       }
     } else {
-      newWeekData[meetingTypeNames[0]][0].isHeaderItem = true;
+      newWeekData[committeeTypeNames[0]][0].isHeaderItem = true;
     }
 
     setWeeksData(newWeekData);
@@ -142,7 +154,7 @@ export const useAttendanceViewHook = (
 
   React.useEffect(() => {
     handleLoadData();
-  }, []);
+  }, [attendanceData]);
 
   return{
     weeksData
