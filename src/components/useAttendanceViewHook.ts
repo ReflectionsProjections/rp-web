@@ -55,6 +55,11 @@ export const useAttendanceViewHook = (
     }>({});
 
   const handleLoadData = () => {
+    if (!attendanceData || attendanceData.length === 0) {
+      setWeeksData({});  // empty weeksData if no attendance
+      return;
+    }
+    
     // Get the range of dates in the attendance data
     const dates = attendanceData.map(item => moment(item.meetingDate));
     const startDate = moment.min(dates);

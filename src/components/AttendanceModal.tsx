@@ -1,6 +1,5 @@
 import { Box, Modal, ModalBody, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import api from "../util/api";
 import AttendanceView from "./AttendanceView";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
@@ -12,54 +11,41 @@ const TEAM_DISPLAY_NAME: Record<TeamType, string>  = {
   'CONTENT': '📝 Content Team',
   'MARKETING': '📢 Marketing Team',
   'CORPORATE': '💼 Corporate Team',
+  'OPERATIONS': '⚙️ Operations Team',
   'FULL TEAM': '👥 Full Team',
 };
 
 type AttendanceModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  staff?: Staff
-}
+  staff?: Staff;
+  meetings: Meeting[];
+};
 
 const AttendanceModal: React.FC<AttendanceModalProps> = ({
-  isOpen, onClose, staff
+  isOpen, onClose, staff, meetings
 }) => {
-  const [loading, setLoading] = useState(false);
   const [staffAttendances, setStaffAttendances] = useState<StaffAttendance[]>([]);
 
   const staffTeamDisplayName = staff?.team ? TEAM_DISPLAY_NAME[staff.team] : '';
 
-  const handleLoadStaffAttendances = async () => {
-    setLoading(true);
-    const meetings = await api.get('/meetings/');
-    const meetingsData = meetings.data as Meeting[];
-    const newStaffAttendances: StaffAttendance[] = [];
-    for (const meeting of meetingsData) {
-      const committeeType = meeting.committeeType;
-      if (committeeType == staff?.team || committeeType == 'FULL TEAM') {
-        const meetingId = meeting.meetingId;
+  useEffect(() => {
+    if (!staff) return;
 
-        const startTime = meeting.startTime;
-        const attendanceStatus = staff?.attendances?.[meetingId];
-        newStaffAttendances.push({
-          meetingId,
-          committeeType,
-          meetingDate: moment(startTime).toDate(),
-          attendanceStatus
-        });
-      }
-    }
+    const newStaffAttendances: StaffAttendance[] = meetings
+      .filter(meeting => meeting.committeeType === staff.team || meeting.committeeType === 'FULL TEAM')
+      .map(meeting => ({
+        meetingId: meeting.meetingId,
+        committeeType: meeting.committeeType,
+        meetingDate: moment(meeting.startTime).toDate(),
+        attendanceStatus: staff.attendances?.[meeting.meetingId]
+      }));
 
     setStaffAttendances(newStaffAttendances);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    handleLoadStaffAttendances();
-  }, [staff]);
+  }, [staff, meetings]);
 
   if (!staff) {
-    return <></>;
+    return null;
   }
 
   return (
@@ -68,19 +54,16 @@ const AttendanceModal: React.FC<AttendanceModalProps> = ({
       <ModalContent px={2}>
         <ModalHeader>{staff.name} - Attendance</ModalHeader>
         {staffTeamDisplayName && (
-          <Box w={"fit-content"} mx={6} bgColor="gray.200" _dark={{
-            bgColor: 'gray.600'
-          }} p={3} borderRadius={8} mb={5}>
+          <Box w={"fit-content"} mx={6} bgColor="gray.200" _dark={{ bgColor: 'gray.600' }} p={3} borderRadius={8} mb={5}>
             <Text fontWeight={"medium"}>{staffTeamDisplayName}</Text>
           </Box>
         )}
         <AttendanceView 
           attendanceData={staffAttendances}
-          loading={loading}
+          loading={false}
         />
         <ModalCloseButton />
-        <ModalBody pb={6}>
-        </ModalBody>
+        <ModalBody pb={6} />
       </ModalContent>
     </Modal>    
   );

@@ -148,9 +148,9 @@ function AttendanceView({attendanceData, loading}: {attendanceData: StaffAttenda
         </Box>
         <Box overflowX={"auto"} flex={1}>
           <Box h={"28px"} display="flex" gap={0}>
-            {attendanceViewHook.weeksData[committeeTypes[0]]?.map((item: WeekData, index: number) => (
+            {committeeTypes.length > 0 && attendanceViewHook.weeksData[committeeTypes[0]]?.map((item: WeekData, index: number) => (
               <Box key={`month-header-${index}`} w={BOX_SIZE_PX} minW={BOX_SIZE_PX} mr={0.5}>
-                {((item.isHeaderItem)) ? (
+                {item.isHeaderItem ? (
                   <Text fontSize={"14px"} whiteSpace="nowrap">{`${item.weekInfo.month} ${item.weekInfo.year}`}</Text>
                 ) : (
                   <></>

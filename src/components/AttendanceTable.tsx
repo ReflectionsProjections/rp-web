@@ -29,8 +29,9 @@ import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import api from "../util/api";
 
-type AttendanceType = 'ABSENT' | 'PRESENT' | 'EXCUSED' | undefined;
-type TeamType = 'FULL TEAM' | 'CONTENT' | 'CORPORATE' | 'DESIGN' | 'DEV' | 'MARKETING' | 'OPERATIONS';
+export type AttendanceType = 'ABSENT' | 'PRESENT' | 'EXCUSED' | undefined;
+export type AttendanceStatus = 'ABSENT' | 'EXCUSED' | 'PRESENT';
+export type TeamType = 'FULL TEAM' | 'CONTENT' | 'CORPORATE' | 'DESIGN' | 'DEV' | 'MARKETING' | 'OPERATIONS';
 
 const Teams: TeamType[] = ['FULL TEAM', 'CONTENT', 'CORPORATE', 'DESIGN', 'DEV', 'MARKETING', 'OPERATIONS'];
 
@@ -163,11 +164,14 @@ const AttendanceBox = () => {
 
   return (
     <>
-      <AttendanceModal
-        isOpen={isOpen}
-        onClose={onClose}
-        staff={selectedStaff}
-      />
+      {selectedStaff && (
+        <AttendanceModal
+          isOpen={isOpen}
+          onClose={onClose}
+          staff={selectedStaff}
+          meetings={meetings}
+        />
+      )}
 
       {isSmall ? <Flex justify="center" direction="column" align="center">
         <Menu>
@@ -228,12 +232,12 @@ type AttendanceTableProps = {
 
 const attendanceTypeToDisplayText = (attendanceType: AttendanceType) => {
   switch (attendanceType) {
-    case 'PRESENT':
-      return "🟢 Present";
-    case 'EXCUSED':
-      return "🔵 Excused";
-    default:
-      return "🔴 Absent";
+  case 'PRESENT':
+    return "🟢 Present";
+  case 'EXCUSED':
+    return "🔵 Excused";
+  default:
+    return "🔴 Absent";
   }
 };
 
@@ -314,7 +318,9 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
           )) : staff.map((staffMember, index) => (
             <Tr
               key={index}
-              onClick={() => handleStaffSelect(staffMember)}
+              onClick={() => {
+                if (selectedMeeting) handleStaffSelect(staffMember);
+              }}
               cursor="pointer"
               _hover={{ bgColor: "#ddd" }}
             >
@@ -322,7 +328,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
               <Td>
                 <Menu size={isSmall ? "sm" : "md"}>
                   <MenuButton as={Button} rightIcon={<ChevronDownIcon />} mb={4} isDisabled={updating} onClick={(event) => event.stopPropagation()}>
-                    {attendanceTypeToDisplayText(staffMember.attendances[selectedMeeting.meetingId])}
+                    {attendanceTypeToDisplayText(selectedMeeting ? staffMember.attendances[selectedMeeting.meetingId] : undefined)}
                   </MenuButton>
                   <MenuList>
                     <MenuItem onClick={(event) => SelectAttendance(event, staffMember.userId, "ABSENT")}>
