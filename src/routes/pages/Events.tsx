@@ -28,10 +28,10 @@ import {
   Flex,
   Checkbox,
 } from '@chakra-ui/react';
-import {EditIcon, AddIcon} from "@chakra-ui/icons";
+import { EditIcon, AddIcon } from "@chakra-ui/icons";
 import moment from 'moment-timezone';
-import {Config} from "../../config.ts";
-import React, {useEffect, useState} from "react";
+import { Config } from "../../config.ts";
+import React, { useEffect, useState } from "react";
 import api from '../../util/api.ts';
 
 const readable = "MMMM Do YYYY, h:mm a";
@@ -117,7 +117,7 @@ function Events() {
       };
 
       const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
-      api.put("/events/" + event.eventId, {
+      api.put("/events/" + eventId, {
         ...valuesWithoutEventId
       }).then(() => {
         getEvents();
@@ -128,7 +128,7 @@ function Events() {
     return (
       <>
         <Button leftIcon={<EditIcon />} colorScheme="teal" variant="solid" onClick={onOpen}>
-            Edit
+          Edit
         </Button>
         <Modal closeOnOverlayClick={false} isOpen={isOpen} onClose={onClose}>
           <ModalOverlay />
@@ -193,21 +193,21 @@ function Events() {
                 mb={4}
                 onChange={(e) => setUpdatedValues({ ...updatedValues, eventType: e.target.value })}
               >
-              
+
                 {Config.EVENT_TYPES.map(e => <option key={e} value={e}>{e}</option>)}
-                
+
               </Select>
               <Checkbox
                 isChecked={event.isVisible}
                 onChange={(e) => setUpdatedValues({ ...updatedValues, isVisible: e.target.checked })}
               >
-                  Is Visible
+                Is Visible
               </Checkbox>
             </ModalBody>
 
             <ModalFooter>
               <Button colorScheme='blue' mr={3} onClick={handleSave}>
-                  Save
+                Save
               </Button>
               <Button onClick={onClose}>Cancel</Button>
             </ModalFooter>
@@ -246,10 +246,10 @@ function Events() {
               {convertToCST(event.startTime).format(readable)} - {convertToCST(event.endTime).format(readable)}
             </Text>
             <Text>
-                ({moment.duration(convertToCST(event.endTime).diff(convertToCST(event.startTime))).humanize()})
+              ({moment.duration(convertToCST(event.endTime).diff(convertToCST(event.startTime))).humanize()})
             </Text>
             <Text>
-                Points: {event.points}
+              Points: {event.points}
             </Text>
             <Text>
               {event.description}
@@ -261,29 +261,29 @@ function Events() {
           <Flex justifyContent="space-between" width="100%">
             <EditModal event={event} />
             <Button colorScheme='red' onClick={onOpenDelete} isDisabled={!useCanDelete()}>
-                Delete
+              Delete
             </Button>
           </Flex>
-        </CardFooter>
+        </CardFooter >
         <Modal isOpen={isDeleteOpen} onClose={onCloseDelete}>
           <ModalOverlay />
           <ModalContent>
             <ModalHeader>Confirm Delete</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-                Are you sure you want to delete this event?
+              Are you sure you want to delete this event?
             </ModalBody>
             <ModalFooter>
               <Button colorScheme="red" mr={3} onClick={confirmDelete}>
-                  Delete
+                Delete
               </Button>
               <Button onClick={onCloseDelete}>
-                  Cancel
+                Cancel
               </Button>
             </ModalFooter>
           </ModalContent>
         </Modal>
-      </Card>
+      </Card >
     );
   }
 
@@ -292,7 +292,7 @@ function Events() {
   }, []);
 
   return (
-    <Box flex="1" minW='90vw' p={4}>
+    <Box flex="1" minW='70vw' p={4}>
       <Flex justifyContent="center" alignItems="center">
         <Heading size="lg">Events</Heading>
       </Flex>
@@ -369,12 +369,12 @@ function Events() {
               isChecked={newEvent.isVisible}
               onChange={(e) => setNewEvent({ ...newEvent, isVisible: e.target.checked })}
             >
-                Is Visible
+              Is Visible
             </Checkbox>
           </ModalBody>
           <ModalFooter>
             <Button colorScheme="blue" mr={3} onClick={createEvent}>
-                Create event
+              Create event
             </Button>
             <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>

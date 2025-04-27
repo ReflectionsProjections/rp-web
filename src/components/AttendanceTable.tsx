@@ -30,9 +30,9 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import api from "../util/api";
 
 type AttendanceType = 'ABSENT' | 'PRESENT' | 'EXCUSED' | undefined;
-type TeamType = 'FULL TEAM' | 'DESIGN' | 'DEV' | 'CONTENT' | 'MARKETING' | 'CORPORATE';
+type TeamType = 'FULL TEAM' | 'CONTENT' | 'CORPORATE' | 'DESIGN' | 'DEV' | 'MARKETING' | 'OPERATIONS';
 
-const Teams: TeamType[] = ['FULL TEAM', 'DESIGN', 'DEV', 'CONTENT', 'MARKETING', 'CORPORATE'];
+const Teams: TeamType[] = ['FULL TEAM', 'CONTENT', 'CORPORATE', 'DESIGN', 'DEV', 'MARKETING', 'OPERATIONS'];
 
 type Staff = {
   userId: string;
@@ -63,18 +63,20 @@ const meetingSortFunction = ({ startTime: a }: { startTime: Date }, { startTime:
 
 const teamTypeToDisplayText = (team: TeamType) => {
   switch (team) {
-  case 'FULL TEAM':
-    return "Full Team";
-  case 'DESIGN':
-    return "Design";
-  case 'DEV':
-    return "Dev";
-  case 'CONTENT':
-    return "Content";
-  case 'MARKETING':
-    return "Marketing";
-  case "CORPORATE":
-    return "Corporate";
+    case 'FULL TEAM':
+      return "Full Team";
+    case 'DESIGN':
+      return "Design";
+    case 'DEV':
+      return "Dev";
+    case 'CONTENT':
+      return "Content";
+    case 'MARKETING':
+      return "Marketing";
+    case "CORPORATE":
+      return "Corporate";
+    case "OPERATIONS":
+      return "Operations";
   }
 };
 
@@ -119,11 +121,12 @@ const AttendanceBox = () => {
     });
     return {
       "FULL TEAM": parsedMeetings.filter((meeting) => meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
+      CONTENT: parsedMeetings.filter((meeting) => meeting.committeeType === "CONTENT" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
+      CORPORATE: parsedMeetings.filter((meeting) => meeting.committeeType === "CORPORATE" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
       DESIGN: parsedMeetings.filter((meeting) => meeting.committeeType === "DESIGN" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
       DEV: parsedMeetings.filter((meeting) => meeting.committeeType === "DEV" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
-      CONTENT: parsedMeetings.filter((meeting) => meeting.committeeType === "CONTENT" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
       MARKETING: parsedMeetings.filter((meeting) => meeting.committeeType === "MARKETING" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
-      CORPORATE: parsedMeetings.filter((meeting) => meeting.committeeType === "CORPORATE" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
+      OPERATIONS: parsedMeetings.filter((meeting) => meeting.committeeType === "OPERATIONS" || meeting.committeeType === "FULL TEAM").sort(meetingSortFunction),
     };
   }, [meetings]);
 
@@ -149,11 +152,12 @@ const AttendanceBox = () => {
 
     return {
       "FULL TEAM": parsedStaff,
+      CONTENT: parsedStaff.filter((member) => member.team === "CONTENT"),
+      CORPORATE: parsedStaff.filter((member) => member.team === "CORPORATE"),
       DESIGN: parsedStaff.filter((member) => member.team === "DESIGN"),
       DEV: parsedStaff.filter((member) => member.team === "DEV"),
-      CONTENT: parsedStaff.filter((member) => member.team === "CONTENT"),
       MARKETING: parsedStaff.filter((member) => member.team === "MARKETING"),
-      CORPORATE: parsedStaff.filter((member) => member.team === "CORPORATE"),
+      OPERATIONS: parsedStaff.filter((member) => member.team === "OPERATIONS"),
     };
   }, [staff, teamMeetings]);
 
@@ -224,12 +228,12 @@ type AttendanceTableProps = {
 
 const attendanceTypeToDisplayText = (attendanceType: AttendanceType) => {
   switch (attendanceType) {
-  case 'PRESENT':
-    return "🟢 Present";
-  case 'EXCUSED':
-    return "🔵 Excused";
-  default:
-    return "🔴 Absent";
+    case 'PRESENT':
+      return "🟢 Present";
+    case 'EXCUSED':
+      return "🔵 Excused";
+    default:
+      return "🔴 Absent";
   }
 };
 
