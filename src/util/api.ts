@@ -24,7 +24,7 @@ api.interceptors.response.use(
       window.location.href = "/auth";
     }
 
-    return error;
+    return Promise.reject(error);
   }
 );
 
