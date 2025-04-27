@@ -10,6 +10,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Auth from "./routes/Auth";
 import Login from "./routes/Login";
 import Home from "./routes/Home";
+import Attendance from "./routes/Attendance";
 import Unauthorized from './routes/Unauthorized';
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -23,6 +24,7 @@ function App() {
           <Route path="/unauthorized/" element={<Unauthorized/>}/>
           <Route element={<ProtectedRoute/>}>
             <Route path="/home/" element={<Home/>}/>
+            <Route path="/attendance/" element={<Attendance/>}/>
             <Route path="*"/>
           </Route>
           <Route path="/" element={<Login/>}/>
