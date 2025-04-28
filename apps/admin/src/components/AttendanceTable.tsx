@@ -22,40 +22,14 @@ import {
   Tooltip,
   Tr,
   useDisclosure,
-  useMediaQuery
+  useMediaQuery,
+  useToast
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import api from "../util/api";
-
-export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED" | undefined;
-export type AttendanceStatus = "ABSENT" | "EXCUSED" | "PRESENT";
-export type TeamType =
-  | "FULL TEAM"
-  | "CONTENT"
-  | "CORPORATE"
-  | "DESIGN"
-  | "DEV"
-  | "MARKETING"
-  | "OPERATIONS";
-
-const Teams: TeamType[] = [
-  "FULL TEAM",
-  "CONTENT",
-  "CORPORATE",
-  "DESIGN",
-  "DEV",
-  "MARKETING",
-  "OPERATIONS"
-];
-
-export type Staff = {
-  userId: string;
-  name: string;
-  team: TeamType;
-  attendances: Record<string, AttendanceType>; // maps meetingId to attendanceType
-};
+import { AttendanceType, Meeting, path, Staff, TeamName } from "@rp/shared";
 
 type StaffStatistics = Record<
   "ABSENT" | "PRESENT" | "EXCUSED" | "TOTAL",
@@ -66,17 +40,19 @@ type ParsedStaff = Staff & {
   statistics: StaffStatistics;
 };
 
-type Meeting = {
-  meetingId: string;
-  committeeType: TeamType;
-  startTime: string;
-};
-
-type ParsedMeeting = {
-  meetingId: string;
-  committeeType: TeamType;
+type ParsedMeeting = Omit<Meeting, "startTime"> & {
   startTime: Date;
 };
+
+const Teams: TeamName[] = [
+  "FULL TEAM",
+  "DESIGN",
+  "DEV",
+  "CONTENT",
+  "MARKETING",
+  "CORPORATE",
+  "OPERATIONS"
+];
 
 const meetingSortFunction = (
   { startTime: a }: { startTime: Date },
@@ -85,7 +61,7 @@ const meetingSortFunction = (
   return b.getTime() - a.getTime();
 };
 
-const teamTypeToDisplayText = (team: TeamType) => {
+const teamTypeToDisplayText = (team: TeamName) => {
   switch (team) {
     case "FULL TEAM":
       return "Full Team";
@@ -111,19 +87,31 @@ const AttendanceBox = () => {
   const [selectedStaff, setSelectedStaff] = useState<Staff | undefined>(
     undefined
   );
-  const [selectedTeam, setSelectedTeam] = useState<TeamType>("FULL TEAM");
+  const [selectedTeam, setSelectedTeam] = useState<TeamName>("FULL TEAM");
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const toast = useToast();
+
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
   useEffect(() => {
-    Promise.all([
-      api.get<Staff[]>("/staff"),
-      api.get<Meeting[]>("/meetings")
-    ]).then(([staff, meetings]) => {
-      setStaff(staff.data);
-      setMeetings(meetings.data);
-      setLoading(false);
-    });
+    Promise.all([api.get("/staff"), api.get("/meetings")])
+      .then(([staff, meetings]) => {
+        setStaff(staff.data);
+        setMeetings(meetings.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error fetching staff and meetings", true);
+      });
   }, []);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -133,25 +121,32 @@ const AttendanceBox = () => {
     onOpen();
   };
 
-  const handleStaffAttendance = async (
+  const handleStaffAttendance = (
     staffId: string,
     meetingId: string,
     attendanceType: AttendanceType
   ) => {
     setUpdating(true);
-    const response = await api.post(`/staff/${staffId}/attendance`, {
-      meetingId,
-      attendanceType
-    });
-    setStaff((previous) =>
-      previous.map((member) =>
-        member.userId === response.data.userId ? response.data : member
-      )
-    );
-    setUpdating(false);
+    api
+      .post(path("/staff/:staffId/attendance", { staffId }), {
+        meetingId,
+        attendanceType
+      })
+      .then((response) => {
+        setStaff((previous) =>
+          previous.map((member) =>
+            member.userId === response.data.userId ? response.data : member
+          )
+        );
+        setUpdating(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error updating attendance", true);
+      });
   };
 
-  const teamMeetings: Record<TeamType, ParsedMeeting[]> = useMemo(() => {
+  const teamMeetings: Record<TeamName, ParsedMeeting[]> = useMemo(() => {
     const parsedMeetings = meetings.map((meeting) => {
       return {
         meetingId: meeting.meetingId,
@@ -208,7 +203,7 @@ const AttendanceBox = () => {
     };
   }, [meetings]);
 
-  const staffTeams: Record<TeamType, ParsedStaff[]> = useMemo(() => {
+  const staffTeams: Record<TeamName, ParsedStaff[]> = useMemo(() => {
     const parsedStaff = staff.map((member) => {
       const statistics = Object.values(member.attendances).reduce(
         (acc, type) => {
@@ -291,7 +286,7 @@ const AttendanceBox = () => {
               })}
             </TabList>
             <TabPanels>
-              {(Object.entries(staffTeams) as [TeamType, ParsedStaff[]][]).map(
+              {(Object.entries(staffTeams) as [TeamName, ParsedStaff[]][]).map(
                 ([teamName, team], index) => (
                   <TabPanel key={index}>
                     {!loading &&
@@ -332,7 +327,9 @@ type AttendanceTableProps = {
   updating: boolean;
 };
 
-const attendanceTypeToDisplayText = (attendanceType: AttendanceType) => {
+const attendanceTypeToDisplayText = (
+  attendanceType: AttendanceType | undefined
+) => {
   switch (attendanceType) {
     case "PRESENT":
       return "🟢 Present";

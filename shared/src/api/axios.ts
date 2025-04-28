@@ -17,8 +17,8 @@ function createApi(baseURL: string): TypedAxiosInstance {
 
   axiosObject.interceptors.response.use(
     (response) => response,
-    (error) => {
-      const errorType = error.response.data.error;
+    (error: { response: { data: string } }) => {
+      const errorType = error.response.data;
 
       if (
         errorType === "NoJWT" ||
@@ -29,7 +29,7 @@ function createApi(baseURL: string): TypedAxiosInstance {
         window.location.href = "/auth";
       }
 
-      return Promise.reject(error);
+      return error;
     }
   );
 

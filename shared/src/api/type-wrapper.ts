@@ -6,7 +6,9 @@ type GettablePaths = {
 }[keyof APIRoutes];
 
 type PostablePaths = {
-  [Path in keyof APIRoutes]: "POST" extends keyof APIRoutes[Path] ? Path : never;
+  [Path in keyof APIRoutes]: "POST" extends keyof APIRoutes[Path]
+    ? Path
+    : never;
 }[keyof APIRoutes];
 
 type PuttablePaths = {
@@ -14,11 +16,15 @@ type PuttablePaths = {
 }[keyof APIRoutes];
 
 type PatchablePaths = {
-  [Path in keyof APIRoutes]: "PATCH" extends keyof APIRoutes[Path] ? Path : never;
+  [Path in keyof APIRoutes]: "PATCH" extends keyof APIRoutes[Path]
+    ? Path
+    : never;
 }[keyof APIRoutes];
 
 type DeletablePaths = {
-  [Path in keyof APIRoutes]: "DELETE" extends keyof APIRoutes[Path] ? Path : never;
+  [Path in keyof APIRoutes]: "DELETE" extends keyof APIRoutes[Path]
+    ? Path
+    : never;
 }[keyof APIRoutes];
 
 export interface TypedAxiosInstance {
