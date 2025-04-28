@@ -1,6 +1,6 @@
+import { AttendanceType } from "@rp/shared";
 import moment from "moment";
 import React from "react";
-import { AttendanceStatus, AttendanceType } from "./AttendanceTable";
 
 export interface Meeting {
   meetingId: string;
@@ -16,13 +16,13 @@ export interface StaffAttendance {
   attendanceStatus: AttendanceType;
 }
 
-export const ATTENDANCE_STATUS_COLORS: Record<AttendanceStatus, string> = {
+export const ATTENDANCE_STATUS_COLORS: Record<AttendanceType, string> = {
   ABSENT: "red.400",
   EXCUSED: "blue.500",
   PRESENT: "green.400"
 };
 
-export const ATTENDANCE_STATUS_COLORS_DARK: Record<AttendanceStatus, string> = {
+export const ATTENDANCE_STATUS_COLORS_DARK: Record<AttendanceType, string> = {
   ABSENT: "red.400",
   EXCUSED: "blue.400",
   PRESENT: "green.300"

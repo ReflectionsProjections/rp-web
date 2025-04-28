@@ -23,12 +23,8 @@ const TooltipContent = ({
     ? moment(item.meetingDate).format("MMMM D, YYYY")
     : "";
   const status = item.attendanceStatus ?? "Attendance not recorded";
-  const statusColor =
-    ATTENDANCE_STATUS_COLORS[status as keyof typeof ATTENDANCE_STATUS_COLORS];
-  const darkStatusColor =
-    ATTENDANCE_STATUS_COLORS_DARK[
-      status as keyof typeof ATTENDANCE_STATUS_COLORS_DARK
-    ];
+  const statusColor = ATTENDANCE_STATUS_COLORS[status];
+  const darkStatusColor = ATTENDANCE_STATUS_COLORS_DARK[status];
 
   // Statuses are capitalized, so we need to format them
   const capitalCasedStatus =

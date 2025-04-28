@@ -8,7 +8,7 @@
     "build": "yarn build:dependencies && vite build",
     "dev": "yarn build:dependencies && vite",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "verify": "yarn lint && yarn build"
+    "verify": "tsc --noEmit && yarn lint && yarn build"
   },
   "dependencies": {
     "@chakra-ui/icons": "*",
