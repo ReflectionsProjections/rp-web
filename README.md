@@ -232,6 +232,7 @@ To create a new app:
    ```bash
    yarn
    ```
+
 ---
 
 **Questions or feedback?**  
