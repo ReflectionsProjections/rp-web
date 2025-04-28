@@ -18,7 +18,6 @@ import { Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../util/api.ts";
 
 function EventCheckin() {
-
   const [isSmall] = useMediaQuery("(max-width: 600px)");
 
   const toast = useToast();
@@ -26,8 +25,12 @@ function EventCheckin() {
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
   const [qrData, setQrData] = useState("");
-  const [filteredEmails, setFilteredEmails] = useState<{ email: string; userId: string }[]>([]);
-  const [attendeeEmails, setAttendeeEmails] = useState<{ email: string; userId: string }[]>([]);
+  const [filteredEmails, setFilteredEmails] = useState<
+    { email: string; userId: string }[]
+  >([]);
+  const [attendeeEmails, setAttendeeEmails] = useState<
+    { email: string; userId: string }[]
+  >([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
 
   const [events, setEvents] = useState<[]>([]);
@@ -39,7 +42,7 @@ function EventCheckin() {
       title: message,
       status: error ? "error" : "success",
       duration: 9000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -48,19 +51,19 @@ function EventCheckin() {
       title: message,
       status: error ? "error" : "success",
       duration: 2000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
   useEffect(() => {
     api
-      .get('/attendee/emails')
+      .get("/attendee/emails")
       .then(function (response) {
         const attendeeData = response.data;
         setAttendeeEmails(attendeeData);
       })
       .catch(function () {
-        showToast('Error fetching attendee emails + info.', true);
+        showToast("Error fetching attendee emails + info.", true);
       });
 
     api
@@ -86,12 +89,11 @@ function EventCheckin() {
         setAttendeeName(user["name"]);
         console.log("NAME: ", attendeeName);
       })
-      .catch((err) =>  {
+      .catch((err) => {
         console.log(err);
-        showToast('Error fetching attendee.', true);
+        showToast("Error fetching attendee.", true);
       });
   }, [userId]);
-
 
   // Handle scan
   useEffect(() => {
@@ -101,7 +103,7 @@ function EventCheckin() {
     }
 
     if (!selectedEvent) {
-      showToast('Please select an event to check in attendees to!', true);
+      showToast("Please select an event to check in attendees to!", true);
       return;
     }
 
@@ -115,9 +117,12 @@ function EventCheckin() {
       .catch((err) => {
         console.log(err.response);
         if (err.response.status == 403) {
-          showQuickToast('Attendee has already checked in.', true);
+          showQuickToast("Attendee has already checked in.", true);
         } else {
-          showQuickToast('Woah there, something went wrong! Find dev team please :/', true);
+          showQuickToast(
+            "Woah there, something went wrong! Find dev team please :/",
+            true
+          );
         }
       });
     setQrData("");
@@ -148,18 +153,20 @@ function EventCheckin() {
   // Check attendee into event via their email
   const handleCheckin = async () => {
     if (!selectedEvent) {
-      showToast('Please select an event to check in attendees to!', true);
+      showToast("Please select an event to check in attendees to!", true);
       return;
     }
 
     if (!email) {
-      showToast('Please enter an email.', true);
+      showToast("Please enter an email.", true);
       return;
     }
 
-    const selectedAttendee = attendeeEmails.find((attendee) => attendee.email === email);
+    const selectedAttendee = attendeeEmails.find(
+      (attendee) => attendee.email === email
+    );
     if (!selectedAttendee) {
-      showToast('This email is not registered as an R|P attendee.', true);
+      showToast("This email is not registered as an R|P attendee.", true);
       return;
     }
 
@@ -172,117 +179,135 @@ function EventCheckin() {
         showQuickToast(`Succesfully checked into event!`, false);
       })
       .catch(function (error) {
-        showQuickToast('Could not check in attendee to event. Please try again.', true);
+        showQuickToast(
+          "Could not check in attendee to event. Please try again.",
+          true
+        );
         console.log(error);
       });
   };
 
-
-  return <>
-    <Box flex="1" minW="90vw" p={4}>
-      <Heading size="lg">Event Checkin</Heading>
-      <br />
-      <Flex direction={isSmall ? 'column' : 'row'}>
-        {/* Left Side: Webcam or Email input */}
-        <Box flex="1"  p={4} mr={4}>
-          <FormControl display="flex" alignItems="center" mb={4} mt="0)">
-            <FormLabel htmlFor="toggle-webcam" mb="0">
-              Show Webcam
-            </FormLabel>
-            <Switch
-              id="toggle-webcam"
-              isChecked={showWebcam}
-              onChange={() => setShowWebcam(!showWebcam)}
-            />
-          </FormControl>
-
-          {showWebcam ? (
-            <Box>
-              <Scanner allowMultiple={true} styles={{}} onScan={(result) => {
-                setQrData(result[0].rawValue);
-              }} />;
-            </ Box>
-          ) : (
-            <FormControl>
-              <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
-              <Input
-                id="email"
-                placeholder="Email"
-                value={email}
-                onChange={handleEmailChange}
-                autoComplete="off"
+  return (
+    <>
+      <Box flex="1" minW="90vw" p={4}>
+        <Heading size="lg">Event Checkin</Heading>
+        <br />
+        <Flex direction={isSmall ? "column" : "row"}>
+          {/* Left Side: Webcam or Email input */}
+          <Box flex="1" p={4} mr={4}>
+            <FormControl display="flex" alignItems="center" mb={4} mt="0)">
+              <FormLabel htmlFor="toggle-webcam" mb="0">
+                Show Webcam
+              </FormLabel>
+              <Switch
+                id="toggle-webcam"
+                isChecked={showWebcam}
+                onChange={() => setShowWebcam(!showWebcam)}
               />
-
-              {filteredEmails.length > 0 && (
-                <Box
-                  mt={1}
-                  border="1px solid #ccc"
-                  borderRadius="md"
-                  maxH="200px"
-                  overflowY="auto"
-                  position="absolute"
-                  width="100%"
-                  bg="white"
-                  zIndex={10}
-                >
-                  <List>
-                    {filteredEmails.map((attendee) => (
-                      <ListItem
-                        key={attendee.userId}
-                        p={2}
-                        _hover={{ bg: 'gray.100', cursor: 'pointer' }}
-                        onClick={() => handleSelectEmail(attendee.email)}
-                        color='black'
-                      >
-                        {attendee.email}
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              )}
-
-              <Button mt={4} colorScheme="blue" onClick={handleCheckin}>
-                Check in Attendee
-              </Button>
-
             </FormControl>
-          )}
-        </Box>
 
-        {/* Right Side: Event Selection */}
-        <Box flex="1" p={4}>
-          <FormControl>
-            <FormLabel textAlign="center" fontWeight="bold" fontSize="xl">
-              Events
-            </FormLabel>
-
-            <Text fontSize="md" fontWeight="bold" fontStyle="italic" mt={2} mb={3}>
-              Selected Event: {selectedEvent}
-            </Text>
-
-            <List spacing={3}>
-              {events.map((event) => (
-                <ListItem
-                  key={event["eventId"]}
-                  p={2}
-                  border="1px solid #ccc"
-                  borderRadius="md"
-                  _hover={{ bg: "gray.100", cursor: "pointer", color: "black" }}
-                  onClick={() => {
-                    setQrData("");
-                    setSelectedEvent(event["name"]);
-                    setSelectedEventId(event["eventId"]);
+            {showWebcam ? (
+              <Box>
+                <Scanner
+                  allowMultiple={true}
+                  styles={{}}
+                  onScan={(result) => {
+                    setQrData(result[0].rawValue);
                   }}
-                >
-                  {event["name"]}
-                </ListItem>
-              ))}
-            </List>
-          </FormControl>
-        </Box>
-      </Flex >
-    </Box >
-  </>;
+                />
+                ;
+              </Box>
+            ) : (
+              <FormControl>
+                <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
+                <Input
+                  id="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  autoComplete="off"
+                />
+
+                {filteredEmails.length > 0 && (
+                  <Box
+                    mt={1}
+                    border="1px solid #ccc"
+                    borderRadius="md"
+                    maxH="200px"
+                    overflowY="auto"
+                    position="absolute"
+                    width="100%"
+                    bg="white"
+                    zIndex={10}
+                  >
+                    <List>
+                      {filteredEmails.map((attendee) => (
+                        <ListItem
+                          key={attendee.userId}
+                          p={2}
+                          _hover={{ bg: "gray.100", cursor: "pointer" }}
+                          onClick={() => handleSelectEmail(attendee.email)}
+                          color="black"
+                        >
+                          {attendee.email}
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
+
+                <Button mt={4} colorScheme="blue" onClick={handleCheckin}>
+                  Check in Attendee
+                </Button>
+              </FormControl>
+            )}
+          </Box>
+
+          {/* Right Side: Event Selection */}
+          <Box flex="1" p={4}>
+            <FormControl>
+              <FormLabel textAlign="center" fontWeight="bold" fontSize="xl">
+                Events
+              </FormLabel>
+
+              <Text
+                fontSize="md"
+                fontWeight="bold"
+                fontStyle="italic"
+                mt={2}
+                mb={3}
+              >
+                Selected Event: {selectedEvent}
+              </Text>
+
+              <List spacing={3}>
+                {events.map((event) => (
+                  <ListItem
+                    key={event["eventId"]}
+                    p={2}
+                    border="1px solid #ccc"
+                    borderRadius="md"
+                    _hover={{
+                      bg: "gray.100",
+                      cursor: "pointer",
+                      color: "black"
+                    }}
+                    onClick={() => {
+                      setQrData("");
+                      setSelectedEvent(event["name"]);
+                      setSelectedEventId(event["eventId"]);
+                    }}
+                  >
+                    {event["name"]}
+                  </ListItem>
+                ))}
+              </List>
+            </FormControl>
+          </Box>
+        </Flex>
+      </Box>
+    </>
+  );
 }
 
 export default EventCheckin;

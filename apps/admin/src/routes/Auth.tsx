@@ -7,7 +7,7 @@ const DEV_JWT = import.meta.env.VITE_DEV_JWT;
 
 async function verifyAuth() {
   if (DEV_JWT) {
-    localStorage.setItem('jwt', DEV_JWT);
+    localStorage.setItem("jwt", DEV_JWT);
   }
 
   const urlSearchParams = new URLSearchParams(window.location.search);

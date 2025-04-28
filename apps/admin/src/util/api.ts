@@ -15,11 +15,15 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  response => response,
-  error => {
+  (response) => response,
+  (error) => {
     const errorType = error.response.data.error;
 
-    if (errorType === "NoJWT" || errorType === "ExpiredJWT" || errorType === "InvalidJWT") {
+    if (
+      errorType === "NoJWT" ||
+      errorType === "ExpiredJWT" ||
+      errorType === "InvalidJWT"
+    ) {
       localStorage.removeItem("jwt");
       window.location.href = "/auth";
     }

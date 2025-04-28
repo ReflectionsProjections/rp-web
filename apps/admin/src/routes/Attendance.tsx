@@ -6,7 +6,7 @@ import {
   useToast,
   Center,
   Spinner,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import Lottie from "lottie-react";
 import successAnimation from "../assets/animations/success.json";
@@ -38,22 +38,22 @@ const AttendancePage = () => {
           description: "No meeting ID provided in the URL.",
           status: "error",
           duration: 5000,
-          isClosable: true,
+          isClosable: true
         });
         setStatus("clientError");
         return;
       }
-  
+
       try {
         const res = await api.post("/staff/check-in", { meetingId });
-        
+
         if (res.status === 200) {
           toast({
             title: "Attendance Marked",
             description: "You have been checked into the meeting.",
             status: "success",
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
           setStatus("success");
           return;
@@ -73,7 +73,7 @@ const AttendancePage = () => {
               description: "You have already checked into this meeting!",
               status: "info",
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             setStatus("alreadyCheckedIn");
             return;
@@ -83,7 +83,7 @@ const AttendancePage = () => {
               description: "This check-in link has expired.",
               status: "warning",
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             setStatus("expired");
             return;
@@ -93,18 +93,21 @@ const AttendancePage = () => {
               description: "The specified meeting ID does not exist.",
               status: "error",
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             setStatus("notFound");
             return;
           } else {
             console.error("Unexpected error code:", code);
             toast({
-              title: code === "AlreadyCheckedIn" ? "Already Checked In" : "Check‑in Failed",
+              title:
+                code === "AlreadyCheckedIn"
+                  ? "Already Checked In"
+                  : "Check‑in Failed",
               description: msg ?? "Please try again.",
               status: "error",
               duration: 5000,
-              isClosable: true,
+              isClosable: true
             });
             setErrorMessage(msg ?? "Unexpected response");
             setStatus("serverError");
@@ -117,7 +120,7 @@ const AttendancePage = () => {
             description: message,
             status: "error",
             duration: 5000,
-            isClosable: true,
+            isClosable: true
           });
           setErrorMessage(message);
           setStatus("serverError");
@@ -125,7 +128,7 @@ const AttendancePage = () => {
         }
       }
     };
-  
+
     checkInToMeeting();
   }, [meetingId, toast]);
 
@@ -167,19 +170,17 @@ const AttendancePage = () => {
         </Box>
       )}
 
-
       {status === "notFound" && (
         <Box textAlign="center">
           <Heading size="md" color="red.500">
             Meeting Not Found
           </Heading>
           <Text mt={2}>
-            The specified meeting ID does not exist. Please double check the code.
+            The specified meeting ID does not exist. Please double check the
+            code.
           </Text>
         </Box>
       )}
-
-      
 
       {status === "serverError" && (
         <Box textAlign="center">

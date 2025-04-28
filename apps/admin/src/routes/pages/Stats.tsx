@@ -15,18 +15,17 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   CardHeader,
-  useToast,
-} from '@chakra-ui/react';
+  useToast
+} from "@chakra-ui/react";
 
-import { Bar } from 'react-chartjs-2';
-import { Chart, registerables } from 'chart.js';
-
+import { Bar } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 
 // Register Chart.js components
 Chart.register(...registerables);
 
-import React from 'react';
-import api from '../../util/api';
+import React from "react";
+import api from "../../util/api";
 
 function Stats() {
   const toast = useToast();
@@ -44,24 +43,27 @@ function Stats() {
   const [both, setBoth] = React.useState(0);
   const [none, setNone] = React.useState(0);
 
-  const [allergyCounts, setAllergyCounts] = React.useState<{ [key: string]: number }>({});
-  const [dietaryRestrictionCounts, setDietaryRestrictionCounts] = React.useState<{ [key: string]: number }>({});
+  const [allergyCounts, setAllergyCounts] = React.useState<{
+    [key: string]: number;
+  }>({});
+  const [dietaryRestrictionCounts, setDietaryRestrictionCounts] =
+    React.useState<{ [key: string]: number }>({});
 
   const showToast = (message: string) => {
     toast({
       title: message,
       status: "error",
       duration: 9000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
   const getStats = async () => {
-
     // setCheckInStats(694);
     // setPriorityAttendees(120);
 
-    api.get("/stats/check-in/")
+    api
+      .get("/stats/check-in/")
       .then(function (response) {
         // handle success
         console.log("Check-In Response:", response.data);
@@ -74,7 +76,8 @@ function Stats() {
         showToast("Failed to fetch check-in stats");
       });
 
-    api.get("/stats/priority-attendee/")
+    api
+      .get("/stats/priority-attendee/")
       .then(function (response) {
         // handle success
         console.log(response.data.count);
@@ -86,7 +89,8 @@ function Stats() {
         showToast("Failed to fetch priority attendees stats");
       });
 
-    api.get("/stats/dietary-restrictions/")
+    api
+      .get("/stats/dietary-restrictions/")
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -102,15 +106,15 @@ function Stats() {
         console.log(error);
       });
 
-    api.get('/stats/merch-item/0')
+    api
+      .get("/stats/merch-item/0")
       .then((response) => {
         setEligiblePrize(response.data.count);
       })
       .catch((error) => {
         console.log(error);
-        showToast('Failed to fetch eligible prize stats');
+        showToast("Failed to fetch eligible prize stats");
       });
-        
   };
 
   const handleEventAttendanceChange = async (valueAsString: string) => {
@@ -120,18 +124,23 @@ function Stats() {
     console.log("events num: ", numEvents);
     setInputEventAttendance(parseInt(valueAsString));
 
-    api.get("/stats/attendance/" + numEvents)
+    api
+      .get("/stats/attendance/" + numEvents)
       .then(function (response) {
         console.log(response.data.attendanceCounts);
         let sum = 0;
 
         // Sum the first numEvents elements
-        for (let i = 0; i < Math.min(numEvents, response.data.attendanceCounts.length); i++) {
-          if (typeof response.data.attendanceCounts[i] === 'number') {
+        for (
+          let i = 0;
+          i < Math.min(numEvents, response.data.attendanceCounts.length);
+          i++
+        ) {
+          if (typeof response.data.attendanceCounts[i] === "number") {
             sum += response.data.attendanceCounts[i];
           }
         }
-    
+
         setEventAttendance(sum);
       })
       .catch(function (error) {
@@ -145,7 +154,8 @@ function Stats() {
     console.log("PRICE: ", price);
     setInputEligiblePrize(parseInt(valueAsString));
 
-    api.get("/stats/merch-item/" + price)
+    api
+      .get("/stats/merch-item/" + price)
       .then(function (response) {
         console.log(response.data.count);
         setEligiblePrize(response.data.count);
@@ -169,8 +179,6 @@ function Stats() {
   //   none: 213
   // };
 
-
-
   // const SummaryStats = ({ data }: { data: { allergies: number, dietaryRestrictions: number, both: number, none: number } }) => (
   const SummaryStats = () => (
     <StatGroup>
@@ -193,39 +201,50 @@ function Stats() {
     </StatGroup>
   );
 
-  const AllergiesChart = ({ data }: { data: { allergyCounts: { [key: string]: number } } }) => {
+  const AllergiesChart = ({
+    data
+  }: {
+    data: { allergyCounts: { [key: string]: number } };
+  }) => {
     const chartData = {
       labels: Object.keys(data.allergyCounts),
-      datasets: [{
-        label: 'Allergies',
-        data: Object.values(data.allergyCounts),
-        backgroundColor: 'rgba(75, 192, 192, 0.6)',
-      }]
+      datasets: [
+        {
+          label: "Allergies",
+          data: Object.values(data.allergyCounts),
+          backgroundColor: "rgba(75, 192, 192, 0.6)"
+        }
+      ]
     };
-        
+
     return <Bar data={chartData} />;
   };
-      
-  const DietaryRestrictionsChart = ({ data }: { data: { dietaryRestrictionCounts: { [key: string]: number } } }) => {
+
+  const DietaryRestrictionsChart = ({
+    data
+  }: {
+    data: { dietaryRestrictionCounts: { [key: string]: number } };
+  }) => {
     const chartData = {
       labels: Object.keys(data.dietaryRestrictionCounts),
-      datasets: [{
-        label: 'Dietary Restrictions',
-        data: Object.values(data.dietaryRestrictionCounts),
-        backgroundColor: 'rgba(153, 102, 255, 0.6)',
-      }]
+      datasets: [
+        {
+          label: "Dietary Restrictions",
+          data: Object.values(data.dietaryRestrictionCounts),
+          backgroundColor: "rgba(153, 102, 255, 0.6)"
+        }
+      ]
     };
-        
+
     return <Bar data={chartData} />;
   };
 
-
   return (
-    <Box flex="1" p={4} >
+    <Box flex="1" p={4}>
       <Heading size="lg">Stats</Heading>
       <br />
       <StatGroup>
-        <Card m={5} minWidth='40%'>
+        <Card m={5} minWidth="40%">
           <CardBody>
             <Stat>
               <StatLabel>Number Checked-In</StatLabel>
@@ -237,7 +256,7 @@ function Stats() {
             </Stat>
           </CardBody>
         </Card>
-        <Card m={5} minWidth='40%'>
+        <Card m={5} minWidth="40%">
           <CardBody>
             <Stat>
               <StatLabel>Priority Attendees</StatLabel>
@@ -249,12 +268,12 @@ function Stats() {
             </Stat>
           </CardBody>
         </Card>
-        <Card m={5} minWidth='40%'>
+        <Card m={5} minWidth="40%">
           <CardBody>
             <Stat>
               <StatLabel display="flex" alignItems="center">
-                            Past Event Attendance: 
-                <NumberInput 
+                Past Event Attendance:
+                <NumberInput
                   size="sm"
                   maxW="100px"
                   ml="4"
@@ -277,12 +296,12 @@ function Stats() {
           </CardBody>
         </Card>
 
-        <Card m={5} minWidth='40%'>
+        <Card m={5} minWidth="40%">
           <CardBody>
             <Stat>
               <StatLabel display="flex" alignItems="center">
-                            Eligible for Prizes $
-                <NumberInput 
+                Eligible for Prizes $
+                <NumberInput
                   size="sm"
                   maxW="100px"
                   ml="4"
@@ -304,11 +323,11 @@ function Stats() {
             </Stat>
           </CardBody>
         </Card>
-        <Card m={5} minWidth='90%'>
+        <Card m={5} minWidth="90%">
           <CardHeader>
             <b>Dietary Restrictions</b>
           </CardHeader>
-          <SummaryStats/>
+          <SummaryStats />
           {/* <StatGroup>
             <Card m={5} minWidth='40%'>
               <CardBody>
@@ -329,13 +348,17 @@ function Stats() {
           </StatGroup> */}
 
           <Box mb={4}>
-            <Heading size='md' mb={2} minWidth='40%'>Allergy Breakdown</Heading>
-            <AllergiesChart data={{allergyCounts}} />
+            <Heading size="md" mb={2} minWidth="40%">
+              Allergy Breakdown
+            </Heading>
+            <AllergiesChart data={{ allergyCounts }} />
           </Box>
 
           <Box>
-            <Heading size='md' mb={2} minWidth='40%'>Dietary Restrictions Breakdown</Heading>
-            <DietaryRestrictionsChart data={{dietaryRestrictionCounts}} />
+            <Heading size="md" mb={2} minWidth="40%">
+              Dietary Restrictions Breakdown
+            </Heading>
+            <DietaryRestrictionsChart data={{ dietaryRestrictionCounts }} />
           </Box>
         </Card>
       </StatGroup>

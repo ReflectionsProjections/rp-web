@@ -1,6 +1,6 @@
-import { Box, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
-import api from '../util/api';
+import { Box, Text } from "@chakra-ui/react";
+import { useEffect, useState } from "react";
+import api from "../util/api";
 
 const StatusMonitor = () => {
   const [status, setStatus] = useState<boolean>(true);
@@ -14,7 +14,7 @@ const StatusMonitor = () => {
   useEffect(() => {
     const fetchStatus = async () => {
       try {
-        const response = await api.get('/status'); 
+        const response = await api.get("/status");
         if (response.status === 200) {
           if (!status) {
             setOfflineDuration(0); // Reset offline duration only if coming online
@@ -29,7 +29,7 @@ const StatusMonitor = () => {
           }
         }
       } catch (error) {
-        console.error('Error fetching status:', error);
+        console.error("Error fetching status:", error);
         if (status) {
           setLastFailureTime(new Date());
           setStatus(false);
@@ -47,7 +47,9 @@ const StatusMonitor = () => {
     const calculateOfflineDuration = () => {
       if (status === false && lastFailureTime) {
         const now = new Date();
-        const duration = Math.floor((now.getTime() - lastFailureTime.getTime()) / 1000);
+        const duration = Math.floor(
+          (now.getTime() - lastFailureTime.getTime()) / 1000
+        );
         setOfflineDuration(duration);
       }
     };
@@ -57,7 +59,7 @@ const StatusMonitor = () => {
     return () => clearInterval(interval);
   }, [status, lastFailureTime]); // Depend on status and lastFailureTime
 
-  const statusColor = status ? 'green.500' : 'red.500';
+  const statusColor = status ? "green.500" : "red.500";
 
   const formatDuration = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
@@ -66,21 +68,25 @@ const StatusMonitor = () => {
   };
 
   return (
-    <Box p={4} borderWidth={1} borderRadius="md" borderColor={statusColor} textAlign="center">
+    <Box
+      p={4}
+      borderWidth={1}
+      borderRadius="md"
+      borderColor={statusColor}
+      textAlign="center"
+    >
       <Text fontSize="lg" fontWeight="bold" color={statusColor}>
-        {status ? 'API is alive' : 'API is offline'}
+        {status ? "API is alive" : "API is offline"}
       </Text>
       {status ? (
         <Text mt={2}>
-                    Last Uptime: {lastUptime ? lastUptime.toLocaleString() : 'N/A'}
+          Last Uptime: {lastUptime ? lastUptime.toLocaleString() : "N/A"}
         </Text>
       ) : (
         <>
+          <Text mt={2}>Time Offline: {formatDuration(offlineDuration)}</Text>
           <Text mt={2}>
-                        Time Offline: {formatDuration(offlineDuration)}
-          </Text>
-          <Text mt={2}>
-                        Last Uptime: {lastUptime ? lastUptime.toLocaleString() : 'N/A'}
+            Last Uptime: {lastUptime ? lastUptime.toLocaleString() : "N/A"}
           </Text>
         </>
       )}

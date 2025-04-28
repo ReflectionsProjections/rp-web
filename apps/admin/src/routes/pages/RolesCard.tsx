@@ -1,4 +1,4 @@
-import { CloseIcon, CheckIcon } from '@chakra-ui/icons';
+import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Box,
   Stack,
@@ -13,19 +13,24 @@ import {
   useToast,
   Select,
   Text
-} from '@chakra-ui/react';
-import api from '../../util/api';
-import React, { useCallback } from 'react';
+} from "@chakra-ui/react";
+import api from "../../util/api";
+import React, { useCallback } from "react";
 
 const TEAMS = [
-  'CONTENT', 'DEVELOPMENT', 'MARKETING', 'DESIGN', 'OPERATIONS', 'ADMIN'
+  "CONTENT",
+  "DEVELOPMENT",
+  "MARKETING",
+  "DESIGN",
+  "OPERATIONS",
+  "ADMIN"
 ];
 
 function RolesCard({ role }: { role: string }) {
   const toast = useToast();
   const [nameList, setNameList] = React.useState([]);
-  const [email, setEmail] = React.useState('');
-  const [newTeam, setNewTeam] = React.useState('');
+  const [email, setEmail] = React.useState("");
+  const [newTeam, setNewTeam] = React.useState("");
 
   const [firstRender, setFirstRender] = React.useState(true);
 
@@ -34,7 +39,7 @@ function RolesCard({ role }: { role: string }) {
       title: message,
       status: error ? "error" : "success",
       duration: 9000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -43,10 +48,13 @@ function RolesCard({ role }: { role: string }) {
   }, []);
 
   const getRoles = async () => {
-    api.get("/auth/" + role)
+    api
+      .get("/auth/" + role)
       .then(function (response) {
         // handle success
-        const names = response.data.map((item: Record<string, string>) => item.email);
+        const names = response.data.map(
+          (item: Record<string, string>) => item.email
+        );
         // console.log(names);
         setNameList(names);
       })
@@ -54,7 +62,6 @@ function RolesCard({ role }: { role: string }) {
         // handle error
         console.log(error);
       });
-
   };
 
   React.useEffect(() => {
@@ -65,26 +72,29 @@ function RolesCard({ role }: { role: string }) {
     }
   }, [firstRender]);
 
-  const removeFromRole = async (role: string, email: string) => {    
+  const removeFromRole = async (role: string, email: string) => {
     try {
-      const response = await api.delete('/auth/', {
+      const response = await api.delete("/auth/", {
         data: {
           email,
           role
         }
       });
 
-      console.log('User role updated:', response.data);
-      showToast(email+' User Role updated: No longer '+role+' role', false);
+      console.log("User role updated:", response.data);
+      showToast(
+        email + " User Role updated: No longer " + role + " role",
+        false
+      );
       getRoles();
     } catch (error) {
       console.log(error);
-      showToast('Failed to update user role. Try again soon!', true);
+      showToast("Failed to update user role. Try again soon!", true);
     }
   };
 
   const updateUserTeam = async (name: string, newTeam: string) => {
-    console.log('Update user team:', name, newTeam);
+    console.log("Update user team:", name, newTeam);
     // TODO: Connect to API
   };
 
@@ -97,63 +107,62 @@ function RolesCard({ role }: { role: string }) {
         <Select
           flex={1}
           placeholder="Select team"
-          value={''}
+          value={""}
           onChange={(e) => {
             const selectedTeam = e.target.value;
-            if (selectedTeam !== '') {
+            if (selectedTeam !== "") {
               updateUserTeam(name, selectedTeam);
             }
           }}
           mr={2}
         >
           {TEAMS.map((team) => (
-            <option key={team} value={team}>{toTitleCase(team)}</option>
+            <option key={team} value={team}>
+              {toTitleCase(team)}
+            </option>
           ))}
         </Select>
         <IconButton
-          size={'md'}
-          icon={ <CloseIcon /> }
-          aria-label={'Open Menu'}
+          size={"md"}
+          icon={<CloseIcon />}
+          aria-label={"Open Menu"}
           onClick={() => removeFromRole(role, name)}
         />
       </Flex>
     ));
   };
 
-  const addToRole = async ( email: string) => {    
+  const addToRole = async (email: string) => {
     try {
-      const response = await api.put('/auth/', {
+      const response = await api.put("/auth/", {
         email,
         role
       });
 
-      console.log('User role updated:', response.data);
-      showToast(email+' User Role updated: Now '+role+' role', false);
+      console.log("User role updated:", response.data);
+      showToast(email + " User Role updated: Now " + role + " role", false);
       getRoles();
     } catch (error) {
       console.log(error);
-      showToast('Failed to update user role. Try again soon!', true);
+      showToast("Failed to update user role. Try again soon!", true);
     }
   };
 
   const handleSubmit = () => {
     addToRole(email); // Replace 'YOUR_ROLE_HERE' with the actual role
-    setEmail('');
+    setEmail("");
   };
 
   function toTitleCase(str: string) {
-    return str.replace(
-      /\w\S*/g,
-      function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      }
-    );
+    return str.replace(/\w\S*/g, function (txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
   }
 
   return (
     <Card overflowY="auto" maxHeight="70vh">
       <CardHeader>
-        <Heading size='md'>{toTitleCase(role)}</Heading>
+        <Heading size="md">{toTitleCase(role)}</Heading>
       </CardHeader>
       <CardBody>
         <Flex mb={4}>
@@ -170,18 +179,20 @@ function RolesCard({ role }: { role: string }) {
             mr={2}
           >
             {TEAMS.map((team) => (
-              <option key={team} value={team}>{toTitleCase(team)}</option>
+              <option key={team} value={team}>
+                {toTitleCase(team)}
+              </option>
             ))}
           </Select>
 
           <IconButton
-            size={'md'}
+            size={"md"}
             icon={<CheckIcon />}
-            aria-label={'Open Menu'}
+            aria-label={"Open Menu"}
             onClick={handleSubmit}
           />
         </Flex>
-        <Stack divider={<StackDivider />} spacing='4'>
+        <Stack divider={<StackDivider />} spacing="4">
           {renderNamesWithButtons(role, nameList)}
         </Stack>
       </CardBody>

@@ -24,8 +24,12 @@ function Merch() {
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");
-  const [filteredEmails, setFilteredEmails] = useState<{ email: string; userId: string }[]>([]);
-  const [attendeeEmails, setAttendeeEmails] = useState<{ email: string; userId: string }[]>([]);
+  const [filteredEmails, setFilteredEmails] = useState<
+    { email: string; userId: string }[]
+  >([]);
+  const [attendeeEmails, setAttendeeEmails] = useState<
+    { email: string; userId: string }[]
+  >([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
   const [attendeePoints, setAttendeePoints] = useState(0);
 
@@ -34,21 +38,21 @@ function Merch() {
     Tshirt: false,
     Button: false,
     Cap: false,
-    ToteBag: false,
+    ToteBag: false
   });
   // Indicates whether or not the merch item has been redeemed already
   const [redeemedMerch, setRedeemedMerch] = useState({
     Tshirt: false,
     Button: false,
     Cap: false,
-    ToteBag: false,
+    ToteBag: false
   });
   // Indicates whether or not the merch item is eligible to be redeemed
   const [eligibleMerch, setEligibleMerch] = useState({
     Tshirt: false,
     Button: false,
     Cap: false,
-    ToteBag: false,
+    ToteBag: false
   });
 
   const showToast = (message: string, error: boolean) => {
@@ -56,7 +60,7 @@ function Merch() {
       title: message,
       status: error ? "error" : "success",
       duration: 9000,
-      isClosable: true,
+      isClosable: true
     });
   };
 
@@ -64,15 +68,14 @@ function Merch() {
   useEffect(() => {
     const fetchAttendeeEmails = async () => {
       api
-        .get('/attendee/emails')
+        .get("/attendee/emails")
         .then(function (response) {
           const attendeeData = response.data;
           setAttendeeEmails(attendeeData);
         })
         .catch(function () {
-          showToast('Error fetching attendee emails + info.', true);
+          showToast("Error fetching attendee emails + info.", true);
         });
-        
     };
 
     fetchAttendeeEmails();
@@ -92,36 +95,34 @@ function Merch() {
           Tshirt: user.hasRedeemedMerch!["Tshirt"],
           Button: user.hasRedeemedMerch!["Button"],
           Cap: user.hasRedeemedMerch!["Cap"],
-          ToteBag: user.hasRedeemedMerch!["Tote"],
+          ToteBag: user.hasRedeemedMerch!["Tote"]
         });
         setRedeemedMerch({
           Tshirt: user.hasRedeemedMerch!["Tshirt"],
           Button: user.hasRedeemedMerch!["Button"],
           Cap: user.hasRedeemedMerch!["Cap"],
-          ToteBag: user.hasRedeemedMerch!["Tote"],
+          ToteBag: user.hasRedeemedMerch!["Tote"]
         });
         setEligibleMerch({
           Tshirt: user.isEligibleMerch!["Tshirt"],
           Button: user.isEligibleMerch!["Button"],
           Cap: user.isEligibleMerch!["Cap"],
-          ToteBag: user.isEligibleMerch!["Tote"],
+          ToteBag: user.isEligibleMerch!["Tote"]
         });
 
-        showToast('Successfully fetched attendee merch info!', false);
+        showToast("Successfully fetched attendee merch info!", false);
       })
       .catch(function () {
-        showToast('Error fetching attendee merch info.', true);
+        showToast("Error fetching attendee merch info.", true);
       });
   };
 
   // Handle QR code scanner
   const handleScan = (data: string) => {
-    api
-      .post("/checkin/scan/merch", {qrCode: data})
-      .then(function (response) {
-        const userId = response.data;
-        getUser(userId);
-      });
+    api.post("/checkin/scan/merch", { qrCode: data }).then(function (response) {
+      const userId = response.data;
+      getUser(userId);
+    });
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -154,14 +155,16 @@ function Merch() {
   // Get attendee merch info via their email
   const handleSearch = async () => {
     if (!email) {
-      showToast('Please enter an email.', true);
+      showToast("Please enter an email.", true);
       return;
     }
 
     // .find() could be a bit slow, possibly change to Map/something else later
-    const selectedAttendee = attendeeEmails.find((attendee) => attendee.email === email);
+    const selectedAttendee = attendeeEmails.find(
+      (attendee) => attendee.email === email
+    );
     if (!selectedAttendee) {
-      showToast('This email is not registered as an R|P attendee.', true);
+      showToast("This email is not registered as an R|P attendee.", true);
       return;
     }
 
@@ -172,182 +175,206 @@ function Merch() {
   // Handle submitting the merch checkin changes
   const handleSubmit = async () => {
     if (!redeemedMerch.Tshirt && eligibleMerch.Tshirt && hasMerch.Tshirt) {
-      api.post("/attendee/redeemMerch/Tshirt", { userId: userId })
+      api
+        .post("/attendee/redeemMerch/Tshirt", { userId: userId })
         .then(function () {
-          showToast('Successfully redeemed a T-Shirt!', false);
+          showToast("Successfully redeemed a T-Shirt!", false);
         })
         .catch(function () {
-          showToast('Error updating attendee merch info. This attendee may have already received a T-shirt.', true);
+          showToast(
+            "Error updating attendee merch info. This attendee may have already received a T-shirt.",
+            true
+          );
         });
     }
     if (!redeemedMerch.Button && eligibleMerch.Button && hasMerch.Button) {
-      api.post("/attendee/redeemMerch/Button", { userId: userId })
+      api
+        .post("/attendee/redeemMerch/Button", { userId: userId })
         .then(function () {
-          showToast('Successfully redeemed a Button!', false);
+          showToast("Successfully redeemed a Button!", false);
         })
         .catch(function () {
-          showToast('Error updating attendee merch info. This attendee may have already received a Button.', true);
+          showToast(
+            "Error updating attendee merch info. This attendee may have already received a Button.",
+            true
+          );
         });
     }
     if (!redeemedMerch.Cap && eligibleMerch.Cap && hasMerch.Cap) {
-      api.post("/attendee/redeemMerch/Cap", { userId: userId })
+      api
+        .post("/attendee/redeemMerch/Cap", { userId: userId })
         .then(function () {
-          showToast('Successfully redeemed a Cap!', false);
+          showToast("Successfully redeemed a Cap!", false);
         })
         .catch(function () {
-          showToast('Error updating attendee merch info. This attendee may have already received a Cap.', true);
+          showToast(
+            "Error updating attendee merch info. This attendee may have already received a Cap.",
+            true
+          );
         });
     }
     if (!redeemedMerch.ToteBag && eligibleMerch.ToteBag && hasMerch.ToteBag) {
-      api.post("/attendee/redeemMerch/Tote", { userId: userId })
+      api
+        .post("/attendee/redeemMerch/Tote", { userId: userId })
         .then(function () {
-          showToast('Successfully redeemed a Tote Bag!', false);
+          showToast("Successfully redeemed a Tote Bag!", false);
         })
         .catch(function () {
-          showToast('Error updating attendee merch info. This attendee may have already received a Tote Bag.', true);
+          showToast(
+            "Error updating attendee merch info. This attendee may have already received a Tote Bag.",
+            true
+          );
         });
     }
   };
 
-  return <>
-    <Box flex="1" minW="90vw" p={4}>
-      <Heading size="lg">Merch</Heading>
-      <br />
-      <Flex direction={isSmall ? 'column' : 'row'}>
-        {/* Left Side: Webcam or Email input */}
-        <Box flex="1" p={4} mr={4}>
-          <FormControl display="flex" alignItems="center" mb={4}>
-            <FormLabel htmlFor="toggle-webcam" mb="0">
-              Show Webcam
-            </FormLabel>
-            <Switch
-              id="toggle-webcam"
-              isChecked={showWebcam}
-              onChange={() => setShowWebcam(!showWebcam)}
-            />
-          </FormControl>
-
-          {showWebcam ? (
-            <>
-              <Scanner allowMultiple={true} onScan={(result) => {
-                const data = result[0].rawValue;
-                console.log(result[0].rawValue);
-                handleScan(data);
-              }} />;
-            </>
-          ) : (
-            <FormControl>
-              <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
-              <Input
-                id="email"
-                placeholder="Email"
-                value={email}
-                onChange={handleEmailChange}
-                autoComplete="off"
+  return (
+    <>
+      <Box flex="1" minW="90vw" p={4}>
+        <Heading size="lg">Merch</Heading>
+        <br />
+        <Flex direction={isSmall ? "column" : "row"}>
+          {/* Left Side: Webcam or Email input */}
+          <Box flex="1" p={4} mr={4}>
+            <FormControl display="flex" alignItems="center" mb={4}>
+              <FormLabel htmlFor="toggle-webcam" mb="0">
+                Show Webcam
+              </FormLabel>
+              <Switch
+                id="toggle-webcam"
+                isChecked={showWebcam}
+                onChange={() => setShowWebcam(!showWebcam)}
               />
-              
-              {filteredEmails.length > 0 && (
-                <Box 
-                  mt={1} 
-                  border="1px solid #ccc" 
-                  borderRadius="md" 
-                  maxH="200px" 
-                  overflowY="auto" 
-                  position="absolute" 
-                  width="100%" 
-                  bg="white" 
-                  zIndex={10}
-                >
-                  <List>
-                    {filteredEmails.map((attendee) => (
-                      <ListItem 
-                        key={attendee.userId}
-                        p={2}
-                        _hover={{ bg: 'gray.100', cursor: 'pointer' }}
-                        onClick={() => handleSelectEmail(attendee.email)}
-                        color='black'
-                      >
-                        {attendee.email}
-                      </ListItem>
-                    ))}
-                  </List>
-                </Box>
-              )}
-
-              <Button mt={4} colorScheme="blue" onClick={handleSearch}>
-                Search Attendee
-              </Button>
-
             </FormControl>
-          )}
-        </Box>
 
-        {/* Right Side: Attendee Name and Merch Checkboxes */}
-        <Box flex="1" p={4}>
-          <FormControl>
-            <FormLabel
-              htmlFor="attendee-name"
-              textAlign="center"
-              fontWeight="bold"
-              fontSize="xl"
-            >
-              {attendeeName}
-            </FormLabel>
-          </FormControl>
+            {showWebcam ? (
+              <>
+                <Scanner
+                  allowMultiple={true}
+                  onScan={(result) => {
+                    const data = result[0].rawValue;
+                    console.log(result[0].rawValue);
+                    handleScan(data);
+                  }}
+                />
+                ;
+              </>
+            ) : (
+              <FormControl>
+                <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
+                <Input
+                  id="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={handleEmailChange}
+                  autoComplete="off"
+                />
 
-          <FormControl mb={4}>
-            <FormLabel htmlFor="points" textAlign="center">Points: {attendeePoints}</FormLabel>
-          </FormControl>
+                {filteredEmails.length > 0 && (
+                  <Box
+                    mt={1}
+                    border="1px solid #ccc"
+                    borderRadius="md"
+                    maxH="200px"
+                    overflowY="auto"
+                    position="absolute"
+                    width="100%"
+                    bg="white"
+                    zIndex={10}
+                  >
+                    <List>
+                      {filteredEmails.map((attendee) => (
+                        <ListItem
+                          key={attendee.userId}
+                          p={2}
+                          _hover={{ bg: "gray.100", cursor: "pointer" }}
+                          onClick={() => handleSelectEmail(attendee.email)}
+                          color="black"
+                        >
+                          {attendee.email}
+                        </ListItem>
+                      ))}
+                    </List>
+                  </Box>
+                )}
 
-          <FormControl mb={4}>
-            <Checkbox
-              name="Tshirt"
-              isChecked={hasMerch.Tshirt}
-              onChange={handleCheckboxChange}
-              isDisabled={!eligibleMerch.Tshirt}
-            >
+                <Button mt={4} colorScheme="blue" onClick={handleSearch}>
+                  Search Attendee
+                </Button>
+              </FormControl>
+            )}
+          </Box>
+
+          {/* Right Side: Attendee Name and Merch Checkboxes */}
+          <Box flex="1" p={4}>
+            <FormControl>
+              <FormLabel
+                htmlFor="attendee-name"
+                textAlign="center"
+                fontWeight="bold"
+                fontSize="xl"
+              >
+                {attendeeName}
+              </FormLabel>
+            </FormControl>
+
+            <FormControl mb={4}>
+              <FormLabel htmlFor="points" textAlign="center">
+                Points: {attendeePoints}
+              </FormLabel>
+            </FormControl>
+
+            <FormControl mb={4}>
+              <Checkbox
+                name="Tshirt"
+                isChecked={hasMerch.Tshirt}
+                onChange={handleCheckboxChange}
+                isDisabled={!eligibleMerch.Tshirt}
+              >
                 T-shirt
-            </Checkbox>
-            <Checkbox
-              name="Button"
-              isChecked={hasMerch.Button}
-              onChange={handleCheckboxChange}
-              isDisabled={!eligibleMerch.Button}
-              ml={4}
-            >
-              Button
-            </Checkbox>
-            <Checkbox
-              name="ToteBag"
-              isChecked={hasMerch.ToteBag}
-              onChange={handleCheckboxChange}
-              isDisabled={!eligibleMerch.ToteBag}
-              ml={4}
-            >
-              Tote Bag
-            </Checkbox>
-            <Checkbox
-              name="Cap"
-              isChecked={hasMerch.Cap}
-              onChange={handleCheckboxChange}
-              isDisabled={!eligibleMerch.Cap}
-              ml={4}
-            >
-              Cap
-            </Checkbox>
-          </FormControl>
+              </Checkbox>
+              <Checkbox
+                name="Button"
+                isChecked={hasMerch.Button}
+                onChange={handleCheckboxChange}
+                isDisabled={!eligibleMerch.Button}
+                ml={4}
+              >
+                Button
+              </Checkbox>
+              <Checkbox
+                name="ToteBag"
+                isChecked={hasMerch.ToteBag}
+                onChange={handleCheckboxChange}
+                isDisabled={!eligibleMerch.ToteBag}
+                ml={4}
+              >
+                Tote Bag
+              </Checkbox>
+              <Checkbox
+                name="Cap"
+                isChecked={hasMerch.Cap}
+                onChange={handleCheckboxChange}
+                isDisabled={!eligibleMerch.Cap}
+                ml={4}
+              >
+                Cap
+              </Checkbox>
+            </FormControl>
 
-          <Button colorScheme="blue" onClick={handleSubmit} mb={4}>
-            Submit
-          </Button>
+            <Button colorScheme="blue" onClick={handleSubmit} mb={4}>
+              Submit
+            </Button>
 
-          <Text fontSize="sm" fontStyle="italic" mt={2}>
-            NOTE: Once you hit submit and check-in an attendee for merch, you cannot undo this!
-          </Text>
-        </Box>
-      </Flex>
-    </Box>
-  </>;
+            <Text fontSize="sm" fontStyle="italic" mt={2}>
+              NOTE: Once you hit submit and check-in an attendee for merch, you
+              cannot undo this!
+            </Text>
+          </Box>
+        </Flex>
+      </Box>
+    </>
+  );
 }
 
 export default Merch;
