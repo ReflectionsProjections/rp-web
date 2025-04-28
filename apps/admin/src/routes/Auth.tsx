@@ -3,7 +3,7 @@ import { Config } from "../config";
 import api from "../util/api";
 import { useEffect, useState } from "react";
 
-const DEV_JWT = import.meta.env.VITE_DEV_JWT;
+const DEV_JWT = import.meta.env.VITE_DEV_JWT as string | undefined;
 
 async function verifyAuth() {
   if (DEV_JWT) {
@@ -47,7 +47,12 @@ export default function Auth() {
   const [redirect, setRedirect] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
-    verifyAuth().then((element) => setRedirect(element));
+    verifyAuth()
+      .then((element) => setRedirect(element))
+      .catch((error) => {
+        console.log(error);
+        setRedirect(<Navigate to="/unauthorized/" replace={true} />);
+      });
   }, []);
 
   return redirect;

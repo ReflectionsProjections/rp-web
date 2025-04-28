@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import { Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../util/api.ts";
+import { Event, path } from "@rp/shared";
 
 function EventCheckin() {
   const [isSmall] = useMediaQuery("(max-width: 600px)");
@@ -33,7 +34,7 @@ function EventCheckin() {
   >([]);
   const [attendeeName, setAttendeeName] = useState("Attendee Name");
 
-  const [events, setEvents] = useState<[]>([]);
+  const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
   const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
 
@@ -83,10 +84,10 @@ function EventCheckin() {
     }
 
     api
-      .get(`/attendee/id/${userId}`)
+      .get(path("/attendee/id/:userId", { userId }))
       .then((response) => {
         const user = response.data;
-        setAttendeeName(user["name"]);
+        setAttendeeName(user.name);
         console.log("NAME: ", attendeeName);
       })
       .catch((err) => {
@@ -108,13 +109,16 @@ function EventCheckin() {
     }
 
     api
-      .post("/checkin/scan/staff", { eventId: selectedEventId, qrCode: qrData })
+      .post("/checkin/scan/staff", {
+        eventId: selectedEventId ?? "",
+        qrCode: qrData
+      })
       .then((response) => {
         const userId = response.data;
         setUserId(userId);
         showQuickToast(`Succesfully checked into event!`, false);
       })
-      .catch((err) => {
+      .catch((err: { response: { status: number } }) => {
         console.log(err.response);
         if (err.response.status == 403) {
           showQuickToast("Attendee has already checked in.", true);
@@ -151,7 +155,7 @@ function EventCheckin() {
   };
 
   // Check attendee into event via their email
-  const handleCheckin = async () => {
+  const handleCheckin = () => {
     if (!selectedEvent) {
       showToast("Please select an event to check in attendees to!", true);
       return;
@@ -174,7 +178,10 @@ function EventCheckin() {
     setUserId(userId);
 
     api
-      .post("/checkin/event", { eventId: selectedEventId, userId: userId })
+      .post("/checkin/event", {
+        eventId: selectedEventId ?? "",
+        userId: userId
+      })
       .then(function () {
         showQuickToast(`Succesfully checked into event!`, false);
       })

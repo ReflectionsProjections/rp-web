@@ -16,6 +16,7 @@ import {
 } from "@chakra-ui/react";
 import api from "../../util/api";
 import React, { useCallback } from "react";
+import { path, Role } from "@rp/shared";
 
 const TEAMS = [
   "CONTENT",
@@ -26,9 +27,9 @@ const TEAMS = [
   "ADMIN"
 ];
 
-function RolesCard({ role }: { role: string }) {
+function RolesCard({ role }: { role: Role }) {
   const toast = useToast();
-  const [nameList, setNameList] = React.useState([]);
+  const [nameList, setNameList] = React.useState<string[]>([]);
   const [email, setEmail] = React.useState("");
   const [newTeam, setNewTeam] = React.useState("");
 
@@ -47,14 +48,12 @@ function RolesCard({ role }: { role: string }) {
     setNewTeam(newTeam);
   }, []);
 
-  const getRoles = async () => {
+  const getRoles = () => {
     api
-      .get("/auth/" + role)
+      .get(path("/auth/:role", { role }))
       .then(function (response) {
         // handle success
-        const names = response.data.map(
-          (item: Record<string, string>) => item.email
-        );
+        const names = response.data.map((item) => item.email);
         // console.log(names);
         setNameList(names);
       })
@@ -72,28 +71,29 @@ function RolesCard({ role }: { role: string }) {
     }
   }, [firstRender]);
 
-  const removeFromRole = async (role: string, email: string) => {
-    try {
-      const response = await api.delete("/auth/", {
+  const removeFromRole = (role: string, email: string) => {
+    api
+      .delete("/auth", {
         data: {
           email,
           role
         }
+      })
+      .then((response) => {
+        console.log("User role updated:", response.data);
+        showToast(
+          email + " User Role updated: No longer " + role + " role",
+          false
+        );
+        getRoles();
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Failed to update user role. Try again soon!", true);
       });
-
-      console.log("User role updated:", response.data);
-      showToast(
-        email + " User Role updated: No longer " + role + " role",
-        false
-      );
-      getRoles();
-    } catch (error) {
-      console.log(error);
-      showToast("Failed to update user role. Try again soon!", true);
-    }
   };
 
-  const updateUserTeam = async (name: string, newTeam: string) => {
+  const updateUserTeam = (name: string, newTeam: string) => {
     console.log("Update user team:", name, newTeam);
     // TODO: Connect to API
   };
@@ -132,20 +132,21 @@ function RolesCard({ role }: { role: string }) {
     ));
   };
 
-  const addToRole = async (email: string) => {
-    try {
-      const response = await api.put("/auth/", {
+  const addToRole = (email: string) => {
+    api
+      .put("/auth", {
         email,
         role
+      })
+      .then((response) => {
+        console.log("User role updated:", response.data);
+        showToast(email + " User Role updated: Now " + role + " role", false);
+        getRoles();
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Failed to update user role. Try again soon!", true);
       });
-
-      console.log("User role updated:", response.data);
-      showToast(email + " User Role updated: Now " + role + " role", false);
-      getRoles();
-    } catch (error) {
-      console.log(error);
-      showToast("Failed to update user role. Try again soon!", true);
-    }
   };
 
   const handleSubmit = () => {

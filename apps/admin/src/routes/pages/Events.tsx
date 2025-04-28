@@ -26,25 +26,43 @@ import {
   NumberDecrementStepper,
   NumberInput,
   Flex,
-  Checkbox
+  Checkbox,
+  useToast
 } from "@chakra-ui/react";
 import { EditIcon, AddIcon } from "@chakra-ui/icons";
 import moment from "moment-timezone";
 import { Config } from "../../config.ts";
 import React, { useEffect, useState } from "react";
 import api from "../../util/api.ts";
+import { Event, EventType, path, RequestType } from "@rp/shared";
 
 const readable = "MMMM Do YYYY, h:mm a";
 
 const useCanDelete = (): boolean => {
   const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
+
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
   useEffect(() => {
-    api.get("/auth/info").then((response) => {
-      setRoles(response.data.roles);
-      setLoading(false);
-    });
+    api
+      .get("/auth/info")
+      .then((response) => {
+        setRoles(response.data.roles);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Error fetching roles", true);
+      });
   }, []);
 
   if (loading) {
@@ -61,9 +79,11 @@ function convertToCST(date: string) {
 }
 
 function Events() {
-  const [events, setEvents] = React.useState([]);
+  const [events, setEvents] = React.useState<Event[]>([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [newEvent, setNewEvent] = React.useState({
+  const [newEvent, setNewEvent] = React.useState<
+    Omit<RequestType<"/events", "POST">, "attendanceCount">
+  >({
     name: "",
     isVirtual: true,
     startTime: "",
@@ -75,30 +95,52 @@ function Events() {
     eventType: "SPEAKER",
     isVisible: true
   });
+  const toast = useToast();
 
-  const createEvent = () => {
-    api.post("/events", { ...newEvent, attendanceCount: 0 }).then(() => {
-      getEvents();
-      setNewEvent({
-        name: "",
-        isVirtual: true,
-        startTime: "",
-        endTime: "",
-        points: 0,
-        imageUrl: "",
-        description: "",
-        location: "",
-        eventType: "A",
-        isVisible: true
-      });
-      onClose(); // Close the modal after creating the event
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
     });
   };
 
+  const createEvent = () => {
+    api
+      .post("/events", { ...newEvent, attendanceCount: 0 })
+      .then(() => {
+        getEvents();
+        setNewEvent({
+          name: "",
+          isVirtual: true,
+          startTime: "",
+          endTime: "",
+          points: 0,
+          imageUrl: "",
+          description: "",
+          location: "",
+          eventType: "SPEAKER",
+          isVisible: true
+        });
+        onClose(); // Close the modal after creating the event
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Error creating event", true);
+      });
+  };
+
   function getEvents() {
-    api.get("/events").then(function (response) {
-      setEvents(response.data);
-    });
+    api
+      .get("/events")
+      .then(function (response) {
+        setEvents(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Error getting events", true);
+      });
   }
 
   function EditModal({
@@ -114,7 +156,7 @@ function Events() {
       isVirtual: boolean;
       imageUrl: string;
       location: string;
-      eventType: string;
+      eventType: EventType;
       isVisible: boolean;
     };
   }) {
@@ -134,12 +176,16 @@ function Events() {
 
       const { eventId, ...valuesWithoutEventId } = updatedValuesUTC;
       api
-        .put("/events/" + eventId, {
+        .put(path("/events/:eventId", { eventId }), {
           ...valuesWithoutEventId
         })
         .then(() => {
           getEvents();
           onClose();
+        })
+        .catch((error) => {
+          console.log(error);
+          showToast("Error getting events", true);
         });
     };
 
@@ -258,7 +304,7 @@ function Events() {
                 onChange={(e) =>
                   setUpdatedValues({
                     ...updatedValues,
-                    eventType: e.target.value
+                    eventType: e.target.value as EventType
                   })
                 }
               >
@@ -294,9 +340,15 @@ function Events() {
   }
 
   const deleteEvent = (eventId: string) => {
-    api.delete("/events/" + eventId).then(() => {
-      getEvents();
-    });
+    api
+      .delete(path("/events/:eventId", { eventId }))
+      .then(() => {
+        getEvents();
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Error getting events", true);
+      });
   };
 
   function EventCard({
@@ -312,7 +364,7 @@ function Events() {
       isVirtual: boolean;
       imageUrl: string;
       location: string;
-      eventType: string;
+      eventType: EventType;
       isVisible: boolean;
     };
   }) {
@@ -485,7 +537,10 @@ function Events() {
             <Select
               value={newEvent.eventType}
               onChange={(e) =>
-                setNewEvent({ ...newEvent, eventType: e.target.value })
+                setNewEvent({
+                  ...newEvent,
+                  eventType: e.target.value as EventType
+                })
               }
               mb={4}
             >
@@ -533,7 +588,7 @@ function Events() {
             isVirtual: boolean;
             imageUrl: string;
             location: string;
-            eventType: string;
+            eventType: EventType;
             isVisible: boolean;
           }) => (
             <EventCard event={event} key={event.eventId} />

@@ -15,7 +15,8 @@ import {
   Text,
   Image,
   Center,
-  CardFooter
+  CardFooter,
+  useToast
 } from "@chakra-ui/react";
 
 import rpLogo from "../../assets/rp_logo.svg";
@@ -107,6 +108,16 @@ function Dashboard({ name }: { name: string }) {
   } | null>(null);
   const [stats, setStats] = useState(0);
   const [status, setStatus] = useState(0);
+  const toast = useToast();
+
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
   const CustomStatBox = ({
     label,
@@ -131,29 +142,38 @@ function Dashboard({ name }: { name: string }) {
     );
   };
 
-  function getUpcomingEvent() {
-    api.get("/events/currentOrNext").then(function (response) {
-      // console.log(response.data);
-      setCurrentEvent(response.data);
-    });
-  }
-
-  function getStats() {
-    api.get("/stats/check-in/").then((response) => {
-      setStats(response.data.count);
-    });
-  }
-
-  function getStatus() {
-    api.get("/stats/priority-attendee/").then((response) => {
-      setStatus(response.data.count);
-    });
-  }
-
   useEffect(() => {
-    getUpcomingEvent();
-    getStats();
-    getStatus();
+    Promise.allSettled([
+      api.get("/events/currentOrNext"),
+      api.get("/stats/check-in"),
+      api.get("/stats/priority-attendee")
+    ])
+      .then(([event, checkIn, priority]) => {
+        if (event.status === "fulfilled") {
+          setCurrentEvent(event.value.data);
+        } else {
+          console.log(event.reason);
+          showToast("Error fetching event", true);
+        }
+
+        if (checkIn.status === "fulfilled") {
+          setStats(checkIn.value.data.count);
+        } else {
+          console.log(checkIn.reason);
+          showToast("Error fetching check-in stats", true);
+        }
+
+        if (priority.status === "fulfilled") {
+          setStatus(priority.value.data.count);
+        } else {
+          console.log(priority.reason);
+          showToast("Error fetching priority stats", true);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error fetching stats", true);
+      });
   }, []);
 
   return (

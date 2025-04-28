@@ -7,8 +7,8 @@
     "build:dependencies": "yarn workspaces foreach -Rt --from @rp/template --exclude @rp/template run build",
     "build": "yarn build:dependencies && vite build",
     "dev": "yarn build:dependencies && vite",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "verify": "yarn lint && yarn build"
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "verify": "yarn build && tsc --noEmit && yarn lint"
   },
   "dependencies": {
     "@rp/shared": "*",

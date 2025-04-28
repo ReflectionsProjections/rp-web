@@ -26,6 +26,7 @@ Chart.register(...registerables);
 
 import React from "react";
 import api from "../../util/api";
+import { path } from "@rp/shared";
 
 function Stats() {
   const toast = useToast();
@@ -58,12 +59,12 @@ function Stats() {
     });
   };
 
-  const getStats = async () => {
+  const getStats = () => {
     // setCheckInStats(694);
     // setPriorityAttendees(120);
 
     api
-      .get("/stats/check-in/")
+      .get("/stats/check-in")
       .then(function (response) {
         // handle success
         console.log("Check-In Response:", response.data);
@@ -77,7 +78,7 @@ function Stats() {
       });
 
     api
-      .get("/stats/priority-attendee/")
+      .get("/stats/priority-attendee")
       .then(function (response) {
         // handle success
         console.log(response.data.count);
@@ -90,7 +91,7 @@ function Stats() {
       });
 
     api
-      .get("/stats/dietary-restrictions/")
+      .get("/stats/dietary-restrictions")
       .then(function (response) {
         // handle success
         console.log(response.data);
@@ -107,7 +108,7 @@ function Stats() {
       });
 
     api
-      .get("/stats/merch-item/0")
+      .get(path("/stats/merch-item/:price", { price: 0 }))
       .then((response) => {
         setEligiblePrize(response.data.count);
       })
@@ -117,7 +118,7 @@ function Stats() {
       });
   };
 
-  const handleEventAttendanceChange = async (valueAsString: string) => {
+  const handleEventAttendanceChange = (valueAsString: string) => {
     // setEventAttendance(parseInt(valueAsString));
     const numEvents = parseInt(valueAsString, 10);
 
@@ -125,7 +126,7 @@ function Stats() {
     setInputEventAttendance(parseInt(valueAsString));
 
     api
-      .get("/stats/attendance/" + numEvents)
+      .get(path("/stats/attendance/:n", { n: numEvents }))
       .then(function (response) {
         console.log(response.data.attendanceCounts);
         let sum = 0;
@@ -149,13 +150,13 @@ function Stats() {
       });
   };
 
-  const handleEligiblePrizeChange = async (valueAsString: string) => {
+  const handleEligiblePrizeChange = (valueAsString: string) => {
     const price = parseInt(valueAsString);
     console.log("PRICE: ", price);
     setInputEligiblePrize(parseInt(valueAsString));
 
     api
-      .get("/stats/merch-item/" + price)
+      .get(path("/stats/merch-item/:price", { price }))
       .then(function (response) {
         console.log(response.data.count);
         setEligiblePrize(response.data.count);

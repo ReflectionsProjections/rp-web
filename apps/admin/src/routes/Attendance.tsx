@@ -129,7 +129,7 @@ const AttendancePage = () => {
       }
     };
 
-    checkInToMeeting();
+    void checkInToMeeting();
   }, [meetingId, toast]);
 
   return (

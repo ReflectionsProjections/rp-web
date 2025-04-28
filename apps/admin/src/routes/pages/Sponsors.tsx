@@ -15,10 +15,11 @@ import {
 import React from "react";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
 import api from "../../util/api.ts";
+import { Corporate } from "@rp/shared";
 
 function CorporateCard() {
   const toast = useToast();
-  const [sponsorList, setSponsors] = React.useState([]);
+  const [sponsorList, setSponsors] = React.useState<Corporate[]>([]);
   const [email, setEmail] = React.useState("");
   const [name, setName] = React.useState("");
 
@@ -31,7 +32,7 @@ function CorporateCard() {
     });
   };
 
-  const refreshSponsors = async () => {
+  const refreshSponsors = () => {
     api
       .get("/auth/corporate")
       .then(function (response) {
@@ -58,21 +59,25 @@ function CorporateCard() {
     }
   }, []);
 
-  const removeFromRole = async (email: string) => {
-    try {
-      const response = await api.delete("/auth/corporate/", {
+  const removeFromRole = (email: string) => {
+    api
+      .delete("/auth/corporate", {
         data: {
           email: email
         }
+      })
+      .then((response) => {
+        console.log("User role updated:", response.data);
+        showToast(
+          email + " User Role updated: No longer Corporate role",
+          false
+        );
+        refreshSponsors();
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Failed to update user role. Try again soon!", true);
       });
-
-      console.log("User role updated:", response.data);
-      showToast(email + " User Role updated: No longer Corporate role", false);
-      refreshSponsors();
-    } catch (error) {
-      console.log(error);
-      showToast("Failed to update user role. Try again soon!", true);
-    }
   };
 
   const renderSponsors = (sponsors: { name: string; email: string }[]) => {
@@ -100,20 +105,21 @@ function CorporateCard() {
     ));
   };
 
-  const addToRole = async (name: string, email: string) => {
-    try {
-      const response = await api.post("/auth/corporate", {
+  const addToRole = (name: string, email: string) => {
+    api
+      .post("/auth/corporate", {
         name: name,
         email: email
+      })
+      .then((response) => {
+        console.log("User role updated:", response.data);
+        showToast(email + " User Role updated: Now Corporate role", false);
+        refreshSponsors();
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Failed to update user role. Try again soon!", true);
       });
-
-      console.log("User role updated:", response.data);
-      showToast(email + " User Role updated: Now Corporate role", false);
-      refreshSponsors();
-    } catch (error) {
-      console.log(error);
-      showToast("Failed to update user role. Try again soon!", true);
-    }
   };
 
   const handleSubmit = () => {

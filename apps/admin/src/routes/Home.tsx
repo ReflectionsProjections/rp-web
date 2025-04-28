@@ -20,7 +20,8 @@ import {
   Stack,
   useColorMode,
   useColorModeValue,
-  Link
+  Link,
+  useToast
 } from "@chakra-ui/react";
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons";
 import { ReactNode, useEffect, useState } from "react";
@@ -100,18 +101,29 @@ export default function Home() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [roles, setRoles] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
+
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
   useEffect(() => {
-    api.get("/auth/info").then((response) => {
-      setRoles(response.data.roles);
-      setLoading(false);
-    });
-  }, []);
-
-  useEffect(() => {
-    api.get("/auth/info").then((response) => {
-      setUserName(response.data.displayName);
-    });
+    api
+      .get("/auth/info")
+      .then((response) => {
+        setUserName(response.data.displayName);
+        setRoles(response.data.roles);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+        showToast("Error fetching staff info", true);
+      });
   }, []);
 
   const renderComponent = () => {

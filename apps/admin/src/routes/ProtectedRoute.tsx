@@ -34,7 +34,12 @@ const ProtectedRoute = () => {
   const [redirect, setRedirect] = useState<JSX.Element | null>(null);
 
   useEffect(() => {
-    verifyAuth().then((element) => setRedirect(element));
+    verifyAuth()
+      .then((element) => setRedirect(element))
+      .catch((error) => {
+        console.log(error);
+        setRedirect(<Navigate to="/unauthorized/" replace={true} />);
+      });
   }, []);
 
   return redirect;

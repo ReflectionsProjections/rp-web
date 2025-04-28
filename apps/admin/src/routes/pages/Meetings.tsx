@@ -22,7 +22,8 @@ import {
   CardFooter,
   Flex,
   Skeleton,
-  Switch
+  Switch,
+  useToast
   // Checkbox,
 } from "@chakra-ui/react";
 import { EditIcon, AddIcon } from "@chakra-ui/icons";
@@ -31,6 +32,7 @@ import moment from "moment-timezone";
 import React, { useEffect } from "react";
 import api from "../../util/api.ts";
 import { QRCode } from "react-qrcode-logo";
+import { Meeting, path, TeamName } from "@rp/shared";
 
 const readable = "MMMM Do YYYY, h:mm a";
 
@@ -44,12 +46,6 @@ const enum Team {
   Ops = "OPERATIONS"
 }
 
-type Meeting = {
-  meetingId: string;
-  committeeType: Team;
-  startTime: string;
-};
-
 function convertToCST(date: string) {
   return moment.utc(date).tz("America/Chicago");
 }
@@ -61,6 +57,16 @@ function Meetings() {
     committeeType: Team.Full,
     startTime: ""
   });
+  const toast = useToast();
+
+  const showToast = (message: string, error: boolean) => {
+    toast({
+      title: message,
+      status: error ? "error" : "success",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
   const createMeeting = () => {
     const meetingUTC = {
@@ -68,21 +74,33 @@ function Meetings() {
       startTime: moment(newMeeting.startTime).utc().format()
     };
 
-    api.post("/meetings", meetingUTC).then(() => {
-      getMeetings();
-      setNewMeeting({
-        committeeType: Team.Full,
-        startTime: ""
+    api
+      .post("/meetings", meetingUTC)
+      .then(() => {
+        getMeetings();
+        setNewMeeting({
+          committeeType: Team.Full,
+          startTime: ""
+        });
+        onClose(); // Close the modal after creating the meeting
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error creating meeting", true);
       });
-      onClose(); // Close the modal after creating the meeting
-    });
     // Note: api util handles authorization/headers/response/etc
   };
 
   function getMeetings() {
-    api.get("/meetings").then(function (response) {
-      setMeetings(response.data);
-    });
+    api
+      .get("/meetings")
+      .then(function (response) {
+        setMeetings(response.data);
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error fetching meetings", true);
+      });
   }
 
   function EditModal({ meeting }: { meeting: Meeting }) {
@@ -101,12 +119,16 @@ function Meetings() {
 
       const { meetingId, ...valuesWithoutMeetingId } = updatedValuesUTC;
       api
-        .put("/meetings/" + meetingId, {
+        .put(path("/meetings/:meetingId", { meetingId }), {
           ...valuesWithoutMeetingId
         })
         .then(() => {
           getMeetings();
           onClose();
+        })
+        .catch((err) => {
+          console.log(err);
+          showToast("Error updating meeting", true);
         });
     };
 
@@ -178,15 +200,21 @@ function Meetings() {
   }
 
   const deleteMeeting = (meetingId: string) => {
-    api.delete("/meetings/" + meetingId).then(() => {
-      getMeetings();
-    });
+    api
+      .delete(path("/meetings/:meetingId", { meetingId }))
+      .then(() => {
+        getMeetings();
+      })
+      .catch((err) => {
+        console.log(err);
+        showToast("Error deleting meeting", true);
+      });
   };
 
   function MeetingCard({
     meeting
   }: {
-    meeting: { meetingId: string; committeeType: Team; startTime: string };
+    meeting: { meetingId: string; committeeType: TeamName; startTime: string };
   }) {
     const {
       isOpen: isDeleteOpen,
@@ -437,7 +465,7 @@ function Meetings() {
               .map(
                 (meeting: {
                   meetingId: string;
-                  committeeType: Team;
+                  committeeType: TeamName;
                   startTime: string;
                 }) => <MeetingCard meeting={meeting} key={meeting.meetingId} />
               )

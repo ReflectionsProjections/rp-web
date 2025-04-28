@@ -12,29 +12,31 @@ const StatusMonitor = () => {
   const updateInterval = 1000; // 1 second
 
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const response = await api.get("/status");
-        if (response.status === 200) {
-          if (!status) {
-            setOfflineDuration(0); // Reset offline duration only if coming online
+    const fetchStatus = () => {
+      api
+        .get("/status")
+        .then((response) => {
+          if (response.status === 200) {
+            if (!status) {
+              setOfflineDuration(0); // Reset offline duration only if coming online
+            }
+            setLastUptime(new Date());
+            setStatus(true);
+            setLastFailureTime(null); // Clear the failure time when online
+          } else {
+            if (status) {
+              setLastFailureTime(new Date());
+              setStatus(false);
+            }
           }
-          setLastUptime(new Date());
-          setStatus(true);
-          setLastFailureTime(null); // Clear the failure time when online
-        } else {
+        })
+        .catch((error) => {
+          console.error("Error fetching status:", error);
           if (status) {
             setLastFailureTime(new Date());
             setStatus(false);
           }
-        }
-      } catch (error) {
-        console.error("Error fetching status:", error);
-        if (status) {
-          setLastFailureTime(new Date());
-          setStatus(false);
-        }
-      }
+        });
     };
 
     fetchStatus();
