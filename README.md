@@ -208,6 +208,68 @@ These checks will still fail on GitHub so do this at your own risk!
 
 ---
 
+### Adding a New API Route to the Type System
+
+#### 1. Open `shared/src/api/types.ts` - This file defines the `APIRoutes` interface, which maps API routes to their request and response types.
+
+#### 2. Add the new route to `APIRoutes`
+
+Each route is written using static strings.  
+If the route has dynamic parameters, use `:paramName` syntax.
+
+**Example:** Adding a new `GET` route `/staff/:staffId/attendance`:
+
+```ts
+export interface APIRoutes {
+  "/staff/:staffId/attendance": {
+    POST: {
+      request: { meetingId: string; attendanceType: AttendanceType };
+      response: Staff;
+    };
+  };
+  // existing routes...
+}
+```
+
+#### 3. (Optional) Define or update response/request types
+
+If the route uses a new structure, create a matching type. This type can then be used in your code.
+
+Example:
+
+```ts
+export type Staff = {
+  userId: string;
+  name: string;
+  team: TeamName;
+  attendances: Record<string, AttendanceType>;
+};
+```
+
+#### 4. Use the route in your code
+
+Use the `path()` helper to safely generate dynamic URLs while keeping TypeScript aware of the base pattern.
+
+Example:
+
+```tsx
+import { path } from "@rp/shared";
+
+const staffId = "abc123";
+
+const meetingId = "def456";
+const attendanceType = "PRESENT";
+
+const response = await api.post(
+  path("/staff/:staffId/attendance", { staffId }),
+  { data: { meetingId, attendanceType } }
+);
+
+console.log(response.data.attendances); // data is fully typed
+```
+
+---
+
 ### Creating a New App
 
 To create a new app:
