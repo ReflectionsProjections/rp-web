@@ -245,8 +245,8 @@ const AttendanceBox = () => {
               {teamTypeToDisplayText(selectedTeam)}
             </MenuButton>
             <MenuList>
-              {(Object.keys(staffTeams) as TeamName[]).map((team, index) => (
-                <MenuItem key={index} onClick={() => setSelectedTeam(team)}>
+              {(Object.keys(staffTeams) as TeamName[]).map((team) => (
+                <MenuItem key={team} onClick={() => setSelectedTeam(team)}>
                   {teamTypeToDisplayText(team)}
                 </MenuItem>
               ))}
@@ -271,8 +271,8 @@ const AttendanceBox = () => {
         <Flex justify="center">
           <Tabs size="lg" minW="60vw">
             <TabList justifyContent="center">
-              {(Object.keys(staffTeams) as TeamName[]).map((team, index) => {
-                return <Tab key={index}>{teamTypeToDisplayText(team)}</Tab>;
+              {(Object.keys(staffTeams) as TeamName[]).map((team) => {
+                return <Tab key={team}>{teamTypeToDisplayText(team)}</Tab>;
               })}
             </TabList>
             <TabPanels>
