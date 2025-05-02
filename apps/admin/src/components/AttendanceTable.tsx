@@ -44,16 +44,6 @@ type ParsedMeeting = Omit<Meeting, "startTime"> & {
   startTime: Date;
 };
 
-const Teams: TeamName[] = [
-  "FULL TEAM",
-  "DESIGN",
-  "DEV",
-  "CONTENT",
-  "MARKETING",
-  "CORPORATE",
-  "OPERATIONS"
-];
-
 const meetingSortFunction = (
   { startTime: a }: { startTime: Date },
   { startTime: b }: { startTime: Date }
@@ -255,8 +245,8 @@ const AttendanceBox = () => {
               {teamTypeToDisplayText(selectedTeam)}
             </MenuButton>
             <MenuList>
-              {Teams.map((team, index) => (
-                <MenuItem key={index} onClick={() => setSelectedTeam(team)}>
+              {(Object.keys(staffTeams) as TeamName[]).map((team) => (
+                <MenuItem key={team} onClick={() => setSelectedTeam(team)}>
                   {teamTypeToDisplayText(team)}
                 </MenuItem>
               ))}
@@ -281,8 +271,8 @@ const AttendanceBox = () => {
         <Flex justify="center">
           <Tabs size="lg" minW="60vw">
             <TabList justifyContent="center">
-              {Teams.map((team, index) => {
-                return <Tab key={index}>{teamTypeToDisplayText(team)}</Tab>;
+              {(Object.keys(staffTeams) as TeamName[]).map((team) => {
+                return <Tab key={team}>{teamTypeToDisplayText(team)}</Tab>;
               })}
             </TabList>
             <TabPanels>
