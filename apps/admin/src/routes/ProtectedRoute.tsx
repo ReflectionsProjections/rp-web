@@ -6,16 +6,9 @@ async function verifyAuth() {
   const jwt = localStorage.getItem("jwt");
 
   const currentPath = window.location.pathname + window.location.search;
-  if (!jwt && !localStorage.getItem("originalDestination")) {
-    if (
-      currentPath !== "/" &&
-      currentPath !== "/auth" &&
-      currentPath !== "/auth/"
-    ) {
-      localStorage.setItem("originalDestination", currentPath);
-    } else {
-      localStorage.setItem("originalDestination", "/home/");
-    }
+  if (!jwt) {
+    localStorage.setItem("originalDestination", currentPath);
+    window.location.href = "/auth";
   }
 
   const response = await api.get("/auth/info");

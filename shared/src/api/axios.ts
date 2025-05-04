@@ -29,7 +29,8 @@ function createApi(baseURL: string): TypedAxiosInstance {
         window.location.href = "/auth";
       }
 
-      return error;
+      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
+      return Promise.reject(error);
     }
   );
 
