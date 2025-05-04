@@ -32,7 +32,8 @@ async function verifyAuth() {
   const roles = response.data.roles;
 
   if (roles.includes("ADMIN") || roles.includes("STAFF")) {
-    const destination = localStorage.getItem("originalDestination") || "/home/";
+    const destination =
+      localStorage.getItem("originalDestination") || "/dashboard/";
     localStorage.removeItem("originalDestination");
     return <Navigate to={destination} replace={true} />;
   }

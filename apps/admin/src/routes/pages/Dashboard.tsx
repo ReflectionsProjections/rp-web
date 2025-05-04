@@ -3,10 +3,6 @@ import {
   Box,
   Stack,
   StatGroup,
-  StatLabel,
-  Stat,
-  StatNumber,
-  StatHelpText,
   Card,
   CardHeader,
   Heading,
@@ -15,8 +11,7 @@ import {
   Text,
   Image,
   Center,
-  CardFooter,
-  useToast
+  CardFooter
 } from "@chakra-ui/react";
 
 import rpLogo from "../../assets/rp_logo.svg";
@@ -24,6 +19,7 @@ import StatusMonitor from "../../components/StatusMonitor";
 import { useEffect, useState } from "react";
 import moment from "moment-timezone";
 import api from "../../util/api";
+import StatCard from "@/components/StatCard";
 
 const readable = "MMMM Do YYYY, h:mm a";
 
@@ -50,8 +46,6 @@ function EventCard({
     isVisible: boolean;
   };
 }) {
-  // const { isOpen: isDeleteOpen, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
-
   return (
     <Card maxW="sm" key={event.eventId}>
       <CardBody>
@@ -92,7 +86,7 @@ function EventCard({
   );
 }
 
-function Dashboard({ name }: { name: string }) {
+function Dashboard() {
   const [currentEvent, setCurrentEvent] = useState<{
     eventId: string;
     name: string;
@@ -106,74 +100,48 @@ function Dashboard({ name }: { name: string }) {
     eventType: string;
     isVisible: boolean;
   } | null>(null);
-  const [stats, setStats] = useState(0);
-  const [status, setStatus] = useState(0);
-  const toast = useToast();
-
-  const showToast = (message: string, error: boolean) => {
-    toast({
-      title: message,
-      status: error ? "error" : "success",
-      duration: 9000,
-      isClosable: true
-    });
-  };
-
-  const CustomStatBox = ({
-    label,
-    number,
-    helpText
-  }: {
-    label: string;
-    number: number;
-    helpText: string;
-  }) => {
-    return (
-      <Stat
-        boxShadow="0px 1px 2px gray"
-        borderRadius="12px"
-        margin="8px"
-        paddingTop="7px"
-      >
-        <StatLabel>{label}</StatLabel>
-        <StatNumber>{number}</StatNumber>
-        <StatHelpText>{helpText}</StatHelpText>
-      </Stat>
-    );
-  };
+  const [name, setName] = useState("");
 
   useEffect(() => {
-    Promise.allSettled([
-      api.get("/events/currentOrNext"),
-      api.get("/stats/check-in"),
-      api.get("/stats/priority-attendee")
-    ])
-      .then(([event, checkIn, priority]) => {
-        if (event.status === "fulfilled") {
-          setCurrentEvent(event.value.data);
-        } else {
-          console.log(event.reason);
-          showToast("Error fetching event", true);
-        }
-
-        if (checkIn.status === "fulfilled") {
-          setStats(checkIn.value.data.count);
-        } else {
-          console.log(checkIn.reason);
-          showToast("Error fetching check-in stats", true);
-        }
-
-        if (priority.status === "fulfilled") {
-          setStatus(priority.value.data.count);
-        } else {
-          console.log(priority.reason);
-          showToast("Error fetching priority stats", true);
-        }
+    api
+      .get("/auth/info")
+      .then((response) => {
+        setName(response.data.displayName);
       })
-      .catch((err) => {
-        console.log(err);
-        showToast("Error fetching stats", true);
+      .catch((error) => {
+        console.log(error);
       });
+    // Promise.allSettled([
+    //   api.get("/events/currentOrNext")
+    //   // api.get("/stats/check-in"),
+    //   // api.get("/stats/priority-attendee")
+    // ])
+    //   .then(([event /*, checkIn, priority*/]) => {
+    //     if (event.status === "fulfilled") {
+    //       setCurrentEvent(event.value.data);
+    //     } else {
+    //       console.log(event.reason);
+    //       showToast("Error fetching event", true);
+    //     }
+
+    //     // if (checkIn.status === "fulfilled") {
+    //     //   setStats(checkIn.value.data.count);
+    //     // } else {
+    //     //   console.log(checkIn.reason);
+    //     //   showToast("Error fetching check-in stats", true);
+    //     // }
+
+    //     // if (priority.status === "fulfilled") {
+    //     //   setStatus(priority.value.data.count);
+    //     // } else {
+    //     //   console.log(priority.reason);
+    //     //   showToast("Error fetching priority stats", true);
+    //     // }
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //     showToast("Error fetching stats", true);
+    //   });
   }, []);
 
   return (
@@ -189,47 +157,23 @@ function Dashboard({ name }: { name: string }) {
               <Heading size="lg">Overall Stats</Heading>
             </CardHeader>
             <CardBody>
-              {/* <Stack divider={<StackDivider />} spacing='4'>
-                    <Box>
-                        <Heading size='xs' textTransform='uppercase'>
-                        Dashboard
-                        </Heading>
-                        
-                        View a summary of all your statistics.
-                        
-                    </Box>
-                    <Box>
-                        <Heading size='xs' textTransform='uppercase'>
-                        Editing
-                        </Heading>
-                        
-                        Edit events, emails, and other content.
-                        
-                    </Box>
-                    <Box>
-                        <Heading size='xs' textTransform='uppercase'>
-                        TBD
-                        </Heading>
-                        
-                        Yup. To be decided.
-                        
-                    </Box>
-                    </Stack> */}
-              <Box mt={0}>
-                <StatGroup>
-                  <CustomStatBox
-                    label="Checked-In"
-                    number={stats}
-                    helpText=""
-                  />
-                  <CustomStatBox
-                    label="Priority Status"
-                    number={status}
-                    helpText=""
-                  />
-                </StatGroup>
-                <StatusMonitor />
-              </Box>
+              <StatGroup gap={4}>
+                <StatCard
+                  label={"Checked-In"}
+                  endpoint={"/stats/check-in"}
+                  transformer={(data) => {
+                    return data.count;
+                  }}
+                />
+                <StatCard
+                  label={"Priority Status"}
+                  endpoint={"/stats/priority-attendee"}
+                  transformer={(data) => {
+                    return data.count;
+                  }}
+                />
+              </StatGroup>
+              <StatusMonitor />
             </CardBody>
           </Card>
         </Box>

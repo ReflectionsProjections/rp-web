@@ -9,10 +9,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import Auth from "./routes/Auth";
 import Login from "./routes/Login";
-import Home from "./routes/Home";
 import Attendance from "./routes/Attendance";
 import Unauthorized from "./routes/Unauthorized";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import routes from "./routes";
 
 function App() {
   return (
@@ -24,9 +24,10 @@ function App() {
           </Route>
           <Route path="/unauthorized/" element={<Unauthorized />} />
           <Route element={<ProtectedRoute />}>
-            <Route path="/home/" element={<Home />} />
             <Route path="/attendance/" element={<Attendance />} />
-            <Route path="*" />
+            {routes.map(({ path, element }) => (
+              <Route key={path} path={path} element={element} />
+            ))}
           </Route>
           <Route path="/" element={<Login />} />
         </Routes>
