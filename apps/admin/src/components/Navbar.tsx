@@ -102,7 +102,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
 
   return (
     <Box
-      bg={useColorModeValue("gray.100", "gray.900")}
+      bg={useColorModeValue("whiteAlpha.600", "blackAlpha.500")}
+      blur={12}
       px={4}
       position="fixed"
       top={0}
@@ -114,7 +115,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
         h={16}
         alignItems={"center"}
         justifyContent={"space-between"}
-        bg={useColorModeValue("gray.100", "gray.900")}
+        bg="transparent"
       >
         <IconButton
           size={"lg"}

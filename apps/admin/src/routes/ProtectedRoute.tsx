@@ -43,7 +43,11 @@ const ProtectedRoute = () => {
   }, []);
 
   return (
-    <Box minH="100vh" display="flex">
+    <Box
+      minH="100vh"
+      display="flex"
+      bgGradient={"linear-gradient(to-r, #805AD550, #38BDF850)"}
+    >
       <Navbar roles={roles} loading={loading} />
       <Box mt={16} px={4} w="100%">
         <Outlet />

@@ -2,17 +2,14 @@ import { useEffect, useState } from "react";
 import { GettablePaths, TypedAxiosInstance } from "../api/type-wrapper";
 import { APIRoutes } from "../api/types";
 
-export type Transformer<T extends GettablePaths> = (
-  data: APIRoutes[T]["GET"]["response"]
-) => number;
-
 const usePolling = <T extends GettablePaths>(
   api: TypedAxiosInstance,
   endpoint: T,
-  transformer: Transformer<T>,
-  interval: number = 5000
+  interval: number = 30000
 ) => {
-  const [data, setData] = useState<number | null>(null);
+  const [data, setData] = useState<APIRoutes[T]["GET"]["response"] | null>(
+    null
+  );
   const [error, setError] = useState<string | null>(null);
   const isLoading = data === null && error === null;
 
@@ -24,7 +21,7 @@ const usePolling = <T extends GettablePaths>(
         .get(endpoint)
         .then((response) => {
           if (!isCancelled) {
-            setData(transformer(response.data));
+            setData(response.data);
           }
         })
         .catch((err: { error: string }) => {
@@ -41,7 +38,7 @@ const usePolling = <T extends GettablePaths>(
       isCancelled = true;
       clearInterval(id);
     };
-  }, [api, endpoint, transformer, interval]);
+  }, [api, endpoint, interval]);
 
   return { data, error, isLoading };
 };
