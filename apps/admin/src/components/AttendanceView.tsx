@@ -239,6 +239,9 @@ function AttendanceView({
         borderRadius={"10px"}
         display="flex"
       >
+        {attendanceData.length === 0 && (
+          <Text mt={2}>No attendance data available</Text>
+        )}
         <Box width={"170px"} minWidth={"170px"} pt={"28px"}>
           {committeeTypes.map((committeeType, index) => (
             <Box

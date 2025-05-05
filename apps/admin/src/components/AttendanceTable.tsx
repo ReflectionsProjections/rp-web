@@ -423,7 +423,10 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                     if (selectedMeeting) handleStaffSelect(staffMember);
                   }}
                   cursor="pointer"
-                  _hover={{ bgColor: "#ddd" }}
+                  _hover={{
+                    bgColor: "#ddd",
+                    _dark: { bgColor: "#2E3749" }
+                  }}
                 >
                   <Td>{staffMember.name}</Td>
                   <Td>
