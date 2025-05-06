@@ -97,7 +97,7 @@ function App() {
                 size="lg"
                 fontFamily="Nunito"
                 className="glow-button"
-                _hover={{ backgroundColor: "#6d6a6a", opacity: 1 }}
+                _hover={{ backgroundColor: "#555555", opacity: 1 }}
               >
                 <a
                   href="https://2024.reflectionsprojections.org/"
