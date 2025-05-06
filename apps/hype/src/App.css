@@ -64,7 +64,7 @@ body {
   width: 60vh;
   display: flex;
   justify-content: center;
-  top: 0;
+  top: -30px;
   overflow: hidden;
 }
 
@@ -77,7 +77,7 @@ body {
 }
 
 .title-container {
-  margin-top: 0vh;
+  margin-top: -10vh;
   text-align: center;
   width: 100%;
   color: #b9b8b8;
@@ -124,10 +124,15 @@ body {
   display: inline-block;
 }
 
+.glow-button {
+  margin-top: 5vh;
+  background: #444343;
+}
+
 /* Mobile Styles */
 @media (max-width: 768px) {
   .gif-container {
-    top: 10vh;
+    top: 5vh;
   }
 
   .centered-gif {
@@ -136,7 +141,7 @@ body {
   }
 
   .title-container {
-    margin-top: 8vh;
+    margin-top: 3vh;
   }
 }
 

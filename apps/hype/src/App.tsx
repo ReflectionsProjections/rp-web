@@ -3,13 +3,14 @@ import "./App.css";
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
 import {
+  Button,
   ChakraProvider,
   HStack,
-  VStack,
   Text,
-  useMediaQuery
+  useMediaQuery,
+  VStack
 } from "@chakra-ui/react";
-import yourGif from "./assets/RPREC.gif"; // adjust path as needed
+import rpLogoAnimated from "./assets/RPREC.gif";
 
 function App() {
   const [isSmall] = useMediaQuery("(max-width: 480px)");
@@ -32,7 +33,11 @@ function App() {
         <div className="background-grid" />
         <div className="app-container">
           <div className="gif-container">
-            <img src={yourGif} alt="Centered GIF" className="centered-gif" />
+            <img
+              src={rpLogoAnimated}
+              alt="Centered GIF"
+              className="centered-gif"
+            />
           </div>
           <div className="title-container">
             <HStack
@@ -87,6 +92,22 @@ function App() {
               >
                 coming soon
               </Text>
+              <Button
+                variant="surface"
+                size="lg"
+                fontFamily="Nunito"
+                className="glow-button"
+                _hover={{ backgroundColor: "#6d6a6a", opacity: 1 }}
+              >
+                <a
+                  href="https://2024.reflectionsprojections.org/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="glow-text fade-in-delayed"
+                >
+                  Check out R|P 2024!
+                </a>
+              </Button>
             </VStack>
           </div>
         </div>
