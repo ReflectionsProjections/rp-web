@@ -1,12 +1,14 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import api from "../util/api";
+import { useMirrorStyles } from "@/styles/Mirror";
 
 const StatusMonitor = () => {
   const [status, setStatus] = useState<boolean>(true);
   const [lastUptime, setLastUptime] = useState<Date | null>(null);
   const [lastFailureTime, setLastFailureTime] = useState<Date | null>(null);
   const [offlineDuration, setOfflineDuration] = useState<number>(0);
+  const mirrorStyles = useMirrorStyles();
 
   const checkInterval = 5000; // 5 seconds
   const updateInterval = 1000; // 1 second
@@ -71,10 +73,10 @@ const StatusMonitor = () => {
 
   return (
     <Box
-      p={4}
-      borderWidth={1}
-      borderRadius="md"
-      borderColor={statusColor}
+      sx={{
+        ...mirrorStyles,
+        borderColor: statusColor
+      }}
       textAlign="center"
     >
       <Text fontSize="lg" fontWeight="bold" color={statusColor}>

@@ -1,7 +1,7 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { APIRoutes } from "./types";
 
-type GettablePaths = {
+export type GettablePaths = {
   [Path in keyof APIRoutes]: "GET" extends keyof APIRoutes[Path] ? Path : never;
 }[keyof APIRoutes];
 

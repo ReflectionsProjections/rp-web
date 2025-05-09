@@ -1,41 +1,52 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import api from "../util/api";
 import { useEffect, useState } from "react";
-
-async function verifyAuth() {
-  const jwt = localStorage.getItem("jwt");
-
-  const currentPath = window.location.pathname + window.location.search;
-  if (!jwt) {
-    localStorage.setItem("originalDestination", currentPath);
-    window.location.href = "/auth";
-  }
-
-  const response = await api.get("/auth/info");
-
-  const roles = response.data.roles;
-
-  if (roles.includes("ADMIN") || roles.includes("STAFF")) {
-    return <Outlet />;
-  }
-
-  localStorage.removeItem("jwt");
-  return <Navigate to="/unauthorized" />;
-}
+import { Box } from "@chakra-ui/react";
+import Navbar from "@/components/Navbar";
 
 const ProtectedRoute = () => {
-  const [redirect, setRedirect] = useState<JSX.Element | null>(null);
+  const [roles, setRoles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    verifyAuth()
-      .then((element) => setRedirect(element))
-      .catch((error) => {
-        console.log(error);
-        setRedirect(<Navigate to="/unauthorized/" replace={true} />);
+    const jwt = localStorage.getItem("jwt");
+
+    const currentPath = window.location.pathname + window.location.search;
+    if (!jwt) {
+      localStorage.setItem("originalDestination", currentPath);
+      window.location.href = "/auth";
+    }
+
+    api
+      .get("/auth/info")
+      .then((response) => {
+        const roles = response.data.roles;
+
+        if (!roles.includes("STAFF")) {
+          window.location.href = "/unauthorized";
+        }
+
+        setRoles(response.data.roles);
+        setLoading(false);
+      })
+      .catch(() => {
+        localStorage.removeItem("jwt");
+        window.location.href = "/auth";
       });
   }, []);
 
-  return redirect;
+  return (
+    <Box
+      minH="100vh"
+      display="flex"
+      bgGradient={"linear-gradient(to-r, #805AD550, #38BDF850)"}
+    >
+      <Navbar roles={roles} loading={loading} />
+      <Box mt={16} px={4} w="100%">
+        <Outlet />
+      </Box>
+    </Box>
+  );
 };
 
 export default ProtectedRoute;
