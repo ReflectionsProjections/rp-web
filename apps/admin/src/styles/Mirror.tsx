@@ -1,16 +1,8 @@
 import { useColorModeValue } from "@chakra-ui/react";
 
-export const useMirrorStyles = (motion?: boolean) => {
-  return {
-    borderRadius: "2xl",
-    p: 4,
-    bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
-    border: "1px solid",
-    borderColor: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
-    boxShadow: "md",
-    backdropFilter: "blur(12px)",
+export const useMirrorStyles = (animated?: boolean, motion?: boolean) => {
+  const animation = {
     position: "relative",
-    overflow: "hidden",
     _after: {
       content: `""`,
       position: "absolute",
@@ -32,5 +24,17 @@ export const useMirrorStyles = (motion?: boolean) => {
         left: "135%"
       }
     }
+  };
+
+  return {
+    borderRadius: "2xl",
+    p: 4,
+    bg: useColorModeValue("blackAlpha.100", "whiteAlpha.100"),
+    border: "1px solid",
+    borderColor: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
+    boxShadow: "md",
+    backdropFilter: "blur(12px)",
+    overflow: "hidden",
+    ...(animated ? animation : {})
   };
 };

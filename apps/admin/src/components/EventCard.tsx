@@ -24,7 +24,7 @@ function convertToCST(date: string) {
 }
 
 function EventCard({ event }: { event: Event | null }) {
-  const mirrorStyles = useMirrorStyles();
+  const mirrorStyles = useMirrorStyles(true);
   const startTimeCST = convertToCST(event?.startTime ?? "2025-03-01T22:00:00Z");
   const endTimeCST = convertToCST(event?.endTime ?? "2025-03-01T24:00:00Z");
 

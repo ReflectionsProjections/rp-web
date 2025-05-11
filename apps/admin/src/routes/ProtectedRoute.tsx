@@ -39,10 +39,16 @@ const ProtectedRoute = () => {
     <Box
       minH="100vh"
       display="flex"
+      flexDir={{ base: "column", md: "row" }}
       bgGradient={"linear-gradient(to-r, #805AD550, #38BDF850)"}
     >
       <Navbar roles={roles} loading={loading} />
-      <Box mt={16} px={4} w="100%">
+      <Box
+        mt={{ base: "16vh", md: "0" }}
+        ml={{ base: "0", md: "16vw" }}
+        px={4}
+        w="100%"
+      >
         <Outlet />
       </Box>
     </Box>

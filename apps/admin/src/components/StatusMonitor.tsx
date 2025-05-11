@@ -8,7 +8,7 @@ const StatusMonitor = () => {
   const [lastUptime, setLastUptime] = useState<Date | null>(null);
   const [lastFailureTime, setLastFailureTime] = useState<Date | null>(null);
   const [offlineDuration, setOfflineDuration] = useState<number>(0);
-  const mirrorStyles = useMirrorStyles();
+  const mirrorStyles = useMirrorStyles(true);
 
   const checkInterval = 5000; // 5 seconds
   const updateInterval = 1000; // 1 second

@@ -21,7 +21,7 @@ const MotionHeader = motion(Heading);
 function Dashboard() {
   const { data: currentEvent } = usePolling(api, "/events/currentOrNext");
   const [name, setName] = useState("");
-  const mirrorStyle = useMirrorStyles();
+  const mirrorStyle = useMirrorStyles(true);
 
   useEffect(() => {
     api

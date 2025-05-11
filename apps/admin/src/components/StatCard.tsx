@@ -22,7 +22,7 @@ const StatCard = <T extends GettablePaths>({
   transformer,
   interval
 }: StatCardProps<T>) => {
-  const mirrorStyles = useMirrorStyles();
+  const mirrorStyles = useMirrorStyles(true);
   const { data, error, isLoading } = usePolling(api, endpoint, interval);
 
   return (
