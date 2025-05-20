@@ -14,33 +14,24 @@ const usePolling = <T extends GettablePaths>(
   const isLoading = data === null && error === null;
 
   useEffect(() => {
-    let isCancelled = false;
-
     const fetchData = () => {
       api
         .get(endpoint)
         .then((response) => {
-          if (!isCancelled) {
-            setData(response.data);
-          }
+          setData(response.data);
         })
         .catch((err: { error: string }) => {
-          if (!isCancelled) {
-            setError(err.error);
-          }
+          setError(err.error);
         });
     };
 
     fetchData();
     const id = setInterval(fetchData, interval);
 
-    return () => {
-      isCancelled = true;
-      clearInterval(id);
-    };
+    return () => clearInterval(id);
   }, [api, endpoint, interval]);
 
-  return { data, error, isLoading };
+  return { data, error, isLoading, setData };
 };
 
 export default usePolling;

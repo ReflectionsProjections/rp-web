@@ -15,7 +15,8 @@ import {
   useColorMode,
   Link,
   VStack,
-  Portal
+  Portal,
+  Image
 } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
 import rpLogo from "../assets/rp_logo.svg";
@@ -179,13 +180,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         />
-        <Link as={NavLink} to="/dashboard">
-          <img
-            src={rpLogo}
-            className="logo"
-            alt="R|P Logo"
-            style={{ width: "100%", maxWidth: "calc(100px - 32px)" }}
-          />
+        <Link as={NavLink} to="/dashboard" h="12vh" maxH="100%">
+          <Image src={rpLogo} alt="R|P Logo" h="100%" />
         </Link>
         <VStack
           as="nav"

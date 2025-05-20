@@ -3,6 +3,7 @@ import { useColorModeValue } from "@chakra-ui/react";
 export const useMirrorStyles = (animated?: boolean, motion?: boolean) => {
   const animation = {
     position: "relative",
+    overflow: "hidden",
     _after: {
       content: `""`,
       position: "absolute",
@@ -34,7 +35,21 @@ export const useMirrorStyles = (animated?: boolean, motion?: boolean) => {
     borderColor: useColorModeValue("blackAlpha.200", "whiteAlpha.200"),
     boxShadow: "md",
     backdropFilter: "blur(12px)",
-    overflow: "hidden",
+    scrollbarWidth: "thin", // for Firefox
+    scrollbarColor: "#888 transparent", // for Firefox
+    "&::-webkit-scrollbar": {
+      width: "8px"
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "transparent"
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "#888",
+      borderRadius: "8px"
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      background: "#555"
+    },
     ...(animated ? animation : {})
   };
 };
