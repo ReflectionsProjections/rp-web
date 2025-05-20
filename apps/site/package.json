@@ -17,11 +17,8 @@
     "@emotion/styled": "*",
     "@rp/shared": "*",
     "framer-motion": "*",
-    "moment": "^2.30.1",
     "react": "*",
-    "react-audio-visualize": "^1.2.0",
-    "react-dom": "*",
-    "react-icons": "^5.5.0"
+    "react-dom": "*"
   },
   "devDependencies": {
     "@eslint/js": "*",
