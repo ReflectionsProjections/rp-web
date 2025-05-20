@@ -123,6 +123,11 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
         py={4}
         rounded={"md"}
         textAlign="left"
+        onClick={() => {
+          if (isOpen) {
+            onClose();
+          }
+        }}
         _hover={{
           textDecoration: "none",
           bg: useColorModeValue("gray.200", "gray.700")
