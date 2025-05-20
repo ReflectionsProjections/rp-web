@@ -14,11 +14,12 @@ import {
   useDisclosure,
   useColorMode,
   Link,
-  VStack
+  VStack,
+  Portal
 } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
 import rpLogo from "../assets/rp_logo.svg";
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import "../App.css";
 import { useMirrorStyles } from "@/styles/Mirror";
 
@@ -72,11 +73,13 @@ const Profile = () => {
           src={"https://cdn-icons-png.freepik.com/512/8742/8742495.png"}
         />
       </MenuButton>
-      <MenuList>
-        <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
-        <MenuDivider />
-        <MenuItem onClick={signOut}>Sign Out</MenuItem>
-      </MenuList>
+      <Portal>
+        <MenuList>
+          <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
+          <MenuDivider />
+          <MenuItem onClick={signOut}>Sign Out</MenuItem>
+        </MenuList>
+      </Portal>
     </Menu>
   );
 };
@@ -87,9 +90,14 @@ type NavbarProps = {
 };
 
 const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
+  const [inView, setInView] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
   const mirrorStyle = useMirrorStyles();
+
+  useEffect(() => {
+    setInView(true);
+  }, []);
 
   /**
    * NavbarLink component.
@@ -134,19 +142,26 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       sx={mirrorStyle}
       position="fixed"
       margin="4px"
-      w={{ base: "calc(100vw - 8px)", md: "calc(16vw - 8px)" }}
+      w={{ base: "calc(100vw - 8px)", md: "calc(12vw - 8px)" }}
+      minW={{ md: "200px" }}
       h={{
-        base: `calc(${isOpen ? "100vh" : "16vh"} - 8px)`,
+        base: `calc(${isOpen ? "100vh" : "100px"} - 8px)`,
         md: "calc(100vh - 8px)"
       }}
-      transition="height 0.5s ease"
+      transform={
+        inView
+          ? { base: "translateY(0)", md: "translateX(0)" }
+          : { base: "translateY(-100%)", md: "translateX(-100%)" }
+      }
+      transition="0.5s ease"
       zIndex={10}
     >
       <Flex
         h="100%"
+        w="100%"
         gap={16}
         maxH={{ base: "calc(16vh - 42px)", md: "100%" }}
-        p={{ base: 0, md: 4 }}
+        p={0}
         flexDir={{ base: "row", md: "column" }}
         justifyContent="space-between"
         alignItems="center"
@@ -170,8 +185,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
         <VStack
           as="nav"
           display={{ base: "none", md: "flex" }}
+          w="100%"
           height="100%"
-          justifyContent="space-around"
         >
           {getLinks(roles, loading).map((link) => (
             <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
