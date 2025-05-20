@@ -60,8 +60,8 @@ export const useAttendanceViewHook = (attendanceData: StaffAttendance[]) => {
 
     // Get the range of dates in the attendance data
     const dates = attendanceData.map((item) => moment(item.meetingDate));
-    const startDate = moment.min(dates);
-    const endDate = moment.max(dates);
+    const startDate = moment.min(dates).clone();
+    const endDate = moment.max(dates).clone();
 
     // If there are less than 8 weeks of data, make endDate 8 weeks after startDate
     const weeksDifference = endDate.diff(startDate, "weeks");
