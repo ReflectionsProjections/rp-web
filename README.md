@@ -2,7 +2,7 @@
 
 Webpages:
 
-- [hype.reflectionsprojections.org](hype.reflectionsprojections.org)
+- [hype.reflectionsprojections.org](https://hype.reflectionsprojections.org)
 
 ## Development Guide
 
