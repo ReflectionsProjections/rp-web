@@ -222,8 +222,8 @@ function DayEvents({
   onHover: (index: number) => void;
 }) {
   return (
-    <Box flex={1}>
-      <Box w="100%" bgColor="gray.200" py={2} borderRadius="md">
+    <Box flex={1} h="100%">
+      <Box w="100%" bgColor="gray.200" py={2} borderRadius="md" h="100%">
         <Flex justifyContent={"center"}>
           <Text
             color="gray.800"
@@ -258,7 +258,7 @@ function DayEvents({
         py={2}
         mt={3}
         borderRadius="md"
-        h="70vh"
+        h="100%"
         overflowY={"auto"}
       >
         {dayEvents.map((event, index) => (
