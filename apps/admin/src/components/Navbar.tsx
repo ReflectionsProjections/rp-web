@@ -166,7 +166,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
         h="100%"
         w="100%"
         gap={16}
-        maxH={{ base: "calc(100px - 32px)", md: "100%" }}
+        maxH={{ base: "calc(100px - 42px)", md: "100%" }}
         p={0}
         flexDir={{ base: "row", md: "column" }}
         justifyContent="space-between"
