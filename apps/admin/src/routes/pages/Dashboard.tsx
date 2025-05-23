@@ -6,7 +6,6 @@ import {
   Heading,
   CardBody
 } from "@chakra-ui/react";
-import StatusMonitor from "../../components/StatusMonitor";
 import { useEffect, useState } from "react";
 import api from "../../util/api";
 import StatCard from "@/components/StatCard";
@@ -64,21 +63,16 @@ function Dashboard() {
               <Heading size="lg">Overall Stats</Heading>
             </CardHeader>
             <CardBody display="flex" flexDir="column" gap={4}>
-              <StatusMonitor />
               <StatGroup gap={4}>
                 <StatCard
                   label={"Checked-In"}
                   endpoint={"/stats/check-in"}
-                  transformer={(data) => {
-                    return data.count;
-                  }}
+                  transformer={(data) => data.count}
                 />
                 <StatCard
                   label={"Priority Status"}
                   endpoint={"/stats/priority-attendee"}
-                  transformer={(data) => {
-                    return data.count;
-                  }}
+                  transformer={(data) => data.count}
                 />
               </StatGroup>
               <Box sx={mirrorStyle} height="50vh">

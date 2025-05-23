@@ -1,14 +1,16 @@
-import { Box, Text } from "@chakra-ui/react";
+import { HStack, Icon, Text, Tooltip } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import api from "../util/api";
-import { useMirrorStyles } from "@/styles/Mirror";
+import {
+  MdSignalWifi4Bar,
+  MdSignalWifiConnectedNoInternet4
+} from "react-icons/md";
 
 const StatusMonitor = () => {
   const [status, setStatus] = useState<boolean>(true);
   const [lastUptime, setLastUptime] = useState<Date | null>(null);
   const [lastFailureTime, setLastFailureTime] = useState<Date | null>(null);
   const [offlineDuration, setOfflineDuration] = useState<number>(0);
-  const mirrorStyles = useMirrorStyles(true);
 
   const checkInterval = 5000; // 5 seconds
   const updateInterval = 1000; // 1 second
@@ -72,29 +74,31 @@ const StatusMonitor = () => {
   };
 
   return (
-    <Box
-      sx={{
-        ...mirrorStyles,
-        borderColor: statusColor
-      }}
-      textAlign="center"
+    <Tooltip
+      label={`Last Uptime: ${lastUptime ? lastUptime.toLocaleString() : "N/A"}${!status ? `\nTime Offline: ${formatDuration(offlineDuration)}` : ""}`}
     >
-      <Text fontSize="lg" fontWeight="bold" color={statusColor}>
-        {status ? "API is alive" : "API is offline"}
-      </Text>
-      {status ? (
-        <Text mt={2}>
-          Last Uptime: {lastUptime ? lastUptime.toLocaleString() : "N/A"}
+      <HStack
+        p={4}
+        border="1px solid"
+        borderColor={statusColor}
+        borderRadius="2xl"
+        textAlign="center"
+      >
+        <Icon
+          as={status ? MdSignalWifi4Bar : MdSignalWifiConnectedNoInternet4}
+          fill={statusColor}
+          fontSize="x-large"
+        />
+        <Text
+          fontSize="lg"
+          fontWeight="bold"
+          color={statusColor}
+          // display={{ base: "none", md: "block" }}
+        >
+          {status ? "Connected" : "Disconnected"}
         </Text>
-      ) : (
-        <>
-          <Text mt={2}>Time Offline: {formatDuration(offlineDuration)}</Text>
-          <Text mt={2}>
-            Last Uptime: {lastUptime ? lastUptime.toLocaleString() : "N/A"}
-          </Text>
-        </>
-      )}
-    </Box>
+      </HStack>
+    </Tooltip>
   );
 };
 

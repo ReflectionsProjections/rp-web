@@ -16,13 +16,15 @@ import {
   Link,
   VStack,
   Portal,
-  Image
+  Image,
+  HStack
 } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
 import rpLogo from "../assets/rp_logo.svg";
 import { ReactNode, useEffect, useState } from "react";
 import "../App.css";
 import { useMirrorStyles } from "@/styles/Mirror";
+import StatusMonitor from "./StatusMonitor";
 
 const linkMap = {
   Dashboard: "/dashboard",
@@ -67,7 +69,8 @@ const Profile = () => {
         rounded={"full"}
         variant={"link"}
         cursor={"pointer"}
-        minW={0}
+        w="fit-content"
+        h="fit-content"
       >
         <Avatar
           size={"md"}
@@ -99,6 +102,18 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
   useEffect(() => {
     setInView(true);
   }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   /**
    * NavbarLink component.
@@ -149,7 +164,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       position="fixed"
       margin="4px"
       w={{ base: "calc(100vw - 8px)", md: "calc(12vw - 8px)" }}
-      minW={{ md: "200px" }}
+      minW={{ md: "250px" }}
       h={{
         base: `calc(${isOpen ? "100vh" : "100px"} - 8px)`,
         md: "calc(100vh - 8px)"
@@ -165,13 +180,36 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       <Flex
         h="100%"
         w="100%"
-        gap={16}
+        gap={{ md: 16 }}
         maxH={{ base: "calc(100px - 42px)", md: "100%" }}
         p={0}
         flexDir={{ base: "row", md: "column" }}
         justifyContent="space-between"
         alignItems="center"
       >
+        <Link
+          as={NavLink}
+          to="/dashboard"
+          h={{ base: "100%", md: "12vh" }}
+          minH={{ md: "100px" }}
+          mx={{ md: "auto" }}
+        >
+          <Image src={rpLogo} alt="R|P Logo" h="100%" />
+        </Link>
+
+        <VStack
+          as="nav"
+          display={{ base: "none", md: "flex" }}
+          w="100%"
+          height="100%"
+          overflowY="auto"
+        >
+          {getLinks(roles, loading).map((link) => (
+            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
+              {link}
+            </NavbarLink>
+          ))}
+        </VStack>
         <IconButton
           size={"lg"}
           bg="transparent"
@@ -180,30 +218,38 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         />
-        <Link as={NavLink} to="/dashboard" h="12vh" maxH="100%">
-          <Image src={rpLogo} alt="R|P Logo" h="100%" />
-        </Link>
+        <VStack
+          gap={2}
+          alignItems="center"
+          display={{ base: "none", md: "flex" }}
+        >
+          <StatusMonitor />
+          <Profile />
+        </VStack>
+      </Flex>
+      {isOpen && (
         <VStack
           as="nav"
-          display={{ base: "none", md: "flex" }}
-          w="100%"
-          height="100%"
+          pt={4}
+          gap={0}
+          overflowY="scroll"
+          display={{ base: "flex", md: "none" }}
+          maxH="calc(100% - calc(100px - 42px))"
         >
           {getLinks(roles, loading).map((link) => (
             <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
               {link}
             </NavbarLink>
           ))}
-        </VStack>
-        <Profile />
-      </Flex>
-      {isOpen && (
-        <VStack as="nav" pt={4} gap={0} display={{ base: "flex", md: "none" }}>
-          {getLinks(roles, loading).map((link) => (
-            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
-              {link}
-            </NavbarLink>
-          ))}
+          <HStack
+            alignItems="center"
+            mt={4}
+            w="100%"
+            justifyContent="space-evenly"
+          >
+            <StatusMonitor />
+            <Profile />
+          </HStack>
         </VStack>
       )}
     </Box>

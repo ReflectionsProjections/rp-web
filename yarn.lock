@@ -1250,6 +1250,7 @@ __metadata:
     react: "npm:*"
     react-chartjs-2: "npm:^5.3.0"
     react-dom: "npm:*"
+    react-icons: "npm:^5.5.0"
     react-qrcode-logo: "npm:^3.0.0"
     react-router-dom: "npm:^7.5.2"
     typescript: "npm:*"
@@ -4118,6 +4119,15 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/5a3e92fb0025042ab613c54b8ff0aa6c3a45a4d4785c51c024758b02ff83a89295b458ba609c48d11f1c6bbcab6a6b032c5c17d1f3d168a2835cbbec3dea6a46
+  languageName: node
+  linkType: hard
+
+"react-icons@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "react-icons@npm:5.5.0"
+  peerDependencies:
+    react: "*"
+  checksum: 10c0/a24309bfc993c19cbcbfc928157e53a137851822779977b9588f6dd41ffc4d11ebc98b447f4039b0d309a858f0a42980f6bfb4477fb19f9f2d1bc2e190fcf79c
   languageName: node
   linkType: hard
 
