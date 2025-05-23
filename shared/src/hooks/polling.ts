@@ -31,7 +31,11 @@ const usePolling = <T extends GettablePaths>(
     return () => clearInterval(id);
   }, [api, endpoint, interval]);
 
-  return { data, error, isLoading, setData };
+  const mutate = (updater: (prev: typeof data) => typeof data) => {
+    setData((prev) => updater(prev));
+  };
+
+  return { data, error, isLoading, mutate };
 };
 
 export default usePolling;

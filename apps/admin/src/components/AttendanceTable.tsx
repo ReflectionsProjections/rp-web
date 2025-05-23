@@ -89,7 +89,7 @@ const AttendanceBox = () => {
   const {
     data: staff,
     isLoading: staffLoading,
-    setData: setStaff
+    mutate: mutateStaff
   } = usePolling(api, "/staff");
   const { data: meetings, isLoading: meetingsLoading } = usePolling(
     api,
@@ -130,7 +130,7 @@ const AttendanceBox = () => {
         attendanceType
       })
       .then((response) => {
-        setStaff(
+        mutateStaff(
           (previous) =>
             previous?.map((member) =>
               member.userId === response.data.userId ? response.data : member
