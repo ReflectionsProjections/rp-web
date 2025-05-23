@@ -8,9 +8,13 @@ type AnimatedCounterProps = {
   value: string;
   before?: string;
   after?: string;
-}
+};
 
-const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, before, after }) => {
+const AnimatedCounter: React.FC<AnimatedCounterProps> = ({
+  value,
+  before,
+  after
+}) => {
   const [count, setCount] = useState(0);
   const nodeRef = useRef(null);
   const isInView = useInView(nodeRef);
@@ -26,7 +30,7 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, before, after 
 
     const animate = (timestamp: number) => {
       if (!startTime) {
-        startTime = timestamp
+        startTime = timestamp;
       }
 
       const progress = Math.min((timestamp - startTime) / (2 * 1000), 1);
@@ -56,7 +60,9 @@ const AnimatedCounter: React.FC<AnimatedCounterProps> = ({ value, before, after 
       animate={isInView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.5 }}
     >
-      {before}{count}{after}
+      {before}
+      {count}
+      {after}
     </MotionBox>
   );
 };

@@ -19,7 +19,7 @@ const FoldableFAQ: React.FC = () => {
     closed: {
       scale: 0.96,
       x: "-50%",
-      transition: { type: "spring", stiffness: 80, damping: 20 },
+      transition: { type: "spring", stiffness: 80, damping: 20 }
     },
     open: {
       scale: 0.82,
@@ -29,26 +29,26 @@ const FoldableFAQ: React.FC = () => {
         stiffness: 80,
         damping: 20,
         delayChildren: 0.1,
-        staggerChildren: 0.18,
-      },
-    },
+        staggerChildren: 0.18
+      }
+    }
   };
 
   const panelVariants = (side: "left" | "right" | "center") => ({
     initial: {
       rotateY: side === "left" ? -90 : side === "right" ? 90 : 0,
-      opacity: side === "center" ? 1 : 0,
+      opacity: side === "center" ? 1 : 0
     },
     open: {
       rotateY: 0,
       opacity: 1,
-      transition: { type: "spring", stiffness: 70, damping: 16, mass: 0.6 },
+      transition: { type: "spring", stiffness: 70, damping: 16, mass: 0.6 }
     },
     closed: {
       rotateY: side === "left" ? -90 : side === "right" ? 90 : 0,
       opacity: side === "center" ? 1 : 0,
-      transition: { duration: 0.4 },
-    },
+      transition: { duration: 0.4 }
+    }
   });
 
   const leftOf = (idx: number) => `${idx * PANEL_W}px`;
@@ -78,7 +78,7 @@ const FoldableFAQ: React.FC = () => {
             width: PANEL_W * PANELS.length,
             height: PANEL_H,
             transformStyle: "preserve-3d",
-            willChange: "transform",
+            willChange: "transform"
           }}
           variants={deckVariants}
           animate={open ? "open" : "closed"}
@@ -112,7 +112,7 @@ const FoldableFAQ: React.FC = () => {
                       alignItems: "center",
                       padding: 30,
                       transformOrigin: i < 0 ? "right center" : "left center",
-                      zIndex: 10 - Math.abs(i),
+                      zIndex: 10 - Math.abs(i)
                     }}
                   >
                     {isCentre ? (

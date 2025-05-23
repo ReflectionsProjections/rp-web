@@ -89,7 +89,7 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
       opacity: 0.8 + ((y + verticalRadius) / (verticalRadius * 2)) * 0.4,
       boxShadow: isFrontItem
         ? "0 10px 30px rgba(0,0,0,0.4)"
-        : "0 5px 15px rgba(0,0,0,0.2)",
+        : "0 5px 15px rgba(0,0,0,0.2)"
     };
   };
 
@@ -144,7 +144,7 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
                 parseFloat(getItemStyle(index).transform.split("scale(")[1]) +
                 0.05
               })`,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.25)",
+              boxShadow: "0 15px 35px rgba(0,0,0,0.25)"
             }}
             onClick={() => handleItemClick(index)}
           >

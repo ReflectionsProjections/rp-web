@@ -1,6 +1,6 @@
 // src/components/Navbar.tsx
-import { Box, Flex, HStack, Link, Text } from '@chakra-ui/react'
-import { NavLink } from 'react-router-dom'
+import { Box, Flex, HStack, Link, Text } from "@chakra-ui/react";
+import { NavLink } from "react-router-dom";
 
 export const Navbar = () => {
   return (
@@ -8,11 +8,17 @@ export const Navbar = () => {
       <Flex justify="space-between" align="center">
         <Text fontWeight="bold">Info.RP</Text>
         <HStack spacing={4}>
-          <Link as={NavLink} to="/">Home</Link>
-          <Link as={NavLink} to="/archive">Archive</Link>
-          <Link as={NavLink} to="/faq">FAQ</Link>
+          <Link as={NavLink} to="/">
+            Home
+          </Link>
+          <Link as={NavLink} to="/archive">
+            Archive
+          </Link>
+          <Link as={NavLink} to="/faq">
+            FAQ
+          </Link>
         </HStack>
       </Flex>
     </Box>
-  )
-}
+  );
+};

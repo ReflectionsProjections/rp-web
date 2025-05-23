@@ -7,7 +7,7 @@ import {
   Text,
   VStack,
   Button,
-  useColorModeValue,
+  useColorModeValue
 } from "@chakra-ui/react";
 
 // Types
@@ -33,7 +33,7 @@ const BenefitCard: React.FC<BenefitItem> = ({
   icon,
   title,
   description,
-  bgColor,
+  bgColor
 }) => {
   const colorValue = useColorModeValue("gray.100", "gray.700");
   const bg = bgColor || colorValue;
@@ -54,7 +54,7 @@ const BenefitCard: React.FC<BenefitItem> = ({
 };
 
 const ContactItem: React.FC<{ placeholder?: boolean }> = ({
-  placeholder = true,
+  placeholder = true
 }) => {
   return (
     <Flex
@@ -77,7 +77,7 @@ const SponsorshipComponent: React.FC<SponsorshipComponentProps> = ({
   ctaText = "Interest Form",
   ctaLink = "#",
   contactTitle = "Contact Us",
-  contactDescription = "RP is a week-long ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod rum.",
+  contactDescription = "RP is a week-long ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod rum."
 }) => {
   return (
     <Box maxW="6xl" mx="auto" px={4} py={8}>
