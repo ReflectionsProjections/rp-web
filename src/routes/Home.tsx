@@ -10,5 +10,5 @@ export const Home = () => {
       <Stats />
       <ExhibitSection />
     </>
-  )
-}
+  );
+};
