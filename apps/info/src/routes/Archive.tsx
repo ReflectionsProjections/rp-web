@@ -16,7 +16,7 @@ export const Archive = () => {
     "Verkada"
   ]
 
-  const speakersRef = useRef<HTMLElement>(null);
+  const speakersRef = useRef<HTMLDivElement>(null);
 
   return (
     <Box minH="100vh" py={10}>
@@ -240,7 +240,7 @@ const SponsorBox: React.FC<{
 }
 
 const SpeakerOval: React.FC<{
-  speakersRef: React.RefObject<HTMLElement | null>;
+  speakersRef: React.RefObject<HTMLElement>;
   speakerName: string;
   companyName: string;
   width: number;
@@ -256,7 +256,6 @@ const SpeakerOval: React.FC<{
 }) => {
   const isInView = useInView(speakersRef, { once: true, amount: 0.2 });
   return <MotionFlex 
-    gap={0} 
     flexDirection={horizontal ? 'row' : 'column'} 
     gap={horizontal ? 3 : 0} 
     alignItems={"center"}

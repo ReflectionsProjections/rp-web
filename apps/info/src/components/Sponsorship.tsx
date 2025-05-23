@@ -35,7 +35,8 @@ const BenefitCard: React.FC<BenefitItem> = ({
   description,
   bgColor,
 }) => {
-  const bg = bgColor || useColorModeValue("gray.100", "gray.700");
+  const colorValue = useColorModeValue("gray.100", "gray.700");
+  const bg = bgColor || colorValue;
   return (
     <VStack
       spacing={4}
@@ -130,7 +131,7 @@ const SponsorshipComponent: React.FC<SponsorshipComponentProps> = ({
           </Box>
           <Box flex="2">
             <Grid templateColumns="repeat(3, 1fr)" gap={6}>
-              {[...Array(6)].map((_, index) => (
+              {[...Array<unknown>(6)].map((_, index) => (
                 <Flex key={index} justify="center">
                   <ContactItem />
                 </Flex>

@@ -1290,6 +1290,40 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@rp/info@workspace:apps/info":
+  version: 0.0.0-use.local
+  resolution: "@rp/info@workspace:apps/info"
+  dependencies:
+    "@chakra-ui/icons": "npm:*"
+    "@chakra-ui/react": "npm:*"
+    "@emotion/react": "npm:*"
+    "@emotion/styled": "npm:*"
+    "@eslint/js": "npm:*"
+    "@rp/shared": "npm:*"
+    "@types/node": "npm:*"
+    "@types/react": "npm:*"
+    "@types/react-autocomplete": "npm:*"
+    "@types/react-dom": "npm:*"
+    "@vitejs/plugin-react": "npm:*"
+    "@vitejs/plugin-react-swc": "npm:*"
+    eslint: "npm:*"
+    eslint-plugin-react-hooks: "npm:*"
+    eslint-plugin-react-refresh: "npm:*"
+    framer-motion: "npm:*"
+    globals: "npm:*"
+    postcss: "npm:^8.5.3"
+    prettier: "npm:*"
+    react: "npm:*"
+    react-dom: "npm:*"
+    react-icons: "npm:^5.5.0"
+    react-router-dom: "npm:^7.4.1"
+    tailwindcss: "npm:^4.1.4"
+    typescript: "npm:*"
+    typescript-eslint: "npm:*"
+    vite: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "@rp/shared@npm:*, @rp/shared@workspace:shared":
   version: 0.0.0-use.local
   resolution: "@rp/shared@workspace:shared"
@@ -3978,7 +4012,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.43":
+"postcss@npm:^8.4.43, postcss@npm:^8.5.3":
   version: 8.5.3
   resolution: "postcss@npm:8.5.3"
   dependencies:
@@ -4121,6 +4155,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-icons@npm:^5.5.0":
+  version: 5.5.0
+  resolution: "react-icons@npm:5.5.0"
+  peerDependencies:
+    react: "*"
+  checksum: 10c0/a24309bfc993c19cbcbfc928157e53a137851822779977b9588f6dd41ffc4d11ebc98b447f4039b0d309a858f0a42980f6bfb4477fb19f9f2d1bc2e190fcf79c
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1, react-is@npm:^16.7.0":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -4183,6 +4226,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-router-dom@npm:^7.4.1":
+  version: 7.6.0
+  resolution: "react-router-dom@npm:7.6.0"
+  dependencies:
+    react-router: "npm:7.6.0"
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10c0/a13098a0dac97cde81f9af061c0dfb5ebf76ca00bdb75618d84b26e8abddab1fe9f3db88bce1736dc7c1a8f205ad0135a00148dd43ba72f2ed2c7e69ab77a739
+  languageName: node
+  linkType: hard
+
 "react-router-dom@npm:^7.5.2":
   version: 7.5.2
   resolution: "react-router-dom@npm:7.5.2"
@@ -4209,6 +4264,22 @@ __metadata:
     react-dom:
       optional: true
   checksum: 10c0/5972ecb783e0ac0512c500b84bd4ff475665ba49c67b69e13b79dc24c7ee0496d523858058bb43c70147367688e0cc0d6d6d0f51cabfdebfbc5556d559bff457
+  languageName: node
+  linkType: hard
+
+"react-router@npm:7.6.0":
+  version: 7.6.0
+  resolution: "react-router@npm:7.6.0"
+  dependencies:
+    cookie: "npm:^1.0.1"
+    set-cookie-parser: "npm:^2.6.0"
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 10c0/abc4d37c01804a3137b1cfd12cf7e55bff092a67c835404ab9da1411ec9e170fe72773b9846d2db084cc0272179237e59d88dbf46cef9db031892feebcb48640
   languageName: node
   linkType: hard
 
@@ -4683,6 +4754,13 @@ __metadata:
   version: 1.0.0
   resolution: "supports-preserve-symlinks-flag@npm:1.0.0"
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
+  languageName: node
+  linkType: hard
+
+"tailwindcss@npm:^4.1.4":
+  version: 4.1.7
+  resolution: "tailwindcss@npm:4.1.7"
+  checksum: 10c0/abe56f990bd4b03e0b332a2a39063e7f0f7359e6591282ba4e56ac18e5c58baca6b271072221253fcab7d9534d50f384f13fc41b66b06e0e427ef3f0ab2035bf
   languageName: node
   linkType: hard
 

@@ -1,4 +1,4 @@
-import { Box, Heading } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import FoldableFAQ from "../components/Foldable";
 export const FAQ = () => (
   <Box p={10}>
