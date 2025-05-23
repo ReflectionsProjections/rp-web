@@ -21,7 +21,6 @@ import {
   FaStar,
   FaUtensils
 } from "react-icons/fa";
-import { AudioVisualizer } from "./AudioVisualizer";
 import { RaceTrack } from "./RaceTrack";
 
 export const circleColors = [
@@ -95,7 +94,7 @@ export default function Schedule() {
   return (
     <>
       <Box w="100%" justifyContent={"center"} bgColor="white" pb={10}>
-        <Flex gap={10} maxWidth="1000px" mx="auto">
+        <Flex gap={5} maxWidth="1000px" mx="auto" mb={10}>
           {Object.keys(eventsByDay).map((date) => (
             <ScheduleDayButton
               key={date}
@@ -112,7 +111,7 @@ export default function Schedule() {
           bgColor="white"
           mt={5}
           mx="auto"
-          gap={10}
+          gap={0}
           px={10}
         >
           <DayEvents
@@ -120,9 +119,16 @@ export default function Schedule() {
             dayEvents={dayEvents}
             onHover={handleHover}
           />
-          <Flex flex={1} flexDirection={"column"} gap={5}>
-            <Box flex={2} bgColor="gray.100" borderRadius="lg" p={5}>
-              <Box w="100%" transform="scale(0.8)">
+          <Flex flex={1} flexDirection={"column"} gap={0}>
+            <Box flex={2} borderRadius="lg" p={5}>
+              <Box
+                w="100%"
+                h="100%"
+                transform="scale(0.8)"
+                display="flex"
+                flexDirection={"column"}
+                justifyContent={"center"}
+              >
                 <RaceTrack
                   dayEvents={dayEvents}
                   colors={circleColors}
@@ -130,10 +136,9 @@ export default function Schedule() {
                 />
               </Box>
             </Box>
-            <Box
+            {/* <Box
               flex={1}
               maxH="150px"
-              bgColor="gray.200"
               borderRadius="lg"
               p={5}
             >
@@ -149,7 +154,7 @@ export default function Schedule() {
                 </Text>
                 <AudioVisualizer />
               </Flex>
-            </Box>
+            </Box> */}
           </Flex>
         </Flex>
       </Box>
@@ -169,13 +174,14 @@ function ScheduleDayButton({
   return (
     <Box
       role="group"
-      bgColor={selected ? "gray.400" : "gray.200"}
+      bgColor={selected ? "gray.400" : "gray.300"}
       borderRadius="lg"
-      p={2}
+      px={3}
+      py={1.5}
       onClick={() => onSelect(date)}
       transition="all 0.2s"
+      boxShadow="md"
       _hover={{
-        bgColor: selected ? "gray.400" : "gray.200",
         cursor: "pointer",
         transform: "scale(1.05)"
       }}
@@ -185,35 +191,88 @@ function ScheduleDayButton({
     >
       <Box
         flex={1}
-        bgColor={selected ? "gray.400" : "gray.200"}
+        bgColor={selected ? "gray.100" : "gray.100"}
         borderRadius="lg"
-        border="2px solid white"
         textAlign="center"
         textColor="black"
         px={10}
-        py={3}
         /* add transform + transition */
         transition="all 0.2s, transform 0.2s"
         /* sync hover/active with outer box */
-        _groupHover={{ bgColor: selected ? "gray.400" : "gray.200" }}
-        _groupActive={{ bgColor: selected ? "gray.400" : "gray.300" }}
         _focus={{ boxShadow: "outline" }}
       >
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          alignItems={"flex-end"}
+          bgColor={selected ? "gray.400" : "gray.300"}
+          pb={"2.5px"}
+          borderBottomRadius="lg"
+          textAlign="center"
+          textColor="black"
+          px={2}
+          transition="all 0.2s, transform 0.2s"
+          clipPath="polygon(0 0, 100% 0, 90% 100%, 10% 100%)"
+          h={2}
+          mx={-2}
+        >
+          <Box
+            backgroundColor="white"
+            w={"5px"}
+            h={"5px"}
+            borderRadius={"full"}
+          />
+          <Box
+            backgroundColor="white"
+            w={"5px"}
+            h={"5px"}
+            borderRadius={"full"}
+          />
+        </Box>
         <Text
           fontFamily="Racing Sans One"
           textColor={selected ? "black" : "gray.400"}
           _groupHover={{ textColor: selected ? "black" : "gray.500" }}
           transition="all 0.2s, transform 0.2s"
+          noOfLines={1}
+          py={0.5}
         >
           {date}
         </Text>
+
+        <Box
+          display="flex"
+          justifyContent="space-between"
+          bgColor={selected ? "gray.400" : "gray.300"}
+          borderTopRadius="lg"
+          textAlign="center"
+          textColor="black"
+          pt={"2.5px"}
+          px={2}
+          transition="all 0.2s, transform 0.2s"
+          clipPath="polygon(10% 0, 90% 0, 100% 100%, 0 100%)"
+          h={2}
+          mx={-2}
+        >
+          <Box
+            backgroundColor="white"
+            w={"5px"}
+            h={"5px"}
+            borderRadius={"full"}
+          />
+          <Box
+            backgroundColor="white"
+            w={"5px"}
+            h={"5px"}
+            borderRadius={"full"}
+          />
+        </Box>
       </Box>
     </Box>
   );
 }
 
 function DayEvents({
-  selectedDayIndex,
   dayEvents,
   onHover
 }: {
@@ -222,45 +281,26 @@ function DayEvents({
   onHover: (index: number) => void;
 }) {
   return (
-    <Box flex={1} h="100%">
-      <Box w="100%" bgColor="gray.200" py={2} borderRadius="md" h="100%">
-        <Flex justifyContent={"center"}>
-          <Text
-            color="gray.800"
-            fontSize="3xl"
-            fontStyle="italic"
-            fontWeight={"thin"}
-            mr={2}
-          >
-            LAP
-          </Text>
-          <Text
-            color="gray.800"
-            fontSize="3xl"
-            fontWeight="bold"
-            fontStyle={"italic"}
-          >
-            {selectedDayIndex}
-          </Text>
-          <Text
-            color="gray.800"
-            fontSize="3xl"
-            fontStyle="italic"
-            fontWeight={"thin"}
-          >
-            /5
-          </Text>
-        </Flex>
-      </Box>
+    <Box flex={1} h="100%" minH="100%" py={0}>
       <Box
-        w="100%"
-        bgColor="gray.200"
+        bgColor="gray.800"
         py={2}
-        mt={3}
-        borderRadius="md"
-        h="100%"
+        pb={5}
+        borderRadius="xl"
+        borderLeftRadius={"70px"}
         overflowY={"auto"}
       >
+        <Text
+          w="100%"
+          textAlign="center"
+          fontSize="2xl"
+          fontWeight="bold"
+          mt={3}
+          color="gray.300"
+          fontFamily="Racing Sans One"
+        >
+          Calendar
+        </Text>
         {dayEvents.map((event, index) => (
           <DayEvent
             key={index}
@@ -296,8 +336,12 @@ function DayEvent({
     <Grid
       px={5}
       py={3}
+      m={10}
+      my={5}
+      borderRadius="xl"
       templateColumns="20px 30px 1fr 150px 40px"
       alignItems="center"
+      bgColor="gray.400"
       gap={5}
       _hover={{
         bgColor: "gray.300",
@@ -313,6 +357,8 @@ function DayEvent({
         color="gray.800"
         fontWeight="thin"
         textAlign="center"
+        fontFamily="Racing Sans One"
+        mb={"2px"}
       >
         {number}
       </Text>
@@ -322,20 +368,21 @@ function DayEvent({
         h="30px"
         borderRadius="full"
         bg={circleColors[(number - 1) % circleColors.length]}
+        boxShadow="md"
       />
 
-      <Box>
-        <Text fontSize="lg" color="gray.800">
-          {event.name}
-        </Text>
-        <Text fontSize="md" color="gray.600">
-          {event.location}
-        </Text>
-      </Box>
+      <Text fontSize="xl" color="black" fontFamily={"Racing Sans One"}>
+        {event.name}
+      </Text>
 
-      <Text fontSize="md" color="gray.600" fontWeight="medium">
-        {moment(event.startTime).format("h:mm A")} –{" "}
-        {moment(event.endTime).format("h:mm A")}
+      <Text
+        fontSize="lg"
+        color="gray.900"
+        fontWeight="medium"
+        fontFamily="Racing Sans One"
+      >
+        {moment(event.startTime).format("h:mma")} –{" "}
+        {moment(event.endTime).format("h:mma")}
       </Text>
 
       <Tooltip
@@ -348,7 +395,7 @@ function DayEvent({
         <Flex w="30px" h="30px" justifyContent={"center"} alignItems={"center"}>
           <Icon
             as={EVENT_ICONS[event.eventType]}
-            color="gray.600"
+            color="yellow.600"
             boxSize={6}
           />
         </Flex>

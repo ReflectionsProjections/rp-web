@@ -5,26 +5,9 @@ import { useMemo } from "react";
 type Pos = {
   x: number;
   y: number;
+  order: number;
 };
 
-function samplePositionsPreserveOrder(positions: Pos[], n: number): Pos[] {
-  // 1. Tag each with its original index
-  const indexed = positions.map((pos, idx) => ({ pos, idx }));
-
-  // 2. Shuffle the tagged array (Fisher–Yates)
-  for (let i = indexed.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
-  }
-
-  // 3. Take first n, then sort by original index
-  const selected = indexed
-    .slice(0, n)
-    .sort((a, b) => a.idx - b.idx)
-    .map(({ pos }) => pos);
-
-  return selected;
-}
 export function RaceTrack({
   dayEvents,
   colors,
@@ -35,23 +18,27 @@ export function RaceTrack({
   hoveredIndex: number | null;
 }) {
   const positions: Pos[] = [
-    { x: 165, y: 0 },
-    { x: 400, y: -10 },
-    { x: 600, y: 20 },
-    { x: 800, y: 50 },
-    { x: 900, y: 90 },
-    { x: 930, y: 380 },
-    { x: 800, y: 420 },
-    { x: 700, y: 340 },
-    { x: 480, y: 300 },
-    { x: 50, y: 180 },
-    { x: 10, y: 370 },
-    { x: 320, y: 450 }
+    { x: 165, y: 0, order: 1 },
+    { x: 945, y: 190, order: 5 },
+    { x: 100, y: 510, order: 10 },
+    { x: 550, y: 275, order: 8 },
+    { x: 560, y: 15, order: 3 },
+
+    { x: 320, y: 450, order: 9 },
+    { x: 50, y: 180, order: 12 },
+    { x: 805, y: 425, order: 7 },
+    { x: 15, y: 340, order: 11 },
+    { x: 780, y: 45, order: 4 },
+
+    { x: 390, y: -10, order: 2 },
+    { x: 940, y: 370, order: 6 }
   ];
 
-  const randomlySelectedPositions = useMemo(() => {
-    return samplePositionsPreserveOrder(positions, dayEvents.length);
-  }, [dayEvents]);
+  const selectedPositions = useMemo(() => {
+    return positions.slice(0, dayEvents.length).sort((a, b) => {
+      return a.order - b.order;
+    });
+  }, [dayEvents.length]);
 
   return (
     <Box position="relative" width="100%" height="500px" overflow="visible">
@@ -60,6 +47,7 @@ export function RaceTrack({
         as="svg"
         width="100%"
         height="500px"
+        overflow="visible"
         viewBox="0 0 985 500"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -80,52 +68,52 @@ export function RaceTrack({
           fill="none"
           opacity={0.5}
         />
-        {randomlySelectedPositions.map((pos, index) => (
-          <foreignObject
-            key={`${pos.x}-${pos.y}-circle`}
-            x={pos.x}
-            y={pos.y}
-            width={80}
-            height={80}
-          >
-            <Tooltip
-              label={dayEvents[index].name}
-              placement="top"
-              hasArrow
-              openDelay={200} // optional: delay before showing
-              closeDelay={100} // optional: delay before hiding
-              isOpen={hoveredIndex ? hoveredIndex - 1 === index : false}
+        {selectedPositions.map((pos, index) => {
+          const hovered = hoveredIndex ? hoveredIndex - 1 === index : false;
+
+          return (
+            <foreignObject
+              key={`${pos.x}-${pos.y}-circle`}
+              x={pos.x - (hovered ? 20 : 0)}
+              y={pos.y - (hovered ? 20 : 0)}
+              width={120}
+              height={120}
             >
-              <Box
-                width="50px"
-                height="50px"
-                borderRadius="full"
-                bg={
-                  hoveredIndex !== null && hoveredIndex - 1 === index
-                    ? "white"
-                    : colors[index % colors.length]
-                }
-                boxShadow="lg"
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                cursor="pointer" // makes it clear it’s interactive
+              <Tooltip
+                label={dayEvents[index].location}
+                placement="bottom"
+                hasArrow
+                openDelay={200} // optional: delay before showing
+                closeDelay={100} // optional: delay before hiding
+                isOpen={hovered}
+                fontFamily="Racing Sans One"
               >
-                <Text
-                  fontSize="3xl"
-                  fontWeight="bold"
-                  color={
-                    hoveredIndex !== null && hoveredIndex - 1 === index
-                      ? "black"
-                      : "white"
-                  }
+                <Box
+                  width={hovered ? "100px" : "50px"}
+                  height={hovered ? "100px" : "50px"}
+                  borderRadius="full"
+                  bg={hovered ? "white" : colors[index % colors.length]}
+                  borderWidth={hovered ? "25px" : "0px"}
+                  borderColor={colors[index % colors.length]}
+                  boxShadow="lg"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  cursor="pointer" // makes it clear it’s interactive
                 >
-                  {index + 1}
-                </Text>
-              </Box>
-            </Tooltip>
-          </foreignObject>
-        ))}
+                  <Text
+                    fontSize="4xl"
+                    fontWeight="bold"
+                    fontFamily="Racing Sans One"
+                    color={hovered ? "black" : "white"}
+                  >
+                    {index + 1}
+                  </Text>
+                </Box>
+              </Tooltip>
+            </foreignObject>
+          );
+        })}
       </Box>
     </Box>
   );
