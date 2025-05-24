@@ -89,12 +89,7 @@ const StatusMonitor = () => {
           fill={statusColor}
           fontSize="x-large"
         />
-        <Text
-          fontSize="lg"
-          fontWeight="bold"
-          color={statusColor}
-          // display={{ base: "none", md: "block" }}
-        >
+        <Text fontSize="lg" fontWeight="bold" color={statusColor}>
           {status ? "Connected" : "Disconnected"}
         </Text>
       </HStack>

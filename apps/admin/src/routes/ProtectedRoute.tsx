@@ -45,7 +45,7 @@ const ProtectedRoute = () => {
       <Navbar roles={roles} loading={loading} />
       <Box
         mt={{ base: "100px", md: "0" }}
-        ml={{ base: "0", md: "max(12vw, 250px)" }}
+        ml={{ base: "0", md: "max(12vw, 300px)" }}
         px={{ base: 0, md: 4 }}
         w="100%"
       >

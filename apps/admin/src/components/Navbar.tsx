@@ -164,7 +164,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       position="fixed"
       margin="4px"
       w={{ base: "calc(100vw - 8px)", md: "calc(12vw - 8px)" }}
-      minW={{ md: "250px" }}
+      minW={{ md: "300px" }}
       h={{
         base: `calc(${isOpen ? "100vh" : "100px"} - 8px)`,
         md: "calc(100vh - 8px)"
@@ -218,14 +218,16 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         />
-        <VStack
+        <HStack
           gap={2}
+          w="100%"
           alignItems="center"
+          justifyContent="space-evenly"
           display={{ base: "none", md: "flex" }}
         >
-          <StatusMonitor />
           <Profile />
-        </VStack>
+          <StatusMonitor />
+        </HStack>
       </Flex>
       {isOpen && (
         <VStack
