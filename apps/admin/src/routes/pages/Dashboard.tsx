@@ -6,7 +6,6 @@ import {
   Heading,
   CardBody
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
 import api from "../../util/api";
 import StatCard from "@/components/StatCard";
 import { motion } from "framer-motion";
@@ -14,27 +13,18 @@ import { usePolling } from "@rp/shared";
 import EventCard from "@/components/EventCard";
 import Section from "@/components/Section";
 import { useMirrorStyles } from "@/styles/Mirror";
+import { useOutletContext } from "react-router-dom";
+import { ProtectedRouteContext } from "../ProtectedRoute";
 
 const MotionHeader = motion(Heading);
 
 function Dashboard() {
   const { data: currentEvent } = usePolling(api, "/events/currentOrNext");
-  const [name, setName] = useState("");
+  const { displayName } = useOutletContext<ProtectedRouteContext>();
   const mirrorStyle = useMirrorStyles(true);
 
-  useEffect(() => {
-    api
-      .get("/auth/info")
-      .then((response) => {
-        setName(response.data.displayName);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
   return (
-    <Box p={4}>
+    <>
       <MotionHeader
         size="2xl"
         fontWeight="bold"
@@ -42,7 +32,7 @@ function Dashboard() {
         textAlign="left"
         initial={{ opacity: 0 }}
         animate={
-          name === ""
+          displayName === ""
             ? {}
             : {
                 opacity: 1,
@@ -53,7 +43,7 @@ function Dashboard() {
         }
         backgroundSize="400%"
       >
-        {name == "" ? "Welcome!" : `Welcome, ${name}!`}
+        {displayName == "" ? "Welcome!" : `Welcome, ${displayName}!`}
       </MotionHeader>
 
       <Flex direction={{ base: "column", md: "row" }} justify="space-between">
@@ -93,7 +83,7 @@ function Dashboard() {
           </Section>
         </Box>
       </Flex>
-    </Box>
+    </>
   );
 }
 

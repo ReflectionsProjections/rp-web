@@ -3,9 +3,16 @@ import api from "../util/api";
 import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import Navbar from "@/components/Navbar";
+import { Role } from "@rp/shared";
+
+export type ProtectedRouteContext = {
+  displayName: string;
+  roles: Role[];
+};
 
 const ProtectedRoute = () => {
-  const [roles, setRoles] = useState<string[]>([]);
+  const [displayName, setDisplayName] = useState<string>("");
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,6 +33,7 @@ const ProtectedRoute = () => {
           window.location.href = "/unauthorized";
         }
 
+        setDisplayName(response.data.displayName);
         setRoles(response.data.roles);
         setLoading(false);
       })
@@ -34,6 +42,11 @@ const ProtectedRoute = () => {
         window.location.href = "/auth";
       });
   }, []);
+
+  const context = {
+    displayName,
+    roles
+  } satisfies ProtectedRouteContext;
 
   return (
     <Box
@@ -47,9 +60,10 @@ const ProtectedRoute = () => {
         mt={{ base: "100px", md: "0" }}
         ml={{ base: "0", md: "max(12vw, 300px)" }}
         px={{ base: 0, md: 4 }}
+        pt={4}
         w="100%"
       >
-        <Outlet />
+        <Outlet context={context} />
       </Box>
     </Box>
   );

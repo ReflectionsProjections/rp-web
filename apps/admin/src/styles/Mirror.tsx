@@ -18,7 +18,7 @@ export const useMirrorStyles = (animated?: boolean, motion?: boolean) => {
     },
     _hover: {
       transform: motion
-        ? "perspective(2000px) rotateY(-1deg) rotateX(-0.5deg) scale(1.005)"
+        ? "perspective(750px) rotateY(-1deg) rotateX(-1deg) scale(1.01)"
         : "",
       _after: {
         transition: "left 0.75s ease",
