@@ -183,13 +183,13 @@ export interface APIRoutes {
     };
     POST: {
       request: Omit<Event, "eventId">;
-      response: Event;
+      response: never;
     };
   };
   "/events/:eventId": {
     PUT: {
       request: Partial<Omit<Event, "eventId">>;
-      response: Event;
+      response: never;
     };
     DELETE: {
       response: never;
