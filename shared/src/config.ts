@@ -31,7 +31,12 @@ if (!parsed.success) {
 
 const env = parsed.data;
 
-const IS_DEV = env.VITE_ENV !== "PRODUCTION";
+const isDefined = env.VITE_ENV !== undefined;
+
+const isProduction =
+  (env.VITE_ENV ? env.VITE_ENV : "DEVELOPMENT") === "PRODUCTION";
+
+const IS_DEV = isDefined && !isProduction;
 
 const API_BASE_URL = IS_DEV
   ? "http://localhost:3000"
