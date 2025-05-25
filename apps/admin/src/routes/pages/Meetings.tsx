@@ -28,7 +28,6 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon, AddIcon } from "@chakra-ui/icons";
 import moment from "moment-timezone";
-//import { Config } from "../../config.ts";
 import React, { useEffect } from "react";
 import api from "../../util/api.ts";
 import { QRCode } from "react-qrcode-logo";

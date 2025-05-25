@@ -31,10 +31,9 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon, AddIcon } from "@chakra-ui/icons";
 import moment from "moment-timezone";
-import { Config } from "../../config.ts";
 import React, { useEffect, useState } from "react";
 import api from "../../util/api.ts";
-import { Event, EventType, path, RequestType } from "@rp/shared";
+import { Config, Event, EventType, path, RequestType } from "@rp/shared";
 
 const readable = "MMMM Do YYYY, h:mm a";
 

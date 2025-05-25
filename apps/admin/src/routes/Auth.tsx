@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { Config } from "../config";
+import { Config } from "@rp/shared";
 import api from "../util/api";
 import { useEffect, useState } from "react";
 
