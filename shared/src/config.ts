@@ -33,8 +33,7 @@ const env = parsed.data;
 
 const isDefined = env.VITE_ENV !== undefined;
 
-const isProduction =
-  (env.VITE_ENV ? env.VITE_ENV : "DEVELOPMENT") === "PRODUCTION";
+const isProduction = !!env.VITE_DEV_JWT || env.VITE_ENV === "PRODUCTION";
 
 const IS_DEV = isDefined && !isProduction;
 
