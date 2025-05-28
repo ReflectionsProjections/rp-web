@@ -1349,6 +1349,36 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@rp/site@workspace:apps/site":
+  version: 0.0.0-use.local
+  resolution: "@rp/site@workspace:apps/site"
+  dependencies:
+    "@chakra-ui/icons": "npm:*"
+    "@chakra-ui/react": "npm:*"
+    "@emotion/react": "npm:*"
+    "@emotion/styled": "npm:*"
+    "@eslint/js": "npm:*"
+    "@rp/shared": "npm:*"
+    "@types/node": "npm:*"
+    "@types/react": "npm:*"
+    "@types/react-autocomplete": "npm:*"
+    "@types/react-dom": "npm:*"
+    "@vitejs/plugin-react": "npm:*"
+    "@vitejs/plugin-react-swc": "npm:*"
+    eslint: "npm:*"
+    eslint-plugin-react-hooks: "npm:*"
+    eslint-plugin-react-refresh: "npm:*"
+    framer-motion: "npm:*"
+    globals: "npm:*"
+    prettier: "npm:*"
+    react: "npm:*"
+    react-dom: "npm:*"
+    typescript: "npm:*"
+    typescript-eslint: "npm:*"
+    vite: "npm:*"
+  languageName: unknown
+  linkType: soft
+
 "@swc/core-darwin-arm64@npm:1.11.22":
   version: 1.11.22
   resolution: "@swc/core-darwin-arm64@npm:1.11.22"

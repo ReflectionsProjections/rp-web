@@ -1,0 +1,40 @@
+{
+  "name": "@rp/site",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "build:dependencies": "yarn workspaces foreach -Rt --from @rp/site --exclude @rp/site run build",
+    "build": "yarn build:dependencies && vite build",
+    "dev": "yarn build:dependencies && vite",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives",
+    "verify": "yarn build && tsc --noEmit && yarn lint"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "*",
+    "@chakra-ui/react": "*",
+    "@emotion/react": "*",
+    "@emotion/styled": "*",
+    "@rp/shared": "*",
+    "framer-motion": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@eslint/js": "*",
+    "@types/node": "*",
+    "@types/react": "*",
+    "@types/react-autocomplete": "*",
+    "@types/react-dom": "*",
+    "@vitejs/plugin-react": "*",
+    "@vitejs/plugin-react-swc": "*",
+    "eslint": "*",
+    "eslint-plugin-react-hooks": "*",
+    "eslint-plugin-react-refresh": "*",
+    "globals": "*",
+    "prettier": "*",
+    "typescript": "*",
+    "typescript-eslint": "*",
+    "vite": "*"
+  }
+}
