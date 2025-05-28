@@ -11,11 +11,17 @@ type Pos = {
 export function RaceTrack({
   dayEvents,
   colors,
-  hoveredIndex
+  hoveredIndex,
+  onHover,
+  onClick,
+  deviceType
 }: {
   dayEvents: Event[];
   colors: string[];
   hoveredIndex: number | null;
+  onHover?: (index: number) => void;
+  onClick: (event: Event) => void;
+  deviceType: "mobile" | "desktop";
 }) {
   const positions: Pos[] = [
     { x: 165, y: 0, order: 1 },
@@ -41,12 +47,23 @@ export function RaceTrack({
   }, [dayEvents.length]);
 
   return (
-    <Box position="relative" width="100%" height="500px" overflow="visible">
+    <Box
+      position="relative"
+      width="100%"
+      height={{
+        base: "200px",
+        md: "500px"
+      }}
+      overflow="visible"
+    >
       <Box
         position="relative"
         as="svg"
         width="100%"
-        height="500px"
+        height={{
+          base: "200px",
+          md: "500px"
+        }}
         overflow="visible"
         viewBox="0 0 985 500"
         fill="none"
@@ -69,7 +86,10 @@ export function RaceTrack({
           opacity={0.5}
         />
         {selectedPositions.map((pos, index) => {
-          const hovered = hoveredIndex ? hoveredIndex - 1 === index : false;
+          // We do not allow hovering on mobile devices.
+          const hovered =
+            (hoveredIndex ? hoveredIndex - 1 === index : false) &&
+            deviceType === "desktop";
 
           return (
             <foreignObject
@@ -78,6 +98,7 @@ export function RaceTrack({
               y={pos.y - (hovered ? 20 : 0)}
               width={120}
               height={120}
+              onClick={() => onClick(dayEvents[index])}
             >
               <Tooltip
                 label={dayEvents[index].location}
@@ -87,12 +108,17 @@ export function RaceTrack({
                 closeDelay={100} // optional: delay before hiding
                 isOpen={hovered}
                 fontFamily="Racing Sans One"
+                hideBelow={"md"}
               >
                 <Box
                   width={hovered ? "100px" : "50px"}
                   height={hovered ? "100px" : "50px"}
                   borderRadius="full"
-                  bg={hovered ? "white" : colors[index % colors.length]}
+                  bg={
+                    hovered && deviceType === "desktop"
+                      ? "white"
+                      : colors[index % colors.length]
+                  }
                   borderWidth={hovered ? "25px" : "0px"}
                   borderColor={colors[index % colors.length]}
                   boxShadow="lg"
@@ -100,6 +126,8 @@ export function RaceTrack({
                   alignItems="center"
                   justifyContent="center"
                   cursor="pointer" // makes it clear it’s interactive
+                  onMouseEnter={() => onHover && onHover(index + 1)}
+                  onMouseLeave={() => onHover && onHover(-1)}
                 >
                   <Text
                     fontSize="4xl"

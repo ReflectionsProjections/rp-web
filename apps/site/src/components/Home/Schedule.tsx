@@ -22,6 +22,7 @@ import {
   FaUtensils
 } from "react-icons/fa";
 import { RaceTrack } from "./RaceTrack";
+import EventModal from "./EventModal";
 
 export const circleColors = [
   "green.400",
@@ -46,6 +47,9 @@ export default function Schedule() {
     Object.keys(eventsByDay).indexOf(selectedDay || "") + 1,
     1
   );
+
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+
   const dayEvents = selectedDay ? eventsByDay[selectedDay] : [];
 
   const handleLoadEvents = () => {
@@ -91,10 +95,30 @@ export default function Schedule() {
     setSelectedDay(date);
   };
 
+  const handleSelectEvent = (event: Event) => {
+    setSelectedEvent(event);
+  };
+
   return (
     <>
       <Box w="100%" justifyContent={"center"} bgColor="white" pb={10}>
-        <Flex gap={5} maxWidth="1000px" mx="auto" mb={10}>
+        <Flex
+          flexWrap={"wrap"}
+          gap={5}
+          maxWidth="1000px"
+          mx="auto"
+          px={{
+            base: 0,
+            md: 40,
+            lg: 0
+          }}
+          mb={{
+            base: 7,
+            md: 0,
+            lg: 10
+          }}
+          justifyContent={"center"}
+        >
           {Object.keys(eventsByDay).map((date) => (
             <ScheduleDayButton
               key={date}
@@ -104,28 +128,58 @@ export default function Schedule() {
             />
           ))}
         </Flex>
+
+        <Box
+          w="100%"
+          h="100%"
+          transform={{
+            base: "scale(0.9)",
+            md: "scale(0.7)",
+            lg: "scale(0.8)"
+          }}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          hideFrom={"lg"}
+        >
+          <RaceTrack
+            dayEvents={dayEvents}
+            colors={circleColors}
+            hoveredIndex={hoveredEventIndex}
+            onHover={handleHover}
+            deviceType="mobile"
+            onClick={handleSelectEvent}
+          />
+        </Box>
+
         <Flex
           w="100%"
           maxWidth="1500px"
           justifyContent={"center"}
           bgColor="white"
-          mt={5}
+          mt={{
+            base: 20,
+            md: 5
+          }}
           mx="auto"
           gap={0}
-          px={10}
+          px={{
+            base: 3,
+            md: 10
+          }}
         >
           <DayEvents
             selectedDayIndex={selectedDayIndex}
+            hoveredIndex={hoveredEventIndex}
             dayEvents={dayEvents}
             onHover={handleHover}
+            onClick={handleSelectEvent}
           />
-          <Flex flex={1} flexDirection={"column"} gap={0}>
+          <Flex flex={1} flexDirection={"column"} gap={0} hideBelow={"lg"}>
             <Box flex={2} borderRadius="lg" p={5}>
               <Box
                 w="100%"
                 h="100%"
                 transform="scale(0.8)"
-                display="flex"
                 flexDirection={"column"}
                 justifyContent={"center"}
               >
@@ -133,6 +187,9 @@ export default function Schedule() {
                   dayEvents={dayEvents}
                   colors={circleColors}
                   hoveredIndex={hoveredEventIndex}
+                  onHover={handleHover}
+                  deviceType="desktop"
+                  onClick={handleSelectEvent}
                 />
               </Box>
             </Box>
@@ -158,6 +215,10 @@ export default function Schedule() {
           </Flex>
         </Flex>
       </Box>
+      <EventModal
+        event={selectedEvent}
+        onClose={() => setSelectedEvent(null)}
+      />
     </>
   );
 }
@@ -273,42 +334,51 @@ function ScheduleDayButton({
 }
 
 function DayEvents({
+  hoveredIndex,
   dayEvents,
-  onHover
+  onHover,
+  onClick
 }: {
   selectedDayIndex: number;
+  hoveredIndex: number | null;
   dayEvents: Event[];
   onHover: (index: number) => void;
+  onClick: (event: Event) => void;
 }) {
   return (
-    <Box flex={1} h="100%" minH="100%" py={0}>
+    <Box flex={1} h="100%" py={0}>
       <Box
         bgColor="gray.800"
         py={2}
         pb={5}
         borderRadius="xl"
-        borderLeftRadius={"70px"}
-        overflowY={"auto"}
+        borderLeftRadius={{ md: "40px" }}
+        overflowY={{ md: "auto" }}
       >
         <Text
           w="100%"
           textAlign="center"
           fontSize="2xl"
           fontWeight="bold"
-          mt={3}
           color="gray.300"
           fontFamily="Racing Sans One"
+          my={3}
+          mb={4}
         >
           Calendar
         </Text>
-        {dayEvents.map((event, index) => (
-          <DayEvent
-            key={index}
-            number={index + 1}
-            event={event}
-            onHover={onHover}
-          />
-        ))}
+        <Box minH={{ md: "70vh" }} maxH={{ md: "70vh" }} overflowY="auto">
+          {dayEvents.map((event, index) => (
+            <DayEvent
+              key={index}
+              number={index + 1}
+              hoveredIndex={hoveredIndex}
+              event={event}
+              onHover={onHover}
+              onClick={onClick}
+            />
+          ))}
+        </Box>
       </Box>
     </Box>
   );
@@ -325,24 +395,51 @@ export const EVENT_ICONS: Record<EventType, IconType> = {
 
 function DayEvent({
   number,
+  hoveredIndex,
   event,
-  onHover
+  onHover,
+  onClick
 }: {
   number: number;
+  hoveredIndex: number | null;
   event: Event;
   onHover: (index: number) => void;
+  onClick: (event: Event) => void;
 }) {
   return (
     <Grid
-      px={5}
+      px={{
+        base: 3,
+        md: 5
+      }}
       py={3}
-      m={10}
-      my={5}
+      m={{
+        base: 3,
+        md: 10
+      }}
+      my={{
+        base: 0,
+        md: 5
+      }}
+      mt={
+        number === 1
+          ? 0
+          : {
+              base: 2,
+              md: 5
+            }
+      }
       borderRadius="xl"
-      templateColumns="20px 30px 1fr 150px 40px"
+      templateColumns={{
+        base: "30px 1fr 30px",
+        md: "20px 30px 1fr 40px"
+      }}
       alignItems="center"
-      bgColor="gray.400"
-      gap={5}
+      bgColor={hoveredIndex === number ? "gray.300" : "gray.400"}
+      gap={{
+        base: 3,
+        md: 5
+      }}
       _hover={{
         bgColor: "gray.300",
         cursor: "pointer"
@@ -350,6 +447,12 @@ function DayEvent({
       transition={"all 0.2s"}
       onMouseEnter={() => {
         onHover(number);
+      }}
+      onMouseLeave={() => {
+        onHover(-1);
+      }}
+      onClick={() => {
+        onClick(event);
       }}
     >
       <Text
@@ -359,31 +462,53 @@ function DayEvent({
         textAlign="center"
         fontFamily="Racing Sans One"
         mb={"2px"}
+        hideBelow={"md"}
       >
         {number}
       </Text>
 
       <Box
+        display="flex"
+        justifyContent={"center"}
+        alignItems={"center"}
         w="30px"
         h="30px"
         borderRadius="full"
         bg={circleColors[(number - 1) % circleColors.length]}
         boxShadow="md"
-      />
-
-      <Text fontSize="xl" color="black" fontFamily={"Racing Sans One"}>
-        {event.name}
-      </Text>
-
-      <Text
-        fontSize="lg"
-        color="gray.900"
-        fontWeight="medium"
-        fontFamily="Racing Sans One"
       >
-        {moment(event.startTime).format("h:mma")} –{" "}
-        {moment(event.endTime).format("h:mma")}
-      </Text>
+        <Text
+          fontSize="lg"
+          color="gray.100"
+          fontWeight="thin"
+          textAlign="center"
+          fontFamily="Racing Sans One"
+          mb={"2px"}
+          hideFrom="md"
+        >
+          {number}
+        </Text>
+      </Box>
+
+      <Flex flexDirection={"column"}>
+        <Text
+          fontSize={{ base: "md", md: "lg" }}
+          color="black"
+          fontFamily={"Racing Sans One"}
+        >
+          {event.name}
+        </Text>
+
+        <Text
+          fontSize={{ base: "sm", md: "md" }}
+          color="gray.600"
+          fontWeight="medium"
+          fontFamily="Racing Sans One"
+        >
+          {moment(event.startTime).format("h:mma")} –{" "}
+          {moment(event.endTime).format("h:mma")}
+        </Text>
+      </Flex>
 
       <Tooltip
         label={event.eventType
