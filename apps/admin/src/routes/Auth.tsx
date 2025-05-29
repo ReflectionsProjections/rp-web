@@ -1,9 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { Config } from "../config";
+import { Config } from "@rp/shared";
 import api from "../util/api";
 import { useEffect, useState } from "react";
 
-const DEV_JWT = import.meta.env.VITE_DEV_JWT as string | undefined;
+const DEV_JWT = Config.DEV_JWT;
 
 async function verifyAuth() {
   if (DEV_JWT) {
