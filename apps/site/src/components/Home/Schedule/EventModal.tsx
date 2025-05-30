@@ -1,5 +1,6 @@
 import {
   Box,
+  CloseButton,
   Flex,
   Icon,
   Modal,
@@ -22,13 +23,7 @@ export default function EventModal({
   onClose: () => void;
 }) {
   return (
-    <Modal
-      isOpen={event !== null}
-      onClose={onClose}
-      size="xl"
-      isCentered
-      scrollBehavior="inside"
-    >
+    <Modal isOpen={event !== null} onClose={onClose} size="xl" isCentered>
       <ModalOverlay />
       {event && (
         <ModalContent
@@ -40,13 +35,13 @@ export default function EventModal({
           pb={20}
           backdropFilter="blur(12px)" // Further softening to achieve the frosted glass effect
         >
-          <ModalHeader
-            p={0}
-            fontWeight={"bold"}
-            fontStyle="italic"
-            fontSize={"2xl"}
-          >
-            {event.name.toUpperCase()}
+          <ModalHeader p={0} w="100%">
+            <Flex align="flex-start" justify="space-between" w="100%">
+              <Text fontWeight="bold" fontStyle="italic" fontSize="2xl" as="h2">
+                {event.name.toUpperCase()}
+              </Text>
+              <CloseButton onClick={onClose} />
+            </Flex>
           </ModalHeader>
 
           <Box h="12">

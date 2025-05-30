@@ -120,54 +120,19 @@ export default function Schedule() {
             md: 10
           }}
         >
-          <DayEvents
+          <DayEventsSection
             selectedDayIndex={selectedDayIndex}
             hoveredIndex={hoveredEventIndex}
             dayEvents={dayEvents}
             onHover={handleHover}
             onClick={handleSelectEvent}
           />
-          <Flex
-            flex={{
-              md: 1
-            }}
-            justifyContent={"center"}
-            alignItems={"center"}
-          >
-            <Box
-              flex={{
-                md: 1
-              }}
-              borderRadius="lg"
-            >
-              <Box
-                w="100%"
-                transform={{
-                  base: "scale(0.9)",
-                  md: "scale(0.7)",
-                  lg: "scale(0.8)"
-                }}
-                flexDirection={"column"}
-                justifyContent={"center"}
-                mt={{
-                  base: -16,
-                  lg: 0
-                }}
-                mb={{
-                  base: 16,
-                  md: 0
-                }}
-              >
-                <RaceTrack
-                  dayEvents={dayEvents}
-                  colors={circleColors}
-                  hoveredIndex={hoveredEventIndex}
-                  onHover={handleHover}
-                  onClick={handleSelectEvent}
-                />
-              </Box>
-            </Box>
-          </Flex>
+          <RaceTrackSection
+            dayEvents={dayEvents}
+            hoveredEventIndex={hoveredEventIndex}
+            handleHover={handleHover}
+            handleSelectEvent={handleSelectEvent}
+          />
         </Flex>
       </Box>
       <EventModal
@@ -178,7 +143,7 @@ export default function Schedule() {
   );
 }
 
-function DayEvents({
+function DayEventsSection({
   hoveredIndex,
   dayEvents,
   onHover,
@@ -213,6 +178,16 @@ function DayEvents({
           Calendar
         </Text>
         <Box minH={{ md: "70vh" }} maxH={{ md: "70vh" }} overflowY="auto">
+          {dayEvents.length === 0 && (
+            <Text
+              fontSize="xl"
+              color="gray.500"
+              fontFamily="Racing Sans One"
+              textAlign="center"
+            >
+              No events scheduled yet.
+            </Text>
+          )}
           {dayEvents.map((event, index) => (
             <DayEvent
               key={index}
@@ -226,6 +201,62 @@ function DayEvents({
         </Box>
       </Box>
     </Box>
+  );
+}
+
+function RaceTrackSection({
+  dayEvents,
+  hoveredEventIndex,
+  handleHover,
+  handleSelectEvent
+}: {
+  dayEvents: Event[];
+  hoveredEventIndex: number | null;
+  handleHover: (index: number) => void;
+  handleSelectEvent: (event: Event) => void;
+}) {
+  return (
+    <Flex
+      flex={{
+        md: 1
+      }}
+      justifyContent={"center"}
+      alignItems={"center"}
+    >
+      <Box
+        flex={{
+          md: 1
+        }}
+        borderRadius="lg"
+      >
+        <Box
+          w="100%"
+          transform={{
+            base: "scale(0.9)",
+            md: "scale(0.7)",
+            lg: "scale(0.8)"
+          }}
+          flexDirection={"column"}
+          justifyContent={"center"}
+          mt={{
+            base: -16,
+            lg: 0
+          }}
+          mb={{
+            base: 16,
+            md: 0
+          }}
+        >
+          <RaceTrack
+            dayEvents={dayEvents}
+            colors={circleColors}
+            hoveredIndex={hoveredEventIndex}
+            onHover={handleHover}
+            onClick={handleSelectEvent}
+          />
+        </Box>
+      </Box>
+    </Flex>
   );
 }
 

@@ -123,6 +123,7 @@ function RaceTrackLocation({
         closeDelay={100}
         isOpen={hovered}
         fontFamily="Racing Sans One"
+        hideBelow={"md"} // Hide on mobile to prevent the tooltip from being visible in the modal
       >
         <Box
           width={
