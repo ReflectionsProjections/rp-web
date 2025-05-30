@@ -12,6 +12,7 @@ import { Event } from "@rp/shared";
 import moment from "moment";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
+import { EVENT_ICONS } from "@/constants/event-icons";
 
 export default function EventModal({
   event,
@@ -33,11 +34,11 @@ export default function EventModal({
         <ModalContent
           p={4}
           px={7}
-          bg="rgba(129, 26, 26, 0.9)" // translucent content background
+          bg="rgba(129, 26, 26, 0.9)" // Translucent content background
           color="white"
           borderRadius="xl"
           pb={20}
-          backdropFilter="blur(12px)" // further soften inside
+          backdropFilter="blur(12px)" // Further softening to achieve the frosted glass effect
         >
           <ModalHeader
             p={0}
@@ -68,34 +69,7 @@ export default function EventModal({
           </Text>
           <br />
 
-          <Box
-            position="absolute"
-            bottom={8}
-            left={0}
-            width="100%"
-            height="40px"
-            bg="white"
-            backgroundImage={`
-                        linear-gradient(
-                            45deg,
-                            black 25%,
-                            transparent 25%,
-                            transparent 75%,
-                            black 75%,
-                            black
-                        ),
-                        linear-gradient(
-                            45deg,
-                            black 25%,
-                            transparent 25%,
-                            transparent 75%,
-                            black 75%,
-                            black
-                        )
-                        `}
-            backgroundPosition="0 0, 10px 10px"
-            backgroundSize="20px 20px"
-          />
+          <CheckerBoardPattern />
         </ModalContent>
       )}
     </Modal>
@@ -111,7 +85,6 @@ function EventCard({ event }: { event: Event }) {
       boxShadow={"lg"}
       bgColor={"whiteAlpha.200"}
     >
-      {/* Time & Location */}
       <Flex
         direction={{ base: "column", md: "row" }}
         alignItems={{
@@ -123,22 +96,31 @@ function EventCard({ event }: { event: Event }) {
           md: 4
         }}
       >
-        <Flex flex={1} alignItems="center" mb={{ base: 2, md: 0 }}>
+        <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
           <Icon as={FaClock} boxSize={5} mr={2} />
-          <Text fontSize="md" mb={0.5}>
+          <Text
+            fontSize="md"
+            mb={0.5}
+            whiteSpace="normal"
+            wordBreak="break-all"
+          >
             {moment(event.startTime).format("h:mma")} –{" "}
             {moment(event.endTime).format("h:mma")}
           </Text>
         </Flex>
-        <Flex flex={1} alignItems="center">
+        <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaMapPin} boxSize={5} mr={2} />
-          <Text fontSize="md" mb={0.5}>
+          <Text
+            fontSize="md"
+            mb={0.5}
+            whiteSpace="normal"
+            wordBreak="break-all"
+          >
             {event.location}
           </Text>
         </Flex>
       </Flex>
 
-      {/* Type & Points */}
       <Flex
         direction={{ base: "column", md: "row" }}
         alignItems={{
@@ -146,19 +128,62 @@ function EventCard({ event }: { event: Event }) {
           md: "center"
         }}
       >
-        <Flex flex={1} alignItems="center" mb={{ base: 2, md: 0 }}>
-          <Icon as={FaTag} boxSize={5} mr={2} />
-          <Text fontSize="md" mb={0.5}>
+        <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
+          <Icon as={EVENT_ICONS[event.eventType] ?? FaTag} boxSize={5} mr={2} />
+          <Text
+            fontSize="md"
+            mb={0.5}
+            whiteSpace="normal"
+            wordBreak="break-all"
+          >
             {event.eventType}
           </Text>
         </Flex>
-        <Flex flex={1} alignItems="center">
+        <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaAward} boxSize={5} mr={2} />
-          <Text fontSize="md" mb={0.5}>
+          <Text
+            fontSize="md"
+            mb={0.5}
+            whiteSpace="normal"
+            wordBreak="break-all"
+          >
             {event.points} points
           </Text>
         </Flex>
       </Flex>
     </Box>
+  );
+}
+
+function CheckerBoardPattern() {
+  return (
+    <Box
+      position="absolute"
+      bottom={8}
+      left={0}
+      width="100%"
+      height="40px"
+      bg="white"
+      backgroundImage={`
+                  linear-gradient(
+                      45deg,
+                      black 25%,
+                      transparent 25%,
+                      transparent 75%,
+                      black 75%,
+                      black
+                  ),
+                  linear-gradient(
+                      45deg,
+                      black 25%,
+                      transparent 25%,
+                      transparent 75%,
+                      black 75%,
+                      black
+                  )
+                  `}
+      backgroundPosition="0 0, 10px 10px"
+      backgroundSize="20px 20px"
+    />
   );
 }

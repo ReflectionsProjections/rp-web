@@ -9,21 +9,14 @@ import {
   Tooltip,
   useToast
 } from "@chakra-ui/react";
-import { Event, EventType, path } from "@rp/shared";
+import { Event, path } from "@rp/shared";
 import moment from "moment";
 import { useEffect, useState } from "react";
-import { IconType } from "react-icons";
 
-import {
-  FaBriefcase,
-  FaCheck,
-  FaHandshake,
-  FaMicrophone,
-  FaStar,
-  FaUtensils
-} from "react-icons/fa";
+import { EVENT_ICONS } from "@/constants/event-icons";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
+import ScheduleDaySelector from "./ScheduleDaySelector";
 
 export const circleColors = [
   "green.400",
@@ -44,12 +37,15 @@ export default function Schedule() {
     {}
   );
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
+  const [hoveredEventIndex, setHoveredEventIndex] = useState<number | null>(
+    null
+  );
+
   const selectedDayIndex = Math.max(
     Object.keys(eventsByDay).indexOf(selectedDay || "") + 1,
     1
   );
-
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   const dayEvents = selectedDay ? eventsByDay[selectedDay] : [];
 
@@ -83,10 +79,6 @@ export default function Schedule() {
     handleLoadEvents();
   }, []);
 
-  const [hoveredEventIndex, setHoveredEventIndex] = useState<number | null>(
-    null
-  );
-
   const handleHover = (index: number) => {
     setHoveredEventIndex(index);
   };
@@ -103,59 +95,19 @@ export default function Schedule() {
   return (
     <>
       <Box w="100%" justifyContent={"center"} bgColor="white" pb={10}>
-        <Flex
-          flexWrap={"wrap"}
-          gap={5}
-          maxWidth="1000px"
-          mx="auto"
-          px={{
-            base: 0,
-            md: 40,
-            lg: 0
-          }}
-          mb={{
-            base: 7,
-            md: 0,
-            lg: 10
-          }}
-          justifyContent={"center"}
-        >
-          {Object.keys(eventsByDay).map((date) => (
-            <ScheduleDayButton
-              key={date}
-              date={date}
-              selected={selectedDay === date}
-              onSelect={handleSelectDay}
-            />
-          ))}
-        </Flex>
-
-        <Box
-          w="100%"
-          h="100%"
-          transform={{
-            base: "scale(0.9)",
-            md: "scale(0.7)",
-            lg: "scale(0.8)"
-          }}
-          flexDirection={"column"}
-          justifyContent={"center"}
-          hideFrom={"lg"}
-        >
-          <RaceTrack
-            dayEvents={dayEvents}
-            colors={circleColors}
-            hoveredIndex={hoveredEventIndex}
-            onHover={handleHover}
-            deviceType="mobile"
-            onClick={handleSelectEvent}
-          />
-        </Box>
-
+        <ScheduleDaySelector
+          selectedDay={selectedDay}
+          eventsByDay={eventsByDay}
+          onSelectDay={handleSelectDay}
+        />
         <Flex
           w="100%"
           maxWidth="1500px"
           justifyContent={"center"}
+          flexDirection={{
+            base: "column-reverse",
+            lg: "row"
+          }}
           bgColor="white"
           mt={{
             base: 20,
@@ -175,44 +127,46 @@ export default function Schedule() {
             onHover={handleHover}
             onClick={handleSelectEvent}
           />
-          <Flex flex={1} flexDirection={"column"} gap={0} hideBelow={"lg"}>
-            <Box flex={2} borderRadius="lg" p={5}>
+          <Flex
+            flex={{
+              md: 1
+            }}
+            justifyContent={"center"}
+            alignItems={"center"}
+          >
+            <Box
+              flex={{
+                md: 1
+              }}
+              borderRadius="lg"
+            >
               <Box
                 w="100%"
-                h="100%"
-                transform="scale(0.8)"
+                transform={{
+                  base: "scale(0.9)",
+                  md: "scale(0.7)",
+                  lg: "scale(0.8)"
+                }}
                 flexDirection={"column"}
                 justifyContent={"center"}
+                mt={{
+                  base: -16,
+                  lg: 0
+                }}
+                mb={{
+                  base: 16,
+                  md: 0
+                }}
               >
                 <RaceTrack
                   dayEvents={dayEvents}
                   colors={circleColors}
                   hoveredIndex={hoveredEventIndex}
                   onHover={handleHover}
-                  deviceType="desktop"
                   onClick={handleSelectEvent}
                 />
               </Box>
             </Box>
-            {/* <Box
-              flex={1}
-              maxH="150px"
-              borderRadius="lg"
-              p={5}
-            >
-              <Flex alignItems={"center"} borderBottom="1px solid gray" pb={2}>
-                <Text
-                  flex={1}
-                  fontSize="2xl"
-                  fontWeight="bold"
-                  fontStyle={"italic"}
-                  color="gray.800"
-                >
-                  R|P RADIO
-                </Text>
-                <AudioVisualizer />
-              </Flex>
-            </Box> */}
           </Flex>
         </Flex>
       </Box>
@@ -221,116 +175,6 @@ export default function Schedule() {
         onClose={() => setSelectedEvent(null)}
       />
     </>
-  );
-}
-
-function ScheduleDayButton({
-  date,
-  selected,
-  onSelect
-}: {
-  date: string;
-  selected?: boolean;
-  onSelect: (date: string) => void;
-}) {
-  return (
-    <Box
-      role="group"
-      bgColor={selected ? "gray.400" : "gray.300"}
-      borderRadius="lg"
-      px={3}
-      py={1.5}
-      onClick={() => onSelect(date)}
-      transition="all 0.2s"
-      boxShadow="md"
-      _hover={{
-        cursor: "pointer",
-        transform: "scale(1.05)"
-      }}
-      _active={{ bgColor: selected ? "gray.400" : "gray.300" }}
-      _focus={{ boxShadow: "outline" }}
-      transform={selected ? "scale(1.05)" : "scale(1)"}
-    >
-      <Box
-        flex={1}
-        bgColor={selected ? "gray.100" : "gray.100"}
-        borderRadius="lg"
-        textAlign="center"
-        textColor="black"
-        px={10}
-        /* add transform + transition */
-        transition="all 0.2s, transform 0.2s"
-        /* sync hover/active with outer box */
-        _focus={{ boxShadow: "outline" }}
-      >
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          alignItems={"flex-end"}
-          bgColor={selected ? "gray.400" : "gray.300"}
-          pb={"2.5px"}
-          borderBottomRadius="lg"
-          textAlign="center"
-          textColor="black"
-          px={2}
-          transition="all 0.2s, transform 0.2s"
-          clipPath="polygon(0 0, 100% 0, 90% 100%, 10% 100%)"
-          h={2}
-          mx={-2}
-        >
-          <Box
-            backgroundColor="white"
-            w={"5px"}
-            h={"5px"}
-            borderRadius={"full"}
-          />
-          <Box
-            backgroundColor="white"
-            w={"5px"}
-            h={"5px"}
-            borderRadius={"full"}
-          />
-        </Box>
-        <Text
-          fontFamily="Racing Sans One"
-          textColor={selected ? "black" : "gray.400"}
-          _groupHover={{ textColor: selected ? "black" : "gray.500" }}
-          transition="all 0.2s, transform 0.2s"
-          noOfLines={1}
-          py={0.5}
-        >
-          {date}
-        </Text>
-
-        <Box
-          display="flex"
-          justifyContent="space-between"
-          bgColor={selected ? "gray.400" : "gray.300"}
-          borderTopRadius="lg"
-          textAlign="center"
-          textColor="black"
-          pt={"2.5px"}
-          px={2}
-          transition="all 0.2s, transform 0.2s"
-          clipPath="polygon(10% 0, 90% 0, 100% 100%, 0 100%)"
-          h={2}
-          mx={-2}
-        >
-          <Box
-            backgroundColor="white"
-            w={"5px"}
-            h={"5px"}
-            borderRadius={"full"}
-          />
-          <Box
-            backgroundColor="white"
-            w={"5px"}
-            h={"5px"}
-            borderRadius={"full"}
-          />
-        </Box>
-      </Box>
-    </Box>
   );
 }
 
@@ -353,7 +197,7 @@ function DayEvents({
         py={2}
         pb={5}
         borderRadius="xl"
-        borderLeftRadius={{ md: "40px" }}
+        borderLeftRadius={{ lg: "40px" }}
         overflowY={{ md: "auto" }}
       >
         <Text
@@ -385,15 +229,6 @@ function DayEvents({
   );
 }
 
-export const EVENT_ICONS: Record<EventType, IconType> = {
-  SPECIAL: FaStar, // star for special events
-  SPEAKER: FaMicrophone, // microphone for speaker sessions
-  CORPORATE: FaBriefcase, // briefcase for corporate events
-  PARTNERS: FaHandshake, // handshake for partners
-  MEALS: FaUtensils, // utensils for meal breaks
-  CHECKIN: FaCheck // checkmark for check-in
-};
-
 function DayEvent({
   number,
   hoveredIndex,
@@ -416,20 +251,13 @@ function DayEvent({
       py={3}
       m={{
         base: 3,
-        md: 10
-      }}
-      my={{
-        base: 0,
         md: 5
       }}
-      mt={
-        number === 1
-          ? 0
-          : {
-              base: 2,
-              md: 5
-            }
-      }
+      my={{
+        base: 3,
+        md: 4
+      }}
+      mt={number === 1 ? 0 : undefined}
       borderRadius="xl"
       templateColumns={{
         base: "30px 1fr 30px",
@@ -492,16 +320,12 @@ function DayEvent({
       </Box>
 
       <Flex flexDirection={"column"}>
-        <Text
-          fontSize={{ base: "md", md: "lg" }}
-          color="black"
-          fontFamily={"Racing Sans One"}
-        >
+        <Text fontSize={"lg"} color="black" fontFamily={"Racing Sans One"}>
           {event.name}
         </Text>
 
         <Text
-          fontSize={{ base: "sm", md: "md" }}
+          fontSize={"md"}
           color="gray.600"
           fontWeight="medium"
           fontFamily="Racing Sans One"

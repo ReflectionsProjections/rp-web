@@ -1,4 +1,4 @@
-import Schedule from "@/components/Home/Schedule";
+import Schedule from "@/components/Home/Schedule/Schedule";
 
 export default function Home() {
   return (
