@@ -2,7 +2,7 @@ import { z } from "zod";
 
 interface ImportMetaEnv {
   VITE_ENV?: "PRODUCTION" | "DEVELOPMENT" | "TESTING";
-  VITE_DEV_JWT?: string;
+  VITE_GOOGLE_OAUTH_CLIENT_ID?: string;
 }
 
 declare global {
@@ -15,7 +15,7 @@ declare global {
 const envSchema = z
   .object({
     VITE_ENV: z.enum(["PRODUCTION", "DEVELOPMENT", "TESTING"]).optional(),
-    VITE_DEV_JWT: z.string().optional()
+    VITE_GOOGLE_OAUTH_CLIENT_ID: z.string()
   })
   .passthrough();
 
@@ -33,7 +33,7 @@ const env = parsed.data;
 
 const isDefined = env.VITE_ENV !== undefined;
 
-const isProduction = !!env.VITE_DEV_JWT || env.VITE_ENV === "PRODUCTION";
+const isProduction = env.VITE_ENV === "PRODUCTION";
 
 const IS_DEV = isDefined && !isProduction;
 
@@ -52,7 +52,7 @@ const Config = {
     "MEALS",
     "CHECKIN"
   ] as const,
-  DEV_JWT: env.VITE_DEV_JWT
+  GOOGLE_OAUTH_CLIENT_ID: env.VITE_GOOGLE_OAUTH_CLIENT_ID
 };
 
 export default Config;

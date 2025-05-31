@@ -141,6 +141,12 @@ export interface APIRoutes {
       response: RoleObject[];
     };
   };
+  "/auth/login": {
+    POST: {
+      request: { code: string; redirectUri: string };
+      response: { token: string };
+    };
+  };
   "/auth/info": {
     GET: {
       response: RoleObject;
