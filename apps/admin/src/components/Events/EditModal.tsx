@@ -23,15 +23,14 @@ const EditModal: React.FC<EditModalProps> = ({ event, updateEvents }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
+  const { eventId, ...eventProps } = event;
+
   const editEvent = async (
     values: EventFormValues,
     helpers: FormikHelpers<EventFormValues>
   ) => {
     try {
-      await api.put(
-        path("/events/:eventId", { eventId: event.eventId }),
-        values
-      );
+      await api.put(path("/events/:eventId", { eventId }), values);
       updateEvents();
       onClose();
     } catch {
@@ -55,7 +54,7 @@ const EditModal: React.FC<EditModalProps> = ({ event, updateEvents }) => {
         <ModalOverlay />
         <ModalContent>
           <EventForm
-            initialValues={event}
+            initialValues={eventProps}
             onSubmit={editEvent}
             onCancel={onClose}
             title="Edit event"

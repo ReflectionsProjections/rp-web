@@ -20,11 +20,9 @@ import {
   Button
 } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
-import {
-  EventFormValues,
-  EventFormSchema
-} from "./EventSchema";
+import { EventFormValues, EventFormSchema } from "./EventSchema";
 import React from "react";
+import moment from "moment";
 
 type EventFormProps = {
   onSubmit: (
@@ -37,14 +35,27 @@ type EventFormProps = {
   submitText: string;
 };
 
-// TODO: something is incorrectly being set to null and the format for dates is incorrect
+const EventForm: React.FC<EventFormProps> = ({
+  onSubmit,
+  onCancel,
+  initialValues,
+  title,
+  submitText
+}) => {
+  const handleSubmit = (
+    values: EventFormValues,
+    formikHelpers: FormikHelpers<EventFormValues>
+  ) => {
+    values.startTime = moment(values.startTime).format();
+    values.endTime = moment(values.endTime).format();
+    return onSubmit(values, formikHelpers);
+  };
 
-const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues, title, submitText }) => {
   return (
     <Formik<EventFormValues>
       initialValues={initialValues}
       validationSchema={EventFormSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       {({
         values,
@@ -56,7 +67,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues
         touched
       }) => (
         <Form>
-          <ModalHeader>{ title }</ModalHeader>
+          <ModalHeader>{title}</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <VStack gap={2}>
@@ -107,7 +118,9 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues
                 <Input
                   type="datetime-local"
                   name="startTime"
-                  value={values.startTime}
+                  value={moment
+                    .tz(values.startTime, "America/Chicago")
+                    .format("yyyy-MM-DDTHH:mm")}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -119,7 +132,9 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues
                 <Input
                   type="datetime-local"
                   name="endTime"
-                  value={values.endTime}
+                  value={moment
+                    .tz(values.endTime, "America/Chicago")
+                    .format("yyyy-MM-DDTHH:mm")}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -159,7 +174,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues
                 <FormLabel>Image URL</FormLabel>
                 <Input
                   name="imageUrl"
-                  value={values.imageUrl}
+                  value={values.imageUrl ?? ""}
                   onChange={handleChange}
                   onBlur={handleBlur}
                 />
@@ -196,7 +211,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialValues
               mr={3}
               isLoading={isSubmitting}
             >
-              { submitText }
+              {submitText}
             </Button>
             <Button onClick={onCancel}>Cancel</Button>
           </ModalFooter>

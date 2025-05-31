@@ -62,7 +62,7 @@ export type Event = {
   points: number;
   description: string;
   isVirtual: boolean;
-  imageUrl: string;
+  imageUrl: string | null;
   location: string;
   isVisible: boolean;
   attendanceCount: number;
