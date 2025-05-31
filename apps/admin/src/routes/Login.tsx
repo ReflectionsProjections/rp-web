@@ -100,7 +100,7 @@ export default function Login() {
         size="lg"
         fontWeight="bold"
         onClick={() => {
-          window.location.href = "/auth/";
+          window.location.href = "/home/";
         }}
         fontFamily={"Nunito"}
       >
