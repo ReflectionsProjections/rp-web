@@ -78,7 +78,7 @@ export type RoleObject = {
   roles: Role[];
 };
 
-export type TeamName =
+export type CommitteeType =
   | "FULL TEAM"
   | "CONTENT"
   | "CORPORATE"
@@ -92,7 +92,7 @@ export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 export type Staff = {
   userId: string;
   name: string;
-  team: TeamName;
+  team: CommitteeType;
   attendances: Record<string, AttendanceType>;
 };
 
@@ -216,8 +216,8 @@ export interface APIRoutes {
       response: Meeting[];
     };
     POST: {
-      request: { committeeType: TeamName; startTime: string };
-      response: Meeting;
+      request: { committeeType: CommitteeType; startTime: string };
+      response: Omit<Meeting, "meetingId">;
     };
   };
   "/meetings/:meetingId": {

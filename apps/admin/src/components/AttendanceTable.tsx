@@ -35,7 +35,7 @@ import {
   Meeting,
   path,
   Staff,
-  TeamName,
+  CommitteeType,
   usePolling
 } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
@@ -60,7 +60,7 @@ const meetingSortFunction = (
   return b.getTime() - a.getTime();
 };
 
-const teamTypeToDisplayText = (team: TeamName) => {
+const teamTypeToDisplayText = (team: CommitteeType) => {
   switch (team) {
     case "FULL TEAM":
       return "Full Team";
@@ -84,7 +84,7 @@ const AttendanceBox = () => {
   const [selectedStaff, setSelectedStaff] = useState<Staff | undefined>(
     undefined
   );
-  const [selectedTeam, setSelectedTeam] = useState<TeamName>("FULL TEAM");
+  const [selectedTeam, setSelectedTeam] = useState<CommitteeType>("FULL TEAM");
   const [updating, setUpdating] = useState(false);
   const {
     data: staff,
@@ -144,7 +144,7 @@ const AttendanceBox = () => {
       });
   };
 
-  const teamMeetings: Record<TeamName, ParsedMeeting[]> = useMemo(() => {
+  const teamMeetings: Record<CommitteeType, ParsedMeeting[]> = useMemo(() => {
     const parsedMeetings =
       meetings?.map((meeting) => {
         return {
@@ -202,7 +202,7 @@ const AttendanceBox = () => {
     };
   }, [meetings]);
 
-  const staffTeams: Record<TeamName, ParsedStaff[]> = useMemo(() => {
+  const staffTeams: Record<CommitteeType, ParsedStaff[]> = useMemo(() => {
     const parsedStaff =
       staff?.map((member) => {
         const statistics = Object.values(member.attendances).reduce(
@@ -261,18 +261,20 @@ const AttendanceBox = () => {
               {teamTypeToDisplayText(selectedTeam)}
             </MenuButton>
             <MenuList sx={mirrorStyle} maxH="40vh" overflowY="scroll">
-              {(Object.keys(staffTeams) as TeamName[]).map((team, index) => (
-                <>
-                  {index !== 0 && <MenuDivider />}
-                  <MenuItem
-                    key={team}
-                    onClick={() => setSelectedTeam(team)}
-                    bg="transparent"
-                  >
-                    {teamTypeToDisplayText(team)}
-                  </MenuItem>
-                </>
-              ))}
+              {(Object.keys(staffTeams) as CommitteeType[]).map(
+                (team, index) => (
+                  <>
+                    {index !== 0 && <MenuDivider />}
+                    <MenuItem
+                      key={team}
+                      onClick={() => setSelectedTeam(team)}
+                      bg="transparent"
+                    >
+                      {teamTypeToDisplayText(team)}
+                    </MenuItem>
+                  </>
+                )
+              )}
             </MenuList>
           </Menu>
           {!loading &&
@@ -294,31 +296,30 @@ const AttendanceBox = () => {
         <Flex justify="center">
           <Tabs size="lg" minW="60vw">
             <TabList justifyContent="center">
-              {(Object.keys(staffTeams) as TeamName[]).map((team) => {
+              {(Object.keys(staffTeams) as CommitteeType[]).map((team) => {
                 return <Tab key={team}>{teamTypeToDisplayText(team)}</Tab>;
               })}
             </TabList>
             <TabPanels>
-              {(Object.entries(staffTeams) as [TeamName, ParsedStaff[]][]).map(
-                ([teamName, team], index) => (
-                  <TabPanel key={index}>
-                    {!loading &&
-                    (teamMeetings[teamName].length === 0 ||
-                      team.length === 0) ? (
-                      <p>no meetings yet :(</p>
-                    ) : (
-                      <AttendanceTable
-                        staff={team}
-                        meetings={teamMeetings[teamName]}
-                        handleStaffSelect={handleStaffSelect}
-                        handleStaffAttendance={handleStaffAttendance}
-                        isSmall={isSmall}
-                        updating={updating}
-                      />
-                    )}
-                  </TabPanel>
-                )
-              )}
+              {(
+                Object.entries(staffTeams) as [CommitteeType, ParsedStaff[]][]
+              ).map(([teamName, team], index) => (
+                <TabPanel key={index}>
+                  {!loading &&
+                  (teamMeetings[teamName].length === 0 || team.length === 0) ? (
+                    <p>no meetings yet :(</p>
+                  ) : (
+                    <AttendanceTable
+                      staff={team}
+                      meetings={teamMeetings[teamName]}
+                      handleStaffSelect={handleStaffSelect}
+                      handleStaffAttendance={handleStaffAttendance}
+                      isSmall={isSmall}
+                      updating={updating}
+                    />
+                  )}
+                </TabPanel>
+              ))}
             </TabPanels>
           </Tabs>
         </Flex>

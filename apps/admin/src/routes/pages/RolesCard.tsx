@@ -17,15 +17,7 @@ import {
 import api from "../../util/api";
 import React, { useCallback } from "react";
 import { path, Role } from "@rp/shared";
-
-const TEAMS = [
-  "CONTENT",
-  "DEVELOPMENT",
-  "MARKETING",
-  "DESIGN",
-  "OPERATIONS",
-  "ADMIN"
-];
+import { Config } from "@/config";
 
 function RolesCard({ role }: { role: Role }) {
   const toast = useToast();
@@ -116,7 +108,7 @@ function RolesCard({ role }: { role: Role }) {
           }}
           mr={2}
         >
-          {TEAMS.map((team) => (
+          {Config.COMMITTEE_TYPES.map((team) => (
             <option key={team} value={team}>
               {toTitleCase(team)}
             </option>
@@ -179,7 +171,7 @@ function RolesCard({ role }: { role: Role }) {
             onChange={(e) => handleUpdateNewTeam(e.target.value)}
             mr={2}
           >
-            {TEAMS.map((team) => (
+            {Config.COMMITTEE_TYPES.map((team) => (
               <option key={team} value={team}>
                 {toTitleCase(team)}
               </option>

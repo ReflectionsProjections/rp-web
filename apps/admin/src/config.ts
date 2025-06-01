@@ -8,5 +8,14 @@ export const Config = {
     "PARTNERS",
     "MEALS",
     "CHECKIN"
+  ],
+  COMMITTEE_TYPES: [
+    "CONTENT",
+    "CORPORATE",
+    "DESIGN",
+    "DEV",
+    "FULL TEAM",
+    "MARKETING",
+    "OPERATIONS"
   ]
-};
+} as const;

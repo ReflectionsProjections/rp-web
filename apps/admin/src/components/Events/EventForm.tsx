@@ -22,7 +22,7 @@ import {
 import { Form, Formik, FormikHelpers } from "formik";
 import { EventFormValues, EventFormSchema } from "./EventSchema";
 import React from "react";
-import moment from "moment";
+import moment from "moment-timezone";
 
 type EventFormProps = {
   onSubmit: (
