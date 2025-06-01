@@ -12,7 +12,6 @@ import { motion } from "framer-motion";
 import { usePolling } from "@rp/shared";
 import EventCard from "@/components/EventCard";
 import Section from "@/components/Section";
-import { useMirrorStyles } from "@/styles/Mirror";
 import { useOutletContext } from "react-router-dom";
 import { ProtectedRouteContext } from "../ProtectedRoute";
 
@@ -21,7 +20,6 @@ const MotionHeader = motion(Heading);
 function Dashboard() {
   const { data: currentEvent } = usePolling(api, "/events/currentOrNext");
   const { displayName } = useOutletContext<ProtectedRouteContext>();
-  const mirrorStyle = useMirrorStyles(true);
 
   return (
     <>
@@ -65,9 +63,6 @@ function Dashboard() {
                   transformer={(data) => data.count}
                 />
               </StatGroup>
-              <Box sx={mirrorStyle} height="50vh">
-                <Heading>Imagine stuff here</Heading>
-              </Box>
             </CardBody>
           </Section>
         </Box>
