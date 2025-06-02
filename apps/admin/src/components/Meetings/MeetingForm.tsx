@@ -53,7 +53,6 @@ const MeetingForm: React.FC<MeetingFormProps> = ({
         values,
         handleChange,
         handleBlur,
-        setFieldValue,
         isSubmitting,
         errors,
         touched
@@ -68,9 +67,7 @@ const MeetingForm: React.FC<MeetingFormProps> = ({
                 <Select
                   name="committeeType"
                   value={values.committeeType}
-                  onChange={(e) => {
-                    void setFieldValue("committeeType", e.target.value);
-                  }}
+                  onChange={handleChange}
                 >
                   {Config.COMMITTEE_TYPES.map((type) => (
                     <option key={type} value={type}>

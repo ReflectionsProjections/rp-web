@@ -192,6 +192,7 @@ export interface APIRoutes {
       response: never;
     };
     DELETE: {
+      request: never;
       response: never;
     };
   };
@@ -226,6 +227,7 @@ export interface APIRoutes {
       response: Meeting;
     };
     DELETE: {
+      request: never;
       response: never;
     };
   };

@@ -87,9 +87,7 @@ const EventForm: React.FC<EventFormProps> = ({
                 <Select
                   name="eventType"
                   value={values.eventType}
-                  onChange={(e) => {
-                    void setFieldValue("eventType", e.target.value);
-                  }}
+                  onChange={handleChange}
                 >
                   {Config.EVENT_TYPES.map((type) => (
                     <option key={type} value={type}>
