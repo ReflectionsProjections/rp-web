@@ -28,7 +28,7 @@ export default function EventModal({
       {event && (
         <ModalContent
           mt={{
-            base: 10,
+            base: 14,
             md: "auto"
           }}
           mx={{
