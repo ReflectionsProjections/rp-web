@@ -78,9 +78,10 @@ const EventCheckin = () => {
 
     // Perform prefix search on attendeeEmails
     if (inputEmail) {
-      const filtered = attendees.filter((attendee) =>
-        attendee.email.toLowerCase().startsWith(inputEmail.toLowerCase())
-      );
+      const filtered =
+        attendees?.filter((attendee) =>
+          attendee.email.toLowerCase().startsWith(inputEmail.toLowerCase())
+        ) ?? [];
       setFilteredEmails(filtered);
     } else {
       setFilteredEmails([]);
@@ -96,12 +97,18 @@ const EventCheckin = () => {
   // Check attendee into event via their email
   const handleCheckin = () => {
     if (!selectedEvent) {
-      showToast("Please select an event to check in attendees to!", true);
+      toast({
+        title: "Please select an event to check in attendees to!",
+        status: "error"
+      });
       return;
     }
 
     if (!email) {
-      showToast("Please enter an email.", true);
+      toast({
+        title: "Please enter an email.",
+        status: "error"
+      });
       return;
     }
 
@@ -109,25 +116,26 @@ const EventCheckin = () => {
       (attendee) => attendee.email === email
     );
     if (!selectedAttendee) {
-      showToast("This email is not registered as an R|P attendee.", true);
+      toast({
+        title: "This email is not registered as an R|P attendee.",
+        status: "error"
+      });
       return;
     }
 
-    api
-      .post("/checkin/event", {
+    toast.promise(
+      api.post("/checkin/event", {
         eventId: selectedEvent.eventId,
         userId: selectedAttendee.userId
-      })
-      .then(function () {
-        showQuickToast(`Succesfully checked into event!`, false);
-      })
-      .catch(function (error) {
-        showQuickToast(
-          "Could not check in attendee to event. Please try again.",
-          true
-        );
-        console.log(error);
-      });
+      }),
+      {
+        success: { title: "Succesfully checked into event!" },
+        error: {
+          title: "Could not check in attendee to event. Please try again."
+        },
+        loading: { title: "Checking in attendee..." }
+      }
+    );
   };
 
   return (
