@@ -32,45 +32,40 @@ const Sponsors = () => {
   const mirrorStyle = useMirrorStyles();
 
   const removeSponsor = (email: string) => {
-    api
-      .delete("/auth/corporate", { data: { email } })
-      .then(() => {
-        toast({
-          title: `${email} is no longer a sponsor`,
-          status: "success"
-        });
-        updateSponsors();
-      })
-      .catch(() => {
-        toast({
-          title: "Failed to remove sponsor. Try again soon!",
-          status: "error"
-        });
-      });
+    toast.promise(
+      api
+        .delete("/auth/corporate", { data: { email } })
+        .then(() => updateSponsors()),
+      {
+        success: { title: `${email} is no longer a sponsor` },
+        error: { title: "Failed to remove sponsor. Try again soon!" },
+        loading: { title: "Removing sponsor..." }
+      }
+    );
   };
 
-  const addSponsor = async (
+  const addSponsor = (
     values: SponsorFormValues,
     helpers: FormikHelpers<SponsorFormValues>
   ) => {
-    try {
-      await api.post("/auth/corporate", {
+    const request = api
+      .post("/auth/corporate", {
         name: values.name,
         email: values.email
+      })
+      .then(() => {
+        updateSponsors();
+      })
+      .finally(() => {
+        helpers.setSubmitting(false);
       });
-      toast({
-        title: `${values.name} is now a sponsor`,
-        status: "success"
-      });
-      updateSponsors();
-    } catch {
-      toast({
-        title: "Failed to add sponsor. Try again soon!",
-        status: "success"
-      });
-    } finally {
-      helpers.setSubmitting(false);
-    }
+
+    toast.promise(request, {
+      success: { title: `${values.name} is now a sponsor` },
+      error: { title: "Failed to add sponsor. Try again soon!" },
+      loading: { title: "Adding sponsor..." }
+    });
+    return request;
   };
 
   return (

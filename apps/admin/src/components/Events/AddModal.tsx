@@ -22,19 +22,27 @@ const AddModal: React.FC<AddModalProps> = ({ updateEvents }) => {
   const mirrorStyles = useMirrorStyles();
   const toast = useToast();
 
-  const createEvent = async (
+  const createEvent = (
     values: EventFormValues,
     helpers: FormikHelpers<EventFormValues>
   ) => {
-    try {
-      await api.post("/events", { ...values, attendanceCount: 0 });
-      updateEvents();
-      onClose(); // Close the modal after creating the event
-    } catch {
-      toast({ title: "Error creating event", status: "error" });
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    const request = api
+      .post("/events", { ...values, attendanceCount: 0 })
+      .then(() => {
+        updateEvents();
+        onClose();
+      })
+      .finally(() => {
+        helpers.setSubmitting(false);
+      });
+
+    toast.promise(request, {
+      success: { title: "Event created" },
+      error: { title: "Error creating event" },
+      loading: { title: "Creating event..." }
+    });
+
+    return request;
   };
 
   return (

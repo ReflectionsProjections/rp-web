@@ -41,21 +41,18 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
   const mirrorStyle = useMirrorStyles();
 
   const removeFromRole = (role: Role, email: string) => {
-    api
-      .delete("/auth", { data: { role, email } })
-      .then(() => {
-        toast({
-          title: `${email} User Role updated: No longer ${role} role`,
-          status: "success"
-        });
+    toast.promise(
+      api.delete("/auth", { data: { role, email } }).then(() => {
         updateRoles();
-      })
-      .catch(() => {
-        toast({
-          title: "Failed to update user role. Try again soon!",
-          status: "error"
-        });
-      });
+      }),
+      {
+        success: {
+          title: `${email} User Role updated: No longer ${role} role`
+        },
+        error: { title: "Failed to update user role. Try again soon!" },
+        loading: { title: "Updating user role..." }
+      }
+    );
   };
 
   const updateUserTeam = (email: string, newTeam: string) => {
@@ -63,25 +60,27 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
     // TODO: Connect to API
   };
 
-  const addToRole = async (
+  const addToRole = (
     values: RoleFormValues,
     helpers: FormikHelpers<RoleFormValues>
   ) => {
-    try {
-      await api.put("/auth", { email: values.email, role });
-      toast({
-        title: `${values.email} User Role updated: Now ${role} role`,
-        status: "success"
-      });
-      updateRoles();
-    } catch {
-      toast({
-        title: "Failed to update user role. Try again soon!",
-        status: "success"
-      });
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    toast.promise(
+      api
+        .put("/auth", { email: values.email, role })
+        .then(() => {
+          updateRoles();
+        })
+        .finally(() => {
+          helpers.setSubmitting(false);
+        }),
+      {
+        success: {
+          title: `${values.email} User Role updated: Now ${role} role`
+        },
+        error: { title: "Failed to update user role. Try again soon!" },
+        loading: { title: "Updating user role..." }
+      }
+    );
   };
 
   function toTitleCase(str: string) {

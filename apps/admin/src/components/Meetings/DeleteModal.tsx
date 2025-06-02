@@ -29,15 +29,19 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   const toast = useToast();
 
   const deleteMeeting = () => {
-    api
-      .delete(path("/meetings/:meetingId", { meetingId: meeting.meetingId }))
-      .then(() => {
-        updateMeetings();
-        onClose();
-      })
-      .catch(() => {
-        toast({ title: "Error deleting meeting", status: "error" });
-      });
+    toast.promise(
+      api
+        .delete(path("/meetings/:meetingId", { meetingId: meeting.meetingId }))
+        .then(() => {
+          updateMeetings();
+          onClose();
+        }),
+      {
+        success: { title: "Meeting deleted" },
+        error: { title: "Error deleting meeting" },
+        loading: { title: "Deleting meeting..." }
+      }
+    );
   };
 
   return (

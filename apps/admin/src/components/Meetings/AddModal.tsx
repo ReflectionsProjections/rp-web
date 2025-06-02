@@ -22,19 +22,27 @@ const AddModal: React.FC<AddModalProps> = ({ updateMeetings }) => {
   const mirrorStyles = useMirrorStyles();
   const toast = useToast();
 
-  const createMeeting = async (
+  const createMeeting = (
     values: MeetingFormValues,
     helpers: FormikHelpers<MeetingFormValues>
   ) => {
-    try {
-      await api.post("/meetings", values);
-      updateMeetings();
-      onClose(); // Close the modal after creating the meeting
-    } catch {
-      toast({ title: "Error creating meeting", status: "error" });
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    const request = api
+      .post("/meetings", values)
+      .then(() => {
+        updateMeetings();
+        onClose();
+      })
+      .finally(() => {
+        helpers.setSubmitting(false);
+      });
+
+    toast.promise(request, {
+      success: { title: "Meeting created" },
+      error: { title: "Error creating meeting" },
+      loading: { title: "Creating meeting..." }
+    });
+
+    return request;
   };
 
   return (

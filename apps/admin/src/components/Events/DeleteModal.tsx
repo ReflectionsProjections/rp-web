@@ -26,15 +26,19 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ event, updateEvents }) => {
   const toast = useToast();
 
   const deleteEvent = () => {
-    api
-      .delete(path("/events/:eventId", { eventId: event.eventId }))
-      .then(() => {
-        updateEvents();
-        onClose();
-      })
-      .catch(() => {
-        toast({ title: "Error deleting event", status: "error" });
-      });
+    toast.promise(
+      api
+        .delete(path("/events/:eventId", { eventId: event.eventId }))
+        .then(() => {
+          updateEvents();
+          onClose();
+        }),
+      {
+        success: { title: "Event deleted" },
+        error: { title: "Error deleting event" },
+        loading: { title: "Deleting event..." }
+      }
+    );
   };
 
   return (

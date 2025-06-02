@@ -40,15 +40,14 @@ const QrModal: React.FC<QrModalProps> = ({ meeting, startCST }) => {
 
     canvas.toBlob((blob) => {
       if (blob) {
-        console.log(blob);
-        navigator.clipboard
-          .write([new ClipboardItem({ "image/png": blob })])
-          .then(() => {
-            toast({ title: "Success!", status: "success" });
-          })
-          .catch(() => {
-            toast({ title: "Failed to copy QR code.", status: "error" });
-          });
+        toast.promise(
+          navigator.clipboard.write([new ClipboardItem({ "image/png": blob })]),
+          {
+            success: { title: "QR code copied to clipboard" },
+            error: { title: "Failed to copy QR code" },
+            loading: { title: "Copying QR code..." }
+          }
+        );
       }
     }, "image/png");
   }

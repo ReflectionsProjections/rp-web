@@ -1,6 +1,8 @@
 import axios from "axios";
 import { TypedAxiosInstance } from "./type-wrapper";
 
+export type ApiError = Error & { response: { data: { error: string } } };
+
 function createApi(baseURL: string): TypedAxiosInstance {
   const axiosObject = axios.create({ baseURL });
 
@@ -17,8 +19,8 @@ function createApi(baseURL: string): TypedAxiosInstance {
 
   axiosObject.interceptors.response.use(
     (response) => response,
-    (error: { response: { data: string } }) => {
-      const errorType = error.response.data;
+    (error: ApiError) => {
+      const errorType = error.response.data.error;
 
       if (
         errorType === "NoJWT" ||
@@ -31,7 +33,6 @@ function createApi(baseURL: string): TypedAxiosInstance {
 
       console.error(error);
 
-      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
       return Promise.reject(error);
     }
   );

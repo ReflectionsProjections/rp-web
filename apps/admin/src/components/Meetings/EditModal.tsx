@@ -25,19 +25,27 @@ const EditModal: React.FC<EditModalProps> = ({ meeting, updateMeetings }) => {
 
   const { meetingId, ...meetingProps } = meeting;
 
-  const editMeeting = async (
+  const editMeeting = (
     values: MeetingFormValues,
     helpers: FormikHelpers<MeetingFormValues>
   ) => {
-    try {
-      await api.put(path("/meetings/:meetingId", { meetingId }), values);
-      updateMeetings();
-      onClose();
-    } catch {
-      toast({ title: "Error updating meeting", status: "error" });
-    } finally {
-      helpers.setSubmitting(false);
-    }
+    const request = api
+      .put(path("/meetings/:meetingId", { meetingId }), values)
+      .then(() => {
+        updateMeetings();
+        onClose();
+      })
+      .finally(() => {
+        helpers.setSubmitting(false);
+      });
+
+    toast.promise(request, {
+      success: { title: "Meeting successfully updated" },
+      error: { title: "Error updating meeting" },
+      loading: { title: "Updating meeting..." }
+    });
+
+    return request;
   };
 
   return (
