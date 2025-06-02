@@ -1,7 +1,8 @@
 import axios from "axios";
 import { TypedAxiosInstance } from "./type-wrapper";
+import { googleAuth } from "./auth";
 
-function createApi(baseURL: string): TypedAxiosInstance {
+function createApi(baseURL: string, clientId: string): TypedAxiosInstance {
   const axiosObject = axios.create({ baseURL });
 
   axiosObject.interceptors.request.use((config) => {
@@ -17,8 +18,8 @@ function createApi(baseURL: string): TypedAxiosInstance {
 
   axiosObject.interceptors.response.use(
     (response) => response,
-    (error: { response: { data: string } }) => {
-      const errorType = error.response.data;
+    (error: { response: { data: { error: string } } }) => {
+      const errorType = error.response.data.error;
 
       if (
         errorType === "NoJWT" ||
@@ -26,8 +27,10 @@ function createApi(baseURL: string): TypedAxiosInstance {
         errorType === "InvalidJWT"
       ) {
         localStorage.removeItem("jwt");
-        window.location.href = "/auth";
+        googleAuth(clientId);
       }
+
+      console.error("API error:", error);
 
       // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
       return Promise.reject(error);
