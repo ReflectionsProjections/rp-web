@@ -27,6 +27,14 @@ export default function EventModal({
       <ModalOverlay />
       {event && (
         <ModalContent
+          mt={{
+            base: 10,
+            md: "auto"
+          }}
+          mx={{
+            base: 4,
+            md: "auto"
+          }}
           p={4}
           px={7}
           bg="rgba(129, 26, 26, 0.9)" // Translucent content background
