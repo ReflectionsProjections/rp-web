@@ -91,7 +91,7 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
   }
 
   return (
-    <Card sx={mirrorStyle} overflowY="auto" maxHeight="70vh">
+    <Card sx={mirrorStyle} overflowY="auto" maxHeight="80vh" flex={{ xl: 1 }}>
       <CardHeader>
         <Heading size="md">{toTitleCase(role)}</Heading>
       </CardHeader>
