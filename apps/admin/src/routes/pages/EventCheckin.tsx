@@ -11,7 +11,7 @@ import {
   ListItem,
   Switch,
   useToast,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../util/api.ts";
@@ -35,28 +35,40 @@ const EventCheckin = () => {
     const qrData = detectedCodes[0];
 
     if (!selectedEvent) {
-      toast({ title: "Please select an event to check in attendees to!", status: "error" });
+      toast({
+        title: "Please select an event to check in attendees to!",
+        status: "error"
+      });
       return;
     }
 
-    toast.promise(api
-      .post("/checkin/scan/staff", {
+    toast.promise(
+      api.post("/checkin/scan/staff", {
         eventId: selectedEvent.eventId,
         qrCode: qrData.rawValue
-      }), {
+      }),
+      {
         success: { title: "Succesfully checked into event!" },
-        error: (error: ApiError) => { 
+        error: (error: ApiError) => {
           switch (error.response.data.error) {
-          case "QR code has expired":
-            return { title: "Event QR code has expired", status: "error" };
-          case "IsDuplicate":
-            return { title: "Attendee has already checked in", status: "info" };
-          default:
-            return { title: "Woah there, something went wrong! Find dev team please :/", status: "error" };
-        }
-      },
+            case "QR code has expired":
+              return { title: "Event QR code has expired", status: "error" };
+            case "IsDuplicate":
+              return {
+                title: "Attendee has already checked in",
+                status: "info"
+              };
+            default:
+              return {
+                title:
+                  "Woah there, something went wrong! Find dev team please :/",
+                status: "error"
+              };
+          }
+        },
         loading: { title: "Checking in attendee..." }
-      });
+      }
+    );
   };
 
   // Handle the search as the user types
@@ -146,7 +158,11 @@ const EventCheckin = () => {
 
           {showWebcam ? (
             <Box>
-              <Scanner allowMultiple={true} scanDelay={2000} onScan={handleScan} />
+              <Scanner
+                allowMultiple={true}
+                scanDelay={2000}
+                onScan={handleScan}
+              />
             </Box>
           ) : (
             <FormControl>
@@ -236,6 +252,6 @@ const EventCheckin = () => {
       </Flex>
     </>
   );
-}
+};
 
 export default EventCheckin;

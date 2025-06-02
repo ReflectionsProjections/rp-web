@@ -1,9 +1,10 @@
 import axios from "axios";
 import { TypedAxiosInstance } from "./type-wrapper";
+import { googleAuth } from "./auth";
 
 export type ApiError = Error & { response: { data: { error: string } } };
 
-function createApi(baseURL: string): TypedAxiosInstance {
+function createApi(baseURL: string, clientId: string): TypedAxiosInstance {
   const axiosObject = axios.create({ baseURL });
 
   axiosObject.interceptors.request.use((config) => {
@@ -28,10 +29,10 @@ function createApi(baseURL: string): TypedAxiosInstance {
         errorType === "InvalidJWT"
       ) {
         localStorage.removeItem("jwt");
-        window.location.href = "/auth";
+        googleAuth(clientId);
       }
 
-      console.error(error);
+      console.error("API error:", error);
 
       return Promise.reject(error);
     }

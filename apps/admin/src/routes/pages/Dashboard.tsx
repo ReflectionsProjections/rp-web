@@ -13,13 +13,13 @@ import { usePolling } from "@rp/shared";
 import EventCard from "@/components/EventCard";
 import Section from "@/components/Section";
 import { useOutletContext } from "react-router-dom";
-import { ProtectedRouteContext } from "../ProtectedRoute";
+import { MainContext } from "../Main";
 
 const MotionHeader = motion(Heading);
 
 function Dashboard() {
   const { data: currentEvent } = usePolling(api, "/events/currentOrNext");
-  const { displayName } = useOutletContext<ProtectedRouteContext>();
+  const { displayName } = useOutletContext<MainContext>();
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { ProtectedRouteContext } from "@/routes/ProtectedRoute";
+import { MainContext } from "@/routes/Main";
 import api from "@/util/api";
 import {
   Button,
@@ -25,7 +25,7 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   updateMeetings
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const context = useOutletContext<ProtectedRouteContext>();
+  const context = useOutletContext<MainContext>();
   const toast = useToast();
 
   const deleteMeeting = () => {

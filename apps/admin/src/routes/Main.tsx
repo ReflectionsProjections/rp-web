@@ -5,25 +5,17 @@ import { Box } from "@chakra-ui/react";
 import Navbar from "@/components/Navbar";
 import { Role } from "@rp/shared";
 
-export type ProtectedRouteContext = {
+export type MainContext = {
   displayName: string;
   roles: Role[];
 };
 
-const ProtectedRoute = () => {
+const Main = () => {
   const [displayName, setDisplayName] = useState<string>("");
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt");
-
-    const currentPath = window.location.pathname + window.location.search;
-    if (!jwt) {
-      localStorage.setItem("originalDestination", currentPath);
-      window.location.href = "/auth";
-    }
-
     api
       .get("/auth/info")
       .then((response) => {
@@ -39,14 +31,14 @@ const ProtectedRoute = () => {
       })
       .catch(() => {
         localStorage.removeItem("jwt");
-        window.location.href = "/auth";
+        window.location.href = "/";
       });
   }, []);
 
   const context = {
     displayName,
     roles
-  } satisfies ProtectedRouteContext;
+  } satisfies MainContext;
 
   return (
     <Box
@@ -59,8 +51,8 @@ const ProtectedRoute = () => {
       <Box
         mt={{ base: "100px", md: "0" }}
         ml={{ base: "0", md: "max(12vw, 300px)" }}
-        px={{ base: 2, md: 8 }}
-        py={{ base: 4, md: 8 }}
+        px={{ base: 0, md: 4 }}
+        pt={4}
         w="100%"
       >
         <Outlet context={context} />
@@ -69,4 +61,4 @@ const ProtectedRoute = () => {
   );
 };
 
-export default ProtectedRoute;
+export default Main;
