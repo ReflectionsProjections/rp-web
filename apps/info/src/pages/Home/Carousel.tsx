@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
 
-interface CarouselItem {
-  title: string;
-  image: string;
-}
+// interface CarouselItem {
+//   title: string;
+//   image: string;
+// }
 
-interface CircularCarouselProps {
-  items: CarouselItem[];
-}
+// interface CircularCarouselProps {
+//   items: CarouselItem[];
+// }
 
-const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
+const CircularCarousel = () => {
+  const items = [
+    { title: "RP 2025 Site", image: "/images/rp2025site.png" },
+    { title: "RP 2025 Site", image: "/images/rp2025site.png" },
+    { title: "RP 2025 Site", image: "/images/rp2025site.png" }
+  ];
+
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -170,7 +176,7 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
         ))}
       </Box>
 
-      <Flex justifyContent="center" mt={12}>
+      <Flex justifyContent="center" mt={40} mb={10}>
         <Button
           onClick={() => handleNavClick("prev")}
           colorScheme="blue"
