@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
 
 // interface CarouselItem {
