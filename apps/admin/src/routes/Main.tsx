@@ -51,8 +51,8 @@ const Main = () => {
       <Box
         mt={{ base: "100px", md: "0" }}
         ml={{ base: "0", md: "max(12vw, 300px)" }}
-        px={{ base: 0, md: 4 }}
-        pt={4}
+        px={{ base: 0, md: 8 }}
+        py={8}
         w="100%"
       >
         <Outlet context={context} />
