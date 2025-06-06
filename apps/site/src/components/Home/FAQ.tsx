@@ -142,6 +142,7 @@ const FAQItem: React.FC<{
         ml={isHovered ? 0 : 24}
         pl={2}
         pr={isHovered ? 28 : 0}
+        transition={"all 0.3s ease-in-out"}
       >
         {isHovered ? answer : question}
       </Text>
