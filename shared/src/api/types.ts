@@ -69,6 +69,27 @@ export type Event = {
   eventType: EventType;
 };
 
+export type Registration = {
+  userId: string;
+  name: string;
+  email: string;
+  university: string;
+  graduation: string | null;
+  major: string | null;
+  dietaryRestrictions: string[];
+  allergies: string[];
+  gender: string | null;
+  ethnicity: string[];
+  hearAboutRP: string[];
+  portfolios: string[];
+  jobInterest: string[];
+  isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  hasResume: boolean;
+  hasSubmitted: boolean;
+  degree?: string;
+};
+
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
 
 export type RoleObject = {
@@ -165,6 +186,15 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/auth/sponsor/verify": {
+    POST: {
+      request: {
+        sixDigitCode: string;
+        email: string;
+      };
+      response: { token: string };
+    };
+  };
   "/checkin/event": {
     POST: {
       request: { eventId: string; userId: string };
@@ -207,6 +237,31 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/registration/filter/pagecount": {
+    POST: {
+      request: {
+        graduations?: string[];
+        majors?: string[];
+        jobInterests?: string[];
+        degrees?: string[];
+      };
+      response: { pagecount: number };
+    };
+  };
+  "/registration/filter/:page": {
+    POST: {
+      request: {
+        graduations?: string[];
+        majors?: string[];
+        jobInterests?: string[];
+        degrees?: string[];
+      };
+      response: {
+        registrants: Registration[];
+        page: number;
+      };
+    };
+  };
   "/staff": {
     GET: {
       response: Staff[];
@@ -235,6 +290,17 @@ export interface APIRoutes {
     DELETE: {
       request: never;
       response: never;
+    };
+  };
+  "/s3/download/user/:userId": {
+    GET: {
+      response: { url: string };
+    };
+  };
+  "/s3/download/batch": {
+    POST: {
+      request: { userIds: string[] };
+      response: { data: (string | null)[]; errorCount: number };
     };
   };
   "/staff/:staffId/attendance": {
