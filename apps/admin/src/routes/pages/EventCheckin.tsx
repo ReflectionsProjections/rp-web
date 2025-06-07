@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   Box,
   Button,
@@ -11,126 +11,68 @@ import {
   ListItem,
   Switch,
   useToast,
-  Text,
-  useMediaQuery
+  Text
 } from "@chakra-ui/react";
-import { Scanner } from "@yudiel/react-qr-scanner";
+import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../util/api.ts";
-import { Event, path } from "@rp/shared";
+import { Event, usePolling } from "@rp/shared";
+import { ApiError } from "@rp/shared/src/api/axios.ts";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main.tsx";
 
-function EventCheckin() {
-  const [isSmall] = useMediaQuery("(max-width: 600px)");
-
-  const toast = useToast();
+const EventCheckin = () => {
+  const { authorized } = useOutletContext<MainContext>();
+  const { data: attendees } = usePolling(api, "/attendee/emails", authorized);
+  const { data: events } = usePolling(api, "/events", authorized);
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
+  const toast = useToast();
   const [email, setEmail] = useState("");
-  const [userId, setUserId] = useState("");
-  const [qrData, setQrData] = useState("");
   const [filteredEmails, setFilteredEmails] = useState<
     { email: string; userId: string }[]
   >([]);
-  const [attendeeEmails, setAttendeeEmails] = useState<
-    { email: string; userId: string }[]
-  >([]);
-  const [attendeeName, setAttendeeName] = useState("Attendee Name");
 
-  const [events, setEvents] = useState<Event[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
-  const [selectedEventId, setSelectedEventId] = useState<string | null>(null);
-
-  const showToast = (message: string, error: boolean) => {
-    toast({
-      title: message,
-      status: error ? "error" : "success",
-      duration: 9000,
-      isClosable: true
-    });
-  };
-
-  const showQuickToast = (message: string, error: boolean) => {
-    toast({
-      title: message,
-      status: error ? "error" : "success",
-      duration: 2000,
-      isClosable: true
-    });
-  };
-
-  useEffect(() => {
-    api
-      .get("/attendee/emails")
-      .then(function (response) {
-        const attendeeData = response.data;
-        setAttendeeEmails(attendeeData);
-      })
-      .catch(function () {
-        showToast("Error fetching attendee emails + info.", true);
-      });
-
-    api
-      .get("/events")
-      .then(function (response) {
-        const eventData = response.data;
-        setEvents(eventData);
-      })
-      .catch(function () {
-        showToast("Error fetching events.", true);
-      });
-  }, []);
-
-  useEffect(() => {
-    if (userId == "") {
-      return;
-    }
-
-    api
-      .get(path("/attendee/id/:userId", { userId }))
-      .then((response) => {
-        const user = response.data;
-        setAttendeeName(user.name);
-        console.log("NAME: ", attendeeName);
-      })
-      .catch((err) => {
-        console.log(err);
-        showToast("Error fetching attendee.", true);
-      });
-  }, [userId]);
+  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
 
   // Handle scan
-  useEffect(() => {
-    if (qrData == "") {
-      console.log("NO QR DATA");
-      return;
-    }
+  const handleScan = (detectedCodes: IDetectedBarcode[]) => {
+    const qrData = detectedCodes[0];
 
     if (!selectedEvent) {
-      showToast("Please select an event to check in attendees to!", true);
+      toast({
+        title: "Please select an event to check in attendees to!",
+        status: "error"
+      });
       return;
     }
 
-    api
-      .post("/checkin/scan/staff", {
-        eventId: selectedEventId ?? "",
-        qrCode: qrData
-      })
-      .then((response) => {
-        const userId = response.data;
-        setUserId(userId);
-        showQuickToast(`Succesfully checked into event!`, false);
-      })
-      .catch((err: { response: { status: number } }) => {
-        console.log(err.response);
-        if (err.response.status == 403) {
-          showQuickToast("Attendee has already checked in.", true);
-        } else {
-          showQuickToast(
-            "Woah there, something went wrong! Find dev team please :/",
-            true
-          );
-        }
-      });
-    setQrData("");
-  }, [qrData]);
+    toast.promise(
+      api.post("/checkin/scan/staff", {
+        eventId: selectedEvent.eventId,
+        qrCode: qrData.rawValue
+      }),
+      {
+        success: { title: "Succesfully checked into event!" },
+        error: (error: ApiError) => {
+          switch (error.response.data.error) {
+            case "QR code has expired":
+              return { title: "Event QR code has expired", status: "error" };
+            case "IsDuplicate":
+              return {
+                title: "Attendee has already checked in",
+                status: "info"
+              };
+            default:
+              return {
+                title:
+                  "Woah there, something went wrong! Find dev team please :/",
+                status: "error"
+              };
+          }
+        },
+        loading: { title: "Checking in attendee..." }
+      }
+    );
+  };
 
   // Handle the search as the user types
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -139,9 +81,10 @@ function EventCheckin() {
 
     // Perform prefix search on attendeeEmails
     if (inputEmail) {
-      const filtered = attendeeEmails.filter((attendee) =>
-        attendee.email.toLowerCase().startsWith(inputEmail.toLowerCase())
-      );
+      const filtered =
+        attendees?.filter((attendee) =>
+          attendee.email.toLowerCase().startsWith(inputEmail.toLowerCase())
+        ) ?? [];
       setFilteredEmails(filtered);
     } else {
       setFilteredEmails([]);
@@ -157,164 +100,169 @@ function EventCheckin() {
   // Check attendee into event via their email
   const handleCheckin = () => {
     if (!selectedEvent) {
-      showToast("Please select an event to check in attendees to!", true);
+      toast({
+        title: "Please select an event to check in attendees to!",
+        status: "error"
+      });
       return;
     }
 
     if (!email) {
-      showToast("Please enter an email.", true);
+      toast({
+        title: "Please enter an email.",
+        status: "error"
+      });
       return;
     }
 
-    const selectedAttendee = attendeeEmails.find(
+    const selectedAttendee = attendees?.find(
       (attendee) => attendee.email === email
     );
     if (!selectedAttendee) {
-      showToast("This email is not registered as an R|P attendee.", true);
+      toast({
+        title: "This email is not registered as an R|P attendee.",
+        status: "error"
+      });
       return;
     }
 
-    const userId = selectedAttendee.userId;
-    setUserId(userId);
-
-    api
-      .post("/checkin/event", {
-        eventId: selectedEventId ?? "",
-        userId: userId
-      })
-      .then(function () {
-        showQuickToast(`Succesfully checked into event!`, false);
-      })
-      .catch(function (error) {
-        showQuickToast(
-          "Could not check in attendee to event. Please try again.",
-          true
-        );
-        console.log(error);
-      });
+    toast.promise(
+      api.post("/checkin/event", {
+        eventId: selectedEvent.eventId,
+        userId: selectedAttendee.userId
+      }),
+      {
+        success: { title: "Succesfully checked into event!" },
+        error: {
+          title: "Could not check in attendee to event. Please try again."
+        },
+        loading: { title: "Checking in attendee..." }
+      }
+    );
   };
 
   return (
     <>
-      <Box flex="1" minW="90vw" p={4}>
-        <Heading size="lg">Event Checkin</Heading>
-        <br />
-        <Flex direction={isSmall ? "column" : "row"}>
-          {/* Left Side: Webcam or Email input */}
-          <Box flex="1" p={4} mr={4}>
-            <FormControl display="flex" alignItems="center" mb={4} mt="0)">
-              <FormLabel htmlFor="toggle-webcam" mb="0">
-                Show Webcam
-              </FormLabel>
-              <Switch
-                id="toggle-webcam"
-                isChecked={showWebcam}
-                onChange={() => setShowWebcam(!showWebcam)}
+      <Flex justifyContent="center" alignItems="center">
+        <Heading size="lg">Event Check-in</Heading>
+      </Flex>
+      <br />
+      <Flex
+        w="100%"
+        p={4}
+        flexWrap="wrap"
+        justifyContent="space-evenly"
+        gap={6}
+      >
+        {/* Left Side: Webcam or Email input */}
+        <Box flex="1" p={4} mr={4}>
+          <FormControl display="flex" alignItems="center" mb={4} mt="0)">
+            <FormLabel htmlFor="toggle-webcam" mb="0">
+              Show Webcam
+            </FormLabel>
+            <Switch
+              id="toggle-webcam"
+              isChecked={showWebcam}
+              onChange={() => setShowWebcam(!showWebcam)}
+            />
+          </FormControl>
+
+          {showWebcam ? (
+            <Box>
+              <Scanner
+                allowMultiple={true}
+                scanDelay={2000}
+                onScan={handleScan}
               />
-            </FormControl>
-
-            {showWebcam ? (
-              <Box>
-                <Scanner
-                  allowMultiple={true}
-                  styles={{}}
-                  onScan={(result) => {
-                    setQrData(result[0].rawValue);
-                  }}
-                />
-                ;
-              </Box>
-            ) : (
-              <FormControl>
-                <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
-                <Input
-                  id="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={handleEmailChange}
-                  autoComplete="off"
-                />
-
-                {filteredEmails.length > 0 && (
-                  <Box
-                    mt={1}
-                    border="1px solid #ccc"
-                    borderRadius="md"
-                    maxH="200px"
-                    overflowY="auto"
-                    position="absolute"
-                    width="100%"
-                    bg="white"
-                    zIndex={10}
-                  >
-                    <List>
-                      {filteredEmails.map((attendee) => (
-                        <ListItem
-                          key={attendee.userId}
-                          p={2}
-                          _hover={{ bg: "gray.100", cursor: "pointer" }}
-                          onClick={() => handleSelectEmail(attendee.email)}
-                          color="black"
-                        >
-                          {attendee.email}
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
-                )}
-
-                <Button mt={4} colorScheme="blue" onClick={handleCheckin}>
-                  Check in Attendee
-                </Button>
-              </FormControl>
-            )}
-          </Box>
-
-          {/* Right Side: Event Selection */}
-          <Box flex="1" p={4}>
+            </Box>
+          ) : (
             <FormControl>
-              <FormLabel textAlign="center" fontWeight="bold" fontSize="xl">
-                Events
-              </FormLabel>
+              <FormLabel htmlFor="email">Enter Attendee Email</FormLabel>
+              <Input
+                id="email"
+                placeholder="Email"
+                value={email}
+                onChange={handleEmailChange}
+                autoComplete="off"
+              />
 
-              <Text
-                fontSize="md"
-                fontWeight="bold"
-                fontStyle="italic"
-                mt={2}
-                mb={3}
-              >
-                Selected Event: {selectedEvent}
-              </Text>
+              {filteredEmails.length > 0 && (
+                <Box
+                  mt={1}
+                  border="1px solid #ccc"
+                  borderRadius="md"
+                  maxH="200px"
+                  overflowY="auto"
+                  position="absolute"
+                  width="100%"
+                  bg="white"
+                  zIndex={9}
+                >
+                  <List>
+                    {filteredEmails.map((attendee) => (
+                      <ListItem
+                        key={attendee.userId}
+                        p={2}
+                        _hover={{ bg: "gray.100", cursor: "pointer" }}
+                        onClick={() => handleSelectEmail(attendee.email)}
+                        color="black"
+                      >
+                        {attendee.email}
+                      </ListItem>
+                    ))}
+                  </List>
+                </Box>
+              )}
 
-              <List spacing={3}>
-                {events.map((event) => (
-                  <ListItem
-                    key={event["eventId"]}
-                    p={2}
-                    border="1px solid #ccc"
-                    borderRadius="md"
-                    _hover={{
-                      bg: "gray.100",
-                      cursor: "pointer",
-                      color: "black"
-                    }}
-                    onClick={() => {
-                      setQrData("");
-                      setSelectedEvent(event["name"]);
-                      setSelectedEventId(event["eventId"]);
-                    }}
-                  >
-                    {event["name"]}
-                  </ListItem>
-                ))}
-              </List>
+              <Button mt={4} colorScheme="blue" onClick={handleCheckin}>
+                Check in Attendee
+              </Button>
             </FormControl>
-          </Box>
-        </Flex>
-      </Box>
+          )}
+        </Box>
+
+        {/* Right Side: Event Selection */}
+        <Box flex="1" p={4}>
+          <FormControl>
+            <FormLabel textAlign="center" fontWeight="bold" fontSize="xl">
+              Events
+            </FormLabel>
+
+            <Text
+              fontSize="md"
+              fontWeight="bold"
+              fontStyle="italic"
+              mt={2}
+              mb={3}
+            >
+              Selected Event: {selectedEvent?.name}
+            </Text>
+
+            <List spacing={3}>
+              {events?.map((event) => (
+                <ListItem
+                  key={event["eventId"]}
+                  p={2}
+                  border="1px solid #ccc"
+                  borderRadius="md"
+                  _hover={{
+                    bg: "gray.100",
+                    cursor: "pointer",
+                    color: "black"
+                  }}
+                  onClick={() => {
+                    setSelectedEvent(event);
+                  }}
+                >
+                  {event.name}
+                </ListItem>
+              ))}
+            </List>
+          </FormControl>
+        </Box>
+      </Flex>
     </>
   );
-}
+};
 
 export default EventCheckin;
