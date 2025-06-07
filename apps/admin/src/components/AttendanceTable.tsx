@@ -39,6 +39,8 @@ import {
   usePolling
 } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
+import { MainContext } from "@/routes/Main";
+import { useOutletContext } from "react-router-dom";
 
 type StaffStatistics = Record<
   "ABSENT" | "PRESENT" | "EXCUSED" | "TOTAL",
@@ -80,6 +82,7 @@ const teamTypeToDisplayText = (team: CommitteeType) => {
 };
 
 const AttendanceBox = () => {
+  const { authorized } = useOutletContext<MainContext>();
   const [isSmall] = useMediaQuery("(max-width: 768px)");
   const [selectedStaff, setSelectedStaff] = useState<Staff | undefined>(
     undefined
@@ -90,10 +93,11 @@ const AttendanceBox = () => {
     data: staff,
     isLoading: staffLoading,
     mutate: mutateStaff
-  } = usePolling(api, "/staff");
+  } = usePolling(api, "/staff", authorized);
   const { data: meetings, isLoading: meetingsLoading } = usePolling(
     api,
-    "/meetings"
+    "/meetings",
+    authorized
   );
   const toast = useToast();
 
@@ -363,6 +367,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
   isSmall,
   updating
 }) => {
+  const { authorized } = useOutletContext<MainContext>();
   const [selectedMeeting, setSelectedMeeting] = useState<ParsedMeeting>(
     () => meetings[0]
   );
@@ -437,17 +442,26 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
         </Thead>
         <Tbody>
           {!selectedMeeting
-            ? Array.from({ length: 5 }).map((_, i) => (
+            ? Array.from({ length: 10 }).map((_, i) => (
                 <Tr key={i}>
                   <Td>
-                    <SkeletonText noOfLines={1} />
+                    <SkeletonText
+                      noOfLines={1}
+                      speed={authorized ? undefined : 0}
+                    />
                   </Td>
                   <Td>
-                    <Skeleton height="20px" />
+                    <Skeleton
+                      height="20px"
+                      speed={authorized ? undefined : 0}
+                    />
                   </Td>
                   {!isSmall && (
                     <Td>
-                      <Skeleton height="20px" />
+                      <Skeleton
+                        height="20px"
+                        speed={authorized ? undefined : 0}
+                      />
                     </Td>
                   )}
                 </Tr>

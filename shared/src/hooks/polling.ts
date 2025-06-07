@@ -5,6 +5,7 @@ import { APIRoutes } from "../api/types";
 const usePolling = <T extends GettablePaths>(
   api: TypedAxiosInstance,
   endpoint: T,
+  enabled: boolean = true,
   interval: number = 30000
 ) => {
   const [data, setData] = useState<APIRoutes[T]["GET"]["response"] | null>(
@@ -14,6 +15,10 @@ const usePolling = <T extends GettablePaths>(
   const isLoading = data === null && error === null;
 
   const fetchData = useCallback(() => {
+    if (!enabled) {
+      return;
+    }
+
     api
       .get(endpoint)
       .then((response) => {
@@ -22,7 +27,7 @@ const usePolling = <T extends GettablePaths>(
       .catch((err: { error: string }) => {
         setError(err.error);
       });
-  }, [api, endpoint]);
+  }, [api, endpoint, enabled]);
 
   useEffect(() => {
     fetchData();

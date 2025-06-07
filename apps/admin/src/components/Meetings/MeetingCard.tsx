@@ -7,7 +7,9 @@ import {
   Badge,
   CardFooter,
   Flex,
-  Text
+  Text,
+  Skeleton,
+  SkeletonText
 } from "@chakra-ui/react";
 import { Meeting } from "@rp/shared";
 import moment from "moment";
@@ -54,6 +56,56 @@ const MeetingCard: React.FC<MeetingCardProps> = ({
           <EditModal meeting={meeting} updateMeetings={updateMeetings} />
           <QrModal meeting={meeting} startCST={startCST} />
           <DeleteModal meeting={meeting} updateMeetings={updateMeetings} />
+        </Flex>
+      </CardFooter>
+    </Card>
+  );
+};
+
+type MeetingCardSkeletonProps = {
+  animation?: boolean;
+};
+
+export const MeetingCardSkeleton: React.FC<MeetingCardSkeletonProps> = ({
+  animation = true
+}) => {
+  const mirrorStyles = useMirrorStyles();
+  const speed = animation ? undefined : 0;
+
+  return (
+    <Card sx={mirrorStyles} w="sm">
+      <CardBody>
+        <Stack mt="6" spacing="3" alignItems="center">
+          <Skeleton height="24px" width="60%" speed={speed} />
+          <Skeleton
+            height="20px"
+            width="100%"
+            borderRadius="full"
+            speed={speed}
+          />
+          <SkeletonText noOfLines={1} spacing="2" width="80%" speed={speed} />
+        </Stack>
+      </CardBody>
+      <CardFooter>
+        <Flex justifyContent="space-between" width="100%">
+          <Skeleton
+            height="36px"
+            width="80px"
+            borderRadius="md"
+            speed={speed}
+          />
+          <Skeleton
+            height="36px"
+            width="80px"
+            borderRadius="md"
+            speed={speed}
+          />
+          <Skeleton
+            height="36px"
+            width="80px"
+            borderRadius="md"
+            speed={speed}
+          />
         </Flex>
       </CardFooter>
     </Card>

@@ -27,16 +27,20 @@ import {
   RoleFormSchema,
   RoleFormValues
 } from "./RoleSchema";
+import { MainContext } from "@/routes/Main";
+import { useOutletContext } from "react-router-dom";
 
 type RolesCardProps = {
   role: Role;
 };
 
 const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
-  const { data: roles, update: updateRoles } = usePolling(
-    api,
-    path("/auth/:role", { role })
-  );
+  const { authorized } = useOutletContext<MainContext>();
+  const {
+    data: roles,
+    update: updateRoles,
+    isLoading
+  } = usePolling(api, path("/auth/:role", { role }), authorized);
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 
@@ -154,45 +158,63 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
           )}
         </Formik>
         <Stack divider={<StackDivider />} spacing="4" mt={8}>
-          {roles?.map((roleObject) => (
-            <Flex
-              key={roleObject.userId}
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Box flex={1} mr={7}>
-                <Text textAlign={"left"}>{roleObject.displayName}</Text>
-              </Box>
-              <Select
-                flex={1}
-                placeholder="Select team"
-                value={""}
-                onChange={(e) => {
-                  const selectedTeam = e.target.value;
-                  if (selectedTeam !== "") {
-                    updateUserTeam(roleObject.email, selectedTeam);
-                  }
-                }}
-                mr={2}
-              >
-                {Config.COMMITTEE_TYPES.map((team) => (
-                  <option key={team} value={team}>
-                    {toTitleCase(team)}
-                  </option>
-                ))}
-              </Select>
-              <IconButton
-                size={"md"}
-                icon={<CloseIcon />}
-                aria-label={"Remove Role"}
-                onClick={() => removeFromRole(role, roleObject.email)}
-              />
-            </Flex>
-          ))}
+          {isLoading
+            ? Array.from({ length: 10 }).map((_, index) => (
+                <RoleCardSkeleton key={index} />
+              ))
+            : roles?.map((roleObject) => (
+                <Flex
+                  key={roleObject.userId}
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <Box flex={1} mr={7}>
+                    <Text textAlign={"left"}>{roleObject.displayName}</Text>
+                  </Box>
+                  <Select
+                    flex={1}
+                    placeholder="Select team"
+                    value={""}
+                    onChange={(e) => {
+                      const selectedTeam = e.target.value;
+                      if (selectedTeam !== "") {
+                        updateUserTeam(roleObject.email, selectedTeam);
+                      }
+                    }}
+                    mr={2}
+                  >
+                    {Config.COMMITTEE_TYPES.map((team) => (
+                      <option key={team} value={team}>
+                        {toTitleCase(team)}
+                      </option>
+                    ))}
+                  </Select>
+                  <IconButton
+                    size={"md"}
+                    icon={<CloseIcon />}
+                    aria-label={"Remove Role"}
+                    onClick={() => removeFromRole(role, roleObject.email)}
+                  />
+                </Flex>
+              ))}
         </Stack>
       </CardBody>
     </Card>
   );
 };
+
+const RoleCardSkeleton: React.FC = () => (
+  <Flex justifyContent="space-between" alignItems="center" py={2} opacity={0.7}>
+    <Box flex={1} mr={7}>
+      <Box height="20px" bg="gray.200" borderRadius="md" width="70%" />
+    </Box>
+    <Box flex={1} mr={2}>
+      <Box height="32px" bg="gray.200" borderRadius="md" />
+    </Box>
+    <Box>
+      <Box height="32px" width="32px" bg="gray.200" borderRadius="full" />
+    </Box>
+  </Flex>
+);
 
 export default RolesCard;

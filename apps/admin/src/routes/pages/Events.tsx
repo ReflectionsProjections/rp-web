@@ -1,11 +1,20 @@
 import { Heading, Flex } from "@chakra-ui/react";
 import api from "../../util/api.ts";
 import { Event, usePolling } from "@rp/shared";
-import EventCard from "@/components/Events/EventCard.tsx";
+import EventCard, {
+  EventCardSkeleton
+} from "@/components/Events/EventCard.tsx";
 import AddModal from "@/components/Events/AddModal.tsx";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main.tsx";
 
 function Events() {
-  const { data: events, update: updateEvents } = usePolling(api, "/events");
+  const { authorized } = useOutletContext<MainContext>();
+  const {
+    data: events,
+    update: updateEvents,
+    isLoading
+  } = usePolling(api, "/events", authorized);
 
   return (
     <>
@@ -20,13 +29,17 @@ function Events() {
         justifyContent="space-evenly"
         gap={6}
       >
-        {events?.map((event: Event) => (
-          <EventCard
-            event={event}
-            updateEvents={updateEvents}
-            key={event.eventId}
-          />
-        ))}
+        {isLoading
+          ? Array.from({ length: 16 }).map((_, index) => (
+              <EventCardSkeleton key={index} animation={authorized} />
+            ))
+          : events?.map((event: Event) => (
+              <EventCard
+                event={event}
+                updateEvents={updateEvents}
+                key={event.eventId}
+              />
+            ))}
       </Flex>
       <AddModal updateEvents={updateEvents} />
     </>

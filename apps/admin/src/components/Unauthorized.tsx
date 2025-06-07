@@ -11,10 +11,10 @@ const Unauthorized = () => {
   return (
     <Flex
       direction="column"
-      align="center"
-      justify="center"
-      minHeight="100vh"
-      maxHeight="100vh"
+      alignItems="center"
+      justifyContent="center"
+      w="100%"
+      h="100%"
     >
       <Center>
         <Icon as={AiOutlineStop} fill="red" boxSize="80px" />
@@ -27,7 +27,7 @@ const Unauthorized = () => {
         </h2>
       </Box>
 
-      <Button colorScheme="red" onClick={() => signOut}>
+      <Button colorScheme="red" onClick={signOut}>
         Log Out
       </Button>
     </Flex>

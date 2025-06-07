@@ -28,20 +28,25 @@ import api from "../../util/api";
 import { path, usePolling } from "@rp/shared";
 import StatCard from "@/components/StatCard";
 import { useMirrorStyles } from "@/styles/Mirror";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main";
 
 function Stats() {
+  const { authorized } = useOutletContext<MainContext>();
+
   const [numEvents, setNumEvents] = useState(0);
   const [price, setPrice] = useState(0);
 
   const mirrorStyles = useMirrorStyles(true);
   const { data: pastAttendanceData, isLoading: pastAttendanceLoading } =
-    usePolling(api, path("/stats/attendance/:n", { n: numEvents }));
+    usePolling(api, path("/stats/attendance/:n", { n: numEvents }), authorized);
   const { data: eligiblePrize, isLoading: eligiblePrizeLoading } = usePolling(
     api,
-    path("/stats/merch-item/:price", { price })
+    path("/stats/merch-item/:price", { price }),
+    authorized
   );
   const { data: dietaryRestrictions, isLoading: dietaryRestrictionsLoading } =
-    usePolling(api, "/stats/dietary-restrictions");
+    usePolling(api, "/stats/dietary-restrictions", authorized);
 
   const pastAttendance = useMemo(() => {
     if (!pastAttendanceData) {
@@ -84,11 +89,13 @@ function Stats() {
           <StatCard
             label="Number Checked-In"
             endpoint="/stats/check-in"
+            enabled={authorized}
             transformer={(data) => data.count}
           />
           <StatCard
             label="Priority Attendees"
             endpoint="/stats/priority-attendee"
+            enabled={authorized}
             transformer={(data) => data.count}
           />
         </HStack>

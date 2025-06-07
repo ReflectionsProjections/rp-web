@@ -9,7 +9,7 @@ import EventCheckin from "./routes/pages/EventCheckin";
 import Attendance from "./routes/pages/Attendance";
 
 const routes = [
-  { path: "/dashboard", element: <Dashboard /> },
+  { path: "/", element: <Dashboard /> },
   { path: "/stats", element: <Stats /> },
   { path: "/events", element: <Events /> },
   { path: "/meetings", element: <Meetings /> },

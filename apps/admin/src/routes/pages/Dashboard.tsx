@@ -18,8 +18,12 @@ import { MainContext } from "../Main";
 const MotionHeader = motion(Heading);
 
 function Dashboard() {
-  const { data: currentEvent } = usePolling(api, "/events/currentOrNext");
-  const { displayName } = useOutletContext<MainContext>();
+  const { authorized, displayName } = useOutletContext<MainContext>();
+  const { data: currentEvent } = usePolling(
+    api,
+    "/events/currentOrNext",
+    authorized
+  );
 
   return (
     <>
@@ -55,11 +59,13 @@ function Dashboard() {
                 <StatCard
                   label={"Checked-In"}
                   endpoint={"/stats/check-in"}
+                  enabled={authorized}
                   transformer={(data) => data.count}
                 />
                 <StatCard
                   label={"Priority Status"}
                   endpoint={"/stats/priority-attendee"}
+                  enabled={authorized}
                   transformer={(data) => data.count}
                 />
               </StatGroup>

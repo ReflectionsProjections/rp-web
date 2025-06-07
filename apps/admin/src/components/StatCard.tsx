@@ -13,6 +13,7 @@ type StatCardProps<T extends GettablePaths> = {
   label: string;
   endpoint: T;
   transformer: Transformer<T>;
+  enabled?: boolean;
   interval?: number;
 };
 
@@ -20,10 +21,16 @@ const StatCard = <T extends GettablePaths>({
   label,
   endpoint,
   transformer,
+  enabled,
   interval
 }: StatCardProps<T>) => {
   const mirrorStyles = useMirrorStyles(true);
-  const { data, error, isLoading } = usePolling(api, endpoint, interval);
+  const { data, error, isLoading } = usePolling(
+    api,
+    endpoint,
+    enabled ?? true,
+    interval
+  );
 
   return (
     <Stat sx={mirrorStyles}>

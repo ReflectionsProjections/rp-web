@@ -22,12 +22,16 @@ import {
   SponsorFormSchema,
   SponsorFormValues
 } from "@/components/Sponsors/SponsorSchema";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main";
 
 const Sponsors = () => {
-  const { data: sponsors, update: updateSponsors } = usePolling(
-    api,
-    "/auth/corporate"
-  );
+  const { authorized } = useOutletContext<MainContext>();
+  const {
+    data: sponsors,
+    update: updateSponsors,
+    isLoading
+  } = usePolling(api, "/auth/corporate", authorized);
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 
@@ -141,26 +145,30 @@ const Sponsors = () => {
               )}
             </Formik>
             <Stack divider={<StackDivider />} spacing="4" mt={8}>
-              {sponsors?.map((sponsor) => (
-                <Flex
-                  key={sponsor.email}
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box flex="1" textAlign="left">
-                    {sponsor.name}
-                  </Box>
-                  <Box flex="1" textAlign="left">
-                    {sponsor.email}
-                  </Box>
-                  <IconButton
-                    size={"md"}
-                    icon={<CloseIcon />}
-                    aria-label={"Open Menu"}
-                    onClick={() => removeSponsor(sponsor.email)}
-                  />
-                </Flex>
-              ))}
+              {isLoading
+                ? Array.from({ length: 10 }).map((_, index) => (
+                    <SponsorCardSkeleton key={index} />
+                  ))
+                : sponsors?.map((sponsor) => (
+                    <Flex
+                      key={sponsor.email}
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Box flex="1" textAlign="left">
+                        {sponsor.name}
+                      </Box>
+                      <Box flex="1" textAlign="left">
+                        {sponsor.email}
+                      </Box>
+                      <IconButton
+                        size={"md"}
+                        icon={<CloseIcon />}
+                        aria-label={"Open Menu"}
+                        onClick={() => removeSponsor(sponsor.email)}
+                      />
+                    </Flex>
+                  ))}
             </Stack>
           </CardBody>
         </Card>
@@ -168,5 +176,19 @@ const Sponsors = () => {
     </>
   );
 };
+
+const SponsorCardSkeleton: React.FC = () => (
+  <Flex justifyContent="space-between" alignItems="center" py={2} opacity={0.7}>
+    <Box flex={1} mr={7}>
+      <Box height="20px" bg="gray.200" borderRadius="md" width="70%" />
+    </Box>
+    <Box flex={1} mr={2}>
+      <Box height="32px" bg="gray.200" borderRadius="md" />
+    </Box>
+    <Box>
+      <Box height="32px" width="32px" bg="gray.200" borderRadius="full" />
+    </Box>
+  </Flex>
+);
 
 export default Sponsors;

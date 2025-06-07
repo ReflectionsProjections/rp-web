@@ -17,10 +17,13 @@ import { IDetectedBarcode, Scanner } from "@yudiel/react-qr-scanner";
 import api from "../../util/api.ts";
 import { Event, usePolling } from "@rp/shared";
 import { ApiError } from "@rp/shared/src/api/axios.ts";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main.tsx";
 
 const EventCheckin = () => {
-  const { data: attendees } = usePolling(api, "/attendee/emails");
-  const { data: events } = usePolling(api, "/events");
+  const { authorized } = useOutletContext<MainContext>();
+  const { data: attendees } = usePolling(api, "/attendee/emails", authorized);
+  const { data: events } = usePolling(api, "/events", authorized);
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const toast = useToast();
   const [email, setEmail] = useState("");

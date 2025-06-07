@@ -27,7 +27,7 @@ import { useMirrorStyles } from "@/styles/Mirror";
 import StatusMonitor from "./StatusMonitor";
 
 const linkMap = {
-  Dashboard: "/dashboard",
+  Dashboard: "/",
   Stats: "/stats",
   Events: "/events",
   Meetings: "/meetings",
@@ -36,22 +36,6 @@ const linkMap = {
   "Event Check-in": "/event-checkin",
   Merch: "/merch",
   Attendance: "/attendance-view"
-};
-
-const getLinks = (roles: string[], loading: boolean): string[] => {
-  if (loading) {
-    return [];
-  }
-
-  if (roles.includes("ADMIN")) {
-    return Object.keys(linkMap);
-  }
-
-  if (roles.includes("STAFF")) {
-    return ["Dashboard"];
-  }
-
-  return [];
 };
 
 const Profile = () => {
@@ -80,8 +64,12 @@ const Profile = () => {
       <Portal>
         <MenuList>
           <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
-          <MenuDivider />
-          <MenuItem onClick={signOut}>Sign Out</MenuItem>
+          {localStorage.getItem("jwt") && (
+            <>
+              <MenuDivider />
+              <MenuItem onClick={signOut}>Sign Out</MenuItem>
+            </>
+          )}
         </MenuList>
       </Portal>
     </Menu>
@@ -90,10 +78,9 @@ const Profile = () => {
 
 type NavbarProps = {
   roles: string[];
-  loading: boolean;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
+const Navbar: React.FC<NavbarProps> = ({ roles }) => {
   const [inView, setInView] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
@@ -120,38 +107,49 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
    *
    * @param children - The content of the NavbarLink.
    * @param href - The path the NavbarLink links to.
+   * @param disabled - Whether the NavbarLink is disabled.
    */
   const NavbarLink = ({
     children,
-    href
+    href,
+    disabled
   }: {
     children: ReactNode;
     href: string;
+    disabled?: boolean;
   }) => {
     const isActive = location.pathname.startsWith(href);
 
     return (
       <Link
         as={NavLink}
-        to={href}
+        to={disabled ? "#" : href}
         w="100%"
         px={2}
         py={4}
         rounded={"md"}
         textAlign="left"
-        onClick={() => {
+        onClick={(e) => {
+          if (disabled) {
+            e.preventDefault();
+            return;
+          }
           if (isOpen) {
             onClose();
           }
         }}
         _hover={{
-          textDecoration: "none",
-          bg: useColorModeValue("gray.200", "gray.700")
+          textDecoration: disabled ? undefined : "none",
+          bg: disabled ? undefined : "gray.200",
+          cursor: disabled ? "not-allowed" : "pointer"
         }}
         border={isActive ? "1px solid" : "none"}
         borderColor={useColorModeValue("gray.700", "gray.200")}
         fontSize="lg"
         fontWeight="semibold"
+        aria-disabled={disabled}
+        opacity={disabled ? 0.5 : 1}
+        tabIndex={disabled ? -1 : 0}
       >
         {children}
       </Link>
@@ -175,7 +173,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           : { base: "translateY(-100%)", md: "translateX(-100%)" }
       }
       transition="0.5s ease"
-      zIndex={10}
+      zIndex={11}
     >
       <Flex
         h="100%"
@@ -189,7 +187,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       >
         <Link
           as={NavLink}
-          to="/dashboard"
+          to="/"
           h={{ base: "100%", md: "12vh" }}
           minH={{ md: "100px" }}
           mx={{ md: "auto" }}
@@ -204,8 +202,12 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           height="100%"
           overflowY="auto"
         >
-          {getLinks(roles, loading).map((link) => (
-            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
+          {Object.keys(linkMap).map((link) => (
+            <NavbarLink
+              key={link}
+              href={linkMap[link as keyof typeof linkMap]}
+              disabled={link !== "Dashboard" && !roles.includes("ADMIN")}
+            >
               {link}
             </NavbarLink>
           ))}
@@ -238,8 +240,12 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           display={{ base: "flex", md: "none" }}
           maxH="calc(100% - calc(100px - 42px))"
         >
-          {getLinks(roles, loading).map((link) => (
-            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
+          {Object.keys(linkMap).map((link) => (
+            <NavbarLink
+              key={link}
+              href={linkMap[link as keyof typeof linkMap]}
+              disabled={link !== "Dashboard" && !roles.includes("ADMIN")}
+            >
               {link}
             </NavbarLink>
           ))}
