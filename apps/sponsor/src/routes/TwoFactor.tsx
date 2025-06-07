@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { Box, Button, Input, Text, HStack, VStack } from '@chakra-ui/react';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { Box, Button, Input, Text, HStack, VStack } from "@chakra-ui/react";
 
 interface TwoFactorProps {
   email: string;
@@ -9,13 +9,16 @@ interface TwoFactorProps {
 }
 
 const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
-  const [code, setCode] = useState(Array(6).fill(''));
+  const [code, setCode] = useState(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const navigate = useNavigate(); // Hook for navigation
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    index: number
+  ) => {
     const value = e.target.value.toUpperCase();
     const newCode = [...code];
 
@@ -33,8 +36,11 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === 'Backspace') {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number
+  ) => {
+    if (e.key === "Backspace") {
       const newCode = [...code];
 
       if (!code[index] && index > 0) {
@@ -45,10 +51,10 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
         }
 
         // Also delete the value in the previous input
-        newCode[index - 1] = '';
+        newCode[index - 1] = "";
       } else {
         // Delete the current value
-        newCode[index] = '';
+        newCode[index] = "";
       }
 
       setCode(newCode);
@@ -56,8 +62,8 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
   };
 
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
-    const paste = e.clipboardData.getData('text').toUpperCase();
-    const pasteValues = paste.slice(0, 6).split('');
+    const paste = e.clipboardData.getData("text").toUpperCase();
+    const pasteValues = paste.slice(0, 6).split("");
     const newCode = [...code];
 
     pasteValues.forEach((char, index) => {
@@ -78,34 +84,37 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    const fullCode = code.join('');
+    const fullCode = code.join("");
 
     if (fullCode.length !== 6) {
-      setError('Please enter a 6-digit code.');
+      setError("Please enter a 6-digit code.");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
 
     try {
-      const response = await axios.post('https://api.reflectionsprojections.org/auth/sponsor/verify', {
-        sixDigitCode: fullCode,
-        email: email,
-      });
-      setSuccess('Two-factor authentication successful!');
-      localStorage.setItem('jwt', response.data.token);
-      navigate('/resume-book');
+      const response = await axios.post(
+        "https://api.reflectionsprojections.org/auth/sponsor/verify",
+        {
+          sixDigitCode: fullCode,
+          email: email
+        }
+      );
+      setSuccess("Two-factor authentication successful!");
+      localStorage.setItem("jwt", response.data.token);
+      navigate("/resume-book");
     } catch (err) {
-      setError('Invalid Code. Please try again.');
+      setError("Invalid Code. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <Box mt='10vh' zIndex="2">
+    <Box mt="10vh" zIndex="2">
       <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>
         Enter 6-Digit Code:
       </Text>
@@ -143,16 +152,24 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
           onClick={handleSubmit}
           disabled={loading}
         >
-          {loading ? 'Submitting...' : 'Submit'}
+          {loading ? "Submitting..." : "Submit"}
         </Button>
 
-        <Button bg="blue.500" color="white" borderRadius="5px" m={4} mb={5} onClick={() => sponsorLogin(email)} _hover={{ bg: "blue.600" }}>
+        <Button
+          bg="blue.500"
+          color="white"
+          borderRadius="5px"
+          m={4}
+          mb={5}
+          onClick={() => sponsorLogin(email)}
+          _hover={{ bg: "blue.600" }}
+        >
           Resend Code
         </Button>
       </VStack>
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      {success && <p style={{ color: 'green' }}>{success}</p>}
+      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p style={{ color: "green" }}>{success}</p>}
     </Box>
   );
 };

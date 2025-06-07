@@ -28,7 +28,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
   toggleResume,
   openResume,
   baseColor,
-  bgColor,
+  bgColor
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -56,12 +56,12 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
           : `gray.${parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100}`,
         transform: "scale(1.05)",
         borderColor: "black",
-        borderWidth: "3px",
+        borderWidth: "3px"
       }}
     >
       {Config.STAFF_UIDs.includes(resume.id) && (
         <Tooltip label="Staff Member" fontSize="md">
-          <Image src="/2024_rp_logo.svg" width='20px' height='20px' />
+          <Image src="/2024_rp_logo.svg" width="20px" height="20px" />
         </Tooltip>
       )}
       <Tooltip label="Open Resume" fontSize="md">
@@ -83,7 +83,10 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
         </Box>
       </Tooltip>
 
-      <Tooltip label={resume.portfolios?.length === 0 ? "" : "Show Links"} fontSize="md">
+      <Tooltip
+        label={resume.portfolios?.length === 0 ? "" : "Show Links"}
+        fontSize="md"
+      >
         <Box
           opacity={resume.portfolios?.length === 0 ? 0 : 1}
           padding="2px"
@@ -109,49 +112,60 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
           <Text fontWeight="bold" fontSize="lg" maxW={"70%"}>
             {resume.name}
           </Text>
-          <Text mb={isExpanded ? 0 : 6} color="gray.500" fontSize="sm" mr="20px">
+          <Text
+            mb={isExpanded ? 0 : 6}
+            color="gray.500"
+            fontSize="sm"
+            mr="20px"
+          >
             {resume.degree} in {resume.major}
           </Text>
           {isExpanded && resume.portfolios && (
-        <Box mb={8} maxWidth='100%'>
-          <Text fontWeight="bold" fontSize="md">
-            Portfolios:
-          </Text>
-          <VStack align="start" spacing={2} mt={2}>
-            {resume.portfolios &&
-                resume.portfolios.map((link) => {
-                  const url = new URL(link);
-                  let displayURL = url.hostname+url.pathname;
-                  if (displayURL.startsWith("www.")) {
-                    displayURL = displayURL.slice(4);
-                  }
-                return (
-                    <Button
+            <Box mb={8} maxWidth="100%">
+              <Text fontWeight="bold" fontSize="md">
+                Portfolios:
+              </Text>
+              <VStack align="start" spacing={2} mt={2}>
+                {resume.portfolios &&
+                  resume.portfolios.map((link) => {
+                    const url = new URL(link);
+                    let displayURL = url.hostname + url.pathname;
+                    if (displayURL.startsWith("www.")) {
+                      displayURL = displayURL.slice(4);
+                    }
+                    return (
+                      <Button
                         key={link}
-                        backgroundColor={'gray.'+baseColor}
-                        _hover={{ backgroundColor: 'gray.'+(parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100) }}
-                        color={'blue.500'}
-                        border={'1px solid black'}
-                        fontSize={'12px'}
+                        backgroundColor={"gray." + baseColor}
+                        _hover={{
+                          backgroundColor:
+                            "gray." +
+                            (parseInt(baseColor) > 500
+                              ? parseInt(baseColor) - 100
+                              : parseInt(baseColor) + 100)
+                        }}
+                        color={"blue.500"}
+                        border={"1px solid black"}
+                        fontSize={"12px"}
                         size="sm"
-                        maxWidth={'100%'}
-                        wordBreak={'break-all'}
+                        maxWidth={"100%"}
+                        wordBreak={"break-all"}
                         onClick={(e) => {
-                            e.stopPropagation();
-                            window.open(link, '_blank');
+                          e.stopPropagation();
+                          window.open(link, "_blank");
                         }}
                         overflow="hidden"
                         textOverflow="ellipsis"
                         whiteSpace="nowrap"
-                        justifyContent={'start'}
+                        justifyContent={"start"}
                         paddingInlineStart={1}
                         paddingInlineEnd={1}
-                    >
+                      >
                         {displayURL}
-                    </Button>
-                );
-                })}
-            {/* {resume.portfolios.map((link, index) => (
+                      </Button>
+                    );
+                  })}
+                {/* {resume.portfolios.map((link, index) => (
               <Button
                 key={index}
                 size="sm"
@@ -165,15 +179,20 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
                 {link}
               </Button>
             ))} */}
-          </VStack>
-        </Box>
-      )}
-          <Text position="absolute" bottom="4" left="4" color="gray.500" fontSize="sm">
+              </VStack>
+            </Box>
+          )}
+          <Text
+            position="absolute"
+            bottom="4"
+            left="4"
+            color="gray.500"
+            fontSize="sm"
+          >
             {resume.graduationYear}
           </Text>
         </VStack>
       </Box>
-
     </Box>
   );
 };

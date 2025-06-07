@@ -1,7 +1,8 @@
 export const Config = {
   MAX_DROPDOWN_OPTIONS: 5,
   API_BASE_URL: "https://api.reflectionsprojections.org",
-  STAFF_UIDs: ["user107577492883686324358",
+  STAFF_UIDs: [
+    "user107577492883686324358",
     "user108310575016917813652",
     "user101492950430280843896",
     "user118196394233130420929",
@@ -22,5 +23,6 @@ export const Config = {
     "user106408538751749162717",
     "user111757186440407159595",
     "user101073311437865573365",
-    "user117813325477085891649"]
-}
+    "user117813325477085891649"
+  ]
+};

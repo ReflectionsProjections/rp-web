@@ -1,32 +1,35 @@
 <!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0,viewport-fit=cover"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="theme-color" content="#0F1130" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover">
-  <link rel="stylesheet" href="styles.css">
-  <meta name="theme-color" content="#0F1130">
+    <meta property="og:title" content="R|P Sponsors" />
+    <meta property="og:url" content="sponsor.reflectionsprojections.org" />
+    <meta property="og:image" content="/2024_rp_logo.svg" />
+    <meta
+      property="og:description"
+      content="Reflections|Projections Sponsorship Page"
+    />
 
-  <meta property="og:title" content="R|P Sponsors"> 
-  <meta property="og:url" content="sponsor.reflectionsprojections.org"> 
-  <meta property="og:image" content="/2024_rp_logo.svg"> 
-  <meta property="og:description" content="Reflections|Projections Sponsorship Page"> 
-  
+    <title>R|P Sponsors</title>
+    <link rel="icon" type="image/x-icon" href="/2024_rp_logo.svg" />
+  </head>
 
-  <title>R|P Sponsors</title>
-  <link rel="icon" type="image/x-icon" href="/2024_rp_logo.svg">
-</head>
-
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-<script>
-  let isCeiling = false;
-  window.addEventListener('wheel', (e) => {
-    const delta = e.deltaY;
-      document.documentElement.style.background = '#0F1130';
-  });
-</script>
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+  <script>
+    let isCeiling = false;
+    window.addEventListener("wheel", (e) => {
+      const delta = e.deltaY;
+      document.documentElement.style.background = "#0F1130";
+    });
+  </script>
 </html>

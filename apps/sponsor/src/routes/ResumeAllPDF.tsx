@@ -4,42 +4,43 @@ import { Config } from "../config";
 import { useEffect } from "react";
 
 export function ResumeAllPDF() {
-    const toast = useToast();
-  
-    const showToast = (message: string) => {
-        toast({
-        title: message,
-        status: "error",
-        duration: 9000,
-        isClosable: true,
-        });
-    }
+  const toast = useToast();
 
-    const openResume = () => {
-        const jwt = localStorage.getItem('jwt');
-        axios.get(Config.API_BASE_URL + "/s3/download/user/", {
-            headers: {
-                Authorization: jwt
-            }
-        })
-        .then(function (response) {
-            window.location.replace(response.data.url);
-        })
-        .catch(function (error) {
-            console.log(error);
-            showToast("Failed to open resume. Please try again later.");
-        })
-    };
+  const showToast = (message: string) => {
+    toast({
+      title: message,
+      status: "error",
+      duration: 9000,
+      isClosable: true
+    });
+  };
 
-    useEffect(() => {
-        openResume();
-    }, []);
+  const openResume = () => {
+    const jwt = localStorage.getItem("jwt");
+    axios
+      .get(Config.API_BASE_URL + "/s3/download/user/", {
+        headers: {
+          Authorization: jwt
+        }
+      })
+      .then(function (response) {
+        window.location.replace(response.data.url);
+      })
+      .catch(function (error) {
+        console.log(error);
+        showToast("Failed to open resume. Please try again later.");
+      });
+  };
 
-    return (
-        <Box>
-            <Text>Loading All PDFs</Text>
-        </Box>
-    );
+  useEffect(() => {
+    openResume();
+  }, []);
+
+  return (
+    <Box>
+      <Text>Loading All PDFs</Text>
+    </Box>
+  );
 }
 
 export default ResumeAllPDF;
