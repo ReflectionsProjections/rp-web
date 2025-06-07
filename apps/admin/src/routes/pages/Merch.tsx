@@ -282,7 +282,7 @@ function Merch() {
                   position="absolute"
                   width="100%"
                   bg="white"
-                  zIndex={10}
+                  zIndex={9}
                 >
                   <List>
                     {filteredEmails.map((attendee) => (

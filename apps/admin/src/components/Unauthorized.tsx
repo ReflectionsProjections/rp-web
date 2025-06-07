@@ -1,13 +1,12 @@
-import rpLogo from "../assets/rp_logo.svg";
+import { AiOutlineStop } from "react-icons/ai";
 import "../App.css";
-import { Button, Box, Image, Flex, Center } from "@chakra-ui/react";
+import { Button, Box, Flex, Center, Icon } from "@chakra-ui/react";
 
-export default function Unauthorized() {
-  function logOut() {
-    console.log("Logging out...");
+const Unauthorized = () => {
+  const signOut = () => {
     localStorage.removeItem("jwt");
-    window.location.href = "/";
-  }
+    window.location.reload();
+  };
 
   return (
     <Flex
@@ -17,11 +16,8 @@ export default function Unauthorized() {
       minHeight="100vh"
       maxHeight="100vh"
     >
-      {/* <Box position="absolute" left="0" top="0" padding="2">
-        <Image src={rpLogo} alt='R|P Logo' boxSize='80px' />
-      </Box> */}
       <Center>
-        <Image src={rpLogo} alt="R|P Logo" boxSize="80px" />
+        <Icon as={AiOutlineStop} fill="red" boxSize="80px" />
       </Center>
       <Box alignSelf="center" padding="4">
         <h1 style={{ fontWeight: "bold" }}>Woah! What are you doing here?</h1>
@@ -31,9 +27,11 @@ export default function Unauthorized() {
         </h2>
       </Box>
 
-      <Button colorScheme="red" onClick={() => logOut()}>
+      <Button colorScheme="red" onClick={() => signOut}>
         Log Out
       </Button>
     </Flex>
   );
-}
+};
+
+export default Unauthorized;

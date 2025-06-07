@@ -59,7 +59,7 @@ const Profile = () => {
 
   const signOut = () => {
     localStorage.removeItem("jwt");
-    window.location.href = "/";
+    window.location.reload();
   };
 
   return (
@@ -175,7 +175,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           : { base: "translateY(-100%)", md: "translateX(-100%)" }
       }
       transition="0.5s ease"
-      zIndex={999999}
+      zIndex={10}
     >
       <Flex
         h="100%"

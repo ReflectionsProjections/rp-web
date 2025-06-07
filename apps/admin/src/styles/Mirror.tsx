@@ -13,7 +13,7 @@ export const useMirrorStyles = (animated?: boolean, motion?: boolean) => {
       height: "100%",
       bg: useColorModeValue("whiteAlpha.300", "whiteAlpha.200"),
       transform: "skewX(-20deg)",
-      zIndex: 100000,
+      zIndex: 9,
       pointerEvents: "none"
     },
     _hover: {

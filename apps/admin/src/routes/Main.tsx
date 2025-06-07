@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import Navbar from "@/components/Navbar";
 import { Role } from "@rp/shared";
+import Unauthorized from "@/components/Unauthorized";
 
 export type MainContext = {
   displayName: string;
@@ -16,23 +17,19 @@ const Main = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!localStorage.getItem("jwt")) {
+      setLoading(false);
+      return;
+    }
+
     api
       .get("/auth/info")
       .then((response) => {
-        const roles = response.data.roles;
-
-        if (!roles.includes("STAFF")) {
-          window.location.href = "/unauthorized";
-        }
-
         setDisplayName(response.data.displayName);
         setRoles(response.data.roles);
         setLoading(false);
       })
-      .catch(() => {
-        localStorage.removeItem("jwt");
-        window.location.href = "/";
-      });
+      .catch(() => {});
   }, []);
 
   const context = {
@@ -55,7 +52,12 @@ const Main = () => {
         py={8}
         w="100%"
       >
-        <Outlet context={context} />
+        {localStorage.getItem("jwt") &&
+          (roles.includes("STAFF") ? (
+            <Outlet context={context} />
+          ) : (
+            <Unauthorized />
+          ))}
       </Box>
     </Box>
   );

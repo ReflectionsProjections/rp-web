@@ -65,7 +65,7 @@ const AddModal: React.FC<AddModalProps> = ({ updateEvents }) => {
         position="fixed"
         bottom="20px"
         right="20px"
-        zIndex="1000"
+        zIndex="9"
         bg="gray.300"
         w="65px"
         h="65px"
