@@ -1,7 +1,7 @@
 import { Box, Text, useToast } from "@chakra-ui/react";
-import axios from "axios";
-import { Config } from "../config";
 import { useEffect } from "react";
+import api from "@/util/api";
+import { path } from "@rp/shared";
 
 export function ResumeAllPDF() {
   const toast = useToast();
@@ -16,18 +16,12 @@ export function ResumeAllPDF() {
   };
 
   const openResume = () => {
-    const jwt = localStorage.getItem("jwt");
-    axios
-      .get(Config.API_BASE_URL + "/s3/download/user/", {
-        headers: {
-          Authorization: jwt
-        }
-      })
+    api
+      .get(path("/s3/download/user/:userId", { userId: "" }))
       .then(function (response) {
         window.location.replace(response.data.url);
       })
-      .catch(function (error) {
-        console.log(error);
+      .catch(function () {
         showToast("Failed to open resume. Please try again later.");
       });
   };

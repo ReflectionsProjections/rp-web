@@ -63,11 +63,11 @@ export function Login() {
       return;
     }
     setError(null);
-    sponsorLogin(email);
+    void sponsorLogin(email);
   };
 
   // Log the input value whenever it's updated
-  const handleEmailChange = (e: any) => {
+  const handleEmailChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
     setEmail(e.target.value);
     // console.log("Input value:", e.target.value);  // Log the input value
   };
@@ -140,7 +140,12 @@ export function Login() {
           </Box>
         </Center>
         {codePage === 1 ? (
-          <TwoFactor email={email} sponsorLogin={sponsorLogin} />
+          <TwoFactor
+            email={email}
+            sponsorLogin={(email) => {
+              void sponsorLogin(email);
+            }}
+          />
         ) : (
           <Box mt="5vh" zIndex="2">
             <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>

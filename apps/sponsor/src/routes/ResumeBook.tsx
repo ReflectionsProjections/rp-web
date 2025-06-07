@@ -34,15 +34,16 @@ import axios from "axios";
 
 import JSZip from "jszip";
 import { saveAs } from "file-saver";
-import { Config } from "../config";
 import { FaMoon, FaSun } from "react-icons/fa";
+import api from "@/util/api";
+import { path } from "@rp/shared";
 
-interface Resume {
+export interface Resume {
   id: string;
   name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
+  major: string | null;
+  degree?: string;
+  graduationYear: string | null;
   jobInterest: Array<string>;
   portfolios?: Array<string>;
 }
@@ -50,16 +51,6 @@ interface Resume {
 // interface ResumeLink {
 //     url: string;
 // }
-
-interface ResumeIDs {
-  userId: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduation: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
 
 export function ResumeBook() {
   const toast = useToast();
@@ -221,20 +212,12 @@ export function ResumeBook() {
   // };
 
   const downloadResumes = async () => {
-    const jwt = localStorage.getItem("jwt");
     let totalErrorCount = 0;
 
     try {
-      const response = await axios.post(
-        Config.API_BASE_URL + "/s3/download/batch/",
-        { userIds: selectedResumes },
-        {
-          headers: {
-            Authorization: jwt,
-            "Content-Type": "application/json"
-          }
-        }
-      );
+      const response = await api.post("/s3/download/batch", {
+        userIds: selectedResumes
+      });
 
       const { data: urls, errorCount } = response.data;
       totalErrorCount += errorCount;
@@ -247,10 +230,14 @@ export function ResumeBook() {
       if (urls.length === 1) {
         // Single resume - download directly
         try {
-          const fileResponse = await axios.get(urls[0], {
-            responseType: "blob"
-          });
-          const userId = getFileNameFromUrl(urls[0]).replace(".pdf", "");
+          const fileResponse = await axios.get<unknown, { data: Blob }>(
+            urls[0] ?? "",
+            {
+              responseType: "blob"
+            }
+          );
+
+          const userId = getFileNameFromUrl(urls[0] ?? "").replace(".pdf", "");
           const resume = filteredResumes.find((r) => r.id == userId);
 
           if (resume === undefined) {
@@ -270,13 +257,16 @@ export function ResumeBook() {
 
         for (const url of urls) {
           try {
-            const userId = getFileNameFromUrl(url).replace(".pdf", "");
+            const userId = getFileNameFromUrl(url ?? "").replace(".pdf", "");
             const resume = filteredResumes.find((r) => r.id == userId);
             if (resume === undefined) {
               throw new Error("Resume not found in filteredResumes");
             }
 
-            const fileResponse = await axios.get(url, { responseType: "blob" });
+            const fileResponse = await axios.get<unknown, { data: Blob }>(
+              url ?? "",
+              { responseType: "blob" }
+            );
             const fileName = cleanUpName(resume.name) + ".pdf";
 
             zip.file(fileName, fileResponse.data);
@@ -319,11 +309,14 @@ export function ResumeBook() {
   };
 
   const cleanUpName = (str: string): string => {
-    return str
-      .toLowerCase() // Convert the string to lowercase
-      .replace(/\s+(\w)/g, (_, c) => c.toUpperCase()) // Capitalize the first letter of each word after whitespace
-      .replace(/\s+/g, "") // Remove any remaining whitespace
-      .replace(/^\w/, (c) => c.toUpperCase()); // Capitalize the first letter of the result
+    return (
+      str
+        .toLowerCase() // Convert the string to lowercase
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        .replace(/\s+(\w)/g, (_, c) => c.toUpperCase()) // Capitalize the first letter of each word after whitespace
+        .replace(/\s+/g, "") // Remove any remaining whitespace
+        .replace(/^\w/, (c) => c.toUpperCase())
+    ); // Capitalize the first letter of the result
   };
 
   const getFileNameFromUrl = (url: string): string => {
@@ -332,9 +325,7 @@ export function ResumeBook() {
     return temp.substring(0, temp.indexOf("?"));
   };
 
-  const getResumes = async () => {
-    const jwt = localStorage.getItem("jwt");
-
+  const getResumes = () => {
     const requestBody: {
       graduations?: string[];
       degrees?: string[];
@@ -374,10 +365,6 @@ export function ResumeBook() {
       requestBody["jobInterests"] = selectedJobInterests;
     }
 
-    const headers = {
-      Authorization: jwt
-    };
-
     // axios.get(Config.API_BASE_URL + "/registration/filter", { headers, requestBody })
 
     const params = new URLSearchParams();
@@ -404,35 +391,28 @@ export function ResumeBook() {
     //     console.log(response.data);
     //     setPageSize(response.data.pagecount);
     // })
-    axios
-      .post(
-        Config.API_BASE_URL + "/registration/filter/pagecount",
-        requestBody,
-        { headers }
-      )
+    api
+      .post("/registration/filter/pagecount", requestBody)
       .then(function (response) {
         setPageSize(response.data.pagecount);
         if (page > response.data.pagecount) {
           setPage(1);
         }
-      });
-
-    axios
-      .post(Config.API_BASE_URL + "/registration/filter/" + page, requestBody, {
-        headers
       })
+      .catch(() => {});
+
+    api
+      .post(path("/registration/filter/:page", { page }), requestBody)
       .then(function (response) {
-        const fetchedResumes = response.data.registrants.map(
-          (item: ResumeIDs) => ({
-            id: item.userId,
-            name: item.name,
-            major: item.major,
-            degree: item.degree,
-            graduationYear: item.graduation,
-            jobInterest: item.jobInterest,
-            portfolios: item.portfolios
-          })
-        );
+        const fetchedResumes = response.data.registrants.map((item) => ({
+          id: item.userId,
+          name: item.name,
+          major: item.major,
+          degree: item.degree,
+          graduationYear: item.graduation,
+          jobInterest: item.jobInterest,
+          portfolios: item.portfolios
+        }));
 
         // console.log(fetchedResumes);
 
@@ -682,7 +662,9 @@ export function ResumeBook() {
             </Button>
             <Button
               mr={2}
-              onClick={downloadResumes}
+              onClick={() => {
+                void downloadResumes();
+              }}
               border="1px solid transparent"
               _hover={{
                 border: "1px solid black",

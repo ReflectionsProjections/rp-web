@@ -1,18 +1,9 @@
 import React from "react";
 import { SimpleGrid, Box, useToast } from "@chakra-ui/react";
 import ResumeGridBox from "./ResumeGridBox";
-import axios from "axios";
-import { Config } from "../config";
-
-interface Resume {
-  id: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
+import { Resume } from "./ResumeBook";
+import api from "@/util/api";
+import { path } from "@rp/shared";
 
 interface ResumeGridProps {
   resumes: Resume[];
@@ -43,13 +34,8 @@ const ResumeGrid: React.FC<ResumeGridProps> = ({
   };
 
   const openResume = (id: string) => {
-    const jwt = localStorage.getItem("jwt");
-    axios
-      .get(Config.API_BASE_URL + "/s3/download/user/" + id, {
-        headers: {
-          Authorization: jwt
-        }
-      })
+    api
+      .get(path("/s3/download/user/:userId", { userId: id }))
       .then(function (response) {
         window.open(response.data.url, "_blank");
         // console.log(response.data.url);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Input, Text, HStack, VStack } from "@chakra-ui/react";
+import api from "@/util/api";
 
 interface TwoFactorProps {
   email: string;
@@ -9,7 +9,7 @@ interface TwoFactorProps {
 }
 
 const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
-  const [code, setCode] = useState(Array(6).fill(""));
+  const [code, setCode] = useState<string[]>(Array(6).fill(""));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -82,7 +82,9 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
     }
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     const fullCode = code.join("");
 
@@ -96,17 +98,14 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
     setSuccess("");
 
     try {
-      const response = await axios.post(
-        "https://api.reflectionsprojections.org/auth/sponsor/verify",
-        {
-          sixDigitCode: fullCode,
-          email: email
-        }
-      );
+      const response = await api.post("/auth/sponsor/verify", {
+        sixDigitCode: fullCode,
+        email: email
+      });
       setSuccess("Two-factor authentication successful!");
       localStorage.setItem("jwt", response.data.token);
       navigate("/resume-book");
-    } catch (err) {
+    } catch {
       setError("Invalid Code. Please try again.");
     } finally {
       setLoading(false);
@@ -149,7 +148,7 @@ const TwoFactor: React.FC<TwoFactorProps> = ({ email, sponsorLogin }) => {
           mb={5}
           _hover={{ bg: "green.600" }}
           type="submit"
-          onClick={handleSubmit}
+          onClick={(e) => void handleSubmit(e)}
           disabled={loading}
         >
           {loading ? "Submitting..." : "Submit"}

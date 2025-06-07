@@ -9,18 +9,9 @@ import {
   useToast
 } from "@chakra-ui/react";
 import ResumeListBox from "./ResumeListBox";
-import axios from "axios";
-import { Config } from "../config";
-
-interface Resume {
-  id: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
+import { Resume } from "./ResumeBook";
+import api from "@/util/api";
+import { path } from "@rp/shared";
 
 interface ResumeListProps {
   resumes: Resume[];
@@ -285,13 +276,8 @@ const ResumeList: React.FC<ResumeListProps> = ({
   };
 
   const openResume = (id: string) => {
-    const jwt = localStorage.getItem("jwt");
-    axios
-      .get(Config.API_BASE_URL + "/s3/download/user/" + id, {
-        headers: {
-          Authorization: jwt
-        }
-      })
+    api
+      .get(path("/s3/download/user/:userId", { userId: id }))
       .then(function (response) {
         // console.log(response.data.url);
         window.open(response.data.url, "_blank");

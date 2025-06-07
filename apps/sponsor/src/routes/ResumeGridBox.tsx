@@ -2,16 +2,7 @@ import { Box, Image, Text, Tooltip, VStack, Button } from "@chakra-ui/react";
 import { useState } from "react";
 import { MdLink, MdContactPage } from "react-icons/md";
 import { Config } from "../config";
-
-interface Resume {
-  id: string;
-  name: string;
-  major: string;
-  degree: string;
-  graduationYear: string;
-  jobInterest: Array<string>;
-  portfolios?: Array<string>;
-}
+import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
   resume: Resume;
