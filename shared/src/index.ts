@@ -4,3 +4,4 @@ export * from "./api/types";
 export { default as Config } from "./config";
 export { default as RequireAuth } from "./components/RequireAuth";
 export { default as AuthCallback } from "./components/AuthCallback";
+export { googleAuth } from "./api/auth";
