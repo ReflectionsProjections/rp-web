@@ -106,15 +106,6 @@ const AttendanceBox = () => {
 
   const loading = staffLoading || meetingsLoading;
 
-  const showToast = (message: string, error: boolean) => {
-    toast({
-      title: message,
-      status: error ? "error" : "success",
-      duration: 9000,
-      isClosable: true
-    });
-  };
-
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleStaffSelect = (staff: Staff) => {
@@ -128,7 +119,8 @@ const AttendanceBox = () => {
     attendanceType: AttendanceType
   ) => {
     setUpdating(true);
-    api
+
+    const request = api
       .post(path("/staff/:staffId/attendance", { staffId }), {
         meetingId,
         attendanceType
@@ -140,12 +132,16 @@ const AttendanceBox = () => {
               member.userId === response.data.userId ? response.data : member
             ) ?? [response.data]
         );
-        setUpdating(false);
       })
-      .catch((err) => {
-        console.log(err);
-        showToast("Error updating attendance", true);
+      .finally(() => {
+        setUpdating(false);
       });
+
+    toast.promise(request, {
+      success: { title: "Attendence successfully updated" },
+      error: { title: "Error updating attendance" },
+      loading: { title: "Updating attendance..." }
+    });
   };
 
   const teamMeetings: Record<CommitteeType, ParsedMeeting[]> = useMemo(() => {
