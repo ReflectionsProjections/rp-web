@@ -58,7 +58,7 @@ const Main = () => {
       flexDir={{ base: "column", md: "row" }}
       bgGradient={"linear-gradient(to-r, #805AD550, #38BDF850)"}
     >
-      <Navbar roles={roles} />
+      <Navbar roles={roles} loading={loading} />
       <Box
         mt={{ base: "100px", md: "0" }}
         ml={{ base: "0", md: "max(12vw, 300px)" }}

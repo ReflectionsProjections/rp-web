@@ -83,7 +83,7 @@ const teamTypeToDisplayText = (team: CommitteeType) => {
 
 const AttendanceBox = () => {
   const { authorized } = useOutletContext<MainContext>();
-  const [isSmall] = useMediaQuery("(max-width: 768px)");
+  const [isSmall] = useMediaQuery("(max-width: 1200px)");
   const [selectedStaff, setSelectedStaff] = useState<Staff | undefined>(
     undefined
   );

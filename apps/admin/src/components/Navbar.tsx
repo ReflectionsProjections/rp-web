@@ -38,6 +38,22 @@ const linkMap = {
   Attendance: "/attendance-view"
 };
 
+const getLinks = (roles: string[], loading: boolean): string[] => {
+  if (loading) {
+    return [];
+  }
+
+  if (roles.includes("ADMIN")) {
+    return Object.keys(linkMap);
+  }
+
+  if (roles.includes("STAFF")) {
+    return ["Dashboard"];
+  }
+
+  return [];
+};
+
 const Profile = () => {
   const { toggleColorMode } = useColorMode();
 
@@ -78,9 +94,10 @@ const Profile = () => {
 
 type NavbarProps = {
   roles: string[];
+  loading: boolean;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ roles }) => {
+const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
   const [inView, setInView] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
@@ -107,49 +124,38 @@ const Navbar: React.FC<NavbarProps> = ({ roles }) => {
    *
    * @param children - The content of the NavbarLink.
    * @param href - The path the NavbarLink links to.
-   * @param disabled - Whether the NavbarLink is disabled.
    */
   const NavbarLink = ({
     children,
-    href,
-    disabled
+    href
   }: {
     children: ReactNode;
     href: string;
-    disabled?: boolean;
   }) => {
-    const isActive = location.pathname.startsWith(href);
+    const isActive = location.pathname === href;
 
     return (
       <Link
         as={NavLink}
-        to={disabled ? "#" : href}
+        to={href}
         w="100%"
         px={2}
         py={4}
         rounded={"md"}
         textAlign="left"
-        onClick={(e) => {
-          if (disabled) {
-            e.preventDefault();
-            return;
-          }
+        onClick={() => {
           if (isOpen) {
             onClose();
           }
         }}
         _hover={{
-          textDecoration: disabled ? undefined : "none",
-          bg: disabled ? undefined : "gray.200",
-          cursor: disabled ? "not-allowed" : "pointer"
+          textDecoration: "none",
+          bg: useColorModeValue("gray.200", "gray.700")
         }}
         border={isActive ? "1px solid" : "none"}
         borderColor={useColorModeValue("gray.700", "gray.200")}
         fontSize="lg"
         fontWeight="semibold"
-        aria-disabled={disabled}
-        opacity={disabled ? 0.5 : 1}
-        tabIndex={disabled ? -1 : 0}
       >
         {children}
       </Link>
@@ -202,12 +208,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles }) => {
           height="100%"
           overflowY="auto"
         >
-          {Object.keys(linkMap).map((link) => (
-            <NavbarLink
-              key={link}
-              href={linkMap[link as keyof typeof linkMap]}
-              disabled={link !== "Dashboard" && !roles.includes("ADMIN")}
-            >
+          {getLinks(roles, loading).map((link) => (
+            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
               {link}
             </NavbarLink>
           ))}
@@ -238,14 +240,11 @@ const Navbar: React.FC<NavbarProps> = ({ roles }) => {
           gap={0}
           overflowY="scroll"
           display={{ base: "flex", md: "none" }}
+          h="100%"
           maxH="calc(100% - calc(100px - 42px))"
         >
-          {Object.keys(linkMap).map((link) => (
-            <NavbarLink
-              key={link}
-              href={linkMap[link as keyof typeof linkMap]}
-              disabled={link !== "Dashboard" && !roles.includes("ADMIN")}
-            >
+          {getLinks(roles, loading).map((link) => (
+            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
               {link}
             </NavbarLink>
           ))}
@@ -254,6 +253,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles }) => {
             mt={4}
             w="100%"
             justifyContent="space-evenly"
+            style={{ marginTop: "auto" }}
           >
             <StatusMonitor />
             <Profile />
