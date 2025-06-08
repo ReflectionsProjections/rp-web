@@ -12,9 +12,9 @@ import { useEffect, useState } from "react";
 import AttendanceView from "./AttendanceView";
 import { Meeting, StaffAttendance } from "./useAttendanceViewHook";
 import moment from "moment";
-import { Staff, TeamName } from "@rp/shared";
+import { Staff, CommitteeType } from "@rp/shared";
 
-const TEAM_DISPLAY_NAME: Record<TeamName, string> = {
+const TEAM_DISPLAY_NAME: Record<CommitteeType, string> = {
   DEV: "💻 Development Team",
   DESIGN: "🎨 Design Team",
   CONTENT: "📝 Content Team",
