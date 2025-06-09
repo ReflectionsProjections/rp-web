@@ -121,7 +121,7 @@ function RaceTrackLocation({
         openDelay={200}
         closeDelay={100}
         isOpen={hovered}
-        fontFamily="Racing Sans One"
+        fontFamily="Archivo Black"
         hideBelow={"md"} // Hide on mobile to prevent the tooltip from being visible in the modal
       >
         <Box
@@ -142,9 +142,9 @@ function RaceTrackLocation({
                 }
           }
           borderRadius="full"
-          bg={hovered ? "white" : color}
-          borderWidth={hovered ? "25px" : "0px"}
-          borderColor={color}
+          bg={color}
+          borderWidth={hovered ? "4px" : "3px"}
+          borderColor={"white"}
           boxShadow="lg"
           display="flex"
           alignItems="center"
@@ -154,10 +154,9 @@ function RaceTrackLocation({
           onMouseLeave={() => onHover && onHover(-1)}
         >
           <Text
-            fontSize="4xl"
-            fontWeight="bold"
-            fontFamily="Racing Sans One"
-            color={hovered ? "black" : "white"}
+            fontSize={hovered ? "4xl" : "2xl"}
+            fontFamily="Archivo Black"
+            color="white"
           >
             {index + 1}
           </Text>
@@ -179,11 +178,11 @@ function RaceTrackPath() {
         M227.678 599.617C254.092 614.377 470.198 282.657 585.678 298.617
         M227.651 600.358C145.112 596.714 104.264 506.872 31.6509 409.358
       `}
-      stroke="black"
+      stroke="white"
       strokeWidth="5"
       strokeLinecap="round"
       fill="none"
-      opacity={0.5}
+      opacity={0.6}
     />
   );
 }

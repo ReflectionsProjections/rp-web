@@ -31,6 +31,19 @@ export const circleColors = [
   "pink.600"
 ];
 
+export const circleColorsLighter = [
+  "green.600",
+  "purple.800",
+  "pink.700",
+  "red.700",
+  "orange.700",
+  "teal.600",
+  "cyan.600",
+  "blue.700",
+  "yellow.600",
+  "pink.800"
+];
+
 export default function Schedule() {
   const toast = useToast();
   const [eventsByDay, setEventsByDay] = useState<{ [key: string]: Event[] }>(
@@ -94,7 +107,7 @@ export default function Schedule() {
 
   return (
     <>
-      <Box w="100%" justifyContent={"center"} bgColor="white" pb={10}>
+      <Box w="100%" justifyContent={"center"} bgColor="#3C3C3C" py={10}>
         <ScheduleDaySelector
           selectedDay={selectedDay}
           eventsByDay={eventsByDay}
@@ -108,7 +121,6 @@ export default function Schedule() {
             base: "column-reverse",
             lg: "row"
           }}
-          bgColor="white"
           mt={{
             base: 20,
             md: 5
@@ -158,20 +170,20 @@ function DayEventsSection({
   return (
     <Box flex={1} h="100%" py={0}>
       <Box
-        bgColor="gray.800"
+        bgColor="#242424"
         py={2}
         pb={5}
         borderRadius="xl"
-        borderLeftRadius={{ lg: "40px" }}
+        borderLeftRadius={{ lg: "30px" }}
         overflowY={{ md: "auto" }}
       >
         <Text
           w="100%"
           textAlign="center"
-          fontSize="2xl"
+          fontSize="5xl"
           fontWeight="bold"
-          color="gray.300"
-          fontFamily="Racing Sans One"
+          color="#8A8A8A"
+          fontFamily="Archivo Black"
           my={3}
           mb={4}
         >
@@ -280,28 +292,24 @@ function DayEvent({
         md: 5
       }}
       py={3}
-      m={{
-        base: 3,
-        md: 5
-      }}
-      my={{
-        base: 3,
-        md: 4
-      }}
-      mt={number === 1 ? 0 : undefined}
-      borderRadius="xl"
       templateColumns={{
-        base: "30px 1fr 30px",
-        md: "20px 30px 1fr 40px"
+        base: "40px 1fr 30px",
+        md: "40px 10px 1fr 40px"
       }}
       alignItems="center"
-      bgColor={hoveredIndex === number ? "gray.300" : "gray.400"}
+      bgColor={
+        hoveredIndex === number
+          ? "gray.300"
+          : number % 2 === 0
+            ? "#2E2E2E"
+            : "#242424"
+      }
       gap={{
         base: 3,
-        md: 5
+        md: 3
       }}
       _hover={{
-        bgColor: "gray.300",
+        bgColor: circleColorsLighter[(number - 1) % circleColorsLighter.length],
         cursor: "pointer"
       }}
       transition={"all 0.2s"}
@@ -315,27 +323,38 @@ function DayEvent({
         onClick(event);
       }}
     >
-      <Text
-        fontSize="2xl"
-        color="gray.800"
-        fontWeight="thin"
-        textAlign="center"
-        fontFamily="Racing Sans One"
-        mb={"2px"}
-        hideBelow={"md"}
+      <Box
+        display="flex"
+        justifyContent={"center"}
+        alignItems={"center"}
+        w="40px"
+        h="40px"
+        bgColor="gray.200"
+        borderRadius="sm"
       >
-        {number}
-      </Text>
+        <Text
+          fontSize="2xl"
+          color="gray.800"
+          fontWeight="thin"
+          textAlign="center"
+          fontFamily="Archivo Black"
+          mb={"2px"}
+          hideBelow={"md"}
+          mt={"4px"}
+        >
+          {number}
+        </Text>
+      </Box>
 
       <Box
         display="flex"
         justifyContent={"center"}
         alignItems={"center"}
-        w="30px"
-        h="30px"
-        borderRadius="full"
+        w="10px"
+        h="40px"
         bg={circleColors[(number - 1) % circleColors.length]}
         boxShadow="md"
+        borderRadius="sm"
       >
         <Text
           fontSize="lg"
@@ -350,14 +369,14 @@ function DayEvent({
         </Text>
       </Box>
 
-      <Flex flexDirection={"column"}>
-        <Text fontSize={"lg"} color="black" fontFamily={"Racing Sans One"}>
+      <Flex flexDirection={"column"} gap={0}>
+        <Text fontSize={"lg"} color="white" fontFamily={"Racing Sans One"}>
           {event.name}
         </Text>
 
         <Text
           fontSize={"md"}
-          color="gray.600"
+          color="gray.400"
           fontWeight="medium"
           fontFamily="Racing Sans One"
         >
@@ -376,7 +395,7 @@ function DayEvent({
         <Flex w="30px" h="30px" justifyContent={"center"} alignItems={"center"}>
           <Icon
             as={EVENT_ICONS[event.eventType]}
-            color="yellow.600"
+            color="yellow.500"
             boxSize={6}
           />
         </Flex>
