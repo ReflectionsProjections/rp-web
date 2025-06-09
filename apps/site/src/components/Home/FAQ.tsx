@@ -1,5 +1,18 @@
-import { Box, Circle, HStack, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  Circle,
+  Collapse,
+  HStack,
+  Image,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 import React, { useState } from "react";
+import Car1 from "../../assets/car1.svg";
+import Car2 from "../../assets/car2.svg";
+import Car3 from "../../assets/car3.svg";
+import Car4 from "../../assets/car4.svg";
+import Car5 from "../../assets/car5.svg";
 
 interface FAQItem {
   question: string;
@@ -38,39 +51,64 @@ const faqs: FAQItem[] = [
   }
 ];
 
-export const FAQ: React.FC = () => {
-  const [hoveredFaqIndex, setHoveredFaqIndex] = useState<number | null>(null);
+const cars = [Car1, Car2, Car3, Car4, Car5];
 
-  const handleFaqHover = (index: number | null) => {
-    setHoveredFaqIndex(index);
+export const FAQ: React.FC = () => {
+  const [selectedFaqIndices, setSelectedFaqIndices] = useState<Set<number>>(
+    new Set()
+  );
+
+  const handleFaqToggle = (index: number) => {
+    setSelectedFaqIndices((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(index)) {
+        newSet.delete(index);
+      } else {
+        newSet.add(index);
+      }
+      return newSet;
+    });
   };
 
   return (
-    <VStack>
+    <VStack
+      p={{
+        base: 4,
+        md: undefined
+      }}
+    >
       <VStack spacing={0} mb={4}>
         <HStack w="100%" bgColor="gray.200" p={2} justifyContent={"center"}>
-          <Text fontSize="2xl" fontWeight="bold" fontStyle={"italic"}>
+          <Text fontSize="4xl" fontWeight="bold" fontStyle={"italic"}>
             FAQ
           </Text>
         </HStack>
-        <HStack>
+        <HStack gap={3}>
           {faqs.map((_, index) => {
             return (
               <StopLight
                 key={`stop-light-${index}`}
-                hovered={hoveredFaqIndex === index}
+                active={selectedFaqIndices.has(index)}
               />
             );
           })}
         </HStack>
       </VStack>
-      <VStack maxW="1000px" w="100%" mx="auto" spacing={4}>
+      <VStack
+        maxW="1000px"
+        w="100%"
+        mx="auto"
+        spacing={{
+          base: 8,
+          md: 12
+        }}
+      >
         {faqs.map((faqItem, index) => (
           <FAQItem
             key={`faq-item-${index}`}
             index={index}
             faqItem={faqItem}
-            onFaqHover={handleFaqHover}
+            onFaqToggle={handleFaqToggle}
           />
         ))}
       </VStack>
@@ -79,18 +117,18 @@ export const FAQ: React.FC = () => {
 };
 
 const StopLight: React.FC<{
-  hovered: boolean;
-}> = ({ hovered }) => {
+  active: boolean;
+}> = ({ active }) => {
   return (
-    <VStack p={2} bgColor="gray.200">
+    <VStack p={2} bgColor="gray.200" gap={4}>
       <Circle
-        size={5}
-        bgColor={hovered ? "gray.800" : "gray.500"}
+        size={7}
+        bgColor={active ? "green.400" : "gray.500"}
         transition={"all 0.1s ease-in"}
       />
       <Circle
-        size={5}
-        bgColor={hovered ? "gray.800" : "gray.500"}
+        size={7}
+        bgColor={active ? "green.400" : "gray.500"}
         transition={"all 0.1s ease-in"}
       />
     </VStack>
@@ -100,52 +138,98 @@ const StopLight: React.FC<{
 const FAQItem: React.FC<{
   index: number;
   faqItem: FAQItem;
-  onFaqHover: (index: number | null) => void;
-}> = ({ index, faqItem: { question, answer }, onFaqHover }) => {
-  const [isHovered, setIsHovered] = useState(false);
+  onFaqToggle: (index: number) => void;
+}> = ({ index, faqItem: { question, answer }, onFaqToggle }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+    onFaqToggle(index);
+  };
 
   return (
-    <Box
-      position={"relative"}
-      display="flex"
-      alignItems={"center"}
-      justifyContent={"flex-start"}
-      bgColor="gray.200"
-      w="100%"
-      maxW="1000px"
-      h={"fit-content"}
-      p={4}
-      borderRadius={"lg"}
-      onMouseEnter={() => {
-        setIsHovered(true);
-        onFaqHover(index);
-      }}
-      onMouseLeave={() => {
-        setIsHovered(false);
-        onFaqHover(null);
-      }}
-      transition={"height 0.3s ease-in-out"}
-    >
+    <Box w="100%">
       <Box
-        w={28}
-        bgColor="gray.400"
-        position="absolute"
-        top={-1}
-        left={isHovered ? "90%" : -1}
-        // right={isHovered ? -1 : undefined}
-        borderRadius="lg"
-        h={16}
-        transition={"left 0.3s ease-in-out"}
-      ></Box>
-      <Text
-        fontWeight="bold"
-        ml={isHovered ? 0 : 24}
-        pl={2}
-        pr={isHovered ? 28 : 0}
-        transition={"all 0.3s ease-in-out"}
+        position={"relative"}
+        display="flex"
+        alignItems={{ md: "center" }}
+        justifyContent={"flex-start"}
+        bgColor="gray.200"
+        w="100%"
+        maxW="1000px"
+        p={4}
+        py={3}
+        h={{
+          base: "65px",
+          md: "60px"
+        }}
+        pt={{
+          base: 2,
+          md: undefined
+        }}
+        borderRadius={"lg"}
+        borderBottomRadius={isOpen ? 0 : "lg"}
+        onClick={handleToggle}
+        cursor="pointer"
       >
-        {isHovered ? answer : question}
-      </Text>
+        <Image
+          position="absolute"
+          left={{
+            base: isOpen ? "62%" : -1,
+            sm: isOpen ? "70%" : -3,
+            md: isOpen ? "72%" : -5
+          }}
+          bottom={{
+            base: 0,
+            md: undefined
+          }}
+          borderRadius="lg"
+          h={{
+            base: "30px",
+            md: "60px"
+          }}
+          transition={"left 0.3s ease-in-out"}
+          src={cars[index % cars.length]}
+          alt="Car"
+          objectFit="cover"
+          transform={{ md: "scale(1.05)" }}
+          zIndex="99999"
+        ></Image>
+        <Text
+          ml={{
+            md: isOpen ? 0 : "270px"
+          }}
+          mr={{
+            md: isOpen ? 28 : 0
+          }}
+          pl={{
+            base: 1,
+            md: 2
+          }}
+          maxH="100%"
+          overflow="hidden"
+          fontWeight={"bold"}
+          fontSize="xl"
+        >
+          {question}
+        </Text>
+      </Box>
+      {/* <Box
+        display={isOpen ? "block" : "none"}
+        backgroundColor="gray.50"
+        transition="300ms"
+        p={4}
+        borderBottomRadius={"lg"}
+      >
+        <Text>
+          {isOpen && answer}
+        </Text>
+      </Box> */}
+      <Collapse in={isOpen} animateOpacity unmountOnExit>
+        <Box bg="gray.50" p={4} borderBottomRadius="lg">
+          <Text>{answer}</Text>
+        </Box>
+      </Collapse>
     </Box>
   );
 };
