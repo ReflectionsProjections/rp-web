@@ -1,42 +1,43 @@
-import { useEffect, useState } from "react";
 import {
+  Avatar,
   Box,
   Button,
+  ButtonGroup,
+  Center,
   ChakraProvider,
   Flex,
-  Icon,
-  Image,
-  IconButton,
-  Text,
   HStack,
+  Icon,
+  IconButton,
+  Image,
+  Input,
   Menu,
   MenuButton,
-  Avatar,
-  MenuList,
   MenuItem,
-  useToast,
+  MenuList,
+  Spacer,
+  Text,
+  Tooltip,
   useColorMode,
   useColorModeValue,
-  Input,
-  Center,
-  ButtonGroup,
-  useMediaQuery
+  useMediaQuery,
+  useToast
 } from "@chakra-ui/react";
-import ResumeGrid from "./ResumeGrid";
-import ResumeList from "./ResumeList";
+import { useEffect, useState } from "react";
+import { BiSelectMultiple } from "react-icons/bi";
+import { BsDownload, BsGrid, BsList } from "react-icons/bs";
+import { TiDocumentDelete } from "react-icons/ti";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { majors } from "../components/majors";
-import { BsGrid, BsList, BsDownload } from "react-icons/bs";
-import { BiSelectMultiple } from "react-icons/bi";
-import { TiDocumentDelete } from "react-icons/ti";
+import ResumeGrid from "./ResumeGrid";
+import ResumeList from "./ResumeList";
 
 import axios from "axios";
 
-import JSZip from "jszip";
-import { saveAs } from "file-saver";
-import { FaMoon, FaSun } from "react-icons/fa";
 import api from "@/util/api";
 import { path } from "@rp/shared";
+import { saveAs } from "file-saver";
+import JSZip from "jszip";
 
 export interface Resume {
   id: string;
@@ -420,6 +421,9 @@ export function ResumeBook() {
         // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
         // setResumes(Array.from(uniqueResumes));
         // setFilteredResumes(Array.from(uniqueResumes));
+
+        console.log("fetchedResumes", fetchedResumes);
+
         setResumes(fetchedResumes);
         setFilteredResumes(fetchedResumes);
       })
@@ -472,103 +476,14 @@ export function ResumeBook() {
 
   return (
     <ChakraProvider>
-      <Flex
-        h={16}
-        alignItems={"center"}
-        justifyContent={"space-between"}
-        padding="10px"
-        transition="background-color 0.3s ease, color 0.3s ease"
-      >
-        {/* <IconButton
-                    size={'lg'}
-                    icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-                    aria-label={'Open Menu'}
-                    display={{ md: 'none' }}
-                    onClick={isOpen ? onClose : onOpen}
-                /> */}
-        <HStack spacing={8} alignItems={"center"}>
-          <Flex align="center" mr={2} maxWidth={50}>
-            <Image
-              src="/2024_rp_logo.svg"
-              minHeight={50}
-              maxH="100%"
-              _hover={{
-                filter: "brightness(30%)",
-                transition: "filter 0.2s ease-in-out",
-                cursor: "pointer"
-              }}
-              onClick={() => {
-                window.location.href = "/";
-              }}
-            />
-          </Flex>
-        </HStack>
-        <Text color="white" fontFamily={"Nunito"}>
-          Resume Book
-        </Text>
-        <Flex alignItems={"center"} zIndex="20">
-          <ButtonGroup
-            isAttached
-            border={"1px solid darkslategray"}
-            borderRadius={"7px"}
-            variant="outline"
-          >
-            <IconButton
-              color="white"
-              aria-label="List View"
-              icon={<Icon as={BsList} boxSize={6} />}
-              onClick={() => setShowList(true)}
-              _hover={{ border: "1px solid gray" }}
-              mr={2}
-              backgroundColor="transparent" //gray.'+(parseInt(viewColor)-100) : 'gray.'+viewColor}
-              border={showList ? "1px solid white" : "1px solid transparent"}
-              transition="border-color 0.3s ease"
-            />
-            <IconButton
-              color="white"
-              aria-label="Grid View"
-              icon={<Icon as={BsGrid} boxSize={6} />}
-              onClick={() => setShowList(false)}
-              _hover={{ border: "1px solid gray" }}
-              backgroundColor="transparent" //{showList ? 'gray.'+viewColor : 'gray.'+(parseInt(viewColor)-100)}
-              border={showList ? "1px solid transparent" : "1px solid white"}
-              transition="border-color 0.3s ease"
-            />
-          </ButtonGroup>
-          <IconButton
-            isRound={true}
-            fontSize="26px"
-            marginX={4}
-            aria-label="Toggle Light/Dark Mode"
-            icon={useColorModeValue(<FaMoon />, <FaSun />)}
-            onClick={toggleColorMode}
-            variant="link"
-            _hover={{ color: "gray.500" }}
-            bg="#0F1130"
-            color="#F7FAFC"
-            size="sm"
-            transition="color 0.3s ease, background-color 0.3s ease"
-          />
-          <Menu>
-            <MenuButton
-              as={Button}
-              rounded={"full"}
-              variant={"link"}
-              cursor={"pointer"}
-              minW={0}
-            >
-              <Avatar bg="pink.600" size={"sm"} />
-            </MenuButton>
-            <MenuList>
-              {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
-              {/* <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem> */}
-              {/* <MenuItem onClick={getResumes}>Refresh Resumes</MenuItem> */}
-              {/* <MenuDivider /> */}
-              <MenuItem onClick={signOut}>Sign Out</MenuItem>
-            </MenuList>
-          </Menu>
-        </Flex>
-      </Flex>
+      <ResumeBookHeader
+        setShowList={setShowList}
+        showList={showList}
+        toggleColorMode={toggleColorMode}
+        signOut={signOut}
+        userName="User"
+      />
+
       <Box
         bg={useColorModeValue("gray.200", "gray.700")}
         p={4}
@@ -686,21 +601,23 @@ export function ResumeBook() {
           </Flex>
         </Flex>
       </Box>
-      {showList ? (
-        <ResumeList
-          resumes={filteredResumes}
-          selectedResumes={selectedResumes}
-          toggleResume={toggleResume}
-          baseColor={viewColor}
-        />
-      ) : (
-        <ResumeGrid
-          resumes={filteredResumes}
-          selectedResumes={selectedResumes}
-          toggleResume={toggleResume}
-          baseColor={viewColor}
-        />
-      )}
+      <Box bgColor={"gray.200"} px={4}>
+        {showList ? (
+          <ResumeList
+            resumes={filteredResumes}
+            selectedResumes={selectedResumes}
+            toggleResume={toggleResume}
+            baseColor={viewColor}
+          />
+        ) : (
+          <ResumeGrid
+            resumes={filteredResumes}
+            selectedResumes={selectedResumes}
+            toggleResume={toggleResume}
+            baseColor={viewColor}
+          />
+        )}
+      </Box>
       <Box>
         <Center mt={4}>
           <HStack spacing={4}>
@@ -731,6 +648,119 @@ export function ResumeBook() {
         </Text>
       </Box>
     </ChakraProvider>
+  );
+}
+
+function ResumeBookHeader({
+  setShowList = () => {},
+  showList = true,
+  signOut = () => {}
+}: {
+  setShowList?: (showList: boolean) => void;
+  showList?: boolean;
+  toggleColorMode?: () => void;
+  signOut?: () => void;
+  userName?: string;
+}) {
+  return (
+    <Flex
+      position="relative"
+      h={16}
+      alignItems={"center"}
+      justifyContent={"flex-start"}
+      padding="10px"
+      transition="background-color 0.3s ease, color 0.3s ease"
+      bgColor="gray.200"
+      borderBottom={"1px solid"}
+      borderBottomColor={"gray.300"}
+      boxShadow={"0 2px 4px rgba(0, 0, 0, 0.1)"}
+    >
+      <HStack spacing={8} alignItems={"center"}>
+        <Flex align="center" mr={2}>
+          <Image src="/2024_rp_logo.svg" minHeight={30} maxH="100%" />
+        </Flex>
+      </HStack>
+      <Text color="gray.800" fontFamily={"Roboto Slab"} fontSize="2xl">
+        Reflections | Projections
+      </Text>
+      <Text
+        color="gray.600"
+        fontFamily={"Anonymous Pro"}
+        fontSize="24px"
+        textAlign="center"
+        fontWeight={"bold"}
+        ml={3}
+      >
+        Resume Book
+      </Text>
+      <Spacer />
+      <Flex alignItems={"center"} zIndex="20" gap={4}>
+        <ButtonGroup
+          isAttached
+          border="1px solid"
+          borderColor="gray.400"
+          borderRadius="7px"
+          variant="outline"
+        >
+          <Tooltip label="List View" placement="bottom-start">
+            <IconButton
+              aria-label="List View"
+              icon={<Icon as={BsList} boxSize={6} />}
+              onClick={() => setShowList(true)}
+              borderRightRadius={0}
+              borderColor={showList ? "darkslategray" : "transparent"}
+              _hover={{ borderColor: "gray", zIndex: 1 }}
+              transition="border-color 0.3s ease"
+              boxShadow={showList ? "md" : "none"}
+            />
+          </Tooltip>
+          <Tooltip label="Grid View" placement="bottom-end">
+            <IconButton
+              aria-label="Grid View"
+              icon={<Icon as={BsGrid} boxSize={6} />}
+              onClick={() => setShowList(false)}
+              borderLeftRadius={0}
+              borderColor={showList ? "transparent" : "darkslategray"}
+              _hover={{ borderColor: "gray", zIndex: 1 }}
+              transition="border-color 0.3s ease"
+              boxShadow={showList ? "md" : "none"}
+            />
+          </Tooltip>
+        </ButtonGroup>
+        {/* <IconButton
+            isRound={true}
+            fontSize="26px"
+            marginX={4}
+            aria-label="Toggle Light/Dark Mode"
+            icon={useColorModeValue(<FaMoon />, <FaSun />)}
+            onClick={toggleColorMode}
+            variant="link"
+            _hover={{ color: "gray.500" }}
+            bg="#0F1130"
+            color="#F7FAFC"
+            size="sm"
+            transition="color 0.3s ease, background-color 0.3s ease"
+          /> */}
+        <Menu>
+          <MenuButton
+            as={Button}
+            rounded={"full"}
+            variant={"link"}
+            cursor={"pointer"}
+            minW={0}
+          >
+            <Avatar bg="pink.600" size={"sm"} />
+          </MenuButton>
+          <MenuList>
+            {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
+            {/* <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem> */}
+            {/* <MenuItem onClick={getResumes}>Refresh Resumes</MenuItem> */}
+            {/* <MenuDivider /> */}
+            <MenuItem onClick={signOut}>Sign Out</MenuItem>
+          </MenuList>
+        </Menu>
+      </Flex>
+    </Flex>
   );
 }
 

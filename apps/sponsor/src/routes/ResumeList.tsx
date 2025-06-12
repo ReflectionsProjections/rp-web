@@ -6,12 +6,14 @@ import {
   Grid,
   GridItem,
   useMediaQuery,
-  useToast
+  useToast,
+  Icon
 } from "@chakra-ui/react";
 import ResumeListBox from "./ResumeListBox";
 import { Resume } from "./ResumeBook";
 import api from "@/util/api";
 import { path } from "@rp/shared";
+import { FaBook, FaGraduationCap, FaUniversity, FaUser } from "react-icons/fa";
 
 interface ResumeListProps {
   resumes: Resume[];
@@ -28,7 +30,6 @@ const ResizableColumn: React.FC<{
   baseColor: string;
 }> = ({ width, onResize, children, canResize, baseColor }) => {
   const startXRef = useRef<number | null>(null);
-  const viewColor = "gray." + baseColor;
   const selectViewColor = "gray." + (parseInt(baseColor) - 100);
   const handleMouseDown = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -55,7 +56,9 @@ const ResizableColumn: React.FC<{
   return (
     <Box
       position="relative"
-      display="inline-block"
+      display="flex"
+      alignItems={"center"}
+      gap={2}
       width={`${width}px`}
       minWidth="50px"
       cursor="default"
@@ -69,7 +72,7 @@ const ResizableColumn: React.FC<{
           height="100%"
           width="3px"
           cursor="col-resize"
-          backgroundColor={viewColor}
+          backgroundColor={"blue.400"}
           transition="all 0.3s"
           _hover={{
             backgroundColor: { selectViewColor },
@@ -129,128 +132,19 @@ const ResumeList: React.FC<ResumeListProps> = ({
     };
   }, [navbarTop, baseColor]);
 
-  const [isLargerThan2560] = useMediaQuery("(min-width: 2560px)");
-  const [isLargerThan1800] = useMediaQuery("(min-width: 1800px)");
-  const [isLargerThan1550] = useMediaQuery("(min-width: 1550px)");
-  const [isLargerThan1280] = useMediaQuery("(min-width: 1280px)");
-  const [isLargerThan960] = useMediaQuery("(min-width: 960px)");
   const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
-  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
-  const [isLargerThan400] = useMediaQuery("(min-width: 400px)");
-  const [isLargerThan330] = useMediaQuery("(min-width: 330px)");
 
   useEffect(() => {
-    if (isLargerThan2560) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 600,
-        major: 600,
-        degree: 500,
-        graduationYear: 500,
-        actions: 250,
-        data: 300
-      });
-    } else if (isLargerThan1800) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 475,
-        major: 350,
-        degree: 300,
-        graduationYear: 250,
-        actions: 250,
-        data: 300
-      });
-    } else if (isLargerThan1550) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 425,
-        major: 300,
-        degree: 200,
-        graduationYear: 200,
-        actions: 250,
-        data: 300
-      });
-    } else if (isLargerThan1280) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 300,
-        major: 300,
-        degree: 150,
-        graduationYear: 100,
-        actions: 200,
-        data: 300
-      });
-    } else if (isLargerThan960) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 150,
-        major: 200,
-        degree: 120,
-        graduationYear: 100,
-        actions: 205,
-        data: 300
-      });
-    } else if (isLargerThan700) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 120,
-        degree: 80,
-        graduationYear: 90,
-        actions: 110,
-        data: 300
-      });
-    } else if (isLargerThan550) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 100,
-        major: 150,
-        degree: 100,
-        graduationYear: 100,
-        actions: 100,
-        data: 300
-      });
-    } else if (isLargerThan400) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 100,
-        major: 150,
-        degree: 100,
-        graduationYear: 100,
-        actions: 60,
-        data: 220
-      });
-    } else if (isLargerThan330) {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 200,
-        degree: 150,
-        graduationYear: 100,
-        actions: 60,
-        data: 150
-      });
-    } else {
-      setColumnWidths({
-        checkbox: 50,
-        name: 125,
-        major: 200,
-        degree: 150,
-        graduationYear: 100,
-        actions: 60,
-        data: 100
-      });
-    }
-  }, [
-    isLargerThan1800,
-    isLargerThan1550,
-    isLargerThan1280,
-    isLargerThan960,
-    isLargerThan700,
-    isLargerThan550,
-    isLargerThan400,
-    isLargerThan330
-  ]);
+    setColumnWidths({
+      checkbox: 75,
+      name: 200,
+      major: 200,
+      degree: 150,
+      graduationYear: 100,
+      actions: 100,
+      data: 100
+    });
+  }, []);
 
   const [isDragging] = useState(false);
 
@@ -299,13 +193,15 @@ const ResumeList: React.FC<ResumeListProps> = ({
         ref={navbarRef}
         position={isSticky ? "fixed" : "relative"}
         top={isSticky ? "0" : undefined}
-        borderWidth="1px"
         overflow="hidden"
         padding="4"
         background={bgColor}
         boxShadow="md"
         width="100%"
         zIndex="10"
+        borderTopRadius={"lg"}
+        bgColor="gray.300"
+        fontFamily={"Anonymous Pro"}
       >
         <Grid
           templateColumns={
@@ -316,9 +212,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
           gap={4}
           alignItems="center"
         >
-          <GridItem>
-            <Text fontWeight="bold">Select</Text>
-          </GridItem>
+          <GridItem></GridItem>
           {isLargerThan700 ? (
             <>
               <GridItem>
@@ -328,6 +222,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   canResize={true}
                   baseColor={baseColor}
                 >
+                  <Icon as={FaUser} boxSize={4} />
                   <Text fontWeight="bold">Name</Text>
                 </ResizableColumn>
               </GridItem>
@@ -338,6 +233,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   canResize={true}
                   baseColor={baseColor}
                 >
+                  <Icon as={FaUniversity} boxSize={4} />
                   <Text fontWeight="bold">Degree</Text>
                 </ResizableColumn>
               </GridItem>
@@ -348,6 +244,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   canResize={true}
                   baseColor={baseColor}
                 >
+                  <Icon as={FaBook} boxSize={4} />
                   <Text fontWeight="bold">Major</Text>
                 </ResizableColumn>
               </GridItem>
@@ -358,6 +255,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   canResize={true}
                   baseColor={baseColor}
                 >
+                  <Icon as={FaGraduationCap} boxSize={4} />
                   <Text fontWeight="bold">Graduation</Text>
                 </ResizableColumn>
               </GridItem>

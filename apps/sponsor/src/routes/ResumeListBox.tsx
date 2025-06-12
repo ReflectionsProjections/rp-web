@@ -1,19 +1,18 @@
-import React, { useState } from "react";
 import {
   Box,
+  Button,
+  Center,
+  Checkbox,
   Grid,
   GridItem,
-  Checkbox,
-  VStack,
-  Text,
+  HStack,
   Image,
-  Button,
   SimpleGrid,
-  Center,
+  Text,
   Tooltip,
-  HStack
+  VStack
 } from "@chakra-ui/react";
-import { MdOpenInNew, MdList } from "react-icons/md";
+import React from "react";
 import { Config } from "../config";
 import { Resume } from "./ResumeBook";
 
@@ -44,28 +43,22 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
   columnWidths,
   isLargerThan700,
   toggleResume,
-  openResume,
   baseColor,
   bgColor
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const isExpanded = true;
 
   return (
     <Box
       key={resume.id}
-      borderWidth="2px"
       padding="10px"
       background={isSelected ? "blue." + baseColor : bgColor}
-      borderRadius="lg"
       overflow="hidden"
-      marginTop="1"
-      boxShadow="md"
       position="relative"
       cursor="pointer"
+      borderBottom={"1px solid"}
+      borderColor={"gray.300"}
+      py={4}
       _hover={{
         background: isSelected
           ? "blue." + (parseInt(baseColor) + 100)
@@ -75,7 +68,6 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               : parseInt(baseColor) + 100),
         boxShadow: "lg"
       }}
-      borderColor={isSelected ? "blue.500" : "gray." + baseColor}
       onClick={() => toggleResume(resume.id)}
       transition="all 0.2s ease"
     >
@@ -89,7 +81,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         alignItems="center"
       >
         <GridItem>
-          <HStack>
+          <HStack gap={4}>
             <Checkbox
               size="lg"
               isChecked={isSelected}
@@ -111,17 +103,17 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.500" fontSize="md">
                 {resume.degree}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.500" fontSize="md">
                 {resume.major}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.500" fontSize="md">
                 {resume.graduationYear}
               </Text>
             </GridItem>
@@ -145,7 +137,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
           </GridItem>
         )}
         <GridItem zIndex="5">
-          <VStack spacing={2}>
+          {/* <VStack spacing={2}>
             <Button
               backgroundColor="blue.500"
               color="white"
@@ -171,7 +163,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             >
               {isLargerThan700 ? "Portfolio Links" : <MdList />}
             </Button>
-          </VStack>
+          </VStack> */}
         </GridItem>
       </Grid>
 
