@@ -5,6 +5,7 @@ import {
   Flex,
   Grid,
   Icon,
+  Spacer,
   Text,
   Tooltip,
   useToast
@@ -134,6 +135,7 @@ export default function Schedule() {
         >
           <DayEventsSection
             selectedDayIndex={selectedDayIndex}
+            numDays={Object.keys(eventsByDay).length}
             hoveredIndex={hoveredEventIndex}
             dayEvents={dayEvents}
             onHover={handleHover}
@@ -156,12 +158,15 @@ export default function Schedule() {
 }
 
 function DayEventsSection({
+  selectedDayIndex,
+  numDays,
   hoveredIndex,
   dayEvents,
   onHover,
   onClick
 }: {
   selectedDayIndex: number;
+  numDays: number;
   hoveredIndex: number | null;
   dayEvents: Event[];
   onHover: (index: number) => void;
@@ -176,6 +181,7 @@ function DayEventsSection({
         borderRadius="xl"
         borderLeftRadius={{ lg: "30px" }}
         overflowY={{ md: "auto" }}
+        shadow={"md"}
       >
         <Text
           w="100%"
@@ -184,10 +190,10 @@ function DayEventsSection({
           fontWeight="bold"
           color="#8A8A8A"
           fontFamily="Archivo Black"
-          my={3}
+          my={0}
           mb={4}
         >
-          Calendar
+          Lap {selectedDayIndex}/{numDays}
         </Text>
         <Box minH={{ md: "70vh" }} maxH={{ md: "70vh" }} overflowY="auto">
           {dayEvents.length === 0 && (
@@ -236,11 +242,15 @@ function RaceTrackSection({
       alignItems={"center"}
     >
       <Box
+        display="flex"
+        flexDir={"column"}
         flex={{
           md: 1
         }}
         borderRadius="lg"
+        h="100%"
       >
+        <Spacer flex={1} />
         <Box
           w="100%"
           transform={{
@@ -266,6 +276,39 @@ function RaceTrackSection({
             onHover={handleHover}
             onClick={handleSelectEvent}
           />
+        </Box>
+        <Spacer flex={1} />
+        <Box
+          display={{ base: "none", lg: "flex" }}
+          flexDir="column"
+          bgColor="#242424"
+          px={4}
+          py={2}
+          pb={5}
+          ml={4}
+          borderRadius={"xl"}
+          alignItems={"flex-start"}
+          shadow={"md"}
+        >
+          <Text
+            w="100%"
+            fontSize="3xl"
+            color="white"
+            fontFamily="Archivo Black"
+            my={0}
+          >
+            R|P Radio
+          </Text>
+          <Text
+            fontSize="md"
+            color="gray.400"
+            textAlign="left"
+            fontStyle={"italic"}
+          >
+            LOOKING FOR A JOB IN THE TECH INDUSTRY?
+          </Text>
+          <br />
+          <br />
         </Box>
       </Box>
     </Flex>
@@ -293,7 +336,7 @@ function DayEvent({
       }}
       py={3}
       templateColumns={{
-        base: "40px 1fr 30px",
+        base: "40px 10px 1fr 40px",
         md: "40px 10px 1fr 40px"
       }}
       alignItems="center"
@@ -339,7 +382,6 @@ function DayEvent({
           textAlign="center"
           fontFamily="Archivo Black"
           mb={"2px"}
-          hideBelow={"md"}
           mt={"4px"}
         >
           {number}
@@ -355,19 +397,7 @@ function DayEvent({
         bg={circleColors[(number - 1) % circleColors.length]}
         boxShadow="md"
         borderRadius="sm"
-      >
-        <Text
-          fontSize="lg"
-          color="gray.100"
-          fontWeight="thin"
-          textAlign="center"
-          fontFamily="Racing Sans One"
-          mb={"2px"}
-          hideFrom="md"
-        >
-          {number}
-        </Text>
-      </Box>
+      ></Box>
 
       <Flex flexDirection={"column"} gap={0}>
         <Text fontSize={"lg"} color="white" fontFamily={"Racing Sans One"}>
