@@ -12,9 +12,10 @@ import {
   Tooltip,
   VStack
 } from "@chakra-ui/react";
-import React from "react";
+import React, { useState } from "react";
 import { Config } from "../config";
 import { Resume } from "./ResumeBook";
+import { MdList, MdOpenInNew } from "react-icons/md";
 
 interface ColumnWidths {
   checkbox: number;
@@ -43,10 +44,15 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
   columnWidths,
   isLargerThan700,
   toggleResume,
+  openResume,
   baseColor,
   bgColor
 }) => {
-  const isExpanded = true;
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
 
   return (
     <Box
@@ -137,7 +143,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
           </GridItem>
         )}
         <GridItem zIndex="5">
-          {/* <VStack spacing={2}>
+          <VStack spacing={2}>
             <Button
               backgroundColor="blue.500"
               color="white"
@@ -163,7 +169,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             >
               {isLargerThan700 ? "Portfolio Links" : <MdList />}
             </Button>
-          </VStack> */}
+          </VStack>
         </GridItem>
       </Grid>
 

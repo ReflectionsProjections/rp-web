@@ -98,7 +98,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
     name: 175,
     major: 300,
     degree: 150,
-    graduationYear: 150,
+    graduationYear: 300,
     actions: 150,
     data: 300
   });
@@ -140,7 +140,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
       name: 200,
       major: 200,
       degree: 150,
-      graduationYear: 100,
+      graduationYear: 200,
       actions: 100,
       data: 100
     });
