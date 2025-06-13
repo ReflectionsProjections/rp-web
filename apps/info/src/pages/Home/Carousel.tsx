@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
-
 // interface CarouselItem {
 //   title: string;
 //   image: string;
@@ -10,22 +7,78 @@ import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
 //   items: CarouselItem[];
 // }
 
+import { useState } from "react";
+import {
+  Box,
+  Heading,
+  Flex,
+  Image,
+  Text,
+  Button,
+  useBreakpointValue
+} from "@chakra-ui/react";
+
 const CircularCarousel = () => {
   const items = [
     { title: "RP 2025 Site", image: "/images/rp2025site.png" },
-    { title: "RP 2025 Site", image: "/images/rp2025site.png" },
-    { title: "RP 2025 Site", image: "/images/rp2025site.png" }
+    { title: "RP 2025 Site 2", image: "/images/rp2025site.png" },
+    { title: "RP 2025 Site 3", image: "/images/rp2025site.png" }
   ];
 
-  const [activeIndex, setActiveIndex] = useState<number>(0);
-  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const isMobile = useBreakpointValue({ base: true, md: false }) ?? true;
+
+  const defaultConfig = {
+    containerHeight: "500px",
+    headingSize: "3xl",
+    headingMb: 6,
+    horizontalRadius: 120,
+    verticalRadius: 80,
+    itemWidth: "180px",
+    itemHeight: "120px",
+    itemMarginLeft: "-90px",
+    itemMarginTop: "-60px",
+    ellipseWidth: "260px",
+    ellipseHeight: "180px",
+    buttonSpacing: 4,
+    buttonSize: "md",
+    buttonPx: 6,
+    navMt: 8,
+    fontSize: "16px"
+  };
+
+  const desktopConfig = {
+    containerHeight: "700px",
+    headingSize: "5xl",
+    headingMb: 10,
+    horizontalRadius: 300,
+    verticalRadius: 180,
+    itemWidth: "280px",
+    itemHeight: "180px",
+    itemMarginLeft: "-140px",
+    itemMarginTop: "-90px",
+    ellipseWidth: "620px",
+    ellipseHeight: "380px",
+    buttonSpacing: 6,
+    buttonSize: "lg",
+    buttonPx: 8,
+    navMt: 40,
+    fontSize: "22px"
+  };
+
+  const config =
+    useBreakpointValue({
+      base: defaultConfig,
+      md: desktopConfig
+    }) ?? defaultConfig;
 
   const handleItemClick = (index: number) => {
     if (isAnimating || index === activeIndex) return;
 
     setIsAnimating(true);
 
-    // rotating shortest path
     const totalItems = items.length;
     const clockwiseSteps = (index - activeIndex + totalItems) % totalItems;
     const counterClockwiseSteps =
@@ -60,7 +113,7 @@ const CircularCarousel = () => {
     animateStep();
   };
 
-  const handleNavClick = (direction: "prev" | "next") => {
+  const handleNavClick = (direction: string) => {
     if (isAnimating) return;
 
     setIsAnimating(true);
@@ -79,25 +132,101 @@ const CircularCarousel = () => {
     const baseAngle = angleDegree * (index - activeIndex);
     const radians = (baseAngle * Math.PI) / 180;
 
-    const horizontalRadius = 300;
-    const verticalRadius = 180;
-
-    const x = horizontalRadius * Math.sin(radians);
-    const y = verticalRadius * Math.cos(radians);
+    const x = config.horizontalRadius * Math.sin(radians);
+    const y = config.verticalRadius * Math.cos(radians);
     const zIndex = Math.round(50 - y / 10);
 
-    const scale = 0.8 + ((y + verticalRadius) / (verticalRadius * 2)) * 0.3;
+    const scale =
+      0.8 + ((y + config.verticalRadius) / (config.verticalRadius * 2)) * 0.3;
     const isFrontItem = index === activeIndex;
 
     return {
       transform: `translate(${x}px, ${y}px) scale(${scale})`,
       zIndex,
-      opacity: 0.8 + ((y + verticalRadius) / (verticalRadius * 2)) * 0.4,
+      opacity:
+        0.8 + ((y + config.verticalRadius) / (config.verticalRadius * 2)) * 0.4,
       boxShadow: isFrontItem
         ? "0 10px 30px rgba(0,0,0,0.4)"
         : "0 5px 15px rgba(0,0,0,0.2)"
     };
   };
+
+  if (isMobile) {
+    return (
+      <Flex direction="column" align="center" w="100%" px={4} py={6}>
+        <Heading
+          fontSize={config.headingSize}
+          mb={config.headingMb}
+          textAlign="center"
+        >
+          Meet the Team
+        </Heading>
+
+        <Box position="relative" w="100%" maxW="400px" mb={6}>
+          <Image
+            src={items[activeIndex].image}
+            alt={items[activeIndex].title}
+            w="100%"
+            h="250px"
+            objectFit="cover"
+            borderRadius="16px"
+            boxShadow="0 10px 30px rgba(0,0,0,0.4)"
+          />
+          <Text
+            position="absolute"
+            bottom="16px"
+            left="16px"
+            color="white"
+            fontSize={config.fontSize}
+            fontWeight="bold"
+            textShadow="0 2px 4px rgba(0,0,0,0.5)"
+          >
+            {items[activeIndex].title}
+          </Text>
+        </Box>
+
+        <Flex justifyContent="center" gap={2} mb={6}>
+          {items.map((_, index) => (
+            <Box
+              key={index}
+              w="12px"
+              h="12px"
+              borderRadius="50%"
+              bg={index === activeIndex ? "blue.500" : "gray.300"}
+              cursor="pointer"
+              onClick={() => handleItemClick(index)}
+              transition="all 0.3s"
+            />
+          ))}
+        </Flex>
+
+        <Flex justifyContent="center" gap={config.buttonSpacing}>
+          <Button
+            onClick={() => handleNavClick("prev")}
+            colorScheme="blue"
+            size={config.buttonSize}
+            px={config.buttonPx}
+            isDisabled={isAnimating}
+            _hover={{ transform: "translateY(-2px)" }}
+            transition="all 0.2s"
+          >
+            Previous
+          </Button>
+          <Button
+            onClick={() => handleNavClick("next")}
+            colorScheme="blue"
+            size={config.buttonSize}
+            px={config.buttonPx}
+            isDisabled={isAnimating}
+            _hover={{ transform: "translateY(-2px)" }}
+            transition="all 0.2s"
+          >
+            Next
+          </Button>
+        </Flex>
+      </Flex>
+    );
+  }
 
   return (
     <Flex
@@ -105,10 +234,10 @@ const CircularCarousel = () => {
       align="center"
       position="relative"
       w="100%"
-      h="700px"
+      h={config.containerHeight}
       pt={8}
     >
-      <Heading fontSize="5xl" mb={10}>
+      <Heading fontSize={config.headingSize} mb={config.headingMb}>
         Meet the Team
       </Heading>
       <Box position="relative" w="100%" h="500px" mx="auto">
@@ -117,8 +246,8 @@ const CircularCarousel = () => {
           top="50%"
           left="50%"
           transform="translate(-50%, -50%)"
-          w="620px"
-          h="380px"
+          w={config.ellipseWidth}
+          h={config.ellipseHeight}
           borderRadius="50%"
           border="2px dashed"
           borderColor="gray.200"
@@ -131,10 +260,10 @@ const CircularCarousel = () => {
             position="absolute"
             top="50%"
             left="50%"
-            w="280px"
-            h="180px"
-            ml="-140px"
-            mt="-90px"
+            w={config.itemWidth}
+            h={config.itemHeight}
+            ml={config.itemMarginLeft}
+            mt={config.itemMarginTop}
             transition="all 0.5s ease-in-out"
             cursor="pointer"
             borderRadius="16px"
@@ -166,7 +295,7 @@ const CircularCarousel = () => {
               bottom="16px"
               left="16px"
               color="white"
-              fontSize="22px"
+              fontSize={config.fontSize}
               fontWeight="bold"
               textShadow="0 2px 4px rgba(0,0,0,0.5)"
             >
@@ -176,13 +305,13 @@ const CircularCarousel = () => {
         ))}
       </Box>
 
-      <Flex justifyContent="center" mt={40} mb={10}>
+      <Flex justifyContent="center" mt={config.navMt} mb={10}>
         <Button
           onClick={() => handleNavClick("prev")}
           colorScheme="blue"
-          size="lg"
-          mr={6}
-          px={8}
+          size={config.buttonSize}
+          mr={config.buttonSpacing}
+          px={config.buttonPx}
           isDisabled={isAnimating}
           _hover={{ transform: "translateY(-2px)" }}
           transition="all 0.2s"
@@ -192,8 +321,8 @@ const CircularCarousel = () => {
         <Button
           onClick={() => handleNavClick("next")}
           colorScheme="blue"
-          size="lg"
-          px={8}
+          size={config.buttonSize}
+          px={config.buttonPx}
           isDisabled={isAnimating}
           _hover={{ transform: "translateY(-2px)" }}
           transition="all 0.2s"
