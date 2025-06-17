@@ -42,6 +42,7 @@ function MultiSelectDropdown({
   const [filteredOptions, setFilteredOptions] = useState<string[]>(
     options.slice(0, Config.MAX_DROPDOWN_OPTIONS)
   );
+
   const bgColor =
     parseInt(baseColor) < 500
       ? "gray." + (parseInt(baseColor) - 100)
@@ -73,16 +74,6 @@ function MultiSelectDropdown({
 
     setFilteredOptions(newOptions);
   };
-
-  //     const resetFilter = () => {
-  //     const newOptions = options
-  //       .filter(option =>
-  //         option.toLowerCase().includes(query.toLowerCase()) &&
-  //         !selectedOptions.includes(option) // Omit already selected options
-  //       )
-  //       .slice(0, Config.MAX_DROPDOWN_OPTIONS);
-  //     setFilteredOptions(newOptions);
-  //   };
 
   const handleSelect = (option: string) => {
     if (!selectedOptions.includes(option)) {
@@ -148,7 +139,6 @@ function MultiSelectDropdown({
                 placeholder={
                   selectedOptions.length === 0 ? `${placeholderText}` : ""
                 }
-                // onFocus={() => setIsOpen(true)}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   resetFilter();
@@ -166,8 +156,10 @@ function MultiSelectDropdown({
           width={width}
           maxWidth="90vw"
           zIndex="30"
+          maxH="3xl"
+          overflowY="auto"
         >
-          <PopoverArrow />
+          <PopoverArrow bgColor={bgColor} />
           <PopoverBody>
             <List
               onMouseDown={(event) => {
@@ -183,7 +175,7 @@ function MultiSelectDropdown({
                   borderRadius="4px"
                   padding="8px"
                 >
-                  {option.toUpperCase()}
+                  {option}
                 </ListItem>
               ))}
             </List>

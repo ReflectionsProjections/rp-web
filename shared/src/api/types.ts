@@ -247,6 +247,16 @@ export interface APIRoutes {
       response: { pagecount: number };
     };
   };
+  "/registration/filter/filter_value_counts": {
+    GET: {
+      response: {
+        graduations: { [graduation: string]: number };
+        majors: { [major: string]: number };
+        jobInterests: { [jobInterest: string]: number };
+        degrees: { [degree: string]: number };
+      };
+    };
+  };
   "/registration/filter/:page": {
     POST: {
       request: {

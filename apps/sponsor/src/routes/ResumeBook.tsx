@@ -28,7 +28,7 @@ import { BiSelectMultiple } from "react-icons/bi";
 import { BsDownload, BsGrid, BsList } from "react-icons/bs";
 import { TiDocumentDelete } from "react-icons/ti";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
-import { majors } from "../components/majors";
+import { majors as allMajors } from "../components/majors";
 import ResumeGrid from "./ResumeGrid";
 import ResumeList from "./ResumeList";
 
@@ -85,14 +85,18 @@ export function ResumeBook() {
   const [isMediumScreen] = useMediaQuery("(min-width: 960px)");
   const viewColor = useColorModeValue("200", "700");
   // const selectViewColor = useColorModeValue("gray.300","gray.600");
-  const degreeTypes = [
+
+  const [majors, setMajors] = useState<string[]>(allMajors);
+
+  const [degreeTypes, setDegreeTypes] = useState<string[]>([
     "Bachelor's",
     "Master's",
     "PhD",
     "Professional (JD/MD)",
     "Other"
-  ];
-  const years = [
+  ]);
+
+  const [years, setYears] = useState<string[]>([
     "Dec 2024",
     "May 2025",
     "Dec 2025",
@@ -104,19 +108,35 @@ export function ResumeBook() {
     "Dec 2028",
     "May 2029",
     "Dec 2029"
-  ];
-  const jobInterests = [
+  ]);
+  const [jobInterests, setJobInterests] = useState<string[]>([
     "SUMMER INTERNSHIP",
     "FALL INTERNSHIP",
     "SPRING INTERNSHIP",
     "FULL TIME"
-  ];
+  ]);
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
   const [selectedJobInterests, setSelectedJobInterests] = useState<string[]>(
     []
   );
+
+  const handleLoadOptions = () => {
+    api
+      .get("/registration/filter/filter_value_counts")
+      .then((response) => {
+        const { graduations, majors, jobInterests, degrees } = response.data;
+        setYears(Object.keys(graduations));
+        setMajors(Object.keys(majors));
+        setJobInterests(Object.keys(jobInterests));
+        setDegreeTypes(Object.keys(degrees));
+      })
+      .catch((error) => {
+        console.error("Error in option loading request:", error);
+        showToast("Failed to load options. Please refresh the page.");
+      });
+  };
 
   const showToast = (message: string) => {
     toast({
@@ -473,6 +493,10 @@ export function ResumeBook() {
   //     // filterResumes();
   //     getResumes();
   // }, []);
+
+  useEffect(() => {
+    handleLoadOptions();
+  }, []);
 
   return (
     <ChakraProvider>

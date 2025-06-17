@@ -1,5 +1,5 @@
 export const Config = {
-  MAX_DROPDOWN_OPTIONS: 5,
+  MAX_DROPDOWN_OPTIONS: 1000,
   API_BASE_URL: "https://api.reflectionsprojections.org",
   STAFF_UIDs: [
     "user107577492883686324358",
