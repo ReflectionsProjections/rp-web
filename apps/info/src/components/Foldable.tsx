@@ -149,29 +149,134 @@ const DesktopFoldableFAQ: React.FC<{
   const globalRotateY = useTransform(xSpring, [0, maxDrag], [0, 3]);
   const globalZ = useTransform(xSpring, [0, maxDrag], [0, 50]);
 
-  const panelTransforms = faqItems.map((_, i) => ({
-    x: useTransform(xSpring, [0, maxDrag], [panelShift[i], 0]),
+  // Create transforms for each panel individually
+  const panel0Transforms = {
+    x: useTransform(xSpring, [0, maxDrag], [panelShift[0], 0]),
     rotateY: useTransform(
       xSpring,
       [0, maxDrag],
-      [windmillEffect[i].rotateY, 0]
+      [windmillEffect[0].rotateY, 0]
     ),
     rotateX: useTransform(
       xSpring,
       [0, maxDrag],
-      [windmillEffect[i].rotateX, 0]
+      [windmillEffect[0].rotateX, 0]
     ),
     rotateZ: useTransform(
       xSpring,
       [0, maxDrag],
-      [windmillEffect[i].rotateZ, 0]
+      [windmillEffect[0].rotateZ, 0]
     ),
-    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[i].scale, 1]),
-    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[i].y, 0]),
-    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[i].skewY, 0]),
-    z: useTransform(xSpring, [0, maxDrag], [0, i * 15]),
+    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[0].scale, 1]),
+    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[0].y, 0]),
+    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[0].skewY, 0]),
+    z: useTransform(xSpring, [0, maxDrag], [0, 0 * 15]),
     opacity: useTransform(xSpring, [0, maxDrag * 0.3, maxDrag], [0.4, 0.8, 1])
-  }));
+  };
+
+  const panel1Transforms = {
+    x: useTransform(xSpring, [0, maxDrag], [panelShift[1], 0]),
+    rotateY: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[1].rotateY, 0]
+    ),
+    rotateX: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[1].rotateX, 0]
+    ),
+    rotateZ: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[1].rotateZ, 0]
+    ),
+    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[1].scale, 1]),
+    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[1].y, 0]),
+    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[1].skewY, 0]),
+    z: useTransform(xSpring, [0, maxDrag], [0, 1 * 15]),
+    opacity: useTransform(xSpring, [0, maxDrag * 0.3, maxDrag], [0.4, 0.8, 1])
+  };
+
+  const panel2Transforms = {
+    x: useTransform(xSpring, [0, maxDrag], [panelShift[2], 0]),
+    rotateY: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[2].rotateY, 0]
+    ),
+    rotateX: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[2].rotateX, 0]
+    ),
+    rotateZ: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[2].rotateZ, 0]
+    ),
+    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[2].scale, 1]),
+    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[2].y, 0]),
+    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[2].skewY, 0]),
+    z: useTransform(xSpring, [0, maxDrag], [0, 2 * 15]),
+    opacity: useTransform(xSpring, [0, maxDrag * 0.3, maxDrag], [0.4, 0.8, 1])
+  };
+
+  const panel3Transforms = {
+    x: useTransform(xSpring, [0, maxDrag], [panelShift[3], 0]),
+    rotateY: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[3].rotateY, 0]
+    ),
+    rotateX: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[3].rotateX, 0]
+    ),
+    rotateZ: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[3].rotateZ, 0]
+    ),
+    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[3].scale, 1]),
+    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[3].y, 0]),
+    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[3].skewY, 0]),
+    z: useTransform(xSpring, [0, maxDrag], [0, 3 * 15]),
+    opacity: useTransform(xSpring, [0, maxDrag * 0.3, maxDrag], [0.4, 0.8, 1])
+  };
+
+  const panel4Transforms = {
+    x: useTransform(xSpring, [0, maxDrag], [panelShift[4], 0]),
+    rotateY: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[4].rotateY, 0]
+    ),
+    rotateX: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[4].rotateX, 0]
+    ),
+    rotateZ: useTransform(
+      xSpring,
+      [0, maxDrag],
+      [windmillEffect[4].rotateZ, 0]
+    ),
+    scale: useTransform(xSpring, [0, maxDrag], [windmillEffect[4].scale, 1]),
+    y: useTransform(xSpring, [0, maxDrag], [windmillEffect[4].y, 0]),
+    skewY: useTransform(xSpring, [0, maxDrag], [windmillEffect[4].skewY, 0]),
+    z: useTransform(xSpring, [0, maxDrag], [0, 4 * 15]),
+    opacity: useTransform(xSpring, [0, maxDrag * 0.3, maxDrag], [0.4, 0.8, 1])
+  };
+
+  const panelTransforms = [
+    panel0Transforms,
+    panel1Transforms,
+    panel2Transforms,
+    panel3Transforms,
+    panel4Transforms
+  ];
 
   return (
     <ChakraProvider theme={theme} resetCSS>
@@ -435,17 +540,74 @@ const MobileFoldableFAQ: React.FC<{
     { y: 120, scale: 0.85, rotateX: -20, opacity: 0.6 }
   ];
 
-  const panelTransforms = faqItems.map((_, i) => ({
-    y: useTransform(ySpring, [0, maxDrag], [stackEffect[i].y, 0]),
-    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[i].scale, 1]),
-    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[i].rotateX, 0]),
+  // Create transforms for each panel individually
+  const panel0Transforms = {
+    y: useTransform(ySpring, [0, maxDrag], [stackEffect[0].y, 0]),
+    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[0].scale, 1]),
+    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[0].rotateX, 0]),
     opacity: useTransform(
       ySpring,
       [0, maxDrag * 0.3, maxDrag],
-      [stackEffect[i].opacity, 0.8, 1]
+      [stackEffect[0].opacity, 0.8, 1]
     ),
-    z: useTransform(ySpring, [0, maxDrag], [-(i * 10), i * 5])
-  }));
+    z: useTransform(ySpring, [0, maxDrag], [-(0 * 10), 0 * 5])
+  };
+
+  const panel1Transforms = {
+    y: useTransform(ySpring, [0, maxDrag], [stackEffect[1].y, 0]),
+    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[1].scale, 1]),
+    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[1].rotateX, 0]),
+    opacity: useTransform(
+      ySpring,
+      [0, maxDrag * 0.3, maxDrag],
+      [stackEffect[1].opacity, 0.8, 1]
+    ),
+    z: useTransform(ySpring, [0, maxDrag], [-(1 * 10), 1 * 5])
+  };
+
+  const panel2Transforms = {
+    y: useTransform(ySpring, [0, maxDrag], [stackEffect[2].y, 0]),
+    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[2].scale, 1]),
+    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[2].rotateX, 0]),
+    opacity: useTransform(
+      ySpring,
+      [0, maxDrag * 0.3, maxDrag],
+      [stackEffect[2].opacity, 0.8, 1]
+    ),
+    z: useTransform(ySpring, [0, maxDrag], [-(2 * 10), 2 * 5])
+  };
+
+  const panel3Transforms = {
+    y: useTransform(ySpring, [0, maxDrag], [stackEffect[3].y, 0]),
+    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[3].scale, 1]),
+    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[3].rotateX, 0]),
+    opacity: useTransform(
+      ySpring,
+      [0, maxDrag * 0.3, maxDrag],
+      [stackEffect[3].opacity, 0.8, 1]
+    ),
+    z: useTransform(ySpring, [0, maxDrag], [-(3 * 10), 3 * 5])
+  };
+
+  const panel4Transforms = {
+    y: useTransform(ySpring, [0, maxDrag], [stackEffect[4].y, 0]),
+    scale: useTransform(ySpring, [0, maxDrag], [stackEffect[4].scale, 1]),
+    rotateX: useTransform(ySpring, [0, maxDrag], [stackEffect[4].rotateX, 0]),
+    opacity: useTransform(
+      ySpring,
+      [0, maxDrag * 0.3, maxDrag],
+      [stackEffect[4].opacity, 0.8, 1]
+    ),
+    z: useTransform(ySpring, [0, maxDrag], [-(4 * 10), 4 * 5])
+  };
+
+  const panelTransforms = [
+    panel0Transforms,
+    panel1Transforms,
+    panel2Transforms,
+    panel3Transforms,
+    panel4Transforms
+  ];
 
   const globalRotateX = useTransform(ySpring, [0, maxDrag], [0, -2]);
   const globalZ = useTransform(ySpring, [0, maxDrag], [0, 30]);
