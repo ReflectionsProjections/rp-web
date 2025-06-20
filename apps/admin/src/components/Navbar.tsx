@@ -10,7 +10,6 @@ import {
   Avatar,
   MenuList,
   MenuItem,
-  MenuDivider,
   useDisclosure,
   useColorMode,
   Link,
@@ -25,6 +24,7 @@ import { ReactNode, useEffect, useState } from "react";
 import "../App.css";
 import { useMirrorStyles } from "@/styles/Mirror";
 import StatusMonitor from "./StatusMonitor";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 
 const linkMap = {
   Dashboard: "/",
@@ -54,8 +54,9 @@ const getLinks = (roles: string[], loading: boolean): string[] => {
   return [];
 };
 
-const Profile = () => {
-  const { toggleColorMode } = useColorMode();
+const Settings = () => {
+  const { colorMode, toggleColorMode } = useColorMode();
+  const jwt = localStorage.getItem("jwt");
 
   const signOut = () => {
     localStorage.removeItem("jwt");
@@ -63,32 +64,38 @@ const Profile = () => {
   };
 
   return (
-    <Menu>
-      <MenuButton
-        as={Button}
-        rounded={"full"}
-        variant={"link"}
-        cursor={"pointer"}
-        w="fit-content"
-        h="fit-content"
-      >
-        <Avatar
-          size={"md"}
-          src={"https://cdn-icons-png.freepik.com/512/8742/8742495.png"}
-        />
-      </MenuButton>
-      <Portal>
-        <MenuList>
-          <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem>
-          {localStorage.getItem("jwt") && (
-            <>
-              <MenuDivider />
+    <HStack gap={4}>
+      {jwt && (
+        <Menu>
+          <MenuButton
+            as={Button}
+            rounded={"full"}
+            variant={"link"}
+            cursor={"pointer"}
+            w="fit-content"
+            h="fit-content"
+          >
+            <Avatar
+              size={"md"}
+              src={"https://cdn-icons-png.freepik.com/512/8742/8742495.png"}
+            />
+          </MenuButton>
+          <Portal>
+            <MenuList>
               <MenuItem onClick={signOut}>Sign Out</MenuItem>
-            </>
-          )}
-        </MenuList>
-      </Portal>
-    </Menu>
+            </MenuList>
+          </Portal>
+        </Menu>
+      )}
+      <IconButton
+        icon={colorMode === "light" ? <MdDarkMode /> : <MdLightMode />}
+        aria-label="Toggle dark mode"
+        p={4}
+        size="xl"
+        rounded={"full"}
+        onClick={toggleColorMode}
+      />
+    </HStack>
   );
 };
 
@@ -222,16 +229,16 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           display={{ md: "none" }}
           onClick={isOpen ? onClose : onOpen}
         />
-        <HStack
-          gap={2}
+        <VStack
+          gap={4}
           w="100%"
           alignItems="center"
           justifyContent="space-evenly"
           display={{ base: "none", md: "flex" }}
         >
-          <Profile />
+          <Settings />
           <StatusMonitor />
-        </HStack>
+        </VStack>
       </Flex>
       {isOpen && (
         <VStack
@@ -256,7 +263,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
             style={{ marginTop: "auto" }}
           >
             <StatusMonitor />
-            <Profile />
+            <Settings />
           </HStack>
         </VStack>
       )}
