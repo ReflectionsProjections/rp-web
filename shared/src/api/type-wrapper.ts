@@ -1,7 +1,7 @@
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { APIRoutes } from "./types";
 
-type GettablePaths = {
+export type GettablePaths = {
   [Path in keyof APIRoutes]: "GET" extends keyof APIRoutes[Path] ? Path : never;
 }[keyof APIRoutes];
 
@@ -36,23 +36,23 @@ export interface TypedAxiosInstance {
   post<Path extends PostablePaths>(
     url: Path,
     data: APIRoutes[Path]["POST"]["request"],
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig<APIRoutes[Path]["POST"]["request"]>
   ): Promise<AxiosResponse<APIRoutes[Path]["POST"]["response"]>>;
 
   put<Path extends PuttablePaths>(
     url: Path,
     data: APIRoutes[Path]["PUT"]["request"],
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig<APIRoutes[Path]["PUT"]["request"]>
   ): Promise<AxiosResponse<APIRoutes[Path]["PUT"]["response"]>>;
 
   patch<Path extends PatchablePaths>(
     url: Path,
     data: APIRoutes[Path]["PATCH"]["request"],
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig<APIRoutes[Path]["PATCH"]["request"]>
   ): Promise<AxiosResponse<APIRoutes[Path]["PATCH"]["response"]>>;
 
   delete<Path extends DeletablePaths>(
     url: Path,
-    config?: AxiosRequestConfig
+    config?: AxiosRequestConfig<APIRoutes[Path]["DELETE"]["request"]>
   ): Promise<AxiosResponse<APIRoutes[Path]["DELETE"]["response"]>>;
 }

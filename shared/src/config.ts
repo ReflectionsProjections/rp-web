@@ -1,4 +1,4 @@
-import { z } from "zod";
+import * as yup from "yup";
 
 interface ImportMetaEnv {
   VITE_ENV?: "PRODUCTION" | "DEVELOPMENT" | "TESTING";
@@ -11,25 +11,17 @@ declare global {
   }
 }
 
-// Validation
-const envSchema = z
-  .object({
-    VITE_ENV: z.enum(["PRODUCTION", "DEVELOPMENT", "TESTING"]).optional(),
-    VITE_GOOGLE_OAUTH_CLIENT_ID: z.string()
-  })
-  .passthrough();
+// Validation using zup
 
-const parsed = envSchema.safeParse(import.meta.env);
+const envSchema = yup.object({
+  VITE_ENV: yup
+    .string()
+    .oneOf(["PRODUCTION", "DEVELOPMENT", "TESTING"])
+    .optional(),
+  VITE_GOOGLE_OAUTH_CLIENT_ID: yup.string().required()
+});
 
-if (!parsed.success) {
-  console.error(
-    "Invalid environment variables:",
-    parsed.error.flatten().fieldErrors
-  );
-  throw new Error("Environment validation failed.");
-}
-
-const env = parsed.data;
+const env = envSchema.validateSync(import.meta.env, { abortEarly: false });
 
 const isDefined = env.VITE_ENV !== undefined;
 
