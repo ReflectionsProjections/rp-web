@@ -69,25 +69,38 @@ export type Event = {
   eventType: EventType;
 };
 
+export type RegistrationDraft = {
+  name?: string;
+  dietaryRestrictions?: string[];
+  allergies?: string[];
+  school?: string;
+  educationLevel?: string;
+  major?: string;
+  graduationYear?: string;
+  opportunities?: string[];
+  hasResume?: boolean;
+  personalLinks?: string[];
+  gender?: string;
+  ethnicity?: string[];
+  howDidYouHear?: string[];
+  tags?: string[];
+};
+
 export type Registration = {
-  userId: string;
   name: string;
-  email: string;
-  university: string;
-  graduation: string | null;
-  major: string | null;
-  dietaryRestrictions: string[];
-  allergies: string[];
-  gender: string | null;
-  ethnicity: string[];
-  hearAboutRP: string[];
-  portfolios: string[];
-  jobInterest: string[];
-  isInterestedMechMania: boolean;
-  isInterestedPuzzleBang: boolean;
-  hasResume: boolean;
-  hasSubmitted: boolean;
-  degree?: string;
+  dietaryRestrictions?: string[];
+  allergies?: string[];
+  school: string;
+  educationLevel: string;
+  major: string;
+  graduationYear: string;
+  opportunities?: string[];
+  hasResume?: boolean;
+  personalLinks?: string[];
+  gender?: string;
+  ethnicity?: string[];
+  howDidYouHear?: string[];
+  tags?: string[];
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
@@ -237,28 +250,33 @@ export interface APIRoutes {
       response: Event;
     };
   };
-  "/registration/filter/pagecount": {
+  "/registration/drafts": {
     POST: {
-      request: {
-        graduations?: string[];
-        majors?: string[];
-        jobInterests?: string[];
-        degrees?: string[];
-      };
-      response: { pagecount: number };
+      request: RegistrationDraft;
+      response: { message: string };
+    };
+    GET: {
+      response: RegistrationDraft;
     };
   };
-  "/registration/filter/:page": {
+  "/registration/submit": {
     POST: {
-      request: {
-        graduations?: string[];
-        majors?: string[];
-        jobInterests?: string[];
-        degrees?: string[];
-      };
+      request: Registration;
+      response: { message: string };
+    };
+  };
+  "/registration/all": {
+    GET: {
       response: {
-        registrants: Registration[];
-        page: number;
+        registrants: Array<{
+          userId: string;
+          name: string;
+          major: string;
+          graduationYear: string;
+          educationLevel: string;
+          opportunities?: string[];
+          personalLinks?: string[];
+        }>;
       };
     };
   };
