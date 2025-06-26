@@ -33,7 +33,7 @@ const TeamPage: React.FC = () => {
     children: React.ReactNode;
     sectionBg?: string;
   }> = ({ title, children, sectionBg = "white" }) => (
-    <Box py={spacing} bg={sectionBg}>
+    <Box bg={sectionBg}>
       <Flex direction={{ base: "column", md: "row" }} align="flex-start">
         <Box
           bg="black"

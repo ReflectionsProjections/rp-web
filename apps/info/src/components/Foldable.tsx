@@ -75,7 +75,7 @@ const FoldableFAQ: React.FC<FoldableFAQProps> = ({ title = "FAQ" }) => {
 
       if (mobile) {
         const width = Math.min(window.innerWidth * 0.9, 400);
-        const height = Math.min(window.innerHeight * 0.8, 700); //changed from 0.7, 600
+        const height = Math.min(window.innerHeight * 0.8, 700);
         setSize({ width, height });
       } else {
         const width = Math.min(window.innerWidth * 0.92, 1200);
@@ -132,10 +132,27 @@ const DesktopFoldableFAQ: React.FC<{
   const componentX = useTransform(xSpring, [0, maxDrag], [0, -maxDrag]);
   const [isFolded, setIsFolded] = useState(true);
 
+  const toggleFoldState = () => {
+    const targetValue = isFolded ? maxDrag : 0;
+    xDrag.set(targetValue);
+  };
+
   useMotionValueEvent(xDrag, "change", (x) => {
     if (x > maxDrag * 0.8 && isFolded) setIsFolded(false);
     if (x < maxDrag * 0.2 && !isFolded) setIsFolded(true);
   });
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "Space" || event.code === "Enter") {
+        event.preventDefault();
+        toggleFoldState();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isFolded]);
 
   const windmillEffect = [
     { rotateZ: -90, rotateY: -45, scale: 0.8, rotateX: 0, y: 0, skewY: 0 },
@@ -149,7 +166,6 @@ const DesktopFoldableFAQ: React.FC<{
   const globalRotateY = useTransform(xSpring, [0, maxDrag], [0, 3]);
   const globalZ = useTransform(xSpring, [0, maxDrag], [0, 50]);
 
-  // Create transforms for each panel individually
   const panel0Transforms = {
     x: useTransform(xSpring, [0, maxDrag], [panelShift[0], 0]),
     rotateY: useTransform(
@@ -308,6 +324,11 @@ const DesktopFoldableFAQ: React.FC<{
             style={{ x: xDrag, width: size.width, height: size.height }}
             cursor="grab"
             _active={{ cursor: "grabbing" }}
+            _hover={{
+              boxShadow: isFolded
+                ? "0 8px 20px -6px rgba(0, 0, 0, 0.12), 0 8px 8px -6px rgba(0, 0, 0, 0.05)"
+                : undefined
+            }}
             position="relative"
             borderRadius="lg"
             boxShadow="2xl"
@@ -315,10 +336,14 @@ const DesktopFoldableFAQ: React.FC<{
             bg={bgColor}
             animate={{
               boxShadow: isFolded
-                ? "0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-                : "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)"
+                ? "0 6px 16px -4px rgba(0, 0, 0, 0.08), 0 6px 6px -4px rgba(0, 0, 0, 0.03)"
+                : "0 16px 32px -10px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.04)"
             }}
             transition={{ duration: 0.3 }}
+            onClick={toggleFoldState}
+            tabIndex={0}
+            role="button"
+            aria-label={isFolded ? "Open FAQ" : "Close FAQ"}
           >
             <Box
               display="grid"
@@ -484,6 +509,7 @@ const DesktopFoldableFAQ: React.FC<{
                     mt={4}
                     color="gray.500"
                     fontSize="md"
+                    textAlign="center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: [0.7, 1, 0.7],
@@ -500,7 +526,10 @@ const DesktopFoldableFAQ: React.FC<{
                       y: { duration: 0.5, delay: 0.2 }
                     }}
                   >
-                    Drag to open →
+                    Click or drag to open →<br />
+                    <Text as="span" fontSize="sm" opacity={0.8}>
+                      Press Space or Enter
+                    </Text>
                   </MotionText>
                 </MotionBox>
               )}
@@ -527,10 +556,27 @@ const MobileFoldableFAQ: React.FC<{
 
   const [isFolded, setIsFolded] = useState(true);
 
+  const toggleFoldState = () => {
+    const targetValue = isFolded ? maxDrag : 0;
+    yDrag.set(targetValue);
+  };
+
   useMotionValueEvent(yDrag, "change", (y) => {
     if (y > maxDrag * 0.7 && isFolded) setIsFolded(false);
     if (y < maxDrag * 0.3 && !isFolded) setIsFolded(true);
   });
+
+  useEffect(() => {
+    const handleKeyPress = (event: KeyboardEvent) => {
+      if (event.code === "Space" || event.code === "Enter") {
+        event.preventDefault();
+        toggleFoldState();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [isFolded]);
 
   const stackEffect = [
     { y: -120, scale: 0.85, rotateX: 20, opacity: 0.6 },
@@ -540,7 +586,6 @@ const MobileFoldableFAQ: React.FC<{
     { y: 120, scale: 0.85, rotateX: -20, opacity: 0.6 }
   ];
 
-  // Create transforms for each panel individually
   const panel0Transforms = {
     y: useTransform(ySpring, [0, maxDrag], [stackEffect[0].y, 0]),
     scale: useTransform(ySpring, [0, maxDrag], [stackEffect[0].scale, 1]),
@@ -614,7 +659,6 @@ const MobileFoldableFAQ: React.FC<{
 
   return (
     <ChakraProvider theme={theme} resetCSS>
-      {/* FIXED: Added justify="center" for proper centering */}
       <Flex
         w="100%"
         h="100vh"
@@ -635,6 +679,7 @@ const MobileFoldableFAQ: React.FC<{
           transition={{ type: "spring", stiffness: 300, damping: 25 }}
         >
           <MotionBox
+            as="button"
             drag="y"
             dragConstraints={{ top: 0, bottom: maxDrag }}
             dragElastic={0.15}
@@ -650,6 +695,11 @@ const MobileFoldableFAQ: React.FC<{
             }}
             cursor="grab"
             _active={{ cursor: "grabbing" }}
+            _hover={{
+              boxShadow: isFolded
+                ? "0 12px 30px -6px rgba(0, 0, 0, 0.15), 0 12px 12px -6px rgba(0, 0, 0, 0.06)"
+                : undefined
+            }}
             position="relative"
             borderRadius="xl"
             boxShadow="2xl"
@@ -661,8 +711,9 @@ const MobileFoldableFAQ: React.FC<{
                 : "0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.05)"
             }}
             transition={{ duration: 0.3 }}
+            onClick={toggleFoldState}
+            aria-label={isFolded ? "Open FAQ" : "Close FAQ"}
           >
-            {/* Panels container - uses grid layout like desktop */}
             <Box
               display="grid"
               gridTemplateRows={`repeat(${faqItems.length}, 1fr)`}
@@ -792,7 +843,6 @@ const MobileFoldableFAQ: React.FC<{
               })}
             </Box>
 
-            {/* Folded state overlay */}
             <AnimatePresence>
               {isFolded && (
                 <MotionBox
@@ -837,6 +887,7 @@ const MobileFoldableFAQ: React.FC<{
                     color="gray.500"
                     fontSize="sm"
                     fontWeight="medium"
+                    textAlign="center"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{
                       opacity: [0.7, 1, 0.7],
@@ -855,7 +906,10 @@ const MobileFoldableFAQ: React.FC<{
                       }
                     }}
                   >
-                    Swipe down to open ↓
+                    Tap or swipe down to open ↓<br />
+                    <Text as="span" fontSize="xs" opacity={0.8}>
+                      Press Space or Enter
+                    </Text>
                   </MotionText>
                 </MotionBox>
               )}
