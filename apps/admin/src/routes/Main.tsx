@@ -6,6 +6,10 @@ import Navbar from "@/components/Navbar";
 import { Role } from "@rp/shared";
 import Unauthorized from "@/components/Unauthorized";
 import Login from "@/components/Login";
+import {
+  ColorThemeProvider,
+  useColorTheme
+} from "@/contexts/ColorThemeContext";
 
 export type MainContext = {
   displayName: string;
@@ -13,10 +17,11 @@ export type MainContext = {
   authorized: boolean;
 };
 
-const Main = () => {
+const MainContent = () => {
   const [displayName, setDisplayName] = useState<string>("");
   const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
+  const { currentProfile } = useColorTheme();
 
   useEffect(() => {
     if (!localStorage.getItem("jwt")) {
@@ -56,9 +61,9 @@ const Main = () => {
       minH="100vh"
       display="flex"
       flexDir={{ base: "column", md: "row" }}
-      bgGradient={"linear-gradient(to-r, #805AD550, #38BDF850)"}
+      bgGradient={currentProfile.gradient}
     >
-      <Navbar roles={roles} loading={loading} />
+      <Navbar roles={roles} loading={loading} displayName={displayName} />
       <Box
         mt={{ base: "100px", md: "0" }}
         ml={{ base: "0", md: "max(12vw, 300px)" }}
@@ -88,6 +93,14 @@ const Main = () => {
         </Box>
       )}
     </Box>
+  );
+};
+
+const Main = () => {
+  return (
+    <ColorThemeProvider>
+      <MainContent />
+    </ColorThemeProvider>
   );
 };
 
