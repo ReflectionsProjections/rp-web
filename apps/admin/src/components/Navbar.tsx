@@ -23,7 +23,7 @@ import {
   Badge
 } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
-import rpLogo from "../assets/rp_logo.svg";
+import rpLogo from "/rp_logo.svg";
 import { ReactNode, useEffect, useState } from "react";
 import "../App.css";
 import { useMirrorStyles } from "@/styles/Mirror";
