@@ -1,5 +1,9 @@
 import { Event, EventType } from "@rp/shared";
 import * as yup from "yup";
+import moment from "moment-timezone";
+
+// Set timezone to Chicago (Central Time)
+moment.tz.setDefault("America/Chicago");
 
 export type EventFormValues = Omit<Event, "eventId" | "attendanceCount">;
 
@@ -22,8 +26,11 @@ export const EventFormSchema: yup.Schema<EventFormValues> = yup.object({
 export const EventFormInitialValues: EventFormValues = {
   name: "",
   isVirtual: true,
-  startTime: "",
-  endTime: "",
+  startTime: moment.tz("America/Chicago").format("YYYY-MM-DDTHH:mm"),
+  endTime: moment
+    .tz("America/Chicago")
+    .add(1, "hour")
+    .format("YYYY-MM-DDTHH:mm"),
   points: 0,
   description: "",
   imageUrl: "",

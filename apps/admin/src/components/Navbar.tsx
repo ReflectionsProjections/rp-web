@@ -16,15 +16,21 @@ import {
   VStack,
   Portal,
   Image,
-  HStack
+  HStack,
+  Divider,
+  Text,
+  useToast,
+  Badge
 } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
-import rpLogo from "../assets/rp_logo.svg";
+import rpLogo from "/rp_logo.svg";
 import { ReactNode, useEffect, useState } from "react";
 import "../App.css";
 import { useMirrorStyles } from "@/styles/Mirror";
 import StatusMonitor from "./StatusMonitor";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { MdDarkMode, MdLightMode, MdPalette } from "react-icons/md";
+import ColorProfileSelector from "./ColorProfileSelector";
+import { useColorTheme } from "@/contexts/ColorThemeContext";
 
 const linkMap = {
   Dashboard: "/",
@@ -54,13 +60,46 @@ const getLinks = (roles: string[], loading: boolean): string[] => {
   return [];
 };
 
-const Settings = () => {
+const Settings = ({ displayName }: { displayName?: string }) => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const { currentProfile, isForcedMode } = useColorTheme();
   const jwt = localStorage.getItem("jwt");
+  const {
+    isOpen: isColorMenuOpen,
+    onOpen: onColorMenuOpen,
+    onClose: onColorMenuClose
+  } = useDisclosure();
+  const borderColor = useColorModeValue("white", "gray.800");
+  const toast = useToast();
 
   const signOut = () => {
     localStorage.removeItem("jwt");
     window.location.reload();
+  };
+
+  const copyJWTToClipboard = () => {
+    if (jwt) {
+      navigator.clipboard
+        .writeText(jwt)
+        .then(() => {
+          toast({
+            title: "JWT Copied!",
+            description: "JWT has been copied to your clipboard.",
+            status: "success",
+            duration: 3000,
+            isClosable: true
+          });
+        })
+        .catch(() => {
+          toast({
+            title: "Copy Failed",
+            description: "Failed to copy JWT to clipboard.",
+            status: "error",
+            duration: 3000,
+            isClosable: true
+          });
+        });
+    }
   };
 
   return (
@@ -74,15 +113,48 @@ const Settings = () => {
             cursor={"pointer"}
             w="fit-content"
             h="fit-content"
+            position="relative"
           >
             <Avatar
               size={"md"}
-              src={"https://cdn-icons-png.freepik.com/512/8742/8742495.png"}
+              name={typeof displayName === "string" ? displayName : "User"}
+            />
+            {/* Color theme indicator */}
+            <Box
+              position="absolute"
+              bottom="0"
+              right="0"
+              w="12px"
+              h="12px"
+              borderRadius="full"
+              bg={currentProfile.secondary}
+              bgGradient={currentProfile.gradient}
+              border="2px solid"
+              borderColor={borderColor}
+              boxShadow="sm"
+              transition="all 0.2s ease"
+              _hover={{
+                transform: "scale(1.2)",
+                boxShadow: "md"
+              }}
             />
           </MenuButton>
           <Portal>
             <MenuList>
+              <MenuItem onClick={onColorMenuOpen}>
+                <HStack spacing={2}>
+                  <MdPalette />
+                  <Text>Color Theme</Text>
+                  {isForcedMode && (
+                    <Badge size="sm" colorScheme="orange">
+                      Fixed
+                    </Badge>
+                  )}
+                </HStack>
+              </MenuItem>
+              <Divider />
               <MenuItem onClick={signOut}>Sign Out</MenuItem>
+              <MenuItem onClick={copyJWTToClipboard}>Copy JWT</MenuItem>
             </MenuList>
           </Portal>
         </Menu>
@@ -94,7 +166,29 @@ const Settings = () => {
         size="xl"
         rounded={"full"}
         onClick={toggleColorMode}
+        isDisabled={isForcedMode}
+        opacity={isForcedMode ? 0.5 : 1}
+        title={
+          isForcedMode
+            ? "Color mode is fixed by current theme"
+            : "Toggle dark mode"
+        }
       />
+
+      {/* Color Profile Menu */}
+      <Menu isOpen={isColorMenuOpen} onClose={onColorMenuClose}>
+        <MenuButton
+          as={Button}
+          position="absolute"
+          opacity={0}
+          pointerEvents="none"
+        />
+        <Portal>
+          <MenuList>
+            <ColorProfileSelector onClose={onColorMenuClose} />
+          </MenuList>
+        </Portal>
+      </Menu>
     </HStack>
   );
 };
@@ -102,9 +196,10 @@ const Settings = () => {
 type NavbarProps = {
   roles: string[];
   loading: boolean;
+  displayName?: string;
 };
 
-const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
+const Navbar: React.FC<NavbarProps> = ({ roles, loading, displayName }) => {
   const [inView, setInView] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
@@ -191,7 +286,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
       <Flex
         h="100%"
         w="100%"
-        gap={{ md: 16 }}
+        gap={{ md: 12 }}
         maxH={{ base: "calc(100px - 42px)", md: "100%" }}
         p={0}
         flexDir={{ base: "row", md: "column" }}
@@ -236,7 +331,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
           justifyContent="space-evenly"
           display={{ base: "none", md: "flex" }}
         >
-          <Settings />
+          <Settings displayName={displayName} />
           <StatusMonitor />
         </VStack>
       </Flex>
@@ -263,7 +358,7 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading }) => {
             style={{ marginTop: "auto" }}
           >
             <StatusMonitor />
-            <Settings />
+            <Settings displayName={displayName} />
           </HStack>
         </VStack>
       )}

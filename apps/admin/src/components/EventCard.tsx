@@ -11,7 +11,7 @@ import {
   Image,
   Text
 } from "@chakra-ui/react";
-import rpLogo from "../assets/rp_logo.svg";
+import rpLogo from "/rp_logo.svg";
 import { Event } from "@rp/shared";
 import moment from "moment";
 
