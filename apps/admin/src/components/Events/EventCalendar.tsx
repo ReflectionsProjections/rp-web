@@ -52,6 +52,8 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const hoverBg = useColorModeValue("gray.50", "gray.700");
   const timeSlotColor = useColorModeValue("gray.600", "gray.300");
+  const TIME_SLOT_HEIGHT = 40;
+  const ROW_SPACING = 4;
 
   // Pre-calculate event colors for different event types
   const eventColors = {
@@ -143,21 +145,6 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
         // Calculate row span based on actual duration
         const rowSpan = Math.max(1, endSlot - startSlot);
 
-        // Debug logging for event time calculations
-        console.log(`Event: ${event.name}`, {
-          startTime: event.startTime,
-          endTime: event.endTime,
-          startHour: startMoment.hour(),
-          startMinute: startMoment.minute(),
-          endHour: endMoment.hour(),
-          endMinute: endMoment.minute(),
-          startSlot,
-          endSlot,
-          rowSpan,
-          expectedHeight: `${rowSpan * 40 - 4}px`, // Half the height since we have twice as many slots
-          duration: `${endMoment.diff(startMoment, "minutes")} minutes`
-        });
-
         return {
           ...event,
           startSlot,
@@ -225,10 +212,6 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
       isVisible: event.isVisible,
       attendanceCount: event.attendanceCount
     };
-
-    // Debug logging
-    console.log("Original calendar event:", event);
-    console.log("Cleaned event for modal:", originalEvent);
 
     setSelectedEvent(originalEvent);
     onOpen();
@@ -334,7 +317,7 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
                           top="2px"
                           left={`${(event.column * 100) / Math.max(1, Math.max(...dateEvents.map((e) => e.column + 1)))}%`}
                           width={`${100 / Math.max(1, Math.max(...dateEvents.map((e) => e.column + 1)))}%`}
-                          height={`${event.rowSpan * 40 - 4}px`}
+                          height={`${event.rowSpan * TIME_SLOT_HEIGHT - ROW_SPACING}px`}
                           p={2}
                           borderRadius="md"
                           cursor="pointer"
