@@ -17,6 +17,7 @@
   "peerDependencies": {
     "@chakra-ui/icons": "*",
     "@chakra-ui/react": "*",
+    "formik": "*",
     "react": "*",
     "react-dom": "*"
   },

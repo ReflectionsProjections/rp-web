@@ -70,20 +70,20 @@ export type Event = {
 };
 
 export type RegistrationDraft = {
-  name?: string;
-  dietaryRestrictions?: string[];
-  allergies?: string[];
-  school?: string;
-  educationLevel?: string;
-  major?: string;
-  graduationYear?: string;
-  opportunities?: string[];
-  hasResume?: boolean;
-  personalLinks?: string[];
-  gender?: string;
-  ethnicity?: string[];
-  howDidYouHear?: string[];
-  tags?: string[];
+  name: string;
+  dietaryRestrictions: string[];
+  allergies: string[];
+  school: string;
+  educationLevel: string;
+  major: string;
+  graduationYear: string;
+  opportunities: string[];
+  hasResume: boolean;
+  personalLinks: string[];
+  gender: string;
+  ethnicity: string[];
+  howDidYouHear: string[];
+  tags: string[];
 };
 
 export type Registration = {

@@ -1269,7 +1269,7 @@ __metadata:
     eslint: "npm:*"
     eslint-plugin-react-hooks: "npm:*"
     eslint-plugin-react-refresh: "npm:*"
-    formik: "npm:^2.4.6"
+    formik: "npm:*"
     framer-motion: "npm:*"
     globals: "npm:*"
     lottie-react: "npm:^2.4.1"
@@ -1375,6 +1375,7 @@ __metadata:
   peerDependencies:
     "@chakra-ui/icons": "*"
     "@chakra-ui/react": "*"
+    formik: "*"
     react: "*"
     react-dom: "*"
   languageName: unknown
@@ -1399,6 +1400,7 @@ __metadata:
     eslint: "npm:*"
     eslint-plugin-react-hooks: "npm:*"
     eslint-plugin-react-refresh: "npm:*"
+    formik: "npm:*"
     framer-motion: "npm:*"
     globals: "npm:*"
     prettier: "npm:*"
@@ -3024,7 +3026,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"formik@npm:^2.4.6":
+"formik@npm:2.4.6":
   version: 2.4.6
   resolution: "formik@npm:2.4.6"
   dependencies:
