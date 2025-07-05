@@ -32,8 +32,8 @@ const FormRadioGroup = <
     <Field name={name}>
       {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => {
         const value = field.value;
-        const isCustom = !options.includes(value);
-        const radioValue = isCustom ? "__other__" : value;
+        const isCustom = !options.includes(value) && value !== "";
+        const radioValue = isCustom ? "other__" : value;
 
         return (
           <FormControl
@@ -45,11 +45,14 @@ const FormRadioGroup = <
             <RadioGroup
               value={radioValue}
               onChange={(value) => {
-                if (value !== "__other__") {
-                  void form.setFieldValue(name, value);
-                } else if (!isCustom) {
-                  void form.setFieldValue(name, "");
-                }
+                void (async () => {
+                  if (value === "other__") {
+                    await form.setFieldValue(name, "_");
+                  } else {
+                    await form.setFieldValue(name, value);
+                  }
+                  await form.setFieldTouched(name, true);
+                })();
               }}
             >
               <VStack align="left">
@@ -59,21 +62,24 @@ const FormRadioGroup = <
                   </Radio>
                 ))}
                 {customLabel && (
-                  <Radio key="__other__" value="__other__">
+                  <Radio key="other__" value="other__">
                     {customLabel}
                   </Radio>
                 )}
               </VStack>
             </RadioGroup>
 
-            {radioValue === "__other__" && (
+            {radioValue === "other__" && (
               <Box mt={2}>
                 <Input
                   placeholder="Please specify"
-                  value={isCustom ? value.slice(1) : ""}
+                  value={value !== "other__" ? value.slice(1) : ""}
                   onChange={(e) => {
                     const custom = `_${e.target.value}`;
-                    void form.setFieldValue(name, custom);
+                    void (async () => {
+                      await form.setFieldValue(name, custom);
+                      await form.setFieldTouched(name, true);
+                    });
                   }}
                 />
               </Box>

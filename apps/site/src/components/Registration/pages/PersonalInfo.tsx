@@ -11,6 +11,31 @@ const PersonalInfo = () => (
       isRequired
     />
 
+    <FormRadioGroup<RegistrationValues, "gender">
+      name="gender"
+      label="Gender"
+      options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
+      isRequired
+      customLabel="Prefer to self-describe"
+    />
+
+    <FormCheckboxGroup<RegistrationValues, "ethnicity">
+      name="ethnicity"
+      label="Race and/or Ethnicity"
+      options={[
+        "American Indian or Alaska Native",
+        "Asian",
+        "Black or African American",
+        "Hispanic or Latino/a/x",
+        "Middle Eastern or North African",
+        "Native Hawaiian or Other Pacific Islander",
+        "White",
+        "Prefer not to say"
+      ]}
+      isRequired
+      customLabel="Other"
+    />
+
     <FormCheckboxGroup<RegistrationValues, "dietaryRestrictions">
       name="dietaryRestrictions"
       label="Dietary Restrictions"
@@ -39,31 +64,6 @@ const PersonalInfo = () => (
         "Fish",
         "Sesame"
       ]}
-      customLabel="Other"
-    />
-
-    <FormRadioGroup<RegistrationValues, "gender">
-      name="gender"
-      label="Gender"
-      options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
-      isRequired
-      customLabel="Prefer to self-describe"
-    />
-
-    <FormCheckboxGroup<RegistrationValues, "ethnicity">
-      name="ethnicity"
-      label="Race and/or Ethnicity"
-      options={[
-        "American Indian or Alaska Native",
-        "Asian",
-        "Black or African American",
-        "Hispanic or Latino/a/x",
-        "Middle Eastern or North African",
-        "Native Hawaiian or Other Pacific Islander",
-        "White",
-        "Prefer not to say"
-      ]}
-      isRequired
       customLabel="Other"
     />
   </VStack>

@@ -42,20 +42,21 @@ const FormCheckboxGroup = <
         );
 
         const checkboxValues = showCustomInput
-          ? [...baseCheckboxValues, "__other__"]
+          ? [...baseCheckboxValues, "other__"]
           : baseCheckboxValues;
 
-        const updateValues = (values: string[]) => {
-          const base = values.filter((value) => value !== "__other__");
+        const updateValues = async (values: string[]) => {
+          const base = values.filter((value) => value !== "other__");
 
-          void form.setFieldValue(
+          await form.setFieldValue(
             name,
-            values.includes("__other__")
+            values.includes("other__")
               ? customValue
                 ? [...base, customValue]
                 : [...base, ""]
               : base
           );
+          await form.setFieldTouched(name, true);
         };
 
         return (
@@ -67,16 +68,16 @@ const FormCheckboxGroup = <
 
             <CheckboxGroup
               value={checkboxValues}
-              onChange={(values: string[]) => updateValues(values)}
+              onChange={(values: string[]) => void updateValues(values)}
             >
               <VStack align="left">
                 {options.map((option) => (
-                  <Checkbox key={option} value={option}>
+                  <Checkbox key={option} value={option} isRequired={false}>
                     {option}
                   </Checkbox>
                 ))}
                 {
-                  <Checkbox key="__other__" value="__other__">
+                  <Checkbox key="other__" value="other__" isRequired={false}>
                     {customLabel}
                   </Checkbox>
                 }
@@ -88,12 +89,16 @@ const FormCheckboxGroup = <
                 <Input
                   placeholder="Please specify"
                   value={customValue.slice(1) || ""}
+                  isRequired={true}
                   onChange={(e) => {
                     const custom = `_${e.target.value}`;
-                    void form.setFieldValue(name, [
-                      ...baseCheckboxValues,
-                      custom
-                    ]);
+                    void (async () => {
+                      await form.setFieldValue(name, [
+                        ...baseCheckboxValues,
+                        custom
+                      ]);
+                      await form.setFieldTouched(name, true);
+                    })();
                   }}
                 />
               </Box>
