@@ -23,6 +23,7 @@
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "framer-motion": "11.3.23",
+    "formik": "2.4.6",
     "@eslint/js": "^9.23.0",
     "@types/node": "^20.12.7",
     "@types/react": "^18.2.66",

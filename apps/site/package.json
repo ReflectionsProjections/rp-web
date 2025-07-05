@@ -16,6 +16,7 @@
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@rp/shared": "*",
+    "formik": "*",
     "framer-motion": "*",
     "react": "*",
     "react-dom": "*"
