@@ -15,29 +15,35 @@ import {
   MenuButton,
   MenuItem,
   MenuList,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   Spacer,
   Text,
   Tooltip,
   useColorMode,
   useColorModeValue,
+  useDisclosure,
   useMediaQuery,
-  useToast
+  useToast,
+  VStack
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BiSelectMultiple } from "react-icons/bi";
 import { BsDownload, BsGrid, BsList } from "react-icons/bs";
 import { TiDocumentDelete } from "react-icons/ti";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
 import { majors as allMajors } from "../components/majors";
 import ResumeGrid from "./ResumeGrid";
-import ResumeList from "./ResumeList";
+import ResumeList, { SingleCol } from "./ResumeList";
 
-import axios from "axios";
-
+import { Config } from "@/config";
 import api from "@/util/api";
-import { path } from "@rp/shared";
+import { downloadResumes } from "@/util/download-functions";
 import { saveAs } from "file-saver";
-import JSZip from "jszip";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import { useNavigate, useParams } from "react-router-dom";
+import ResumePopupModal from "./ResumePopupModal";
 
 export interface Resume {
   id: string;
@@ -49,36 +55,20 @@ export interface Resume {
   portfolios?: Array<string>;
 }
 
-// interface ResumeLink {
-//     url: string;
-// }
+const RESULTS_PER_PAGE = 20;
 
 export function ResumeBook() {
+  const { resumeId } = useParams<{ resumeId?: string }>();
+
   const toast = useToast();
   const { toggleColorMode } = useColorMode();
 
-  // const resumes: Resume[] = [
-  // { id: '1', name: 'Finn the Human', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Professional Furry', graduationYear: '2022'},
-  // { id: '2', name: 'Jake the Dog', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Backend', graduationYear: '2023'},
-  // { id: '3', name: 'Princess Bubblegum', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Frontend', graduationYear: '2024'},
-  // { id: '4', name: 'Marceline the Vampire Queen', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Fullstack', graduationYear: '2025'},
-  // { id: '5', name: 'BMO', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'DevOps', graduationYear: '2026'},
-  // { id: '6', name: 'Princess Lumpy Space', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Designer', graduationYear: '2027'},
-  // { id: '7', name: 'Ice King', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Manager', graduationYear: '2028'},
-  // { id: '8', name: 'SpongeBob SquarePants', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'CEO', graduationYear: '2029'},
-  // { id: '9', name: 'Patrick Star', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'CTO', graduationYear: '2030'},
-  // { id: '10', name: 'Squidward Tentacles', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Sales', graduationYear: '2031'},
-  // { id: '11', name: 'Mr. Krabs', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Marketing', graduationYear: '2032'},
-  // { id: '12', name: 'Sandy Cheeks', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Pirate', graduationYear: '2033'},
-  // { id: '13', name: 'Plankton', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Musician', graduationYear: '2034'},
-  // { id: '14', name: 'Gary the Snail', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Rapper', graduationYear: '2035'},
-  // { id: '15', name: 'Pearl Krabs', imageUrl: 'https://icons.veryicon.com/png/o/miscellaneous/general-icon-library/resume-7.png', major: 'Singer', graduationYear: '2036'},
-  // Add more resumes here
-  // ];
+  const [loading, setLoading] = useState(false);
+
   const [page, setPage] = useState(1);
-  const [pageSize, setPageSize] = useState(1);
+  const [displayedPage, setDisplayedPage] = useState("1");
+
   const [resumes, setResumes] = useState<Resume[]>([]);
-  const [filteredResumes, setFilteredResumes] = useState<Resume[]>([]);
   const [showList, setShowList] = useState(true);
   const [selectedResumes, setSelectedResumes] = useState<string[]>([]);
   const [isMobile, setIsMobile] = useState(false);
@@ -86,17 +76,15 @@ export function ResumeBook() {
   const viewColor = useColorModeValue("200", "700");
   // const selectViewColor = useColorModeValue("gray.300","gray.600");
 
-  const [majors, setMajors] = useState<string[]>(allMajors);
-
-  const [degreeTypes, setDegreeTypes] = useState<string[]>([
+  const degreeTypes = [
     "Bachelor's",
     "Master's",
     "PhD",
     "Professional (JD/MD)",
     "Other"
-  ]);
+  ];
 
-  const [years, setYears] = useState<string[]>([
+  const years = [
     "Dec 2024",
     "May 2025",
     "Dec 2025",
@@ -108,13 +96,15 @@ export function ResumeBook() {
     "Dec 2028",
     "May 2029",
     "Dec 2029"
-  ]);
-  const [jobInterests, setJobInterests] = useState<string[]>([
+  ];
+
+  const jobInterests = [
     "SUMMER INTERNSHIP",
     "FALL INTERNSHIP",
     "SPRING INTERNSHIP",
     "FULL TIME"
-  ]);
+  ];
+
   const [selectedMajors, setSelectedMajors] = useState<string[]>([]);
   const [selectedDegrees, setSelectedDegrees] = useState<string[]>([]);
   const [selectedYears, setSelectedYears] = useState<string[]>([]);
@@ -122,21 +112,307 @@ export function ResumeBook() {
     []
   );
 
-  const handleLoadOptions = () => {
-    api
-      .get("/registration/filter/filter_value_counts")
-      .then((response) => {
-        const { graduations, majors, jobInterests, degrees } = response.data;
-        setYears(Object.keys(graduations));
-        setMajors(Object.keys(majors));
-        setJobInterests(Object.keys(jobInterests));
-        setDegreeTypes(Object.keys(degrees));
+  const [sortByColumn, setSortByColumn] = useState<SingleCol | undefined>(
+    undefined
+  );
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+
+  const [queryName, setQueryName] = useState("");
+
+  const handleToggleSort = (column: SingleCol) => {
+    if (sortByColumn === column) {
+      if (sortDirection === "asc") {
+        setSortDirection("desc");
+      } else if (sortDirection === "desc") {
+        setSortDirection("asc");
+        setSortByColumn(undefined);
+      }
+    } else {
+      setSortByColumn(column);
+      setSortDirection("asc");
+    }
+  };
+
+  const { onOpen, onClose } = useDisclosure();
+  const [selectedResume, setSelectedResume] = useState<Resume | null>(null);
+
+  const navigate = useNavigate();
+  const handleOpenResume = (resume: Resume) => {
+    setSelectedResume(resume);
+    navigate(`/resume-book/${resume.id}`);
+    onOpen();
+  };
+
+  const handleCloseResume = () => {
+    setSelectedResume(null);
+    navigate(`/resume-book`);
+    onClose();
+  };
+
+  const getResumesFiltered = (filterBy: {
+    major: boolean;
+    degree: boolean;
+    graduationYear: boolean;
+    jobInterest: boolean;
+    filterName?: string;
+    sortCol?: SingleCol;
+    sortDirection?: "asc" | "desc";
+  }) => {
+    const lowerCasedSelectedMajors = new Set(
+      selectedMajors.map((major) => major.toLowerCase())
+    );
+    const lowerCasedSelectedDegrees = new Set(
+      selectedDegrees.map((degree) => degree.toLowerCase())
+    );
+    const lowerCasedSelectedYears = new Set(
+      selectedYears.map((year) => year.toLowerCase())
+    );
+    const lowerCasedSelectedJobInterests = new Set(
+      selectedJobInterests.map((jobInterest) => jobInterest.toLowerCase())
+    );
+
+    return resumes
+      .filter((resume) => {
+        const matchesMajor =
+          selectedMajors.length === 0 ||
+          (resume.major &&
+            lowerCasedSelectedMajors.has(resume.major.toLowerCase()));
+
+        const matchesDegree =
+          selectedDegrees.length === 0 ||
+          (resume.degree &&
+            lowerCasedSelectedDegrees.has(resume.degree.toLowerCase()));
+
+        const matchesYear =
+          selectedYears.length === 0 ||
+          (resume.graduationYear &&
+            lowerCasedSelectedYears.has(resume.graduationYear.toLowerCase()));
+
+        const matchesJobInterest =
+          selectedJobInterests.length === 0 ||
+          (resume.jobInterest &&
+            resume.jobInterest.some((interest) =>
+              lowerCasedSelectedJobInterests.has(interest.toLowerCase())
+            ));
+
+        return (
+          (matchesMajor || !filterBy.major) &&
+          (matchesDegree || !filterBy.degree) &&
+          (matchesYear || !filterBy.graduationYear) &&
+          (matchesJobInterest || !filterBy.jobInterest) &&
+          (filterBy.filterName
+            ? resume.name
+                .toLowerCase()
+                .includes(filterBy.filterName.toLowerCase())
+            : true)
+        );
       })
-      .catch((error) => {
-        console.error("Error in option loading request:", error);
-        showToast("Failed to load options. Please refresh the page.");
+      .sort((a, b) => {
+        if (filterBy.sortCol) {
+          const aValue = a[filterBy.sortCol as keyof Resume];
+          const bValue = b[filterBy.sortCol as keyof Resume];
+
+          if (aValue === null || aValue === undefined) return 1;
+          if (bValue === null || bValue === undefined) return -1;
+
+          if (typeof aValue === "string" && typeof bValue === "string") {
+            return filterBy.sortDirection === "asc"
+              ? aValue.localeCompare(bValue)
+              : bValue.localeCompare(aValue);
+          } else if (typeof aValue === "number" && typeof bValue === "number") {
+            return filterBy.sortDirection === "asc"
+              ? aValue - bValue
+              : bValue - aValue;
+          }
+        }
+        return 0;
       });
   };
+
+  const allFilteredResumes = useMemo(() => {
+    return getResumesFiltered({
+      major: true,
+      degree: true,
+      graduationYear: true,
+      jobInterest: true,
+      sortCol: sortByColumn,
+      sortDirection: sortDirection,
+      filterName: queryName
+    });
+  }, [
+    resumes,
+    selectedMajors,
+    selectedDegrees,
+    selectedYears,
+    selectedJobInterests,
+    sortByColumn,
+    sortDirection,
+    queryName
+  ]);
+
+  const [initialized, setInitialized] = useState(false);
+
+  // TODO: Remove
+
+  useEffect(() => {
+    setIsMobile(false);
+  }, []);
+
+  useEffect(() => {
+    if (!resumes) {
+      return;
+    }
+    if (resumes.length === 0) {
+      return;
+    }
+
+    if (!initialized) {
+      if (resumeId) {
+        const selectedResume = resumes.find((resume) => resume.id === resumeId);
+        console.log("selectedResume", selectedResume);
+        if (!selectedResume) {
+          toast({
+            title: "Resume not found",
+            status: "error",
+            duration: 9000,
+            isClosable: true
+          });
+          return;
+        }
+        handleOpenResume(selectedResume);
+      }
+
+      setInitialized(true);
+    }
+  }, [resumeId, resumes]);
+
+  const majorToMajorWithCount = useMemo(() => {
+    const filteredResumes = getResumesFiltered({
+      major: false,
+      degree: true,
+      graduationYear: true,
+      jobInterest: true
+    });
+
+    const majorCounts = filteredResumes.reduce(
+      (acc, resume) => {
+        if (resume.major) {
+          acc[resume.major] = (acc[resume.major] || 0) + 1;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return allMajors.reduce(
+      (acc, major) => ({
+        ...acc,
+        [major]: `${major} (${majorCounts[major] || 0})`
+      }),
+      {} as Record<string, string>
+    );
+  }, [allFilteredResumes]);
+
+  const degreesWithCounts = useMemo(() => {
+    const filteredResumes = getResumesFiltered({
+      major: true,
+      degree: false,
+      graduationYear: true,
+      jobInterest: true
+    });
+
+    const degreeCounts = filteredResumes.reduce(
+      (acc, resume) => {
+        if (resume.degree) {
+          acc[resume.degree] = (acc[resume.degree] || 0) + 1;
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return degreeTypes.reduce(
+      (acc, degree) => ({
+        ...acc,
+        [degree]: `${degree} (${degreeCounts[degree] || 0})`
+      }),
+      {} as Record<string, string>
+    );
+  }, [allFilteredResumes]);
+
+  const yearsWithCounts = useMemo(() => {
+    const filteredResumes = getResumesFiltered({
+      major: true,
+      degree: true,
+      graduationYear: false,
+      jobInterest: true
+    });
+
+    const yearCounts = filteredResumes.reduce(
+      (acc, resume) => {
+        if (resume.graduationYear) {
+          acc[resume.graduationYear] = (acc[resume.graduationYear] || 0) + 1;
+        }
+
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+    return years.reduce(
+      (acc, year) => ({
+        ...acc,
+        [year]: `${year} (${yearCounts[year] || 0})`
+      }),
+      {} as Record<string, string>
+    );
+  }, [allFilteredResumes]);
+
+  const jobInterestsWithCounts = useMemo(() => {
+    const filteredResumes = getResumesFiltered({
+      major: true,
+      degree: true,
+      graduationYear: true,
+      jobInterest: false
+    });
+
+    const jobInterestCounts = filteredResumes.reduce(
+      (acc, resume) => {
+        if (resume.jobInterest) {
+          resume.jobInterest.forEach((interest) => {
+            acc[interest] = (acc[interest] || 0) + 1;
+          });
+        }
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+
+    return jobInterests.reduce(
+      (acc, interest) => {
+        const interestCapitalCased = interest
+          .split(" ")
+          .map(
+            (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
+          )
+          .join(" ");
+        return {
+          ...acc,
+          [interest]: `${interestCapitalCased} (${jobInterestCounts[interest] || 0})`
+        };
+      },
+      {} as Record<string, string>
+    );
+  }, [allFilteredResumes]);
+
+  const pageSize = useMemo(() => {
+    return Math.ceil(allFilteredResumes.length / RESULTS_PER_PAGE);
+  }, [allFilteredResumes.length]);
+
+  const filteredResumes = useMemo(() => {
+    const startIndex = (page - 1) * RESULTS_PER_PAGE;
+    const endIndex = startIndex + RESULTS_PER_PAGE;
+    return allFilteredResumes.slice(startIndex, endIndex);
+  }, [page, allFilteredResumes]);
 
   const showToast = (message: string) => {
     toast({
@@ -149,10 +425,10 @@ export function ResumeBook() {
 
   const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPageValue = e.target.value;
+    setDisplayedPage(newPageValue);
 
     // Allow the input to be empty (to handle backspace)
     if (newPageValue === "") {
-      setPage(page); // Set to a temporary state while the user is typing
       return;
     }
 
@@ -166,6 +442,7 @@ export function ResumeBook() {
   const handleNext = () => {
     if (page < pageSize) {
       setPage(page + 1);
+      setDisplayedPage((page + 1).toString());
     }
   };
 
@@ -173,25 +450,9 @@ export function ResumeBook() {
   const handlePrevious = () => {
     if (page > 1) {
       setPage(page - 1);
+      setDisplayedPage((page - 1).toString());
     }
   };
-
-  // const filterResumes = useCallback(() => {
-  //     let filtered = resumes;
-  //     if (selectedYears.length > 0) {
-  //         filtered = filtered.filter(resume => selectedYears.includes(resume.graduationYear?.toLowerCase()));
-  //     }
-  //     if (selectedDegrees.length > 0) {
-  //         filtered = filtered.filter(resume => selectedDegrees.includes(resume.degree?.toLowerCase()));
-  //     }
-  //     if (selectedMajors.length > 0) {
-  //         filtered = filtered.filter(resume => selectedMajors.includes(resume.major?.toLowerCase()));
-  //     }
-  //     if (selectedJobInterests.length > 0) {
-  //         filtered = filtered.filter(resume => resume.jobInterest.some(job => selectedJobInterests.includes(job.toLowerCase())));
-  //     }
-  //     setFilteredResumes(filtered);
-  // }, [selectedYears, selectedMajors, selectedDegrees, selectedJobInterests, resumes]);
 
   const toggleResume = (id: string) => {
     setSelectedResumes((prev) =>
@@ -209,250 +470,69 @@ export function ResumeBook() {
     }
   };
 
-  // const downloadFileFromS3 = async (s3Url: string) => {
-  //     try {
-  //       const response = await axios.get(s3Url, {
-  //         responseType: 'blob' // Ensure the response is a Blob
-  //       });
-
-  //       // Extract the filename from the Content-Disposition header or generate one
-  //       const contentDisposition = response.headers['content-disposition'];
-  //       let filename = 'downloaded-file';
-  //       if (contentDisposition) {
-  //         const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-  //         if (filenameMatch.length === 2) {
-  //           filename = filenameMatch[1];
-  //         }
-  //       }
-
-  //       saveAs(response.data, filename);
-  //     } catch (error) {
-  //         showToast("Failed to download resume. Please try again later.");
-  //     //   console.error('Error downloading the file:', error);
-  //     }
-  // };
-
-  const downloadResumes = async () => {
-    let totalErrorCount = 0;
-
-    try {
-      const response = await api.post("/s3/download/batch", {
-        userIds: selectedResumes
-      });
-
-      const { data: urls, errorCount } = response.data;
-      totalErrorCount += errorCount;
-
-      if (urls.length === 0) {
-        showToast("No resumes available for download.");
-        return;
-      }
-
-      if (urls.length === 1) {
-        // Single resume - download directly
-        try {
-          const fileResponse = await axios.get<unknown, { data: Blob }>(
-            urls[0] ?? "",
-            {
-              responseType: "blob"
-            }
-          );
-
-          const userId = getFileNameFromUrl(urls[0] ?? "").replace(".pdf", "");
-          const resume = filteredResumes.find((r) => r.id == userId);
-
-          if (resume === undefined) {
-            throw new Error("Resume not found in filteredResumes");
-          }
-
-          const fileName = cleanUpName(resume.name) + ".pdf";
-          saveAs(fileResponse.data, fileName);
-        } catch (error) {
-          totalErrorCount++;
-          console.error("Error downloading single resume:", error);
-        }
-      } else {
-        // Multiple resumes - create a zip file
-        const zip = new JSZip();
-        const failedDownloads = [];
-
-        for (const url of urls) {
-          try {
-            const userId = getFileNameFromUrl(url ?? "").replace(".pdf", "");
-            const resume = filteredResumes.find((r) => r.id == userId);
-            if (resume === undefined) {
-              throw new Error("Resume not found in filteredResumes");
-            }
-
-            const fileResponse = await axios.get<unknown, { data: Blob }>(
-              url ?? "",
-              { responseType: "blob" }
-            );
-            const fileName = cleanUpName(resume.name) + ".pdf";
-
-            zip.file(fileName, fileResponse.data);
-          } catch (error) {
-            totalErrorCount++;
-            failedDownloads.push(url);
-            console.error("Error downloading resume:", url, error);
-          }
-        }
-
-        if (Object.keys(zip.files).length > 0) {
-          try {
-            const content = await zip.generateAsync({ type: "blob" });
-            saveAs(content, "resumes.zip");
-          } catch (error) {
-            console.error("Error generating zip file:", error);
-            showToast(
-              "Failed to create zip file. Some resumes may not have been downloaded."
-            );
-          }
-        } else {
-          showToast("No resumes were successfully downloaded.");
-          return;
-        }
-
-        if (failedDownloads.length > 0) {
-          console.log("Failed downloads:", failedDownloads);
-        }
-      }
-
-      if (totalErrorCount > 0) {
-        showToast(`${totalErrorCount} resume(s) could not be downloaded.`);
-      }
-    } catch (error) {
-      console.error("Error in batch download request:", error);
-      showToast(
-        "Failed to initiate resume download(s). Please try again later."
-      );
-    }
+  const handleDownloadResumes = async () => {
+    await downloadResumes(filteredResumes, selectedResumes);
   };
 
-  const cleanUpName = (str: string): string => {
-    return (
-      str
-        .toLowerCase() // Convert the string to lowercase
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-        .replace(/\s+(\w)/g, (_, c) => c.toUpperCase()) // Capitalize the first letter of each word after whitespace
-        .replace(/\s+/g, "") // Remove any remaining whitespace
-        .replace(/^\w/, (c) => c.toUpperCase())
-    ); // Capitalize the first letter of the result
-  };
+  const downloadResumesCSV = (selected: boolean = false) => {
+    const csvContent = [
+      "Name,Major,Degree,Graduation Year,Job Interest,Portfolios,Resume Link"
+    ]
+      .concat(
+        allFilteredResumes
+          .filter((resume) => {
+            if (selected) {
+              return selectedResumes.includes(resume.id);
+            }
+            return true;
+          })
+          .map((resume) => {
+            const portfolios = resume.portfolios
+              ? resume.portfolios.join("; ")
+              : "";
+            return [
+              resume.name,
+              resume.major || "",
+              resume.degree || "",
+              resume.graduationYear || "",
+              resume.jobInterest.join("; "),
+              portfolios,
+              `${Config.RESUME_BOOK_URL}/resume-book/${resume.id}/download`
+            ].join(",");
+          })
+      )
+      .join("\n");
 
-  const getFileNameFromUrl = (url: string): string => {
-    const parts = url.split("/");
-    const temp = parts[parts.length - 1];
-    return temp.substring(0, temp.indexOf("?"));
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, "resumes.csv");
   };
 
   const getResumes = () => {
-    const requestBody: {
-      graduations?: string[];
-      degrees?: string[];
-      majors?: string[];
-      jobInterests?: string[];
-    } = {
-      // filter: {
-      //     hasResume: true
-      // },
-      // projection: [
-      //     { userId: 1 },
-      //     { name: 1 },
-      //     { major: 1 },
-      //     { graduation: 1 },
-      //     { degree: 1},
-      //     { jobInterest: 1 },
-      //     { university: 1 },
-      //     { dietaryRestrictions: 1 },
-      //     { hasResume: 1 }
-      // ]
-      // graduations: selectedYears,
-      // degrees: selectedDegrees,
-      // majors: selectedMajors,
-      // jobInterests: selectedJobInterests
-    };
-
-    if (selectedYears.length > 0) {
-      requestBody["graduations"] = [...selectedYears];
-    }
-    if (selectedDegrees.length > 0) {
-      requestBody["degrees"] = selectedDegrees;
-    }
-    if (selectedMajors.length > 0) {
-      requestBody["majors"] = selectedMajors;
-    }
-    if (selectedJobInterests.length > 0) {
-      requestBody["jobInterests"] = selectedJobInterests;
-    }
-
-    // axios.get(Config.API_BASE_URL + "/registration/filter", { headers, requestBody })
-
-    const params = new URLSearchParams();
-    // params.append('filter', JSON.stringify(requestBody.filter));
-    // params.append('projection', JSON.stringify(requestBody.projection));
-    if (selectedYears.length > 0) {
-      params.append("graduations", JSON.stringify(requestBody.graduations));
-    }
-    if (selectedDegrees.length > 0) {
-      params.append("degrees", JSON.stringify(requestBody.degrees));
-    }
-    if (selectedMajors.length > 0) {
-      params.append("majors", JSON.stringify(requestBody.majors));
-    }
-    if (selectedJobInterests.length > 0) {
-      params.append("jobInterests", JSON.stringify(requestBody.jobInterests));
-    }
-
+    setLoading(true);
     setResumes([]);
-    setFilteredResumes([]);
-
-    // axios.get(Config.API_BASE_URL + "/registration/filter/pagecount", { headers, params })
-    // .then(function (response) {
-    //     console.log(response.data);
-    //     setPageSize(response.data.pagecount);
-    // })
     api
-      .post("/registration/filter/pagecount", requestBody)
+      .get("/registration/all")
       .then(function (response) {
-        setPageSize(response.data.pagecount);
-        if (page > response.data.pagecount) {
-          setPage(1);
-        }
-      })
-      .catch(() => {});
-
-    api
-      .post(path("/registration/filter/:page", { page }), requestBody)
-      .then(function (response) {
-        const fetchedResumes = response.data.registrants.map((item) => ({
-          id: item.userId,
-          name: item.name,
-          major: item.major,
-          degree: item.degree,
-          graduationYear: item.graduation,
-          jobInterest: item.jobInterest,
-          portfolios: item.portfolios
-        }));
-
-        // console.log(fetchedResumes);
-
-        // Use a Set to ensure unique resumes
-        // const uniqueResumes = new Set([...resumes, ...fetchedResumes]);
-        // setResumes(Array.from(uniqueResumes));
-        // setFilteredResumes(Array.from(uniqueResumes));
-
-        console.log("fetchedResumes", fetchedResumes);
-
-        setResumes(fetchedResumes);
-        setFilteredResumes(fetchedResumes);
+        const resumes = response.data.registrants.map(
+          (registrant) =>
+            ({
+              id: registrant.userId,
+              name: registrant.name,
+              major: registrant.major,
+              degree: registrant.degree,
+              graduationYear: registrant.graduation,
+              jobInterest: registrant.jobInterest,
+              portfolios: registrant.portfolios
+            }) as Resume
+        );
+        setResumes(resumes);
+        setLoading(false);
       })
       .catch(function (error) {
-        // handle error
-        // console.log(error);
         showToast(
           `Error ${error}: Failed to fetch resumes - please sign in again`
         );
+        setLoading(false);
       });
   };
 
@@ -461,216 +541,379 @@ export function ResumeBook() {
     window.location.href = "/";
   };
 
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 550);
-    };
-
-    handleResize();
-
-    if (resumes.length === 0) {
-      getResumes();
+  const handleNextResume = () => {
+    const currentIndex = allFilteredResumes.findIndex(
+      (r) => r.id === selectedResume?.id
+    );
+    if (currentIndex < allFilteredResumes.length - 1) {
+      const nextResume = allFilteredResumes[currentIndex + 1];
+      handleOpenResume(nextResume);
+    } else {
+      showToast("No more resumes to view.");
     }
+  };
 
-    window.addEventListener("resize", handleResize);
+  const handlePreviousResume = () => {
+    const currentIndex = allFilteredResumes.findIndex(
+      (r) => r.id === selectedResume?.id
+    );
+    if (currentIndex > 0) {
+      const previousResume = allFilteredResumes[currentIndex - 1];
+      handleOpenResume(previousResume);
+    } else {
+      showToast("No previous resume to view.");
+    }
+  };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
-  }, []);
+  const numPrevious = useMemo(() => {
+    if (!selectedResume) {
+      return 0;
+    }
+    const currentIndex = allFilteredResumes.findIndex(
+      (r) => r.id === selectedResume.id
+    );
+    return currentIndex > 0 ? currentIndex : 0;
+  }, [selectedResume, allFilteredResumes]);
+
+  const numNext = useMemo(() => {
+    if (!selectedResume) {
+      return 0;
+    }
+    const currentIndex = allFilteredResumes.findIndex(
+      (r) => r.id === selectedResume.id
+    );
+    return currentIndex < allFilteredResumes.length - 1
+      ? allFilteredResumes.length - currentIndex - 1
+      : 0;
+  }, [selectedResume, allFilteredResumes]);
 
   useEffect(() => {
     getResumes();
-  }, [
-    page,
-    selectedYears,
-    selectedDegrees,
-    selectedMajors,
-    selectedJobInterests
-  ]);
-
-  // useEffect(() => {
-  //     // filterResumes();
-  //     getResumes();
-  // }, []);
+  }, []);
 
   useEffect(() => {
-    handleLoadOptions();
-  }, []);
+    // Reset the page
+    setPage(1);
+    setDisplayedPage("1");
+
+    // Reset the selected resumes when filters change
+    setSelectedResumes([]);
+  }, [selectedMajors, selectedDegrees, selectedYears, selectedJobInterests]);
 
   return (
     <ChakraProvider>
-      <ResumeBookHeader
-        setShowList={setShowList}
-        showList={showList}
-        toggleColorMode={toggleColorMode}
-        signOut={signOut}
-        userName="User"
-      />
-
-      <Box
-        bg={useColorModeValue("gray.200", "gray.700")}
-        p={4}
-        transition="background-color 0.3s ease, color 0.3s ease"
-      >
-        <Flex
-          justify="space-between"
-          align="center"
-          direction={isMediumScreen ? "row" : "column"}
-        >
-          <Flex
-            align="flex-start"
-            minWidth="150px"
-            alignItems="center"
-            gap={"0.5vw"}
+      <Flex flexDirection={"column"} h="100vh" bgColor="gray.200">
+        <ResumeBookHeader
+          setShowList={setShowList}
+          showList={showList}
+          toggleColorMode={toggleColorMode}
+          signOut={signOut}
+          userName="User"
+        />
+        <Box bgColor={"gray.200"}>
+          <Box
+            bg={"gray.200"}
+            p={4}
+            transition="background-color 0.3s ease, color 0.3s ease"
           >
-            <MultiSelectDropdown
-              id="major-dropdown"
-              width="auto"
-              options={majors}
-              selectedOptions={selectedMajors}
-              onSelectionChange={(newSelectedMajors) =>
-                setSelectedMajors(newSelectedMajors)
-              }
-              baseColor={viewColor}
-              placeholderText="Filter Major(s)"
-            />
-            <MultiSelectDropdown
-              id="degree-dropdown"
-              width="auto"
-              options={degreeTypes}
-              selectedOptions={selectedDegrees}
-              onSelectionChange={(newSelectedDegrees) =>
-                setSelectedDegrees(newSelectedDegrees)
-              }
-              baseColor={viewColor}
-              placeholderText="Filter Degree(s)"
-            />
-            <MultiSelectDropdown
-              id="year-dropdown"
-              width="20%"
-              options={years}
-              selectedOptions={selectedYears}
-              onSelectionChange={(newSelectedYears) =>
-                setSelectedYears(newSelectedYears)
-              }
-              baseColor={viewColor}
-              placeholderText="Filter Year(s)"
-            />
-            <MultiSelectDropdown
-              id="job-dropdown"
-              width="20%"
-              options={jobInterests}
-              selectedOptions={selectedJobInterests}
-              onSelectionChange={(newSelectedJobInterests) =>
-                setSelectedJobInterests(newSelectedJobInterests)
-              }
-              baseColor={viewColor}
-              placeholderText="Filter Job Interest(s)"
-            />
-          </Flex>
-          <Flex p={2}>
-            <Button
-              onClick={selectAllResumes}
-              mr={2}
-              backgroundColor={
-                selectedResumes.length === filteredResumes.length
-                  ? "salmon"
-                  : "blue.300"
-              }
-              color={"white"}
-              border="1px solid transparent"
-              _hover={{
-                border: "1px solid black",
-                backgroundColor: `${selectedResumes.length === filteredResumes.length ? "red.200" : "blue.200"}`,
-                color: "black"
-              }}
-              transition="border background-color color 0.3s ease"
+            <Flex
+              justify="space-between"
+              align="center"
+              direction={isMediumScreen ? "row" : "column"}
             >
-              {isMobile ? (
-                selectedResumes.length === filteredResumes.length ? (
-                  <TiDocumentDelete />
-                ) : (
-                  <BiSelectMultiple />
-                )
-              ) : selectedResumes.length === filteredResumes.length ? (
-                "Deselect All"
-              ) : (
-                "Select All"
-              )}
-            </Button>
-            <Button
-              mr={2}
-              onClick={() => {
-                void downloadResumes();
-              }}
-              border="1px solid transparent"
-              _hover={{
-                border: "1px solid black",
-                backgroundColor: "gray.300",
-                color: "black"
-              }}
-              backgroundColor={
-                parseInt(viewColor) < 500
-                  ? "gray." + (parseInt(viewColor) + 300)
-                  : "gray." + (parseInt(viewColor) - 200)
-              }
-              color={"white"}
-              isDisabled={selectedResumes.length < 1}
-              transition="border background-color color 0.3s ease"
-            >
-              {isMobile ? <BsDownload /> : "Download"}
-            </Button>
-            {/* <Button>Button 3</Button> */}
-          </Flex>
-        </Flex>
-      </Box>
-      <Box bgColor={"gray.200"} px={4}>
-        {showList ? (
-          <ResumeList
-            resumes={filteredResumes}
-            selectedResumes={selectedResumes}
-            toggleResume={toggleResume}
-            baseColor={viewColor}
-          />
-        ) : (
-          <ResumeGrid
-            resumes={filteredResumes}
-            selectedResumes={selectedResumes}
-            toggleResume={toggleResume}
-            baseColor={viewColor}
-          />
-        )}
-      </Box>
-      <Box>
-        <Center mt={4}>
-          <HStack spacing={4}>
-            <Button onClick={handlePrevious} isDisabled={page === 1}>
-              Previous
-            </Button>
-            <HStack spacing={2}>
-              <Input
-                color="white"
-                value={page}
-                onChange={handlePageChange}
-                type="number"
-                max={pageSize}
-                min={1}
-                width="50px"
-                textAlign="center"
-              />
-              <Text color="white">/ {pageSize}</Text>
-            </HStack>
-            <Button onClick={handleNext} isDisabled={page === pageSize}>
-              Next
-            </Button>
-          </HStack>
-        </Center>
+              <Flex
+                align="flex-start"
+                minWidth="150px"
+                alignItems="center"
+                gap={"0.5vw"}
+              >
+                <HStack
+                  //   onClick={() => setIsOpen(!isOpen)}
+                  p={2}
+                  borderRadius="md"
+                  wrap="wrap"
+                  spacing={1}
+                  minHeight="40px"
+                  bgColor={"gray.300"}
+                >
+                  <Input
+                    autoComplete="off"
+                    value={queryName}
+                    variant="unstyled"
+                    flex="1"
+                    placeholder={"Search by name..."}
+                    _placeholder={{ color: "gray.600" }}
+                    onChange={(e) => {
+                      setQueryName(e.target.value);
+                      setPage(1);
+                      setDisplayedPage("1");
+                    }}
+                  />
+                </HStack>
+                <MultiSelectDropdown
+                  id="major-dropdown"
+                  width="auto"
+                  options={allMajors}
+                  selectedOptions={selectedMajors}
+                  displayedOptions={majorToMajorWithCount}
+                  onSelectionChange={(newSelectedMajors) =>
+                    setSelectedMajors(newSelectedMajors)
+                  }
+                  placeholderText="Filter Major(s)"
+                />
+                <MultiSelectDropdown
+                  id="degree-dropdown"
+                  width="auto"
+                  options={degreeTypes}
+                  selectedOptions={selectedDegrees}
+                  displayedOptions={degreesWithCounts}
+                  onSelectionChange={(newSelectedDegrees) =>
+                    setSelectedDegrees(newSelectedDegrees)
+                  }
+                  placeholderText="Filter Degree(s)"
+                />
+                <MultiSelectDropdown
+                  id="year-dropdown"
+                  width="20%"
+                  options={years}
+                  selectedOptions={selectedYears}
+                  displayedOptions={yearsWithCounts}
+                  onSelectionChange={(newSelectedYears) =>
+                    setSelectedYears(newSelectedYears)
+                  }
+                  placeholderText="Filter Year(s)"
+                />
+                <MultiSelectDropdown
+                  id="job-dropdown"
+                  width="25%"
+                  options={jobInterests}
+                  selectedOptions={selectedJobInterests}
+                  displayedOptions={jobInterestsWithCounts}
+                  onSelectionChange={(newSelectedJobInterests) =>
+                    setSelectedJobInterests(newSelectedJobInterests)
+                  }
+                  placeholderText="Filter Job Interest(s)"
+                />
+              </Flex>
+              <Flex p={2}>
+                <Button
+                  onClick={selectAllResumes}
+                  mr={2}
+                  backgroundColor={
+                    selectedResumes.length === filteredResumes.length
+                      ? "salmon"
+                      : "blue.300"
+                  }
+                  color={"white"}
+                  border="1px solid transparent"
+                  _hover={{
+                    border: "1px solid black",
+                    backgroundColor: `${selectedResumes.length === filteredResumes.length ? "red.200" : "blue.200"}`,
+                    color: "black"
+                  }}
+                  transition="border background-color color 0.3s ease"
+                >
+                  {isMobile ? (
+                    selectedResumes.length === filteredResumes.length ? (
+                      <TiDocumentDelete />
+                    ) : (
+                      <BiSelectMultiple />
+                    )
+                  ) : selectedResumes.length === filteredResumes.length ? (
+                    "Deselect All"
+                  ) : (
+                    "Select All"
+                  )}
+                </Button>
 
-        <Text fontSize="sm" textAlign="center" color="gray.500" mt={4}>
-          © 2024 Reflections | Projections
-        </Text>
-      </Box>
+                <Popover>
+                  <PopoverTrigger>
+                    <Button
+                      mr={2}
+                      border="1px solid transparent"
+                      _hover={{
+                        border: "1px solid black",
+                        backgroundColor: "gray.300",
+                        color: "black"
+                      }}
+                      backgroundColor={
+                        parseInt(viewColor) < 500
+                          ? "gray." + (parseInt(viewColor) + 300)
+                          : "gray." + (parseInt(viewColor) - 200)
+                      }
+                      color={"white"}
+                      transition="border background-color color 0.3s ease"
+                    >
+                      Download
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    p={3}
+                    zIndex="999"
+                    w="fit-content"
+                    maxW="400px"
+                    boxShadow="lg"
+                    border="2px solid"
+                    borderColor={"gray.200"}
+                    gap={2}
+                  >
+                    <Button
+                      mr={2}
+                      onClick={() => {
+                        void handleDownloadResumes();
+                      }}
+                      border="1px solid transparent"
+                      _hover={{
+                        border: "1px solid black",
+                        backgroundColor: "gray.300",
+                        color: "black"
+                      }}
+                      backgroundColor={"blue.500"}
+                      color={"white"}
+                      isDisabled={selectedResumes.length < 1}
+                      transition="border background-color color 0.3s ease"
+                      w="100%"
+                    >
+                      {isMobile ? <BsDownload /> : "Download selected PDFs"}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        void downloadResumesCSV(true);
+                      }}
+                      border="1px solid transparent"
+                      _hover={{
+                        border: "1px solid black",
+                        backgroundColor: "gray.300",
+                        color: "black"
+                      }}
+                      backgroundColor={"blue.500"}
+                      color={"white"}
+                      isDisabled={selectedResumes.length < 1}
+                      transition="border background-color color 0.3s ease"
+                      w="100%"
+                    >
+                      {isMobile ? <BsDownload /> : "Download selected CSV"}
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        void downloadResumesCSV(false);
+                      }}
+                      border="1px solid transparent"
+                      _hover={{
+                        border: "1px solid black",
+                        backgroundColor: "gray.300",
+                        color: "black"
+                      }}
+                      backgroundColor={"blue.500"}
+                      color={"white"}
+                      transition="border background-color color 0.3s ease"
+                      w="100%"
+                    >
+                      {isMobile ? <BsDownload /> : "Download all filtered CSV"}
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              </Flex>
+            </Flex>
+          </Box>
+          <Box bgColor={"gray.200"} px={4}>
+            {filteredResumes.length > 0 || loading ? (
+              showList ? (
+                <ResumeList
+                  loading={loading}
+                  resumes={filteredResumes}
+                  selectedResumes={selectedResumes}
+                  openResume={handleOpenResume}
+                  toggleResume={toggleResume}
+                  baseColor={viewColor}
+                  sortDirection={sortDirection}
+                  sortByColumn={sortByColumn}
+                  onSortByColumn={handleToggleSort}
+                />
+              ) : (
+                <ResumeGrid
+                  resumes={filteredResumes}
+                  selectedResumes={selectedResumes}
+                  toggleResume={toggleResume}
+                  baseColor={viewColor}
+                />
+              )
+            ) : (
+              <Center
+                minH="60vh"
+                border="2px solid"
+                borderColor="gray.300"
+                borderRadius="2xl"
+              >
+                <VStack>
+                  <Icon
+                    as={FaMagnifyingGlass}
+                    boxSize={100}
+                    color="gray.400"
+                    mb={4}
+                    opacity={0.5}
+                  />
+                  <Text fontSize="2xl" color="gray.500">
+                    No resumes matched this criteria.
+                  </Text>
+                </VStack>
+              </Center>
+            )}
+          </Box>
+          <Box bgColor="gray.200">
+            {filteredResumes.length > 0 && (
+              <Center py={4}>
+                <HStack spacing={4}>
+                  <Button
+                    onClick={handlePrevious}
+                    isDisabled={page === 1}
+                    bgColor="blue.500"
+                    color="white"
+                  >
+                    Previous
+                  </Button>
+                  <HStack spacing={2}>
+                    <Input
+                      value={displayedPage}
+                      onChange={handlePageChange}
+                      type="string"
+                      max={pageSize}
+                      width="50px"
+                      textAlign="center"
+                      bgColor="white"
+                      px={1}
+                    />
+                    <Text fontSize="md" fontWeight={"normal"}>
+                      / {pageSize}
+                    </Text>
+                  </HStack>
+                  <Button
+                    onClick={handleNext}
+                    isDisabled={page === pageSize}
+                    bgColor="blue.500"
+                    color="white"
+                  >
+                    Next
+                  </Button>
+                </HStack>
+              </Center>
+            )}
+          </Box>
+          <Text fontSize="sm" textAlign="center" color="gray.500" mt={4} pb={4}>
+            © 2025 Reflections | Projections
+          </Text>
+        </Box>
+      </Flex>
+      <ResumePopupModal
+        resume={selectedResume}
+        onClose={handleCloseResume}
+        isLargerThan700={isMediumScreen}
+        baseColor={viewColor}
+        onNext={handleNextResume}
+        onPrevious={handlePreviousResume}
+        numPrevious={numPrevious}
+        numNext={numNext}
+      />
     </ChakraProvider>
   );
 }
@@ -695,9 +938,8 @@ function ResumeBookHeader({
       padding="10px"
       transition="background-color 0.3s ease, color 0.3s ease"
       bgColor="gray.200"
-      borderBottom={"1px solid"}
+      borderBottom={"2px solid"}
       borderBottomColor={"gray.300"}
-      boxShadow={"0 2px 4px rgba(0, 0, 0, 0.1)"}
     >
       <HStack spacing={8} alignItems={"center"}>
         <Flex align="center" mr={2}>
@@ -707,14 +949,7 @@ function ResumeBookHeader({
       <Text color="gray.800" fontFamily={"Roboto Slab"} fontSize="2xl">
         Reflections | Projections
       </Text>
-      <Text
-        color="gray.600"
-        fontFamily={"Anonymous Pro"}
-        fontSize="24px"
-        textAlign="center"
-        fontWeight={"bold"}
-        ml={3}
-      >
+      <Text color="gray.600" fontSize="24px" textAlign="center" ml={3}>
         Resume Book
       </Text>
       <Spacer />
@@ -751,20 +986,6 @@ function ResumeBookHeader({
             />
           </Tooltip>
         </ButtonGroup>
-        {/* <IconButton
-            isRound={true}
-            fontSize="26px"
-            marginX={4}
-            aria-label="Toggle Light/Dark Mode"
-            icon={useColorModeValue(<FaMoon />, <FaSun />)}
-            onClick={toggleColorMode}
-            variant="link"
-            _hover={{ color: "gray.500" }}
-            bg="#0F1130"
-            color="#F7FAFC"
-            size="sm"
-            transition="color 0.3s ease, background-color 0.3s ease"
-          /> */}
         <Menu>
           <MenuButton
             as={Button}
@@ -776,10 +997,6 @@ function ResumeBookHeader({
             <Avatar bg="pink.600" size={"sm"} />
           </MenuButton>
           <MenuList>
-            {/* <MenuItem onClick={printToken}>Print {userName} JWT</MenuItem> */}
-            {/* <MenuItem onClick={toggleColorMode}>Toggle Light/Dark Mode</MenuItem> */}
-            {/* <MenuItem onClick={getResumes}>Refresh Resumes</MenuItem> */}
-            {/* <MenuDivider /> */}
             <MenuItem onClick={signOut}>Sign Out</MenuItem>
           </MenuList>
         </Menu>

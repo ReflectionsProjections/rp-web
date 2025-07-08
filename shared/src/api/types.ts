@@ -236,29 +236,8 @@ export interface APIRoutes {
       response: Event;
     };
   };
-  "/registration/filter/pagecount": {
-    POST: {
-      request: {
-        graduations?: string[];
-        majors?: string[];
-        jobInterests?: string[];
-        degrees?: string[];
-      };
-      response: { pagecount: number };
-    };
-  };
-  "/registration/filter/filter_value_counts": {
+  "/registration/all": {
     GET: {
-      response: {
-        graduations: { [graduation: string]: number };
-        majors: { [major: string]: number };
-        jobInterests: { [jobInterest: string]: number };
-        degrees: { [degree: string]: number };
-      };
-    };
-  };
-  "/registration/filter/:page": {
-    POST: {
       request: {
         graduations?: string[];
         majors?: string[];
@@ -267,7 +246,6 @@ export interface APIRoutes {
       };
       response: {
         registrants: Registration[];
-        page: number;
       };
     };
   };

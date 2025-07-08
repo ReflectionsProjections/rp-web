@@ -1,21 +1,21 @@
 import {
   Box,
   Button,
-  Center,
   Checkbox,
   Grid,
   GridItem,
   HStack,
   Image,
-  SimpleGrid,
   Text,
   Tooltip,
   VStack
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import { IoIosDocument } from "react-icons/io";
+import { MdOpenInNew } from "react-icons/md";
 import { Config } from "../config";
+import PortfolioLinks from "./PortfolioLinks";
 import { Resume } from "./ResumeBook";
-import { MdList, MdOpenInNew } from "react-icons/md";
 
 interface ColumnWidths {
   checkbox: number;
@@ -32,8 +32,8 @@ interface ResumeComponentProps {
   isSelected: boolean;
   columnWidths: ColumnWidths;
   isLargerThan700: boolean;
-  toggleResume: (id: string) => void;
-  openResume: (id: string) => void;
+  openResume: (resume: Resume) => void;
+  toggleResume: (resumeId: string) => void;
   baseColor: string;
   bgColor: string;
 }
@@ -43,15 +43,19 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
   isSelected,
   columnWidths,
   isLargerThan700,
-  toggleResume,
   openResume,
+  toggleResume,
   baseColor,
   bgColor
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const toggleExpand = () => {
-    setIsExpanded(!isExpanded);
+  const handleExpand = () => {
+    setIsExpanded(true);
+  };
+
+  const handleCollapse = () => {
+    setIsExpanded(false);
   };
 
   return (
@@ -59,23 +63,22 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
       key={resume.id}
       padding="10px"
       background={isSelected ? "blue." + baseColor : bgColor}
-      overflow="hidden"
+      overflow="visible"
       position="relative"
       cursor="pointer"
       borderBottom={"1px solid"}
       borderColor={"gray.300"}
       py={4}
+      w="100%"
+      minH="fit-content"
       _hover={{
-        background: isSelected
-          ? "blue." + (parseInt(baseColor) + 100)
-          : "gray." +
-            (parseInt(baseColor) > 500
-              ? parseInt(baseColor) - 100
-              : parseInt(baseColor) + 100),
-        boxShadow: "lg"
+        background: isSelected ? "blue.300" : "gray.200"
       }}
-      onClick={() => toggleResume(resume.id)}
+      onClick={() => {
+        toggleResume(resume.id);
+      }}
       transition="all 0.2s ease"
+      zIndex={isExpanded ? 999 : 1}
     >
       <Grid
         templateColumns={
@@ -85,6 +88,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         }
         gap={4}
         alignItems="center"
+        overflow="visible"
       >
         <GridItem>
           <HStack gap={4}>
@@ -104,22 +108,22 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         {isLargerThan700 ? (
           <>
             <GridItem>
-              <Text fontWeight="bold" fontSize="lg">
+              <Text fontWeight="bold" fontSize="md">
                 {resume.name}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="md">
+              <Text color="gray.700" fontSize="md">
                 {resume.degree}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="md">
+              <Text color="gray.700" fontSize="md">
                 {resume.major}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.500" fontSize="md">
+              <Text color="gray.700" fontSize="md">
                 {resume.graduationYear}
               </Text>
             </GridItem>
@@ -130,20 +134,20 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               <Text fontWeight="bold" fontSize="lg">
                 {resume.name}
               </Text>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.700" fontSize="sm">
                 {resume.degree}
               </Text>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.570" fontSize="sm">
                 {resume.major}
               </Text>
-              <Text color="gray.500" fontSize="sm">
+              <Text color="gray.700" fontSize="sm">
                 {resume.graduationYear}
               </Text>
             </VStack>
           </GridItem>
         )}
-        <GridItem zIndex="5">
-          <VStack spacing={2}>
+        <GridItem zIndex="5" overflow="visible">
+          <HStack spacing={2} overflow="visible">
             <Button
               backgroundColor="blue.500"
               color="white"
@@ -151,70 +155,24 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               _hover={{ color: "black", backgroundColor: "blue.300" }}
               onClick={(e) => {
                 e.stopPropagation();
-                openResume(resume.id);
+                openResume(resume);
               }}
+              leftIcon={isLargerThan700 ? <IoIosDocument /> : undefined}
             >
               {isLargerThan700 ? "Open Resume" : <MdOpenInNew />}
             </Button>
-            <Button
-              isDisabled={resume.portfolios?.length === 0}
-              backgroundColor="green.500"
-              color="white"
-              size="md"
-              _hover={{ color: "black", backgroundColor: "green.300" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                toggleExpand(); // Toggle the expanded state
-              }}
-            >
-              {isLargerThan700 ? "Portfolio Links" : <MdList />}
-            </Button>
-          </VStack>
+
+            <PortfolioLinks
+              isLargerThan700={isLargerThan700}
+              isExpanded={isExpanded}
+              resume={resume}
+              baseColor={baseColor}
+              onCollapse={handleCollapse}
+              onExpand={handleExpand}
+            />
+          </HStack>
         </GridItem>
       </Grid>
-
-      {/* Conditionally render additional buttons if expanded */}
-      {isExpanded && (
-        <Center>
-          <SimpleGrid
-            columns={{ base: 2, md: 3, lg: 5 }} // Use 2 columns on small screens, up to 5 columns on large screens
-            spacing={2}
-            marginTop={2}
-            maxWidth={"90vw"}
-            minChildWidth="120px" // Ensures that items are evenly distributed
-            justifyContent="center" // Centers the items when they don't fill all columns
-          >
-            {resume.portfolios &&
-              resume.portfolios.map((link) => {
-                const url = new URL(link);
-                const displayURL = url.hostname;
-                return (
-                  <Button
-                    key={link}
-                    backgroundColor={"gray." + baseColor}
-                    _hover={{
-                      backgroundColor:
-                        "gray." +
-                        (parseInt(baseColor) > 500
-                          ? parseInt(baseColor) - 100
-                          : parseInt(baseColor) + 100)
-                    }}
-                    color={"blue.500"}
-                    border={"1px solid black"}
-                    fontSize={"12px"}
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      window.open(link, "_blank");
-                    }}
-                  >
-                    {displayURL}
-                  </Button>
-                );
-              })}
-          </SimpleGrid>
-        </Center>
-      )}
     </Box>
   );
 };

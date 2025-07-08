@@ -1,34 +1,40 @@
-import React, { useState, useRef, useCallback, useEffect } from "react";
 import {
   Box,
-  Text,
-  VStack,
   Grid,
   GridItem,
+  Icon,
+  Skeleton,
+  Stack,
+  Text,
   useMediaQuery,
-  useToast,
-  Icon
+  VStack
 } from "@chakra-ui/react";
-import ResumeListBox from "./ResumeListBox";
-import { Resume } from "./ResumeBook";
-import api from "@/util/api";
-import { path } from "@rp/shared";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { FaBook, FaGraduationCap, FaUniversity, FaUser } from "react-icons/fa";
+import { FaArrowDownWideShort, FaArrowUpWideShort } from "react-icons/fa6";
+import { Resume } from "./ResumeBook";
+import ResumeListBox from "./ResumeListBox";
 
 interface ResumeListProps {
+  loading: boolean;
   resumes: Resume[];
   selectedResumes: string[];
-  toggleResume: (id: string) => void;
+  openResume: (resume: Resume) => void;
+  toggleResume: (resumeId: string) => void;
   baseColor: string;
+  sortByColumn?: SingleCol;
+  sortDirection: "asc" | "desc";
+  onSortByColumn: (column: SingleCol) => void;
 }
 
 const ResizableColumn: React.FC<{
   width: number;
   onResize: (width: number) => void;
+  onClick: () => void;
   children: React.ReactNode;
   canResize: boolean;
   baseColor: string;
-}> = ({ width, onResize, children, canResize, baseColor }) => {
+}> = ({ width, onResize, onClick, children, canResize, baseColor }) => {
   const startXRef = useRef<number | null>(null);
   const selectViewColor = "gray." + (parseInt(baseColor) - 100);
   const handleMouseDown = useCallback(
@@ -58,10 +64,11 @@ const ResizableColumn: React.FC<{
       position="relative"
       display="flex"
       alignItems={"center"}
-      gap={2}
+      gap={1.5}
       width={`${width}px`}
       minWidth="50px"
       cursor="default"
+      onClick={onClick}
     >
       {children}
       {canResize ? (
@@ -72,7 +79,7 @@ const ResizableColumn: React.FC<{
           height="100%"
           width="3px"
           cursor="col-resize"
-          backgroundColor={"blue.400"}
+          backgroundColor={"gray.500"}
           transition="all 0.3s"
           _hover={{
             backgroundColor: { selectViewColor },
@@ -87,25 +94,114 @@ const ResizableColumn: React.FC<{
   );
 };
 
+const INITIAL_COLUMN_WIDTHS = {
+  checkbox: 50,
+  name: 175,
+  major: 300,
+  degree: 150,
+  graduationYear: 300,
+  actions: 400,
+  data: 300
+};
+
+const MIN_COLUMN_WIDTHS = {
+  checkbox: 50,
+  name: 80,
+  degree: 80,
+  major: 100,
+  graduationYear: 120,
+  actions: 400,
+  data: 300
+};
+
+export type SingleCol = keyof typeof INITIAL_COLUMN_WIDTHS;
+
+type ColumnProps = {
+  id: SingleCol;
+  sortColId?: SingleCol;
+  sortDirection?: "asc" | "desc";
+  selectedSingleCol?: SingleCol;
+  name: string;
+  icon: React.ElementType;
+  boxSize?: number;
+  columnWidths: typeof INITIAL_COLUMN_WIDTHS;
+  onResize: (id: SingleCol, width: number) => void;
+  onSort: (col: SingleCol) => void;
+  baseColor: string;
+};
+
+const Column = ({
+  id,
+  sortColId,
+  sortDirection,
+  name,
+  icon,
+  boxSize = 3,
+  columnWidths,
+  onResize,
+  onSort,
+  baseColor
+}: ColumnProps) => {
+  return (
+    <GridItem
+      _hover={{
+        cursor: "pointer"
+      }}
+      onClick={() => {
+        console.log("Clicked");
+        console.log("sortDirection", sortDirection);
+        if (onSort) {
+          onSort(id);
+        }
+      }}
+    >
+      <ResizableColumn
+        width={columnWidths[id]}
+        onResize={(width) => onResize(id, width)}
+        onClick={() => {
+          if (onSort) {
+            onSort(id);
+          }
+        }}
+        canResize={true}
+        baseColor={baseColor}
+      >
+        <Icon as={icon} boxSize={boxSize} color="gray.600" />
+        <Text fontWeight="bold">{name}</Text>
+        {sortColId === id && (
+          <Icon
+            as={
+              sortDirection === "asc"
+                ? FaArrowUpWideShort
+                : FaArrowDownWideShort
+            }
+            boxSize={4}
+            color="gray.600"
+            ml={2}
+          />
+        )}
+      </ResizableColumn>
+    </GridItem>
+  );
+};
+
 const ResumeList: React.FC<ResumeListProps> = ({
+  loading,
   resumes,
   selectedResumes,
+  openResume,
   toggleResume,
-  baseColor
+  baseColor,
+  sortByColumn,
+  sortDirection,
+  onSortByColumn
 }) => {
-  const [columnWidths, setColumnWidths] = useState({
-    checkbox: 50,
-    name: 175,
-    major: 300,
-    degree: 150,
-    graduationYear: 300,
-    actions: 150,
-    data: 300
-  });
+  const [columnWidths, setColumnWidths] = useState(INITIAL_COLUMN_WIDTHS);
 
   const navbarRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
   const [navbarTop, setNavbarTop] = useState(0);
+
   // const viewColor = "gray."+baseColor;
   const bgColor =
     parseInt(baseColor) < 500
@@ -135,15 +231,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
   const [isLargerThan700] = useMediaQuery("(min-width: 700px)");
 
   useEffect(() => {
-    setColumnWidths({
-      checkbox: 75,
-      name: 200,
-      major: 200,
-      degree: 150,
-      graduationYear: 200,
-      actions: 100,
-      data: 100
-    });
+    setColumnWidths(INITIAL_COLUMN_WIDTHS);
   }, []);
 
   const [isDragging] = useState(false);
@@ -152,35 +240,11 @@ const ResumeList: React.FC<ResumeListProps> = ({
     (column: keyof typeof columnWidths, newWidth: number) => {
       setColumnWidths((prev) => ({
         ...prev,
-        [column]: newWidth
+        [column]: Math.max(newWidth, MIN_COLUMN_WIDTHS[column] || 50)
       }));
     },
     []
   );
-
-  const toast = useToast();
-
-  const showToast = (message: string) => {
-    toast({
-      title: message,
-      status: "error",
-      duration: 9000,
-      isClosable: true
-    });
-  };
-
-  const openResume = (id: string) => {
-    api
-      .get(path("/s3/download/user/:userId", { userId: id }))
-      .then(function (response) {
-        // console.log(response.data.url);
-        window.open(response.data.url, "_blank");
-      })
-      .catch(function (error) {
-        console.log(error);
-        showToast("Failed to open resume. Please try again later.");
-      });
-  };
 
   return (
     <VStack
@@ -196,12 +260,10 @@ const ResumeList: React.FC<ResumeListProps> = ({
         overflow="hidden"
         padding="4"
         background={bgColor}
-        boxShadow="md"
         width="100%"
         zIndex="10"
         borderTopRadius={"lg"}
         bgColor="gray.300"
-        fontFamily={"Anonymous Pro"}
       >
         <Grid
           templateColumns={
@@ -215,60 +277,62 @@ const ResumeList: React.FC<ResumeListProps> = ({
           <GridItem></GridItem>
           {isLargerThan700 ? (
             <>
-              <GridItem>
-                <ResizableColumn
-                  width={columnWidths.name}
-                  onResize={(width) => handleResize("name", width)}
-                  canResize={true}
-                  baseColor={baseColor}
-                >
-                  <Icon as={FaUser} boxSize={4} />
-                  <Text fontWeight="bold">Name</Text>
-                </ResizableColumn>
-              </GridItem>
-              <GridItem>
-                <ResizableColumn
-                  width={columnWidths.degree}
-                  onResize={(width) => handleResize("degree", width)}
-                  canResize={true}
-                  baseColor={baseColor}
-                >
-                  <Icon as={FaUniversity} boxSize={4} />
-                  <Text fontWeight="bold">Degree</Text>
-                </ResizableColumn>
-              </GridItem>
-              <GridItem>
-                <ResizableColumn
-                  width={columnWidths.major}
-                  onResize={(width) => handleResize("major", width)}
-                  canResize={true}
-                  baseColor={baseColor}
-                >
-                  <Icon as={FaBook} boxSize={4} />
-                  <Text fontWeight="bold">Major</Text>
-                </ResizableColumn>
-              </GridItem>
-              <GridItem>
-                <ResizableColumn
-                  width={columnWidths.graduationYear}
-                  onResize={(width) => handleResize("graduationYear", width)}
-                  canResize={true}
-                  baseColor={baseColor}
-                >
-                  <Icon as={FaGraduationCap} boxSize={4} />
-                  <Text fontWeight="bold">Graduation</Text>
-                </ResizableColumn>
-              </GridItem>
+              <Column
+                id="name"
+                name="Name"
+                sortColId={sortByColumn}
+                sortDirection={sortDirection}
+                icon={FaUser}
+                columnWidths={columnWidths}
+                onResize={handleResize}
+                baseColor={baseColor}
+                onSort={onSortByColumn}
+              />
+              <Column
+                id="degree"
+                name="Degree"
+                sortColId={sortByColumn}
+                sortDirection={sortDirection}
+                icon={FaUniversity}
+                columnWidths={columnWidths}
+                onResize={handleResize}
+                baseColor={baseColor}
+                onSort={onSortByColumn}
+              />
+              <Column
+                id="major"
+                name="Major"
+                sortColId={sortByColumn}
+                sortDirection={sortDirection}
+                icon={FaBook}
+                columnWidths={columnWidths}
+                onResize={handleResize}
+                baseColor={baseColor}
+                onSort={onSortByColumn}
+              />
+              <Column
+                id="graduationYear"
+                name="Graduation"
+                sortColId={sortByColumn}
+                sortDirection={sortDirection}
+                icon={FaGraduationCap}
+                boxSize={4}
+                columnWidths={columnWidths}
+                onResize={handleResize}
+                baseColor={baseColor}
+                onSort={onSortByColumn}
+              />
             </>
           ) : (
             <GridItem>
               <ResizableColumn
                 width={columnWidths.data}
                 onResize={(width) => handleResize("data", width)}
+                onClick={() => onSortByColumn("data")}
                 canResize={true}
                 baseColor={baseColor}
               >
-                <Text fontWeight="bold">Data</Text>
+                <Text>Data</Text>
               </ResizableColumn>
             </GridItem>
           )}
@@ -276,183 +340,53 @@ const ResumeList: React.FC<ResumeListProps> = ({
             <ResizableColumn
               width={columnWidths.actions}
               onResize={(width) => handleResize("actions", width)}
+              onClick={() => onSortByColumn("actions")}
               canResize={false}
               baseColor={baseColor}
             >
-              <Text fontWeight="bold">Actions</Text>
+              <Icon as={FaGraduationCap} boxSize={4} color="gray.600" />
+              <Text fontWeight={"bold"}>Actions</Text>
             </ResizableColumn>
           </GridItem>
         </Grid>
       </Box>
-
-      {/* {isSticky && (
-        <Box height={`${navbarRef.current?.offsetHeight}px`} />
-      )} */}
-
-      {resumes.map((resume) => {
-        return (
-          <ResumeListBox
-            resume={resume}
-            key={resume.id}
-            isSelected={selectedResumes.includes(resume.id)}
-            columnWidths={columnWidths}
-            isLargerThan700={isLargerThan700}
-            toggleResume={toggleResume}
-            openResume={openResume}
-            baseColor={baseColor}
-            bgColor={bgColor}
-          />
-        );
-        // const isSelected = selectedResumes.includes(resume.id);
-        // const [isExpanded, setIsExpanded] = useState(false);
-        // const isExpanded = true;
-
-        // const toggleExpand = () => {
-        //   setIsExpanded(!isExpanded);
-        // };
-        // return (
-        //   <Box
-        //   key={resume.id}
-        //   borderWidth='2px'
-        //   padding='10px'
-        //   background={isSelected ? 'blue.' + baseColor : bgColor}
-        //   borderRadius="lg"
-        //   overflow="hidden"
-        //   marginTop='1'
-        //   boxShadow="md"
-        //   position="relative"
-        //   cursor="pointer"
-        //   transition="all 0.2s ease"
-        //   _hover={{ background: isSelected ? 'blue.' + (parseInt(baseColor) + 100) : 'gray.' + (parseInt(baseColor) > 500 ? parseInt(baseColor) - 100 : parseInt(baseColor) + 100), boxShadow: 'lg' }}
-        //   borderColor={isSelected ? 'blue.500' : 'gray.' + baseColor}
-        //   onClick={() => toggleResume(resume.id)}
-        // >
-        //   <Grid templateColumns={
-        //       isLargerThan700
-        //       ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-        //       : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
-        //   } gap={4} alignItems="center">
-        //     <GridItem>
-        //       <Checkbox
-        //         size="lg"
-        //         isChecked={isSelected}
-        //         onChange={() => toggleResume(resume.id)}
-        //       />
-        //     </GridItem>
-        //     {isLargerThan700 ? (
-        //       <>
-        //         <GridItem>
-        //           <HStack spacing={2}>
-        //             <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-        //             <Button
-        //               backgroundColor='blue.500'
-        //               color='white'
-        //               size="sm"
-        //               onClick={(e) => {
-        //                 e.stopPropagation();
-        //                 openResume(resume.id);
-        //               }}
-        //             >
-        //               {isLargerThan550 ? '>' : <MdOpenInNew />}
-        //             </Button>
-        //           </HStack>
-        //         </GridItem>
-        //         <GridItem>
-        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-        //         </GridItem>
-        //         <GridItem>
-        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-        //         </GridItem>
-        //       </>
-        //     ) : (
-        //       <GridItem>
-        //         <VStack align="start" spacing={1}>
-        //           <Text fontWeight="bold" fontSize="lg">{resume.name}</Text>
-        //           <Text color="gray.500" fontSize="sm">{resume.major}</Text>
-        //           <Text color="gray.500" fontSize="sm">{resume.graduationYear}</Text>
-        //         </VStack>
-        //       </GridItem>
-        //     )}
-        //     <GridItem zIndex='5'>
-        //       <HStack spacing={2}>
-        //         <Button
-        //           backgroundColor='blue.500'
-        //           color='white'
-        //           size="sm"
-        //           onClick={(e) => {
-        //             e.stopPropagation();
-        //             openResume(resume.id);
-        //           }}
-        //         >
-        //           {isLargerThan550 ? 'Open Resume' : <MdOpenInNew />}
-        //         </Button>
-        //         <Button
-        //           backgroundColor='blue.500'
-        //           color='white'
-        //           size="sm"
-        //           onClick={(e) => {
-        //             e.stopPropagation();
-        //             toggleExpand(); // Toggle the expanded state
-        //           }}
-        //         >
-        //           {isLargerThan550 ? 'Portfolio Links' : <MdOpenInNew />}
-        //         </Button>
-        //       </HStack>
-        //     </GridItem>
-        //   </Grid>
-
-        //   {/* Conditionally render additional buttons if expanded */}
-        //   {isExpanded && (
-        //     <HStack spacing={2} marginTop={2}>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 1 click
-        //         }}
-        //       >
-        //         Additional Button 1
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 2 click
-        //         }}
-        //       >
-        //         Additional Button 2
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 3 click
-        //         }}
-        //       >
-        //         Additional Button 3
-        //       </Button>
-        //       <Button
-        //         backgroundColor='blue.500'
-        //         color='white'
-        //         size="sm"
-        //         onClick={(e) => {
-        //           e.stopPropagation();
-        //           // Handle additional button 4 click
-        //         }}
-        //       >
-        //         Additional Button 4
-        //       </Button>
-        //     </HStack>
-        //   )}
-        // </Box>
-        // );
-      })}
+      {loading ? (
+        <Stack spacing={1} mt={1}>
+          {Array.from({ length: 12 }).map((_, i) => (
+            <Skeleton
+              key={i}
+              height="80px" // roughly the height of a ResumeListBox row
+              borderRadius="lg"
+            />
+          ))}
+        </Stack>
+      ) : (
+        <VStack
+          w="100%"
+          gap={0}
+          maxH="70vh"
+          overflowY="auto"
+          borderBottomRadius={"lg"}
+          border="1px solid"
+          borderColor="gray.300"
+        >
+          {resumes.map((resume) => {
+            return (
+              <ResumeListBox
+                resume={resume}
+                key={resume.id}
+                isSelected={selectedResumes.includes(resume.id)}
+                columnWidths={columnWidths}
+                isLargerThan700={isLargerThan700}
+                openResume={openResume}
+                toggleResume={toggleResume}
+                baseColor={baseColor}
+                bgColor={bgColor}
+              />
+            );
+          })}
+        </VStack>
+      )}
     </VStack>
   );
 };
