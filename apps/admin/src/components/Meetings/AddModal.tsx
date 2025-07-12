@@ -1,5 +1,4 @@
 import { useMirrorStyles } from "@/styles/Mirror";
-import api from "@/util/api";
 import { AddIcon } from "@chakra-ui/icons";
 import {
   Modal,
@@ -12,6 +11,7 @@ import {
 import { FormikHelpers } from "formik";
 import { MeetingFormInitialValues, MeetingFormValues } from "./MeetingSchema";
 import MeetingForm from "./MeetingForm";
+import { api } from "@rp/shared";
 
 type AddModalProps = {
   updateMeetings: () => void;

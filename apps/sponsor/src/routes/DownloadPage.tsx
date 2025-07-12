@@ -1,4 +1,3 @@
-import api from "@/util/api";
 import { downloadResumes } from "@/util/download-functions";
 import { Flex, Icon, Spinner, Text, useToast } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
@@ -6,6 +5,7 @@ import { FaCircleCheck } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { Resume } from "./ResumeBook/ResumeBook";
+import { api } from "@rp/shared";
 
 export function DownloadPage() {
   const { resumeId } = useParams<{ resumeId: string }>();
