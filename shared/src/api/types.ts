@@ -71,6 +71,7 @@ export type Event = {
 
 export type RegistrationDraft = {
   name: string;
+  email: string;
   dietaryRestrictions: string[];
   allergies: string[];
   school: string;

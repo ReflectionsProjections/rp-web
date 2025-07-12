@@ -1,5 +1,4 @@
 import { Heading, Flex } from "@chakra-ui/react";
-import api from "../../util/api.ts";
 import { Event, usePolling } from "@rp/shared";
 import EventCard, {
   EventCardSkeleton
@@ -14,7 +13,7 @@ function Events() {
     data: events,
     update: updateEvents,
     isLoading
-  } = usePolling(api, "/events", authorized);
+  } = usePolling("/events", authorized);
 
   return (
     <>

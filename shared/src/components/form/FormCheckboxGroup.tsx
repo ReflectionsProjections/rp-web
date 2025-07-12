@@ -14,7 +14,6 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
   options: string[];
-  isRequired?: boolean;
   customLabel?: string;
 };
 
@@ -25,7 +24,6 @@ const FormCheckboxGroup = <
   name,
   label,
   options,
-  isRequired,
   customLabel
 }: Props<TValues, TFieldName>) => {
   return (
@@ -53,17 +51,15 @@ const FormCheckboxGroup = <
             values.includes("other__")
               ? customValue
                 ? [...base, customValue]
-                : [...base, ""]
+                : [...base, "_"]
               : base
           );
+
           await form.setFieldTouched(name, true);
         };
 
         return (
-          <FormControl
-            isInvalid={!!form.errors[name] && !!form.touched[name]}
-            isRequired={isRequired}
-          >
+          <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
             <FormLabel>{label}</FormLabel>
 
             <CheckboxGroup
@@ -72,24 +68,24 @@ const FormCheckboxGroup = <
             >
               <VStack align="left">
                 {options.map((option) => (
-                  <Checkbox key={option} value={option} isRequired={false}>
+                  <Checkbox key={option} value={option} name={name}>
                     {option}
                   </Checkbox>
                 ))}
-                {
-                  <Checkbox key="other__" value="other__" isRequired={false}>
+                {customLabel && (
+                  <Checkbox key="other__" value="other__" name={name}>
                     {customLabel}
                   </Checkbox>
-                }
+                )}
               </VStack>
             </CheckboxGroup>
 
             {showCustomInput && (
               <Box mt={2}>
                 <Input
+                  {...field}
                   placeholder="Please specify"
                   value={customValue.slice(1) || ""}
-                  isRequired={true}
                   onChange={(e) => {
                     const custom = `_${e.target.value}`;
                     void (async () => {

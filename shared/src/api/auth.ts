@@ -1,6 +1,8 @@
-export function googleAuth(clientId: string, selectAccount?: boolean) {
+import Config from "../config";
+
+export function googleAuth(selectAccount?: boolean) {
   const params = new URLSearchParams({
-    client_id: clientId,
+    client_id: Config.GOOGLE_OAUTH_CLIENT_ID,
     redirect_uri: `${window.location.origin}/auth/callback`,
     response_type: "code",
     scope: "openid email profile",

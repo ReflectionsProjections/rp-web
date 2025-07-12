@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
 import theme from "./theme";
 import Register from "./routes/Register";
+import { getRequireAuth } from "@rp/shared";
 
 function App() {
   return (
@@ -10,7 +11,11 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/register" element={<Register />} />
+          {...getRequireAuth({
+            children: [
+              <Route key="/register" path="/register" element={<Register />} />
+            ]
+          })}
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

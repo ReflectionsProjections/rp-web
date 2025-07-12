@@ -1,13 +1,19 @@
-import { VStack } from "@chakra-ui/react";
 import { RegistrationValues } from "../schema";
 import { FormCheckboxGroup, FormRadioGroup, FormTextField } from "@rp/shared";
 
 const PersonalInfo = () => (
-  <VStack spacing={5} align="stretch">
+  <>
     <FormTextField<RegistrationValues, "name">
       name="name"
-      label="Preferred Name"
+      label="Name"
       placeholder="Preferred Name"
+      isRequired
+    />
+
+    <FormTextField<RegistrationValues, "email">
+      name="email"
+      label="Email"
+      placeholder="Email"
       isRequired
     />
 
@@ -29,10 +35,8 @@ const PersonalInfo = () => (
         "Hispanic or Latino/a/x",
         "Middle Eastern or North African",
         "Native Hawaiian or Other Pacific Islander",
-        "White",
-        "Prefer not to say"
+        "White"
       ]}
-      isRequired
       customLabel="Other"
     />
 
@@ -66,7 +70,7 @@ const PersonalInfo = () => (
       ]}
       customLabel="Other"
     />
-  </VStack>
+  </>
 );
 
 export default PersonalInfo;

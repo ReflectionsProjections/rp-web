@@ -10,7 +10,6 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import Attendance from "./routes/Attendance";
 import routes from "./routes";
 import { AuthCallback } from "@rp/shared";
-import api from "./util/api";
 import Main from "./routes/Main";
 
 function App() {
@@ -18,7 +17,7 @@ function App() {
     <ChakraProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/auth/callback" element={<AuthCallback api={api} />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route element={<Main />}>
             {routes.map(({ path, element }) => (

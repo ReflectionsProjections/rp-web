@@ -3,8 +3,12 @@ import * as yup from "yup";
 
 export type RegistrationValues = RegistrationDraft & { over18: boolean };
 
-export const initialValues: RegistrationValues = {
-  name: "",
+export const initialValues = (
+  name: string,
+  email: string
+): RegistrationValues => ({
+  name,
+  email,
   gender: "",
   ethnicity: [],
   dietaryRestrictions: [],
@@ -19,16 +23,13 @@ export const initialValues: RegistrationValues = {
   howDidYouHear: [],
   tags: [],
   over18: false
-};
+});
 
 const page1Schema = yup.object({
-  name: yup.string().required("Required"),
+  name: yup.string().required(),
+  email: yup.string().email().required(),
   gender: yup.string().required(),
-  ethnicity: yup
-    .array()
-    .of(yup.string().required())
-    .min(1, "Select at least one option")
-    .required(),
+  ethnicity: yup.array().of(yup.string().required()).required(),
   dietaryRestrictions: yup.array().of(yup.string().required()).required(),
   allergies: yup.array().of(yup.string().required()).required()
 });
@@ -37,7 +38,15 @@ const page2Schema = yup.object({
   school: yup.string().required("Required"),
   educationLevel: yup.string().required("Required"),
   major: yup.string().required("Required"),
-  graduationYear: yup.string().required("Required"),
+  graduationYear: yup
+    .string()
+    .required("Required")
+    .test("valid-year", "Enter a valid year", (value) => {
+      if (!value) return false;
+      const year = Number(value);
+      const currentYear = new Date().getFullYear();
+      return year >= 1900 && year <= currentYear + 10;
+    }),
   opportunities: yup.array().of(yup.string().required()).required(),
   hasResume: yup.boolean().required(),
   personalLinks: yup

@@ -1,30 +1,22 @@
-import {
-  Box,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  HStack,
-  useToast
-} from "@chakra-ui/react";
+import { Box, Button, HStack, useToast, VStack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useState } from "react";
-import { useFormAutosave } from "@rp/shared";
+import { RoleObject, useFormAutosave } from "@rp/shared";
 import PersonalInfo from "@/components/Registration/pages/PersonalInfo";
 import {
   getRegistrationSchemaForPage,
   initialValues,
   RegistrationValues
 } from "@/components/Registration/schema";
+import CareerInfo from "@/components/Registration/pages/CareerInfo";
+import { useOutletContext } from "react-router-dom";
 
-const FORM_PAGES = [PersonalInfo];
+const FORM_PAGES = [PersonalInfo, CareerInfo];
 
 const NUM_PAGES = FORM_PAGES.length;
 
 const Register = () => {
-  // Simulate autofilled email from login
-  // In real app, replace with actual user email
-  const userEmail = "user@example.com";
+  const { displayName, email } = useOutletContext<RoleObject>();
 
   const [page, setPage] = useState(0);
 
@@ -34,12 +26,8 @@ const Register = () => {
 
   return (
     <Box p={6}>
-      <FormControl mb={4}>
-        <FormLabel>Email</FormLabel>
-        <Input value={userEmail} isReadOnly disabled />
-      </FormControl>
       <Formik
-        initialValues={{ ...initialValues }}
+        initialValues={{ ...initialValues(displayName, email) }}
         validationSchema={getRegistrationSchemaForPage(page)}
         onSubmit={async (values, actions) => {
           console.log(values);
@@ -89,7 +77,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
 
   return (
     <Form>
-      {FORM_PAGES[page]()}
+      <VStack spacing={5} align="stretch">
+        {FORM_PAGES[page]()}
+      </VStack>
       <HStack mt={8} justify="flex-end">
         <Button onClick={backHandler} isDisabled={page === 0} variant="outline">
           Back

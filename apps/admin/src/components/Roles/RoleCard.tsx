@@ -16,9 +16,8 @@ import {
   FormControl,
   FormErrorMessage
 } from "@chakra-ui/react";
-import api from "../../util/api";
 import React from "react";
-import { path, Role, usePolling } from "@rp/shared";
+import { api, path, Role, usePolling } from "@rp/shared";
 import { Config } from "@/config";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { Formik, FormikHelpers } from "formik";
@@ -40,7 +39,7 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
     data: roles,
     update: updateRoles,
     isLoading
-  } = usePolling(api, path("/auth/:role", { role }), authorized);
+  } = usePolling(path("/auth/:role", { role }), authorized);
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 

@@ -1,9 +1,8 @@
 import { Outlet } from "react-router-dom";
-import api from "../util/api";
 import { useEffect, useState } from "react";
 import { Box } from "@chakra-ui/react";
 import Navbar from "@/components/Navbar";
-import { Role } from "@rp/shared";
+import { api, Role } from "@rp/shared";
 import Unauthorized from "@/components/Unauthorized";
 import Login from "@/components/Login";
 
