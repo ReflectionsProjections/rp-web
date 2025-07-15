@@ -24,6 +24,9 @@ import { EventFormValues, EventFormSchema } from "./EventSchema";
 import React from "react";
 import moment from "moment-timezone";
 
+// Set timezone to Chicago (Central Time)
+moment.tz.setDefault("America/Chicago");
+
 type EventFormProps = {
   onSubmit: (
     values: EventFormValues,
@@ -46,8 +49,9 @@ const EventForm: React.FC<EventFormProps> = ({
     values: EventFormValues,
     formikHelpers: FormikHelpers<EventFormValues>
   ) => {
-    values.startTime = moment(values.startTime).format();
-    values.endTime = moment(values.endTime).format();
+    // Convert to Chicago timezone when submitting
+    values.startTime = moment.tz(values.startTime, "America/Chicago").format();
+    values.endTime = moment.tz(values.endTime, "America/Chicago").format();
     return onSubmit(values, formikHelpers);
   };
 

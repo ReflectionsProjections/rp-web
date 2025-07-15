@@ -15,8 +15,7 @@ function Roles() {
         justifyContent="space-evenly"
         gap={6}
       >
-        <RolesCard role="ADMIN" />
-        <RolesCard role="STAFF" />
+        <RolesCard />
       </Flex>
     </>
   );

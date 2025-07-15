@@ -1,4 +1,4 @@
-import rpLogo from "../assets/rp_logo.svg";
+import rpLogo from "/rp_logo.svg";
 
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";

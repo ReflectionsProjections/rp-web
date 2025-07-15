@@ -1,4 +1,4 @@
-import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
+import { CheckIcon, StarIcon, CloseIcon } from "@chakra-ui/icons";
 import {
   Box,
   Stack,
@@ -14,39 +14,85 @@ import {
   Select,
   Text,
   FormControl,
-  FormErrorMessage
+  FormErrorMessage,
+  Badge,
+  VStack,
+  HStack,
+  Checkbox,
+  FormLabel,
+  Button
 } from "@chakra-ui/react";
 import React from "react";
-import { api, path, Role, usePolling } from "@rp/shared";
+import { path, Role, usePolling, RoleObject, api } from "@rp/shared";
 import { Config } from "@/config";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { Formik, FormikHelpers } from "formik";
-import {
-  RoleFormInitialValues,
-  RoleFormSchema,
-  RoleFormValues
-} from "./RoleSchema";
+import { RoleFormValues } from "./RoleSchema";
 import { MainContext } from "@/routes/Main";
 import { useOutletContext } from "react-router-dom";
 
-type RolesCardProps = {
-  role: Role;
+type RolesCardProps = Record<string, never>;
+
+type UserWithRoles = RoleObject & {
+  roles: Role[];
 };
 
-const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
+const RolesCard: React.FC<RolesCardProps> = () => {
   const { authorized } = useOutletContext<MainContext>();
-  const {
-    data: roles,
-    update: updateRoles,
-    isLoading
-  } = usePolling(path("/auth/:role", { role }), authorized);
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 
+  // Fetch both ADMIN and STAFF users to show unified list
+  const {
+    data: adminUsers,
+    update: updateAdminUsers,
+    isLoading: adminLoading
+  } = usePolling(path("/auth/:role", { role: "ADMIN" }), authorized);
+
+  const {
+    data: staffUsers,
+    update: updateStaffUsers,
+    isLoading: staffLoading
+  } = usePolling(path("/auth/:role", { role: "STAFF" }), authorized);
+
+  // Combine and deduplicate users
+  const allUsers = React.useMemo((): UserWithRoles[] => {
+    const userMap = new Map<string, UserWithRoles>();
+
+    // Add admin users
+    adminUsers?.forEach((user: RoleObject) => {
+      userMap.set(user.email, {
+        ...user,
+        roles: ["ADMIN"]
+      });
+    });
+
+    // Add staff users, merging roles if user already exists
+    staffUsers?.forEach((user: RoleObject) => {
+      if (userMap.has(user.email)) {
+        const existingUser = userMap.get(user.email)!;
+        userMap.set(user.email, {
+          ...existingUser,
+          roles: [...existingUser.roles, "STAFF"]
+        });
+      } else {
+        userMap.set(user.email, {
+          ...user,
+          roles: ["STAFF"]
+        });
+      }
+    });
+
+    return Array.from(userMap.values());
+  }, [adminUsers, staffUsers]);
+
+  const isLoading = adminLoading || staffLoading;
+
   const removeFromRole = (role: Role, email: string) => {
     toast.promise(
-      api.delete("/auth", { data: { role, email } }).then(() => {
-        updateRoles();
+      api.delete("/auth", { data: { email, role } }).then(() => {
+        void updateAdminUsers();
+        void updateStaffUsers();
       }),
       {
         success: {
@@ -59,29 +105,40 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
   };
 
   const updateUserTeam = (email: string, newTeam: string) => {
-    console.log("Update user team:", email, newTeam);
     // TODO: Connect to API
+    console.log("Update user team:", email, newTeam);
   };
 
   const addToRole = (
     values: RoleFormValues,
     helpers: FormikHelpers<RoleFormValues>
   ) => {
+    // Add each selected role
+    const addPromises = values.roles.map((selectedRole: Role) => {
+      const requestData = { email: values.email, role: selectedRole };
+      return api.put("/auth", requestData);
+    });
+
     toast.promise(
-      api
-        .put("/auth", { email: values.email, role })
+      Promise.all(addPromises)
         .then(() => {
-          updateRoles();
+          void updateAdminUsers();
+          void updateStaffUsers();
+        })
+        .catch((error) => {
+          console.error("Failed to update user roles:", error);
+          throw error;
         })
         .finally(() => {
           helpers.setSubmitting(false);
         }),
       {
         success: {
-          title: `${values.email} User Role updated: Now ${role} role`
+          title: `${values.email} User Roles updated`,
+          description: `Added roles: ${values.roles.join(", ")}`
         },
-        error: { title: "Failed to update user role. Try again soon!" },
-        loading: { title: "Updating user role..." }
+        error: { title: "Failed to update user roles. Try again soon!" },
+        loading: { title: "Updating user roles..." }
       }
     );
   };
@@ -92,15 +149,44 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
     });
   }
 
+  const getRoleIcon = (userRole: Role) => {
+    switch (userRole) {
+      case "ADMIN":
+        return <StarIcon color="red.500" />;
+      case "STAFF":
+        return <StarIcon color="blue.500" />;
+      default:
+        return null;
+    }
+  };
+
+  const getRoleColor = (userRole: Role) => {
+    switch (userRole) {
+      case "ADMIN":
+        return "red";
+      case "STAFF":
+        return "blue";
+      case "CORPORATE":
+        return "green";
+      case "PUZZLEBANG":
+        return "purple";
+      default:
+        return "gray";
+    }
+  };
+
   return (
     <Card sx={mirrorStyle} overflowY="auto" maxHeight="80vh" flex={{ xl: 1 }}>
       <CardHeader>
-        <Heading size="md">{toTitleCase(role)}</Heading>
+        <Heading size="md">All Users</Heading>
       </CardHeader>
       <CardBody>
         <Formik<RoleFormValues>
-          initialValues={RoleFormInitialValues}
-          validationSchema={RoleFormSchema}
+          initialValues={{
+            email: "",
+            team: "",
+            roles: ["STAFF"]
+          }}
           onSubmit={addToRole}
         >
           {({
@@ -109,50 +195,109 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
             handleSubmit,
             isSubmitting,
             errors,
-            touched
+            touched,
+            setFieldValue
           }) => (
             <form onSubmit={handleSubmit} style={{ width: "100%" }}>
-              <Flex mb={4}>
-                <FormControl
-                  mr={2}
-                  isRequired
-                  isInvalid={!!errors.email && touched.email}
-                >
-                  <Input
-                    name="email"
-                    placeholder="Enter email"
-                    value={values.email}
-                    onChange={handleChange}
-                  />
-                  <FormErrorMessage>{errors.email}</FormErrorMessage>
-                </FormControl>
-                <FormControl
-                  mr={2}
-                  isRequired
-                  isInvalid={!!errors.team && touched.team}
-                >
-                  <Select
-                    name="team"
-                    placeholder="Select team"
-                    value={values.team}
-                    onChange={handleChange}
+              <VStack spacing={4} align="stretch">
+                <Flex>
+                  <FormControl
+                    mr={2}
+                    isRequired
+                    isInvalid={!!errors.email && touched.email}
                   >
-                    {Config.COMMITTEE_TYPES.map((team) => (
-                      <option key={team} value={team}>
-                        {toTitleCase(team)}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormErrorMessage>{errors.team}</FormErrorMessage>
+                    <FormLabel>Email</FormLabel>
+                    <Input
+                      name="email"
+                      placeholder="Enter email"
+                      value={values.email}
+                      onChange={handleChange}
+                    />
+                    <FormErrorMessage>{errors.email}</FormErrorMessage>
+                  </FormControl>
+                  <FormControl
+                    mr={2}
+                    isRequired
+                    isInvalid={!!errors.team && touched.team}
+                  >
+                    <FormLabel>Team</FormLabel>
+                    <Select
+                      name="team"
+                      placeholder="Select team"
+                      value={values.team}
+                      onChange={handleChange}
+                    >
+                      {Config.COMMITTEE_TYPES.map((team) => (
+                        <option key={team} value={team}>
+                          {toTitleCase(team)}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormErrorMessage>{errors.team}</FormErrorMessage>
+                  </FormControl>
+                </Flex>
+
+                <FormControl isInvalid={!!errors.roles && touched.roles}>
+                  <FormLabel>Roles</FormLabel>
+                  <HStack spacing={4}>
+                    <Checkbox
+                      isChecked={values.roles.includes("ADMIN")}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          void setFieldValue("roles", [
+                            ...values.roles,
+                            "ADMIN"
+                          ]);
+                        } else {
+                          void setFieldValue(
+                            "roles",
+                            values.roles.filter((r: Role) => r !== "ADMIN")
+                          );
+                        }
+                      }}
+                    >
+                      <HStack>
+                        <StarIcon color="red.500" />
+                        <Text>Admin</Text>
+                      </HStack>
+                    </Checkbox>
+                    <Checkbox
+                      isChecked={values.roles.includes("STAFF")}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          void setFieldValue("roles", [
+                            ...values.roles,
+                            "STAFF"
+                          ]);
+                        } else {
+                          void setFieldValue(
+                            "roles",
+                            values.roles.filter((r: Role) => r !== "STAFF")
+                          );
+                        }
+                      }}
+                    >
+                      <HStack>
+                        <StarIcon color="blue.500" />
+                        <Text>Staff</Text>
+                      </HStack>
+                    </Checkbox>
+                  </HStack>
+                  <FormErrorMessage>{errors.roles}</FormErrorMessage>
                 </FormControl>
-                <IconButton
-                  size="md"
-                  icon={<CheckIcon />}
-                  aria-label="Add Role"
+
+                <Button
+                  leftIcon={<CheckIcon />}
+                  colorScheme="blue"
                   type="submit"
                   isLoading={isSubmitting}
-                />
-              </Flex>
+                  isDisabled={
+                    !values.email || !values.team || values.roles.length === 0
+                  }
+                >
+                  Add User Roles
+                </Button>
+              </VStack>
             </form>
           )}
         </Formik>
@@ -161,40 +306,86 @@ const RolesCard: React.FC<RolesCardProps> = ({ role }) => {
             ? Array.from({ length: 10 }).map((_, index) => (
                 <RoleCardSkeleton key={index} />
               ))
-            : roles?.map((roleObject) => (
-                <Flex
-                  key={roleObject.userId}
-                  justifyContent="space-between"
-                  alignItems="center"
+            : allUsers?.map((user) => (
+                <Box
+                  key={user.userId}
+                  p={4}
+                  sx={mirrorStyle}
+                  borderRadius="md"
+                  border="1px solid"
                 >
-                  <Box flex={1} mr={7}>
-                    <Text textAlign={"left"}>{roleObject.displayName}</Text>
-                  </Box>
-                  <Select
-                    flex={1}
-                    placeholder="Select team"
-                    value={""}
-                    onChange={(e) => {
-                      const selectedTeam = e.target.value;
-                      if (selectedTeam !== "") {
-                        updateUserTeam(roleObject.email, selectedTeam);
-                      }
-                    }}
-                    mr={2}
-                  >
-                    {Config.COMMITTEE_TYPES.map((team) => (
-                      <option key={team} value={team}>
-                        {toTitleCase(team)}
-                      </option>
-                    ))}
-                  </Select>
-                  <IconButton
-                    size={"md"}
-                    icon={<CloseIcon />}
-                    aria-label={"Remove Role"}
-                    onClick={() => removeFromRole(role, roleObject.email)}
-                  />
-                </Flex>
+                  <Flex justifyContent="space-between" alignItems="start">
+                    <VStack align="start" spacing={2} flex={1}>
+                      <Text fontWeight="bold" fontSize="lg">
+                        {user.displayName}
+                      </Text>
+                      <Text fontSize="sm">{user.email}</Text>
+                      <HStack spacing={2} wrap="wrap">
+                        {user.roles.map((userRole: Role) => (
+                          <Badge
+                            key={userRole}
+                            colorScheme={getRoleColor(userRole)}
+                            variant="subtle"
+                            display="flex"
+                            alignItems="center"
+                            gap={1}
+                            cursor="pointer"
+                            onClick={() => removeFromRole(userRole, user.email)}
+                            _hover={{
+                              opacity: 0.8,
+                              transform: "scale(1.05)"
+                            }}
+                            transition="all 0.2s"
+                            position="relative"
+                            pr={6}
+                          >
+                            {getRoleIcon(userRole)}
+                            {userRole}
+                            <IconButton
+                              size="xl"
+                              icon={<CloseIcon />}
+                              aria-label={`Remove ${userRole} role`}
+                              colorScheme="red"
+                              variant="ghost"
+                              position="absolute"
+                              right={1}
+                              top="50%"
+                              transform="translateY(-50%)"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFromRole(userRole, user.email);
+                              }}
+                              _hover={{
+                                bg: "red.100"
+                              }}
+                            />
+                          </Badge>
+                        ))}
+                      </HStack>
+                    </VStack>
+
+                    <VStack align="end" spacing={2}>
+                      <Select
+                        placeholder="Select team"
+                        size="sm"
+                        width="150px"
+                        value=""
+                        onChange={(e) => {
+                          const selectedTeam = e.target.value;
+                          if (selectedTeam !== "") {
+                            updateUserTeam(user.email, selectedTeam);
+                          }
+                        }}
+                      >
+                        {Config.COMMITTEE_TYPES.map((team) => (
+                          <option key={team} value={team}>
+                            {toTitleCase(team)}
+                          </option>
+                        ))}
+                      </Select>
+                    </VStack>
+                  </Flex>
+                </Box>
               ))}
         </Stack>
       </CardBody>

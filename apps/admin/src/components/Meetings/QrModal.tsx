@@ -14,7 +14,7 @@ import { Meeting } from "@rp/shared";
 import React from "react";
 import { QRCode } from "react-qrcode-logo";
 import { Moment } from "moment";
-import rpLogo from "../../assets/rp_logo.svg";
+import rpLogo from "/rp_logo.svg";
 
 type QrModalProps = {
   meeting: Meeting;

@@ -4,7 +4,8 @@ import {
   StatGroup,
   CardHeader,
   Heading,
-  CardBody
+  CardBody,
+  VStack
 } from "@chakra-ui/react";
 import StatCard from "@/components/StatCard";
 import { motion } from "framer-motion";
@@ -46,42 +47,46 @@ function Dashboard() {
         {displayName == "" ? "Welcome!" : `Welcome, ${displayName}!`}
       </MotionHeader>
 
-      <Flex direction={{ base: "column", md: "row" }} justify="space-between">
-        <Box flex="3" mr={{ base: 0, md: 2 }}>
-          <Section>
-            <CardHeader>
-              <Heading size="lg">Overall Stats</Heading>
-            </CardHeader>
-            <CardBody display="flex" flexDir="column" gap={4}>
-              <StatGroup gap={4}>
-                <StatCard
-                  label={"Checked-In"}
-                  endpoint={"/stats/check-in"}
-                  enabled={authorized}
-                  transformer={(data) => data.count}
-                />
-                <StatCard
-                  label={"Priority Status"}
-                  endpoint={"/stats/priority-attendee"}
-                  enabled={authorized}
-                  transformer={(data) => data.count}
-                />
-              </StatGroup>
-            </CardBody>
-          </Section>
-        </Box>
+      <VStack spacing={6} align="stretch">
+        <Flex direction={{ base: "column", md: "row" }} justify="space-between">
+          <Box flex="3" mr={{ base: 0, md: 2 }}>
+            <VStack spacing={4} align="stretch">
+              <Section>
+                <CardHeader>
+                  <Heading size="lg">Overall Stats</Heading>
+                </CardHeader>
+                <CardBody display="flex" flexDir="column" gap={4}>
+                  <StatGroup gap={4}>
+                    <StatCard
+                      label={"Checked-In"}
+                      endpoint={"/stats/check-in"}
+                      enabled={authorized}
+                      transformer={(data) => data.count}
+                    />
+                    <StatCard
+                      label={"Priority Status"}
+                      endpoint={"/stats/priority-attendee"}
+                      enabled={authorized}
+                      transformer={(data) => data.count}
+                    />
+                  </StatGroup>
+                </CardBody>
+              </Section>
+            </VStack>
+          </Box>
 
-        <Box flex="1" ml={{ base: 0, md: 2 }} mt={{ base: 4, md: 0 }}>
-          <Section alignItems="center" height="100%">
-            <CardHeader>
-              <Heading size="lg">Next Event</Heading>
-            </CardHeader>
-            <CardBody>
-              <EventCard event={currentEvent} />
-            </CardBody>
-          </Section>
-        </Box>
-      </Flex>
+          <Box flex="1" ml={{ base: 0, md: 2 }} mt={{ base: 4, md: 0 }}>
+            <Section alignItems="center" height="100%">
+              <CardHeader>
+                <Heading size="lg">Next Event</Heading>
+              </CardHeader>
+              <CardBody>
+                <EventCard event={currentEvent} />
+              </CardBody>
+            </Section>
+          </Box>
+        </Flex>
+      </VStack>
     </>
   );
 }
