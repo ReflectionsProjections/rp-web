@@ -4,6 +4,7 @@ import {
   Box,
   Flex,
   Grid,
+  HStack,
   Icon,
   Spacer,
   Text,
@@ -18,6 +19,7 @@ import { EVENT_ICONS } from "@/constants/event-icons";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
+import { AudioVisualizer } from "./AudioVisualizer";
 
 export const circleColors = [
   "green.400",
@@ -108,7 +110,15 @@ export default function Schedule() {
 
   return (
     <>
-      <Box w="100%" justifyContent={"center"} bgColor="#3C3C3C" py={10}>
+      <Box
+        w="100%"
+        justifyContent="center"
+        bgImage="url('/schedule.svg')"
+        bgSize="cover"
+        bgPosition="center"
+        bgRepeat="no-repeat"
+        py={10}
+      >
         <ScheduleDaySelector
           selectedDay={selectedDay}
           eventsByDay={eventsByDay}
@@ -174,27 +184,42 @@ function DayEventsSection({
 }) {
   return (
     <Box flex={1} h="100%" py={0}>
+      <HStack
+        alignItems={"center"}
+        justifyContent={"center"}
+        gap={3}
+        bgColor="#4D4C4C"
+        borderTopRadius={"xl"}
+        mb={3}
+        py={2}
+        boxShadow="md"
+      >
+        <Text fontSize="5xl" color="#8A8A8A" fontFamily="ProRacingSlant" my={0}>
+          Lap
+        </Text>
+        <HStack gap={0}>
+          <Text
+            fontSize="5xl"
+            fontWeight="bold"
+            color="white"
+            fontFamily="Magistral"
+            my={0}
+          >
+            {selectedDayIndex}
+          </Text>
+          <Text fontSize="5xl" color="#8A8A8A" fontFamily="Magistral" my={0}>
+            /{numDays}
+          </Text>
+        </HStack>
+      </HStack>
       <Box
         bgColor="#242424"
-        py={2}
         pb={5}
-        borderRadius="xl"
-        borderLeftRadius={{ lg: "30px" }}
+        borderBottomRadius="xl"
         overflowY={{ md: "auto" }}
         shadow={"md"}
+        boxShadow="md"
       >
-        <Text
-          w="100%"
-          textAlign="center"
-          fontSize="5xl"
-          fontWeight="bold"
-          color="#8A8A8A"
-          fontFamily="Archivo Black"
-          my={0}
-          mb={4}
-        >
-          Lap {selectedDayIndex}/{numDays}
-        </Text>
         <Box minH={{ md: "70vh" }} maxH={{ md: "70vh" }} overflowY="auto">
           {dayEvents.length === 0 && (
             <Text
@@ -281,7 +306,7 @@ function RaceTrackSection({
         <Box
           display={{ base: "none", lg: "flex" }}
           flexDir="column"
-          bgColor="#242424"
+          bgGradient="linear(to-b, #454242 0%, #272727 100%)"
           px={4}
           py={2}
           pb={5}
@@ -290,20 +315,29 @@ function RaceTrackSection({
           alignItems={"flex-start"}
           shadow={"md"}
         >
-          <Text
+          <Flex
+            alignItems={"center"}
+            mb={2}
             w="100%"
-            fontSize="3xl"
-            color="white"
-            fontFamily="Archivo Black"
-            my={0}
+            gap={7}
+            borderBottom="2px solid"
+            borderBottomColor="orange.300"
           >
-            R|P Radio
-          </Text>
+            <Text
+              fontSize="3xl"
+              color="white"
+              fontFamily="ProRacingSlant"
+              my={0}
+            >
+              R|P Radio
+            </Text>
+            <AudioVisualizer />
+          </Flex>
           <Text
-            fontSize="md"
+            fontSize="lg"
             color="gray.400"
             textAlign="left"
-            fontStyle={"italic"}
+            fontFamily="Magistral"
           >
             LOOKING FOR A JOB IN THE TECH INDUSTRY?
           </Text>
@@ -340,19 +374,13 @@ function DayEvent({
         md: "40px 10px 1fr 40px"
       }}
       alignItems="center"
-      bgColor={
-        hoveredIndex === number
-          ? "gray.300"
-          : number % 2 === 0
-            ? "#2E2E2E"
-            : "#242424"
-      }
+      bgColor={hoveredIndex === number ? "#333131" : "#242424"}
       gap={{
         base: 3,
         md: 3
       }}
       _hover={{
-        bgColor: circleColorsLighter[(number - 1) % circleColorsLighter.length],
+        bgColor: "#4D4C4C",
         cursor: "pointer"
       }}
       transition={"all 0.2s"}
@@ -372,15 +400,14 @@ function DayEvent({
         alignItems={"center"}
         w="40px"
         h="40px"
-        bgColor="gray.200"
         borderRadius="sm"
       >
         <Text
           fontSize="2xl"
-          color="gray.800"
+          color="gray.200"
           fontWeight="thin"
           textAlign="center"
-          fontFamily="Archivo Black"
+          fontFamily="ProRacingSlant"
           mb={"2px"}
           mt={"4px"}
         >
@@ -400,19 +427,33 @@ function DayEvent({
       ></Box>
 
       <Flex flexDirection={"column"} gap={0}>
-        <Text fontSize={"lg"} color="white" fontFamily={"Racing Sans One"}>
+        <Text fontSize={"lg"} color="white" fontFamily={"ProRacing"}>
           {event.name}
         </Text>
 
-        <Text
-          fontSize={"md"}
-          color="gray.400"
-          fontWeight="medium"
-          fontFamily="Racing Sans One"
-        >
-          {moment(event.startTime).format("h:mma")} –{" "}
-          {moment(event.endTime).format("h:mma")}
-        </Text>
+        <HStack>
+          <Text
+            fontSize={"md"}
+            color="gray.100"
+            fontWeight="bold"
+            fontFamily="Magistral"
+            letterSpacing="0.5px"
+          >
+            {event.location}
+          </Text>
+
+          <Text
+            fontSize={"md"}
+            color="gray.400"
+            fontWeight="bold"
+            fontFamily="Magistral"
+            letterSpacing="0.5px"
+            whiteSpace={"nowrap"}
+          >
+            {moment(event.startTime).format("h:mma")} –{" "}
+            {moment(event.endTime).format("h:mma")}
+          </Text>
+        </HStack>
       </Flex>
 
       <Tooltip

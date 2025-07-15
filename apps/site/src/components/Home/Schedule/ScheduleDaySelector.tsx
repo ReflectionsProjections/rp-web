@@ -57,6 +57,8 @@ function ScheduleDayButton({
       role="group"
       bgColor={selected ? "white" : "black"}
       borderRightRadius="lg"
+      border="1px solid"
+      borderColor={selected ? "orange.300" : "gray.600"}
       borderLeftWidth={"8px"}
       borderLeftColor={color}
       px={3}
@@ -71,8 +73,8 @@ function ScheduleDayButton({
       boxShadow="md"
     >
       <Text
-        fontFamily="Archivo Black"
-        fontSize="xl"
+        fontFamily="ProRacing"
+        fontSize="lg"
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
         noOfLines={1}

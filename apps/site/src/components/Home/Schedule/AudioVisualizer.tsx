@@ -64,7 +64,7 @@ export const AudioVisualizer: React.FC<AudioVisualizerProps> = ({
           key={idx}
           style={{
             flex: 1,
-            backgroundColor: "var(--chakra-colors-gray-400)",
+            backgroundColor: "var(--chakra-colors-orange-300)",
             borderRadius: "2px",
             height: `${h}px`
           }}

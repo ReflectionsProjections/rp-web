@@ -1,3 +1,4 @@
+import { EVENT_ICONS } from "@/constants/event-icons";
 import {
   Box,
   CloseButton,
@@ -13,7 +14,6 @@ import { Event } from "@rp/shared";
 import moment from "moment";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
-import { EVENT_ICONS } from "@/constants/event-icons";
 
 export default function EventModal({
   event,
@@ -37,7 +37,8 @@ export default function EventModal({
           }}
           p={4}
           px={7}
-          bg="rgba(129, 26, 26, 0.9)" // Translucent content background
+          bg="rgba(66, 66, 66, 0.9)" // Translucent content background
+          boxShadow="xl"
           color="white"
           borderRadius="xl"
           pb={20}
@@ -45,7 +46,13 @@ export default function EventModal({
         >
           <ModalHeader p={0} w="100%">
             <Flex align="flex-start" justify="space-between" w="100%">
-              <Text fontWeight="bold" fontStyle="italic" fontSize="2xl" as="h2">
+              <Text
+                fontFamily="ProRacing"
+                fontWeight="bold"
+                fontStyle="italic"
+                fontSize="2xl"
+                as="h2"
+              >
                 {event.name.toUpperCase()}
               </Text>
               <CloseButton onClick={onClose} />
@@ -62,10 +69,12 @@ export default function EventModal({
           <EventCard event={event} />
 
           <Text
-            fontSize="md"
-            fontWeight="normal"
+            fontSize="lg"
+            fontWeight="bold"
             lineHeight="1.5"
             whiteSpace="pre-wrap"
+            fontFamily="Magistral"
+            letterSpacing="0.5px"
             mt={4}
           >
             {event.description}
@@ -102,10 +111,13 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
           <Icon as={FaClock} boxSize={5} mr={2} />
           <Text
-            fontSize="md"
+            fontSize="lg"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
+            fontFamily="Magistral"
+            fontWeight="bold"
+            letterSpacing="0.5px"
           >
             {moment(event.startTime).format("h:mma")} –{" "}
             {moment(event.endTime).format("h:mma")}
@@ -114,10 +126,13 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaMapPin} boxSize={5} mr={2} />
           <Text
-            fontSize="md"
+            fontSize="lg"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
+            fontFamily="Magistral"
+            letterSpacing="0.5px"
+            fontWeight="bold"
           >
             {event.location}
           </Text>
@@ -134,10 +149,13 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
           <Icon as={EVENT_ICONS[event.eventType] ?? FaTag} boxSize={5} mr={2} />
           <Text
-            fontSize="md"
+            fontSize="lg"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
+            fontFamily="Magistral"
+            fontWeight="bold"
+            letterSpacing="0.5px"
           >
             {event.eventType}
           </Text>
@@ -145,10 +163,13 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaAward} boxSize={5} mr={2} />
           <Text
-            fontSize="md"
+            fontSize="lg"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
+            fontFamily="Magistral"
+            fontWeight="bold"
+            letterSpacing="0.5px"
           >
             {event.points} points
           </Text>
