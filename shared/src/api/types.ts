@@ -76,10 +76,11 @@ export type RegistrationDraft = {
   allergies: string[];
   school: string;
   educationLevel: string;
-  major: string;
+  majors: string[];
+  minors: string[];
   graduationYear: string;
   opportunities: string[];
-  hasResume: boolean;
+  resume: string;
   personalLinks: string[];
   gender: string;
   ethnicity: string[];

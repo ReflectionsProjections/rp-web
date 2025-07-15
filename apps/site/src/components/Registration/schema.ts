@@ -15,10 +15,11 @@ export const initialValues = (
   allergies: [],
   school: "",
   educationLevel: "",
-  major: "",
+  majors: [],
+  minors: [],
   graduationYear: "",
   opportunities: [],
-  hasResume: false,
+  resume: "",
   personalLinks: [],
   howDidYouHear: [],
   tags: [],
@@ -37,7 +38,8 @@ const page1Schema = yup.object({
 const page2Schema = yup.object({
   school: yup.string().required("Required"),
   educationLevel: yup.string().required("Required"),
-  major: yup.string().required("Required"),
+  majors: yup.array().of(yup.string().required()).min(1).required(),
+  minors: yup.array().of(yup.string().required()).required(),
   graduationYear: yup
     .string()
     .required("Required")
@@ -51,7 +53,16 @@ const page2Schema = yup.object({
   hasResume: yup.boolean().required(),
   personalLinks: yup
     .array()
-    .of(yup.string().url("Invalid URL").required())
+    .of(
+      yup
+        .string()
+        .url("Invalid URL")
+        .notOneOf(
+          ["https://linkedin.com/in/", "https://github.com/"],
+          "Username is required"
+        )
+        .required()
+    )
     .required()
     .max(5)
 });

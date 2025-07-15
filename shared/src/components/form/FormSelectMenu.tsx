@@ -1,15 +1,16 @@
-import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Select
-} from "@chakra-ui/react";
+import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik";
+import { Select } from "chakra-react-select";
+
+type SelectOption = {
+  label: string;
+  value: string;
+};
 
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
-  options: string[];
+  options: SelectOption[];
   placeholder?: string;
   isRequired?: boolean;
 };
@@ -23,29 +24,35 @@ const FormSelectMenu = <
   options,
   placeholder,
   isRequired
-}: Props<TValues, TFieldName>) => {
-  return (
-    <Field name={name}>
-      {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
+}: Props<TValues, TFieldName>) => (
+  <Field name={name}>
+    {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => {
+      const selectedOption =
+        options.find((option) => option.value === field.value) ?? null;
+
+      return (
         <FormControl
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
           <FormLabel>{label}</FormLabel>
 
-          <Select {...field} placeholder={placeholder}>
-            {options.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </Select>
+          <Select<SelectOption>
+            name={field.name}
+            value={selectedOption}
+            onChange={(option) =>
+              void form.setFieldValue(name, option?.value ?? "")
+            }
+            onBlur={() => void form.setFieldTouched(name, true)}
+            options={options}
+            placeholder={placeholder}
+          />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
-      )}
-    </Field>
-  );
-};
+      );
+    }}
+  </Field>
+);
 
 export default FormSelectMenu;

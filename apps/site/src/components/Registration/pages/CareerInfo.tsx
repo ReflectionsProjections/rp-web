@@ -1,5 +1,8 @@
 import {
   FormCheckboxGroup,
+  FormFileUpload,
+  FormLinks,
+  FormMultiSelectMenu,
   FormRadioGroup,
   FormSelectMenu,
   FormTextField,
@@ -14,7 +17,7 @@ const CareerInfo = () => (
       name="school"
       label="What school do you attend?"
       placeholder="Select the school you attend"
-      options={schools}
+      options={schools.map((school) => ({ label: school, value: school }))}
       isRequired
     />
 
@@ -32,18 +35,25 @@ const CareerInfo = () => (
       isRequired
     />
 
-    <FormSelectMenu<RegistrationValues, "major">
-      name="major"
+    <FormMultiSelectMenu<RegistrationValues, "majors">
+      name="majors"
       label="What is your current (or intended) major?"
-      placeholder="Select your current (or intended) major"
-      options={majors}
+      placeholder="Select your current (or intended) major(s)"
+      options={majors.map((major) => ({ label: major, value: major }))}
       isRequired
+    />
+
+    <FormMultiSelectMenu<RegistrationValues, "minors">
+      name="minors"
+      label="What is your current (or intended) minor? (if applicable)"
+      placeholder="Select your current (or intended) minor(s)"
+      options={majors.map((major) => ({ label: major, value: major }))}
     />
 
     <FormTextField<RegistrationValues, "graduationYear">
       name="graduationYear"
       label="When do you intend to graduate?"
-      placeholder="Graduation Year"
+      placeholder="Graduation year"
       isRequired
     />
 
@@ -60,6 +70,17 @@ const CareerInfo = () => (
         "Graduate/Postdoc Research",
         "Graduate/Postdoc Internship"
       ]}
+    />
+
+    <FormFileUpload<RegistrationValues, "resume">
+      name="resume"
+      label="Resume"
+    />
+
+    <FormLinks<RegistrationValues, "personalLinks">
+      name="personalLinks"
+      label="Personal Links"
+      maxLinks={3}
     />
   </>
 );

@@ -16,6 +16,7 @@
     "@emotion/react": "*",
     "@emotion/styled": "*",
     "@rp/shared": "*",
+    "chakra-react-select": "*",
     "formik": "*",
     "framer-motion": "*",
     "react": "*",
