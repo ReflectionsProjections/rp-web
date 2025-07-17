@@ -21,7 +21,7 @@ export const initialValues = (
   opportunities: [],
   resume: "",
   personalLinks: [],
-  howDidYouHear: [],
+  howDidYouHear: "",
   tags: [],
   over18: false
 });
@@ -50,7 +50,7 @@ const page2Schema = yup.object({
       return year >= 1900 && year <= currentYear + 10;
     }),
   opportunities: yup.array().of(yup.string().required()).required(),
-  hasResume: yup.boolean().required(),
+  resume: yup.string(),
   personalLinks: yup
     .array()
     .of(
@@ -68,7 +68,7 @@ const page2Schema = yup.object({
 });
 
 const page3Schema = yup.object({
-  howDidYouHear: yup.array().of(yup.string().required()).required().min(1),
+  howDidYouHear: yup.string().required(),
   tags: yup.array().of(yup.string().required()).required(),
   over18: yup.boolean().oneOf([true], "You must be over 18").required()
 });

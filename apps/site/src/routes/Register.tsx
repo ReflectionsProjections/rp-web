@@ -10,8 +10,9 @@ import {
 } from "@/components/Registration/schema";
 import CareerInfo from "@/components/Registration/pages/CareerInfo";
 import { useOutletContext } from "react-router-dom";
+import EventInfo from "@/components/Registration/pages/EventInfo";
 
-const FORM_PAGES = [PersonalInfo, CareerInfo];
+const FORM_PAGES = [PersonalInfo, CareerInfo, EventInfo];
 
 const NUM_PAGES = FORM_PAGES.length;
 
