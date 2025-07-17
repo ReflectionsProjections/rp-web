@@ -1,12 +1,18 @@
+import { SmallCloseIcon } from "@chakra-ui/icons";
 import {
-  FormControl,
-  FormLabel,
-  FormErrorMessage,
-  Input,
   Box,
+  Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
+  HStack,
+  Icon,
+  IconButton,
+  Input,
   Text
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik";
+import { FiUpload } from "react-icons/fi";
 
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
@@ -28,31 +34,65 @@ const FileUpload = <
         isInvalid={!!form.errors[name] && !!form.touched[name]}
         isRequired={isRequired}
       >
-        <FormLabel>{label}</FormLabel>
+        <FormLabel htmlFor={`${name}-file`}>{label}</FormLabel>
 
-        <Input
-          type="file"
-          onChange={(e) => {
-            const file = e.currentTarget.files?.[0];
-
-            if (!file) {
-              void form.setFieldValue(name, "");
-            } else {
-              void form.setFieldValue(name, file.name);
-            }
-          }}
-          onBlur={() => {
-            void form.setFieldTouched(name, true);
-          }}
-        />
-
-        {field.value && (
-          <Box mt={2}>
-            <Text fontSize="sm" color="gray.600">
-              Uploaded: {field.value}
-            </Text>
+        <HStack>
+          <Box position="relative">
+            {!field.value && (
+              <>
+                <Input
+                  id={`${name}-file`}
+                  type="file"
+                  accept="*"
+                  onChange={(e) => {
+                    const file = e.currentTarget.files?.[0];
+                    void form.setFieldValue(name, file?.name ?? "");
+                  }}
+                  onBlur={() => void form.setFieldTouched(name, true)}
+                  hidden
+                />
+                <label htmlFor={`${name}-file`}>
+                  <Button
+                    as="span"
+                    leftIcon={<Icon as={FiUpload} />}
+                    variant="outline"
+                    cursor="pointer"
+                  >
+                    Choose File
+                  </Button>
+                </label>
+              </>
+            )}
           </Box>
-        )}
+
+          {field.value && (
+            <Box
+              display="flex"
+              alignItems="center"
+              borderWidth="1px"
+              borderRadius="md"
+              borderColor="gray.200"
+              px={3}
+              py={1}
+            >
+              <Text mr={2} fontWeight="semibold">
+                {field.value}
+              </Text>
+              <IconButton
+                icon={<SmallCloseIcon />}
+                size="sm"
+                variant="ghost"
+                colorScheme="red"
+                onClick={() => {
+                  void form.setFieldValue(name, "");
+                }}
+                borderRadius="full"
+                px={2}
+                aria-label="Remove file"
+              />
+            </Box>
+          )}
+        </HStack>
 
         <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
       </FormControl>

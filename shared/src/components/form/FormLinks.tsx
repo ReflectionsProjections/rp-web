@@ -7,10 +7,12 @@ import {
   IconButton,
   Input,
   VStack,
-  Text
+  Text,
+  Icon
 } from "@chakra-ui/react";
 import { Field, FieldArray, FieldProps } from "formik";
 import { DeleteIcon } from "@chakra-ui/icons";
+import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 
 const PLATFORM_PREFIX = ["https://github.com/", "https://linkedin.com/in/"];
 
@@ -31,7 +33,12 @@ const FormLinks = <
   <Field name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
-        <FormLabel>{label}</FormLabel>
+        <FormLabel>
+          {label}{" "}
+          <Text as="span" fontSize="sm" color="gray.500">
+            (max {maxLinks})
+          </Text>
+        </FormLabel>
 
         <FieldArray name={name}>
           {({
@@ -41,7 +48,39 @@ const FormLinks = <
             push: (this: void, value: string) => void;
             remove: (this: void, index: number) => void;
           }) => (
-            <VStack align="start" spacing={3}>
+            <VStack align="start" gap={4}>
+              <HStack>
+                <Button
+                  onClick={() => push("https://github.com/")}
+                  isDisabled={
+                    field.value.length >= maxLinks ||
+                    field.value.some((link) =>
+                      link.startsWith("https://github.com/")
+                    )
+                  }
+                  size="sm"
+                  gap={2}
+                >
+                  <Icon as={FaGithub} />
+                  GitHub
+                </Button>
+
+                <Button
+                  onClick={() => push("https://linkedin.com/in/")}
+                  isDisabled={
+                    field.value.length >= maxLinks ||
+                    field.value.some((link) =>
+                      link.startsWith("https://linkedin.com/in/")
+                    )
+                  }
+                  size="sm"
+                  gap={2}
+                >
+                  <Icon as={FaLinkedin} />
+                  LinkedIn
+                </Button>
+              </HStack>
+
               {(field.value.length < maxLinks
                 ? [...field.value, ""]
                 : field.value
@@ -58,37 +97,55 @@ const FormLinks = <
 
                 return (
                   <>
-                    <HStack key={index} w="100%">
-                      {specialPrefix ? (
-                        <>
-                          <Text fontSize="sm" color="gray.500">
-                            {specialPrefix}
-                          </Text>
-                          <Input
-                            value={link.replace(specialPrefix, "")}
-                            onChange={(e) => {
-                              const updated = [...field.value];
-                              updated[index] = specialPrefix + e.target.value;
-                              void form.setFieldValue(name, updated);
-                            }}
-                            placeholder="username"
-                            flex="1"
-                            isInvalid={isInvalid}
-                          />
-                        </>
-                      ) : (
+                    <HStack
+                      key={index}
+                      align="center"
+                      w="min(500px, 50vw)"
+                      gap={4}
+                    >
+                      {(index < field.value.length ||
+                        field.value.length === maxLinks) &&
+                        (specialPrefix === "https://github.com/" ? (
+                          <Icon as={FaGithub} boxSize={5} color="gray.500" />
+                        ) : specialPrefix === "https://linkedin.com/in/" ? (
+                          <Icon as={FaLinkedin} boxSize={5} color="blue.500" />
+                        ) : (
+                          <Icon as={FaGlobe} boxSize={5} color="gray.400" />
+                        ))}
+                      <HStack w="100%">
+                        {specialPrefix && <Text>{specialPrefix}</Text>}
                         <Input
-                          value={link}
+                          value={
+                            specialPrefix
+                              ? link.replace(specialPrefix, "")
+                              : link
+                          }
                           onChange={(e) => {
                             const updated = [...field.value];
-                            updated[index] = e.target.value;
+
+                            if (specialPrefix) {
+                              updated[index] = specialPrefix + e.target.value;
+                            } else {
+                              updated[index] = e.target.value;
+                              if (e.target.value === "github.com") {
+                                updated[index] = "https://github.com/";
+                              } else if (e.target.value === "linkedin.com") {
+                                updated[index] = "https://linkedin.com/in/";
+                              }
+                            }
+
                             void form.setFieldValue(name, updated);
                           }}
-                          placeholder="https://example.com"
+                          placeholder={
+                            specialPrefix ? "username" : "example.com"
+                          }
                           flex="1"
                           isInvalid={isInvalid}
+                          variant="flushed"
+                          w="100%"
+                          height="fit-content"
                         />
-                      )}
+                      </HStack>
                       {index < field.value.length && (
                         <IconButton
                           aria-label="Remove"
@@ -98,34 +155,11 @@ const FormLinks = <
                         />
                       )}
                     </HStack>
+
                     <FormErrorMessage>{inputError as string}</FormErrorMessage>
                   </>
                 );
               })}
-
-              <HStack>
-                <Button
-                  onClick={() => push("https://github.com/")}
-                  isDisabled={field.value.length >= maxLinks}
-                  size="sm"
-                  variant="ghost"
-                >
-                  GitHub
-                </Button>
-
-                <Button
-                  onClick={() => push("https://linkedin.com/in/")}
-                  isDisabled={field.value.length >= maxLinks}
-                  size="sm"
-                  variant="ghost"
-                >
-                  LinkedIn
-                </Button>
-              </HStack>
-
-              <Text fontSize="sm" color="gray.500">
-                Max {maxLinks} links
-              </Text>
             </VStack>
           )}
         </FieldArray>
