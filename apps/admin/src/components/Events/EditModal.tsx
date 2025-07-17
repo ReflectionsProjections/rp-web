@@ -1,4 +1,3 @@
-import api from "@/util/api";
 import { EditIcon } from "@chakra-ui/icons";
 import {
   useDisclosure,
@@ -8,7 +7,7 @@ import {
   ModalContent,
   useToast
 } from "@chakra-ui/react";
-import { Event, path } from "@rp/shared";
+import { api, Event, path } from "@rp/shared";
 import React from "react";
 import EventForm from "./EventForm";
 import { EventFormValues } from "./EventSchema";

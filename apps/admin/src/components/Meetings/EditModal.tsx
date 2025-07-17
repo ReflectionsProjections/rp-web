@@ -1,4 +1,3 @@
-import api from "@/util/api";
 import { EditIcon } from "@chakra-ui/icons";
 import {
   useDisclosure,
@@ -8,7 +7,7 @@ import {
   ModalContent,
   useToast
 } from "@chakra-ui/react";
-import { Meeting, path } from "@rp/shared";
+import { api, Meeting, path } from "@rp/shared";
 import React from "react";
 import MeetingForm from "./MeetingForm";
 import { MeetingFormValues } from "./MeetingSchema";

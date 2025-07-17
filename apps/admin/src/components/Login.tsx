@@ -14,7 +14,7 @@ import {
   HStack,
   Heading
 } from "@chakra-ui/react";
-import { Config, googleAuth } from "@rp/shared";
+import { googleAuth } from "@rp/shared";
 
 export default function Login() {
   return (
@@ -84,7 +84,7 @@ export default function Login() {
         size="lg"
         fontWeight="bold"
         onClick={() => {
-          googleAuth(Config.GOOGLE_OAUTH_CLIENT_ID, true);
+          googleAuth(true);
         }}
         fontFamily={"Nunito"}
       >

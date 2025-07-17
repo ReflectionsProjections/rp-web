@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import Lottie from "lottie-react";
 import successAnimation from "../assets/animations/success.json";
-import api from "../util/api";
 import axios from "axios";
+import { api } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MdArrowBack } from "react-icons/md";
 
