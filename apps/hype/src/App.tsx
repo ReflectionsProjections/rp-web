@@ -7,7 +7,10 @@ import {
   HStack,
   VStack,
   Text,
-  useMediaQuery
+  useMediaQuery,
+  Button,
+  Box,
+  Link
 } from "@chakra-ui/react";
 import yourGif from "./assets/RPREC.gif"; // adjust path as needed
 
@@ -87,6 +90,43 @@ function App() {
               >
                 coming soon
               </Text>
+
+              <Box
+                sx={{
+                  p: "2px",
+                  borderRadius: "999px",
+                  background:
+                    "linear-gradient(90deg, #b9b8b8 0%, #888888 100%)",
+                  display: "inline-block"
+                }}
+                mt={isMobile ? "12px" : "24px"}
+                mb={isMobile ? "12px" : "24px"}
+              >
+                <Link
+                  as={Button}
+                  href="https://2024.reflectionsprojections.org"
+                  isExternal
+                  variant="outline"
+                  borderColor="#b9b8b8"
+                  color="#b9b8b8"
+                  bg="black"
+                  size={isSmall ? "sm" : isMobile ? "md" : "lg"}
+                  fontSize={isSmall ? "14px" : isMobile ? "18px" : "24px"}
+                  fontWeight="700"
+                  px={isSmall ? "18px" : isMobile ? "24px" : "32px"}
+                  py={isSmall ? "8px" : isMobile ? "12px" : "16px"}
+                  borderRadius="full"
+                  boxShadow="0 2px 12px rgba(0,0,0,0.18)"
+                  _hover={{
+                    bg: "linear-gradient(90deg, #e0e0e0 0%, #b9b8b8 100%)",
+                    color: "black",
+                    borderColor: "transparent"
+                  }}
+                  transition="background 0.3s, color 0.3s"
+                >
+                  Visit 2024 Site
+                </Link>
+              </Box>
             </VStack>
           </div>
         </div>
