@@ -23,6 +23,8 @@ import PortfolioLinks from "./PortfolioLinks";
 import { Resume } from "./ResumeBook/ResumeBook";
 import { FaDownload } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
+import { saveAs } from "file-saver";
+import axios from "axios";
 
 type ResumePopupModalProps = {
   isMediumScreen: boolean;
@@ -91,27 +93,16 @@ const ResumePopupModal = ({
 
     try {
       // Fetch the file as a blob
-      const response = await fetch(resumeUrl);
-      if (!response.ok) {
-        throw new Error("Failed to fetch resume");
-      }
+      const fileResponse = await axios.get<unknown, { data: Blob }>(resumeUrl, {
+        responseType: "blob"
+      });
 
-      const blob = await response.blob();
-
-      // Create object URL and download
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = resume.name
-        ? `${resume.name}-${resume.graduationYear}.pdf`
-        : "resume.pdf";
-
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-
-      // Clean up the object URL
-      window.URL.revokeObjectURL(url);
+      saveAs(
+        fileResponse.data,
+        resume.name
+          ? `${resume.name}-${resume.graduationYear}.pdf`
+          : "resume.pdf"
+      );
     } catch (error) {
       console.error("Download failed:", error);
       showToast("Failed to download resume. Please try again.");
