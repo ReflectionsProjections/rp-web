@@ -9,7 +9,8 @@ import {
   Text,
   useMediaQuery,
   Button,
-  Box
+  Box,
+  Link
 } from "@chakra-ui/react";
 import yourGif from "./assets/RPREC.gif"; // adjust path as needed
 
