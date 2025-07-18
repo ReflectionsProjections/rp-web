@@ -19,8 +19,8 @@ import {
 } from "@chakra-ui/react";
 import { path } from "@rp/shared";
 import { useState } from "react";
-import PortfolioLinks from "./PortfolioLinks";
-import { Resume } from "./ResumeBook/ResumeBook";
+import PortfolioLinks from "../../components/PortfolioLinks";
+import { Resume } from "./ResumeBook";
 import { FaDownload } from "react-icons/fa6";
 import { FaTimes } from "react-icons/fa";
 import { saveAs } from "file-saver";

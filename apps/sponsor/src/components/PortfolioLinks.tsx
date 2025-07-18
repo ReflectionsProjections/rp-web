@@ -1,7 +1,7 @@
 import { Box, Flex, IconButton, Tooltip } from "@chakra-ui/react";
 import React, { useMemo } from "react";
 import { FaGithub, FaGlobe, FaLinkedin } from "react-icons/fa";
-import { Resume } from "./ResumeBook/ResumeBook";
+import { Resume } from "../routes/ResumeBook/ResumeBook";
 
 type PortfolioLinksProps = {
   isMediumScreen?: boolean;

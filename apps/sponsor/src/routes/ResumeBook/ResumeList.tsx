@@ -23,7 +23,7 @@ import {
   FaArrowUpWideShort,
   FaUserTie
 } from "react-icons/fa6";
-import { Resume } from "./ResumeBook/ResumeBook";
+import { Resume } from "./ResumeBook";
 import ResumeListBox from "./ResumeListBox";
 
 interface ResumeListProps {

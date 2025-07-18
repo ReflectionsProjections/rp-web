@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 
 import { useModalNavHook } from "@/hooks/use-modal-nav-hook";
 import { useResumeDataPaginationHook } from "@/hooks/use-resume-data-pagination-hook";
-import ResumePopupModal from "../ResumePopupModal";
+import ResumePopupModal from "./ResumePopupModal";
 import { ResumeBookContent, ResumeBookProps } from "./ResumeBookContent";
 import { ResumeBookFooter } from "./ResumeBookFooter";
 import { ResumeBookHeader, ResumeBookHeaderProps } from "./ResumeBookHeader";

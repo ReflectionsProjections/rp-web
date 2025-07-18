@@ -1,6 +1,6 @@
 import { Box, SimpleGrid, useMediaQuery } from "@chakra-ui/react";
 import React from "react";
-import { Resume } from "./ResumeBook/ResumeBook";
+import { Resume } from "./ResumeBook";
 import ResumeGridBox from "./ResumeGridBox";
 
 interface ResumeGridProps {

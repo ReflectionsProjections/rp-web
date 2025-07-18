@@ -6,7 +6,7 @@ import {
   YEARS
 } from "@/routes/ResumeBook/constants";
 import { Resume } from "@/routes/ResumeBook/ResumeBook";
-import { SingleCol } from "@/routes/ResumeList";
+import { SingleCol } from "@/routes/ResumeBook/ResumeList";
 import api from "@/util/api";
 import { useEffect, useMemo, useState } from "react";
 import { useResumeSelectionAndDownloadHook } from "./use-resume-selection-and-download-hook";

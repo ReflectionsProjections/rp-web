@@ -6,8 +6,8 @@ import {
   useColorModeValue,
   VStack
 } from "@chakra-ui/react";
-import ResumeList, { SingleCol } from "../ResumeList";
-import ResumeGrid from "../ResumeGrid";
+import ResumeList, { SingleCol } from "./ResumeList";
+import ResumeGrid from "./ResumeGrid";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { Resume } from "./ResumeBook";
 

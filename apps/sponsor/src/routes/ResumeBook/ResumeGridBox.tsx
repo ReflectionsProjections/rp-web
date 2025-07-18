@@ -9,9 +9,9 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { FaFilePdf } from "react-icons/fa6";
-import { Config } from "../config";
-import PortfolioLinks from "./PortfolioLinks";
-import { Resume } from "./ResumeBook/ResumeBook";
+import { Config } from "../../config";
+import PortfolioLinks from "../../components/PortfolioLinks";
+import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
   resume: Resume;
