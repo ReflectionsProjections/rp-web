@@ -3,7 +3,7 @@ import { Page } from "./components/Page";
 import { Home } from "./routes/Home";
 import { Login } from "./routes/Login";
 import { ResumeAllPDF } from "./routes/ResumeAllPDF";
-import { ResumeBook } from "./routes/ResumeBook";
+import { ResumeBook } from "./routes/ResumeBook/ResumeBook";
 import { DownloadPage } from "./routes/DownloadPage";
 
 function App() {

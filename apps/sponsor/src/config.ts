@@ -3,6 +3,7 @@ export const Config = {
   API_BASE_URL: "https://api.reflectionsprojections.org",
   RESUME_BOOK_URL: "http://localhost:3005",
   STAFF_UIDs: [
+    "user103323304002623099455",
     "user107577492883686324358",
     "user108310575016917813652",
     "user101492950430280843896",

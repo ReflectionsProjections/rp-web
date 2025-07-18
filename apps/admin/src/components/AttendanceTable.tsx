@@ -1,3 +1,4 @@
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -25,11 +26,10 @@ import {
   useMediaQuery,
   useToast
 } from "@chakra-ui/react";
-import React, { useEffect, useMemo, useState } from "react";
-import AttendanceModal from "./AttendanceModal";
-import { ChevronDownIcon } from "@chakra-ui/icons";
-import api from "../util/api";
 import { AttendanceType, Meeting, path, Staff, TeamName } from "@rp/shared";
+import React, { useEffect, useMemo, useState } from "react";
+import api from "../util/api";
+import AttendanceModal from "./AttendanceModal";
 
 type StaffStatistics = Record<
   "ABSENT" | "PRESENT" | "EXCUSED" | "TOTAL",

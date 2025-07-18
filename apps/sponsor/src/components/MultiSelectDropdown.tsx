@@ -1,5 +1,6 @@
 import {
   Box,
+  Flex,
   FormControl,
   HStack,
   Input,
@@ -34,19 +35,14 @@ type TagListProps = {
 
 function TagList({ selectedOptions, handleRemove }: TagListProps) {
   return (
-    <HStack
-      spacing={2}
-      // layout
-      // optional: tweak how the container itself transitions
-      // transition={{ layout: { type: "spring", stiffness: 300, damping: 30 } }}
-    >
+    <Flex gap={2} wrap="wrap">
       {selectedOptions.map((option) => (
         <Tag key={option} size="md" variant="solid" colorScheme="teal">
           <TagLabel>{option}</TagLabel>
           <TagCloseButton onClick={() => handleRemove(option)} />
         </Tag>
       ))}
-    </HStack>
+    </Flex>
   );
 }
 
@@ -64,8 +60,6 @@ function MultiSelectDropdown({
   const [filteredOptions, setFilteredOptions] = useState<string[]>(
     options.slice(0, Config.MAX_DROPDOWN_OPTIONS)
   );
-
-  const bgColor = "gray.300";
 
   const fuse = new Fuse(options, {
     keys: [""],
@@ -117,7 +111,12 @@ function MultiSelectDropdown({
   }, [query, selectedOptions, options]); // Dependencies include query, selectedOptions, and options
 
   return (
-    <FormControl width={width} zIndex="15">
+    <FormControl
+      width={{
+        base: "100%",
+        lg: width
+      }}
+    >
       <Popover
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -125,7 +124,7 @@ function MultiSelectDropdown({
         closeOnBlur={true}
       >
         <PopoverTrigger>
-          <Box zIndex="15">
+          <Box>
             <HStack
               //   onClick={() => setIsOpen(!isOpen)}
               p={2}
@@ -133,7 +132,7 @@ function MultiSelectDropdown({
               wrap="wrap"
               spacing={1}
               minHeight="40px"
-              bgColor={bgColor}
+              bgColor={"gray.200"}
             >
               <TagList
                 selectedOptions={selectedOptions}
@@ -165,7 +164,7 @@ function MultiSelectDropdown({
           minWidth="200px"
           width={width}
           maxWidth="90vw"
-          zIndex="30"
+          zIndex="999"
           maxH="3xl"
           overflowY="auto"
           boxShadow={"md"}

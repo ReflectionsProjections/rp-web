@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { FaCircleCheck } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useParams } from "react-router-dom";
-import { Resume } from "./ResumeBook";
+import { Resume } from "./ResumeBook/ResumeBook";
 
 export function DownloadPage() {
   const { resumeId } = useParams<{ resumeId: string }>();

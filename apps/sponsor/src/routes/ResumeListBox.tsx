@@ -1,37 +1,26 @@
 import {
   Box,
-  Button,
   Checkbox,
   Grid,
   GridItem,
   HStack,
+  IconButton,
   Image,
   Text,
   Tooltip,
   VStack
 } from "@chakra-ui/react";
-import React, { useState } from "react";
-import { IoIosDocument } from "react-icons/io";
-import { MdOpenInNew } from "react-icons/md";
+import React from "react";
+import { FaFilePdf } from "react-icons/fa6";
 import { Config } from "../config";
 import PortfolioLinks from "./PortfolioLinks";
-import { Resume } from "./ResumeBook";
-
-interface ColumnWidths {
-  checkbox: number;
-  name: number;
-  major: number;
-  degree: number;
-  graduationYear: number;
-  actions: number;
-  data: number;
-}
+import { Resume } from "./ResumeBook/ResumeBook";
 
 interface ResumeComponentProps {
   resume: Resume;
   isSelected: boolean;
-  columnWidths: ColumnWidths;
-  isLargerThan700: boolean;
+  screenIsLarge: boolean;
+  screenIsLargeButton: boolean;
   openResume: (resume: Resume) => void;
   toggleResume: (resumeId: string) => void;
   baseColor: string;
@@ -41,34 +30,24 @@ interface ResumeComponentProps {
 const ResumeListBox: React.FC<ResumeComponentProps> = ({
   resume,
   isSelected,
-  columnWidths,
-  isLargerThan700,
+  screenIsLarge,
   openResume,
   toggleResume,
   baseColor,
   bgColor
 }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleExpand = () => {
-    setIsExpanded(true);
-  };
-
-  const handleCollapse = () => {
-    setIsExpanded(false);
-  };
-
   return (
     <Box
       key={resume.id}
       padding="10px"
+      pr="20px"
       background={isSelected ? "blue." + baseColor : bgColor}
       overflow="visible"
       position="relative"
       cursor="pointer"
       borderBottom={"1px solid"}
       borderColor={"gray.300"}
-      py={4}
+      py={screenIsLarge ? 3 : 2}
       w="100%"
       minH="fit-content"
       _hover={{
@@ -78,17 +57,16 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         toggleResume(resume.id);
       }}
       transition="all 0.2s ease"
-      zIndex={isExpanded ? 999 : 1}
     >
       <Grid
         templateColumns={
-          isLargerThan700
-            ? `${columnWidths.checkbox}px ${columnWidths.name}px ${columnWidths.degree}px ${columnWidths.major}px ${columnWidths.graduationYear}px ${columnWidths.actions}px`
-            : `${columnWidths.checkbox}px ${columnWidths.data}px ${columnWidths.actions}px`
+          screenIsLarge
+            ? "80px minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1.2fr) 100px"
+            : "60px minmax(0, 1.5fr) minmax(0, 1fr) 100px"
         }
         gap={4}
         alignItems="center"
-        overflow="visible"
+        overflow="hidden"
       >
         <GridItem>
           <HStack gap={4}>
@@ -105,25 +83,49 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             )}
           </HStack>
         </GridItem>
-        {isLargerThan700 ? (
+        {screenIsLarge ? (
           <>
             <GridItem>
-              <Text fontWeight="bold" fontSize="md">
+              <Text
+                fontWeight="bold"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
                 {resume.name}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.700" fontSize="md">
+              <Text
+                color="gray.700"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
                 {resume.degree}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.700" fontSize="md">
+              <Text
+                color="gray.700"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
                 {resume.major}
               </Text>
             </GridItem>
             <GridItem>
-              <Text color="gray.700" fontSize="md">
+              <Text
+                color="gray.700"
+                fontSize={{
+                  base: "sm",
+                  lg: "md"
+                }}
+              >
                 {resume.graduationYear}
               </Text>
             </GridItem>
@@ -135,41 +137,53 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                 {resume.name}
               </Text>
               <Text color="gray.700" fontSize="sm">
-                {resume.degree}
+                {resume.degree} - {resume.graduationYear}
               </Text>
               <Text color="gray.570" fontSize="sm">
                 {resume.major}
-              </Text>
-              <Text color="gray.700" fontSize="sm">
-                {resume.graduationYear}
               </Text>
             </VStack>
           </GridItem>
         )}
         <GridItem zIndex="5" overflow="visible">
+          <PortfolioLinks resume={resume} isMediumScreen={screenIsLarge} />
+        </GridItem>
+        <GridItem zIndex="5" overflow="visible">
           <HStack spacing={2} overflow="visible">
-            <Button
-              backgroundColor="blue.500"
+            <Tooltip
+              label={"Preview Resume"}
+              placement="top"
+              hasArrow
+              bg="gray.700"
               color="white"
-              size="md"
-              _hover={{ color: "black", backgroundColor: "blue.300" }}
-              onClick={(e) => {
-                e.stopPropagation();
-                openResume(resume);
-              }}
-              leftIcon={isLargerThan700 ? <IoIosDocument /> : undefined}
+              fontSize="md"
+              borderRadius="md"
+              p={1}
+              px={2}
+              zIndex="999"
             >
-              {isLargerThan700 ? "Open Resume" : <MdOpenInNew />}
-            </Button>
-
-            <PortfolioLinks
-              isLargerThan700={isLargerThan700}
-              isExpanded={isExpanded}
-              resume={resume}
-              baseColor={baseColor}
-              onCollapse={handleCollapse}
-              onExpand={handleExpand}
-            />
+              <IconButton
+                backgroundColor="blue.500"
+                w={"100%"}
+                mx={screenIsLarge ? "auto" : ""}
+                color="white"
+                size={
+                  screenIsLarge
+                    ? {
+                        base: "sm",
+                        lg: "lg"
+                      }
+                    : "md"
+                }
+                _hover={{ color: "gray.700", backgroundColor: "blue.400" }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  openResume(resume);
+                }}
+                aria-label=""
+                icon={<FaFilePdf />}
+              />
+            </Tooltip>
           </HStack>
         </GridItem>
       </Grid>

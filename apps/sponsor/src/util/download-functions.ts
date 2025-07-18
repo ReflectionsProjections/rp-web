@@ -1,6 +1,6 @@
 import axios from "axios";
 import api from "./api";
-import { Resume } from "@/routes/ResumeBook";
+import { Resume } from "@/routes/ResumeBook/ResumeBook";
 import { saveAs } from "file-saver";
 import JSZip from "jszip";
 

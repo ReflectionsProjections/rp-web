@@ -1,5 +1,8 @@
+import api from "@/util/api";
 import {
   Button,
+  Flex,
+  IconButton,
   Modal,
   ModalBody,
   ModalContent,
@@ -8,20 +11,20 @@ import {
   ModalOverlay,
   Skeleton,
   Spacer,
+  Spinner,
   Text,
   useSafeLayoutEffect,
   useToast
 } from "@chakra-ui/react";
-import { Resume } from "./ResumeBook";
-import api from "@/util/api";
 import { path } from "@rp/shared";
 import { useState } from "react";
 import PortfolioLinks from "./PortfolioLinks";
+import { Resume } from "./ResumeBook/ResumeBook";
+import { FaDownload } from "react-icons/fa6";
 
 type ResumePopupModalProps = {
-  isLargerThan700: boolean;
+  isMediumScreen: boolean;
   resume: Resume | null;
-  baseColor: string;
   numPrevious: number;
   numNext: number;
 
@@ -32,9 +35,8 @@ type ResumePopupModalProps = {
 
 const ResumePopupModal = ({
   resume,
+  isMediumScreen,
   onClose,
-  isLargerThan700,
-  baseColor,
   onPrevious,
   onNext,
   numPrevious,
@@ -77,16 +79,6 @@ const ResumePopupModal = ({
     handleLoadResume();
   }, [resume]);
 
-  const [isExpanded, setIsExpanded] = useState(false);
-
-  const handleExpand = () => {
-    setIsExpanded(true);
-  };
-
-  const handleCollapse = () => {
-    setIsExpanded(false);
-  };
-
   const [resumeLoading, setResumeLoading] = useState(false);
 
   const handleDownloadResume = async () => {
@@ -127,15 +119,29 @@ const ResumePopupModal = ({
   return (
     <Modal isOpen={resume !== null} onClose={onClose} size="6xl">
       <ModalOverlay />
-      <ModalContent h="98vh" my={"auto"}>
+      <ModalContent
+        h={isMediumScreen ? "95vh" : "90vh"}
+        my={"auto"}
+        mt={isMediumScreen ? "auto" : 0}
+      >
         {resume !== null && (
           <>
             <ModalHeader>
-              {resume.name}
-
-              <Text fontSize="md" color="gray.500">
-                {resume.degree} | {resume.major} | {resume.graduationYear}
-              </Text>
+              <Flex justifyContent="space-between" alignItems="center" gap={2}>
+                <Flex flexDirection={"column"}>
+                  <Text fontSize="2xl" fontWeight="bold">
+                    {resume.name}
+                  </Text>
+                  <Text fontSize="md" color="gray.500">
+                    {resume.degree} | {resume.major} | {resume.graduationYear}
+                  </Text>
+                </Flex>
+                {resumeLoading ? (
+                  <Spinner />
+                ) : (
+                  <PortfolioLinks resume={resume} showPlaceholders={false} />
+                )}
+              </Flex>
             </ModalHeader>
             <ModalBody height="100%">
               {resumeUrl && (
@@ -155,63 +161,63 @@ const ResumePopupModal = ({
                 />
               )}
             </ModalBody>
-            <ModalFooter>
-              {resumeUrl && (
-                <Button
-                  colorScheme="blue"
-                  mr={3}
-                  onClick={() => {
-                    void handleDownloadResume();
-                  }}
-                >
-                  Download
-                </Button>
-              )}
-
-              <PortfolioLinks
-                isLargerThan700={isLargerThan700}
-                isExpanded={isExpanded}
-                resume={resume}
-                baseColor={baseColor}
-                onCollapse={handleCollapse}
-                onExpand={handleExpand}
-              />
-              <Button onClick={onClose} ml={3}>
-                Close
-              </Button>
+            <ModalFooter
+              display={"flex"}
+              flexDir={isMediumScreen ? "row" : "column"}
+              pt={2}
+              w="100%"
+            >
+              <Flex gap={2} hidden={!isMediumScreen}>
+                {resumeUrl && (
+                  <IconButton
+                    colorScheme="blue"
+                    aria-label="Download Resume"
+                    icon={<FaDownload />}
+                    onClick={() => {
+                      void handleDownloadResume();
+                    }}
+                  />
+                )}
+                <Button onClick={onClose}>Close</Button>
+              </Flex>
               <Spacer />
 
-              <Button
-                colorScheme="blue"
-                onClick={onPrevious}
-                isDisabled={!resumeUrl || numPrevious === 0}
+              <Flex
+                gap={2}
+                justifyContent={isMediumScreen ? "flex-end" : "space-between"}
+                w="100%"
               >
-                Previous
-                <Text
-                  fontWeight={"normal"}
-                  ml={2}
-                  color="gray.200"
-                  fontSize="sm"
+                <Button
+                  colorScheme="blue"
+                  onClick={onPrevious}
+                  isDisabled={!resumeUrl || numPrevious === 0}
                 >
-                  {numPrevious}
-                </Text>
-              </Button>
-              <Button
-                colorScheme="blue"
-                onClick={onNext}
-                ml={3}
-                isDisabled={!resumeUrl || numNext === 0}
-              >
-                Next
-                <Text
-                  fontWeight={"normal"}
-                  ml={2}
-                  color="gray.200"
-                  fontSize="sm"
+                  Previous
+                  <Text
+                    fontWeight={"normal"}
+                    ml={2}
+                    color="gray.200"
+                    fontSize="sm"
+                  >
+                    {numPrevious}
+                  </Text>
+                </Button>
+                <Button
+                  colorScheme="blue"
+                  onClick={onNext}
+                  isDisabled={!resumeUrl || numNext === 0}
                 >
-                  {numNext}
-                </Text>
-              </Button>
+                  Next
+                  <Text
+                    fontWeight={"normal"}
+                    ml={2}
+                    color="gray.200"
+                    fontSize="sm"
+                  >
+                    {numNext}
+                  </Text>
+                </Button>
+              </Flex>
             </ModalFooter>
           </>
         )}

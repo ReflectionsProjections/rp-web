@@ -1,106 +1,154 @@
-import {
-  Button,
-  Flex,
-  Popover,
-  PopoverBody,
-  PopoverContent,
-  PopoverTrigger,
-  Text
-} from "@chakra-ui/react";
-import { Resume } from "./ResumeBook";
-import { FaLink } from "react-icons/fa6";
-import { MdList } from "react-icons/md";
+import { Box, Flex, IconButton, Tooltip } from "@chakra-ui/react";
+import React, { useMemo } from "react";
+import { FaGithub, FaGlobe, FaLinkedin } from "react-icons/fa";
+import { Resume } from "./ResumeBook/ResumeBook";
 
 type PortfolioLinksProps = {
-  isExpanded: boolean;
-  isLargerThan700: boolean;
+  isMediumScreen?: boolean;
   resume: Resume;
-  baseColor: string;
-  onCollapse: () => void;
-  onExpand: () => void;
+  showPlaceholders?: boolean;
+};
+
+const normalizeHostname = (host: string) => host.replace(/^www\./, "");
+
+const ICONS: Record<string, React.ElementType> = {
+  "github.com": FaGithub,
+  "linkedin.com": FaLinkedin,
+  other: FaGlobe
+};
+
+const ICON_COLORS: Record<string, string> = {
+  "github.com": "gray.100",
+  "linkedin.com": "gray.100",
+  other: "gray.500"
+};
+
+const ICON_BACKGROUND: Record<string, string> = {
+  "github.com": "gray.600",
+  "linkedin.com": "blue.500",
+  other: "gray.300"
+};
+
+const getIconForPortfolio = (portfolio: string): React.ReactElement => {
+  const url = new URL(portfolio);
+  const host = normalizeHostname(url.hostname);
+  const IconComponent = ICONS[host] || ICONS["other"];
+  return <IconComponent />;
 };
 
 const PortfolioLinks = ({
-  isLargerThan700,
-  isExpanded,
   resume,
-  baseColor,
-  onCollapse,
-  onExpand
+  isMediumScreen,
+  showPlaceholders = true
 }: PortfolioLinksProps) => {
+  const portfolios = useMemo(() => {
+    return resume.portfolios?.sort((a, b) => {
+      const aHost = normalizeHostname(new URL(a).hostname);
+      const bHost = normalizeHostname(new URL(b).hostname);
+      if (aHost === "linkedin.com") return -1;
+      if (bHost === "linkedin.com") return 1;
+      if (aHost === "github.com") return -1;
+      if (bHost === "github.com") return 1;
+      return aHost.localeCompare(bHost);
+    });
+  }, [resume.portfolios]);
+
+  const placeholderCount = Math.max(0, 3 - (portfolios?.length ?? 0));
+
   return (
-    <Popover
-      placement="bottom"
-      closeOnBlur
-      onClose={onCollapse}
-      isOpen={isExpanded}
-      onOpen={onExpand}
-    >
-      <PopoverTrigger>
-        <Button
-          isDisabled={resume.portfolios?.length === 0}
-          backgroundColor="green.500"
-          color="white"
-          size="md"
-          _hover={{ backgroundColor: "green.300" }}
-          onClick={(e) => {
-            e.stopPropagation();
-            if (isExpanded) {
-              onCollapse();
-            } else {
-              onExpand();
+    <Flex display="flex" gap={1}>
+      {portfolios?.map((portfolio) => {
+        const host = normalizeHostname(new URL(portfolio).hostname);
+        return (
+          <Tooltip
+            key={portfolio}
+            label={host}
+            placement="top"
+            hasArrow
+            bg="gray.700"
+            color="white"
+            fontSize="md"
+            borderRadius="md"
+            p={1}
+            px={2}
+            zIndex="999"
+          >
+            <IconButton
+              aria-label={`Open ${host}`}
+              icon={getIconForPortfolio(portfolio)}
+              size={
+                isMediumScreen
+                  ? {
+                      base: "35px",
+                      lg: "40px"
+                    }
+                  : "md"
+              }
+              w={
+                isMediumScreen
+                  ? {
+                      base: "35px",
+                      lg: "40px"
+                    }
+                  : "40px"
+              }
+              height={
+                isMediumScreen
+                  ? {
+                      base: "32px",
+                      lg: "40px"
+                    }
+                  : "40px"
+              }
+              fontSize={
+                isMediumScreen
+                  ? {
+                      base: "md",
+                      lg: "xl"
+                    }
+                  : "20px"
+              }
+              variant="solid"
+              backgroundColor={ICON_BACKGROUND[host] || "gray.400"}
+              _hover={{
+                backgroundColor: ICON_BACKGROUND[host] || "gray.500"
+              }}
+              color={ICON_COLORS[host] || "white"}
+              onClick={(e) => {
+                e.stopPropagation();
+                window.open(portfolio, "_blank");
+              }}
+            />
+          </Tooltip>
+        );
+      })}
+
+      {showPlaceholders &&
+        Array.from({ length: placeholderCount }, (_, i) => (
+          <Box
+            key={i}
+            w={
+              isMediumScreen
+                ? {
+                    base: "35px",
+                    lg: "40px"
+                  }
+                : "40px"
             }
-          }}
-          leftIcon={isLargerThan700 ? <FaLink /> : undefined}
-        >
-          {isLargerThan700 ? `Portfolio Links` : <MdList />}
-          <Text fontWeight={"normal"} ml={2} color="gray.200" fontSize="sm">
-            {resume.portfolios?.length}
-          </Text>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent
-        p={3}
-        zIndex="999"
-        w="fit-content"
-        maxW="400px"
-        boxShadow="lg"
-        border="2px solid"
-        borderColor={"gray.200"}
-      >
-        <PopoverBody>
-          <Flex wrap="wrap" justify="flex-start" gap={2}>
-            {resume.portfolios?.map((link) => {
-              const url = new URL(link);
-              const displayURL = url.hostname;
-              return (
-                <Button
-                  key={link}
-                  minWidth="120px"
-                  backgroundColor={"gray." + baseColor}
-                  _hover={{
-                    backgroundColor:
-                      "gray." +
-                      (parseInt(baseColor) > 500
-                        ? parseInt(baseColor) - 100
-                        : parseInt(baseColor) + 100)
-                  }}
-                  color={"blue.500"}
-                  fontSize={"14px"}
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    window.open(link, "_blank");
-                  }}
-                >
-                  {displayURL}
-                </Button>
-              );
-            })}
-          </Flex>
-        </PopoverBody>
-      </PopoverContent>
-    </Popover>
+            height={
+              isMediumScreen
+                ? {
+                    base: "32px",
+                    lg: "40px"
+                  }
+                : "40px"
+            }
+            backgroundColor="gray.300"
+            opacity={0.4}
+            borderRadius="md"
+          />
+        ))}
+    </Flex>
   );
 };
 
