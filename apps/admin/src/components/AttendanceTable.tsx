@@ -27,7 +27,6 @@ import {
   useMediaQuery,
   useToast
 } from "@chakra-ui/react";
-import { AttendanceType, Meeting, path, Staff, TeamName } from "@rp/shared";
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../util/api";
 
@@ -42,6 +41,7 @@ import {
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MainContext } from "@/routes/Main";
 import { useOutletContext } from "react-router-dom";
+import AttendanceModal from "./AttendanceModal";
 
 type StaffStatistics = Record<
   "ABSENT" | "PRESENT" | "EXCUSED" | "TOTAL",
