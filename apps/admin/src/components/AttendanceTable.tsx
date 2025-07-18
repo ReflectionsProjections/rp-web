@@ -1,4 +1,3 @@
-import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
@@ -28,8 +27,9 @@ import {
   useToast
 } from "@chakra-ui/react";
 import React, { useEffect, useMemo, useState } from "react";
+import AttendanceModal from "./AttendanceModal";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import api from "../util/api";
-
 import {
   AttendanceType,
   Meeting,
@@ -41,7 +41,6 @@ import {
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MainContext } from "@/routes/Main";
 import { useOutletContext } from "react-router-dom";
-import AttendanceModal from "./AttendanceModal";
 
 type StaffStatistics = Record<
   "ABSENT" | "PRESENT" | "EXCUSED" | "TOTAL",

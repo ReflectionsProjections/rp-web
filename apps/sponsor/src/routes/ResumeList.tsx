@@ -159,12 +159,10 @@ const ResumeList: React.FC<ResumeListProps> = ({
   const navbarRef = useRef<HTMLDivElement>(null);
   const [navbarTop, setNavbarTop] = useState(0);
 
-  // const viewColor = "gray."+baseColor;
   const bgColor =
     parseInt(baseColor) < 500
       ? "gray." + (parseInt(baseColor) - 100)
       : "gray." + (100 + parseInt(baseColor));
-  // const selectViewColor = useColorModeValue("gray.300","gray.600")
 
   useEffect(() => {
     const navbar = navbarRef.current;

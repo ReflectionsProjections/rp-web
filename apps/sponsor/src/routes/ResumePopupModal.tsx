@@ -69,9 +69,9 @@ const ResumePopupModal = ({
           setResumeLoading(false);
         }, 1000);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
         showToast("Failed to open resume. Please try again later.");
+        setResumeLoading(false);
       });
   };
 
