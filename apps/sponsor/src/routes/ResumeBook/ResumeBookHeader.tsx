@@ -5,12 +5,14 @@ import {
   Input,
   Popover,
   PopoverContent,
-  PopoverTrigger
+  PopoverTrigger,
+  Text
 } from "@chakra-ui/react";
-import { FilterModal, FilterModalProps } from "./FilterModal";
-import { TiDocumentDelete } from "react-icons/ti";
 import { BiSelectMultiple } from "react-icons/bi";
 import { FaDownload } from "react-icons/fa";
+import { FaFileCsv, FaRegFilePdf } from "react-icons/fa6";
+import { TiDocumentDelete } from "react-icons/ti";
+import { FilterModal, FilterModalProps } from "./FilterModal";
 import { Resume } from "./ResumeBook";
 
 export type ResumeBookHeaderProps = {
@@ -164,6 +166,9 @@ export function ResumeBookHeader({
               borderColor={"gray.200"}
               gap={2}
             >
+              <Text fontSize="md" fontWeight={"bold"}>
+                Downloads
+              </Text>
               <Button
                 mr={2}
                 onClick={() => void exportResumes.handleDownloadResumes()}
@@ -177,9 +182,11 @@ export function ResumeBookHeader({
                 color={"white"}
                 isDisabled={selection.selectedResumes.length < 1}
                 transition="border background-color color 0.3s ease"
+                justifyContent={"flex-start"}
                 w="100%"
+                leftIcon={<FaRegFilePdf />}
               >
-                Download selected PDFs
+                Selected resumes (PDFs)
               </Button>
 
               <Button
@@ -195,8 +202,10 @@ export function ResumeBookHeader({
                 isDisabled={selection.selectedResumes.length < 1}
                 transition="border background-color color 0.3s ease"
                 w="100%"
+                leftIcon={<FaFileCsv />}
+                justifyContent={"flex-start"}
               >
-                Download selected as CSV
+                Selected profiles (CSV)
               </Button>
 
               <Button
@@ -211,8 +220,10 @@ export function ResumeBookHeader({
                 color={"white"}
                 transition="border background-color color 0.3s ease"
                 w="100%"
+                leftIcon={<FaFileCsv />}
+                justifyContent={"flex-start"}
               >
-                Download all as CSV
+                All profiles under filter (CSV)
               </Button>
             </PopoverContent>
           </Popover>

@@ -32,7 +32,7 @@ export type ResumeBookProps = {
 export function ResumeBookContent(props: ResumeBookProps) {
   const viewColor = useColorModeValue("200", "700");
   return (
-    <Box w="100%" px={3} h="100%">
+    <Box w="100%" px={3} overflowY={"auto"}>
       {props.resumeData.filteredResumes.length > 0 || props.loading ? (
         props.showList ? (
           <ResumeList

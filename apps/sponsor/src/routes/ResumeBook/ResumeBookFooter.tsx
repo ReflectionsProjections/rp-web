@@ -26,39 +26,41 @@ export function ResumeBookFooter({
   handlePrevious: () => void;
 }) {
   return (
-    <Flex
-      bg="gray.200"
-      px={4}
-      py={{ base: 4, md: 4 }}
-      direction={{ base: "column", md: "row" }}
-      align="center"
-    >
+    <Flex bg="gray.200" px={3} py={3} align="center" w="100%">
       <Box
+        display={{ base: "none", md: "block" }}
         flex={1}
         textAlign={{ base: "center", md: "left" }}
         mb={{ base: 2, md: 0 }}
       >
-        <Text
-          display={{ base: "none", md: "block" }}
-          fontSize="md"
-          whiteSpace="nowrap"
-        >
+        <Text fontSize="md" whiteSpace="nowrap">
           {`Showing ${startIndex + 1} - ${endIndex} of ${allFilteredResumes.length} resumes`}
         </Text>
       </Box>
 
-      <Box flex={1} textAlign="center" mb={{ base: 2, md: 0 }}>
+      <Box
+        flex={1}
+        textAlign="center"
+        mb={{ base: 2, md: 0 }}
+        display={{
+          base: "none",
+          md: "block"
+        }}
+      >
         <Text fontSize="sm" color="gray.500">
           © 2025 Reflections | Projections
         </Text>
       </Box>
 
       {filteredResumes.length > 0 && (
-        <Box flex={1} textAlign={{ base: "center", md: "right" }}>
-          <HStack
-            spacing={{ base: 2, md: 4 }}
-            justify={{ base: "center", md: "flex-end" }}
-          >
+        <Box
+          flex={1}
+          textAlign={{ base: "center", md: "right" }}
+          display={"flex"}
+          gap={3}
+          flexDir={{ base: "row-reverse", md: "row" }}
+        >
+          <HStack flex={1} spacing={{ base: 2, md: 4 }} justify={"flex-end"}>
             <Button
               onClick={handlePrevious}
               isDisabled={page === 1}
@@ -80,7 +82,9 @@ export function ResumeBookFooter({
                 bg="white"
                 px={1}
               />
-              <Text fontSize="md">/ {pageSize}</Text>
+              <Text fontSize="md" whiteSpace={"nowrap"}>
+                / {pageSize}
+              </Text>
             </HStack>
 
             <Button
@@ -98,7 +102,6 @@ export function ResumeBookFooter({
             spacing={2}
             display={{ base: "flex", md: "none" }}
             justify="center"
-            mt={2}
           >
             <Input
               value={displayedPage}
