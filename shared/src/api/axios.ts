@@ -1,6 +1,8 @@
 import axios from "axios";
 import { TypedAxiosInstance } from "./type-wrapper";
 
+export type ApiError = Error & { response: { data: { error: string } } };
+
 function createApi(
   baseURL: string,
   unauthorizedCallback: () => void
@@ -20,7 +22,7 @@ function createApi(
 
   axiosObject.interceptors.response.use(
     (response) => response,
-    (error: { response: { data: { error: string } } }) => {
+    (error: ApiError) => {
       const errorType = error.response.data.error;
 
       if (
@@ -33,7 +35,6 @@ function createApi(
 
       console.error("API error:", error);
 
-      // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
       return Promise.reject(error);
     }
   );

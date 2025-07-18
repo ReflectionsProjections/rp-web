@@ -1,5 +1,4 @@
-import rpLogo from "../assets/rp_logo.svg";
-import "../App.css";
+import rpLogo from "/rp_logo.svg";
 
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
@@ -13,22 +12,18 @@ import {
   VStack,
   Center,
   HStack,
-  useMediaQuery
+  Heading
 } from "@chakra-ui/react";
+import { Config, googleAuth } from "@rp/shared";
 
 export default function Login() {
-  const [isMedium] = useMediaQuery("(max-width: 850px)");
-  const [isSmall] = useMediaQuery("(max-width: 600px)");
-  const [isXSmall] = useMediaQuery("(max-width: 400px)");
-
   return (
     <Flex
       direction="column"
-      align="center"
-      justify="center"
-      minHeight="100vh"
-      bg="linear-gradient(to bottom right, blue.500, purple.600)"
-      position="relative"
+      alignItems="center"
+      justifyContent="center"
+      w="100%"
+      h="100%"
     >
       <Center>
         <Image
@@ -44,41 +39,31 @@ export default function Login() {
       <VStack spacing={4} mb={8}>
         <Center>
           <Box p="4">
-            <HStack justifyContent="center" spacing="8px" textAlign={"center"}>
-              <Text
-                fontSize={
-                  isXSmall ? "20" : isSmall ? "28" : isMedium ? "43" : "56"
-                }
+            <HStack justifyContent="center" spacing={4} textAlign={"center"}>
+              <Heading
+                size={{ base: "lg", md: "3xl" }}
                 fontFamily={"Roboto Slab"}
                 fontWeight={"700"}
                 letterSpacing={"0.08em"}
               >
-                {" "}
-                reflections{" "}
-              </Text>
-              <Text
-                fontSize={
-                  isXSmall ? "52" : isSmall ? "60" : isMedium ? "76" : "120"
-                }
+                reflections
+              </Heading>
+              <Heading
+                size={{ base: "xl", md: "4xl" }}
                 fontFamily={"Roboto Slab"}
                 fontWeight={"300"}
                 letterSpacing={"0.08em"}
-                mt="-10px"
               >
-                {" "}
                 |
-              </Text>
-              <Text
-                fontSize={
-                  isXSmall ? "20" : isSmall ? "28" : isMedium ? "43" : "56"
-                }
+              </Heading>
+              <Heading
+                size={{ base: "lg", md: "3xl" }}
                 fontFamily={"Roboto Slab"}
                 fontWeight={"700"}
                 letterSpacing={"0.08em"}
               >
-                {" "}
-                projections{" "}
-              </Text>
+                projections
+              </Heading>
             </HStack>
             {/* <Text fontSize={isXSmall ? "14" : isSmall ? "20" : isMedium ? "26" : "30" } whiteSpace="pre-line" fontFamily={"Nunito"} fontWeight={"400"}>Admin Site</Text> */}
           </Box>
@@ -89,7 +74,6 @@ export default function Login() {
           as="h1"
           size="xl"
           fontWeight={"900"}
-          mt="-30px"
         >
           Admin Site
         </Text>
@@ -100,7 +84,7 @@ export default function Login() {
         size="lg"
         fontWeight="bold"
         onClick={() => {
-          window.location.href = "/home/";
+          googleAuth(Config.GOOGLE_OAUTH_CLIENT_ID, true);
         }}
         fontFamily={"Nunito"}
       >

@@ -62,7 +62,7 @@ export type Event = {
   points: number;
   description: string;
   isVirtual: boolean;
-  imageUrl: string;
+  imageUrl: string | null;
   location: string;
   isVisible: boolean;
   attendanceCount: number;
@@ -99,7 +99,7 @@ export type RoleObject = {
   roles: Role[];
 };
 
-export type TeamName =
+export type CommitteeType =
   | "FULL TEAM"
   | "CONTENT"
   | "CORPORATE"
@@ -113,7 +113,7 @@ export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 export type Staff = {
   userId: string;
   name: string;
-  team: TeamName;
+  team: CommitteeType;
   attendances: Record<string, AttendanceType>;
 };
 
@@ -219,15 +219,16 @@ export interface APIRoutes {
     };
     POST: {
       request: Omit<Event, "eventId">;
-      response: Event;
+      response: never;
     };
   };
   "/events/:eventId": {
     PUT: {
       request: Partial<Omit<Event, "eventId">>;
-      response: Event;
+      response: never;
     };
     DELETE: {
+      request: never;
       response: never;
     };
   };
@@ -265,8 +266,8 @@ export interface APIRoutes {
       response: Meeting[];
     };
     POST: {
-      request: { committeeType: TeamName; startTime: string };
-      response: Meeting;
+      request: { committeeType: CommitteeType; startTime: string };
+      response: Omit<Meeting, "meetingId">;
     };
   };
   "/meetings/:meetingId": {
@@ -275,6 +276,7 @@ export interface APIRoutes {
       response: Meeting;
     };
     DELETE: {
+      request: never;
       response: never;
     };
   };
