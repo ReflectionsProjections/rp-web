@@ -1,5 +1,6 @@
 import api from "@/util/api";
 import {
+  Box,
   Button,
   Flex,
   IconButton,
@@ -21,6 +22,7 @@ import { useState } from "react";
 import PortfolioLinks from "./PortfolioLinks";
 import { Resume } from "./ResumeBook/ResumeBook";
 import { FaDownload } from "react-icons/fa6";
+import { FaTimes } from "react-icons/fa";
 
 type ResumePopupModalProps = {
   isMediumScreen: boolean;
@@ -120,36 +122,87 @@ const ResumePopupModal = ({
     <Modal isOpen={resume !== null} onClose={onClose} size="6xl">
       <ModalOverlay />
       <ModalContent
-        h={isMediumScreen ? "95vh" : "90vh"}
+        h={isMediumScreen ? "95dvh" : "90dvh"}
         my={"auto"}
         mt={isMediumScreen ? "auto" : 0}
       >
         {resume !== null && (
           <>
             <ModalHeader>
-              <Flex justifyContent="space-between" alignItems="center" gap={2}>
-                <Flex flexDirection={"column"}>
-                  <Text fontSize="2xl" fontWeight="bold">
-                    {resume.name}
-                  </Text>
-                  <Text fontSize="md" color="gray.500">
-                    {resume.degree} | {resume.major} | {resume.graduationYear}
-                  </Text>
+              <Flex
+                justifyContent="space-between"
+                alignItems={"flex-start"}
+                gap={2}
+                flexDir={{
+                  base: "column",
+                  md: "row"
+                }}
+              >
+                <Flex w="100%">
+                  <Flex flexDirection={"column"} w="100%">
+                    <Text fontSize="2xl" fontWeight="bold">
+                      {resume.name}
+                    </Text>
+                    <Text fontSize="md" color="gray.500">
+                      {resume.degree} | {resume.major} | {resume.graduationYear}
+                    </Text>
+                  </Flex>
+                  {/* Close button */}
+                  <IconButton
+                    display={{
+                      base: "flex",
+                      md: "none"
+                    }}
+                    alignItems={"center"}
+                    justifyContent={"center"}
+                    aria-label="Close"
+                    icon={<FaTimes />}
+                    onClick={onClose}
+                    ml="auto"
+                  />
                 </Flex>
-                {resumeLoading ? (
-                  <Spinner />
-                ) : (
-                  <PortfolioLinks resume={resume} showPlaceholders={false} />
-                )}
+                <Flex
+                  w="100%"
+                  justifyContent={{
+                    base: "flex-start",
+                    md: "flex-end"
+                  }}
+                >
+                  {resumeLoading ? (
+                    <Spinner />
+                  ) : (
+                    <>
+                      <PortfolioLinks resume={resume} showPlaceholders />
+                      {resumeUrl && (
+                        <IconButton
+                          colorScheme="blue"
+                          aria-label="Download Resume"
+                          icon={<FaDownload />}
+                          ml={"auto"}
+                          display={{
+                            base: "flex",
+                            md: "none"
+                          }}
+                          onClick={() => {
+                            void handleDownloadResume();
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
+                </Flex>
               </Flex>
             </ModalHeader>
             <ModalBody height="100%">
               {resumeUrl && (
-                <iframe
-                  src={resumeUrl}
-                  width="100%"
+                <Box
+                  w="100%"
                   height={resumeLoading ? "0px" : "100%"}
-                />
+                  outline="2px solid"
+                  outlineColor="gray.200"
+                >
+                  <iframe src={resumeUrl} width="100%" height="100%" />
+                </Box>
               )}
               {resumeLoading && (
                 <Skeleton
@@ -202,6 +255,7 @@ const ResumePopupModal = ({
                     {numPrevious}
                   </Text>
                 </Button>
+
                 <Button
                   colorScheme="blue"
                   onClick={onNext}

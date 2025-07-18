@@ -57,7 +57,12 @@ export function ResumeBook() {
 
   return (
     <ChakraProvider>
-      <Flex flexDirection={"column"} h="100vh" maxH="100vh" bgColor="gray.200">
+      <Flex
+        flexDirection={"column"}
+        h="100dvh"
+        maxH="100dvh"
+        bgColor="gray.200"
+      >
         <ResumeBookNavbar setShowList={setShowList} showList={showList} />
         <Box
           w="100%"
@@ -66,7 +71,7 @@ export function ResumeBook() {
           flex={1}
           display="flex"
           flexDir={"column"}
-          h={"calc(100vh - 4rem)"}
+          h={"calc(100dvh - 4rem)"}
         >
           <ResumeBookHeader
             filtering={

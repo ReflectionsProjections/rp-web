@@ -300,7 +300,7 @@ const ResumeList: React.FC<ResumeListProps> = ({
         </Grid>
       </Box>
       {loading ? (
-        <Stack spacing={1} mt={1}>
+        <Stack spacing={1} mt={1} w="100%">
           {Array.from({ length: 12 }).map((_, i) => (
             <Skeleton
               key={i}

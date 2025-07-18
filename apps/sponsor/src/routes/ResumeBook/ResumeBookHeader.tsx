@@ -62,6 +62,7 @@ export function ResumeBookHeader({
   return (
     <Box
       bg={"gray.200"}
+      borderColor={"gray.300"}
       transition="background-color 0.3s ease, color 0.3s ease"
       p={3}
     >

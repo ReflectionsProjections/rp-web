@@ -10,6 +10,7 @@ import { SingleCol } from "@/routes/ResumeList";
 import api from "@/util/api";
 import { useEffect, useMemo, useState } from "react";
 import { useResumeSelectionAndDownloadHook } from "./use-resume-selection-and-download-hook";
+import moment from "moment";
 
 export function useResumeDataPaginationHook({
   onToast
@@ -109,8 +110,25 @@ export function useResumeDataPaginationHook({
       })
       .sort((a, b) => {
         if (filterBy.sortCol) {
-          const aValue = a[filterBy.sortCol as keyof Resume];
-          const bValue = b[filterBy.sortCol as keyof Resume];
+          let aValue:
+            | moment.Moment
+            | string
+            | string[]
+            | number
+            | null
+            | undefined = a[filterBy.sortCol as keyof Resume];
+          let bValue:
+            | moment.Moment
+            | string
+            | string[]
+            | number
+            | null
+            | undefined = b[filterBy.sortCol as keyof Resume];
+
+          if (filterBy.sortCol === "graduationYear") {
+            aValue = moment(aValue as string);
+            bValue = moment(bValue as string);
+          }
 
           if (aValue === null || aValue === undefined) return 1;
           if (bValue === null || bValue === undefined) return -1;
@@ -123,6 +141,10 @@ export function useResumeDataPaginationHook({
             return filterBy.sortDirection === "asc"
               ? aValue - bValue
               : bValue - aValue;
+          } else if (moment.isMoment(aValue) && moment.isMoment(bValue)) {
+            return filterBy.sortDirection === "asc"
+              ? aValue.diff(bValue)
+              : bValue.diff(aValue);
           }
         }
         return 0;

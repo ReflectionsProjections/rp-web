@@ -1460,6 +1460,7 @@ __metadata:
     fuse.js: "npm:^7.0.0"
     globals: "npm:*"
     jszip: "npm:^3.10.1"
+    moment: "npm:^2.30.1"
     prettier: "npm:*"
     react: "npm:*"
     react-dom: "npm:*"
