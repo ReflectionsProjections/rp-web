@@ -1,4 +1,6 @@
-export const majors = [
+export const RESUMES_PER_PAGE = 20;
+
+export const MAJORS = [
   "Computer Science",
   "Computer Science & Advertising",
   "Computer Science & Animal Sciences",
@@ -173,4 +175,33 @@ export const majors = [
   "Undeclared",
   "Urban Studies and Planning",
   "Other"
+];
+
+export const DEGREE_TYPES = [
+  "Bachelor's",
+  "Master's",
+  "PhD",
+  "Professional (JD/MD)",
+  "Other"
+];
+
+export const YEARS = [
+  "Dec 2024",
+  "May 2025",
+  "Dec 2025",
+  "May 2026",
+  "Dec 2026",
+  "May 2027",
+  "Dec 2027",
+  "May 2028",
+  "Dec 2028",
+  "May 2029",
+  "Dec 2029"
+];
+
+export const JOB_INTERESTS = [
+  "SUMMER INTERNSHIP",
+  "FALL INTERNSHIP",
+  "SPRING INTERNSHIP",
+  "FULL TIME"
 ];

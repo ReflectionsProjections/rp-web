@@ -1,31 +1,49 @@
-import { useEffect, useState } from "react";
-import Fuse from "fuse.js";
 import {
+  Box,
+  Flex,
   FormControl,
+  HStack,
   Input,
   List,
   ListItem,
   Popover,
-  PopoverArrow,
   PopoverBody,
   PopoverContent,
   PopoverTrigger,
-  Box,
   Tag,
   TagCloseButton,
-  TagLabel,
-  HStack
+  TagLabel
 } from "@chakra-ui/react";
+import Fuse from "fuse.js";
+import { useEffect, useState } from "react";
 import { Config } from "../config";
 
 interface MultiSelectDropdownProps {
   id: string;
   width: string;
   options: string[];
+  displayedOptions?: Record<string, string>;
   selectedOptions: string[];
   onSelectionChange: (selected: string[]) => void;
-  baseColor: string;
   placeholderText?: string | null;
+}
+
+type TagListProps = {
+  selectedOptions: string[];
+  handleRemove: (option: string) => void;
+};
+
+function TagList({ selectedOptions, handleRemove }: TagListProps) {
+  return (
+    <Flex gap={2} wrap="wrap">
+      {selectedOptions.map((option) => (
+        <Tag key={option} size="md" variant="solid" colorScheme="teal">
+          <TagLabel>{option}</TagLabel>
+          <TagCloseButton onClick={() => handleRemove(option)} />
+        </Tag>
+      ))}
+    </Flex>
+  );
 }
 
 function MultiSelectDropdown({
@@ -33,8 +51,8 @@ function MultiSelectDropdown({
   width,
   options,
   selectedOptions,
+  displayedOptions,
   onSelectionChange,
-  baseColor,
   placeholderText = "Select"
 }: MultiSelectDropdownProps) {
   const [query, setQuery] = useState<string>("");
@@ -42,10 +60,6 @@ function MultiSelectDropdown({
   const [filteredOptions, setFilteredOptions] = useState<string[]>(
     options.slice(0, Config.MAX_DROPDOWN_OPTIONS)
   );
-  const bgColor =
-    parseInt(baseColor) < 500
-      ? "gray." + (parseInt(baseColor) - 100)
-      : "gray." + (100 + parseInt(baseColor));
 
   const fuse = new Fuse(options, {
     keys: [""],
@@ -74,16 +88,6 @@ function MultiSelectDropdown({
     setFilteredOptions(newOptions);
   };
 
-  //     const resetFilter = () => {
-  //     const newOptions = options
-  //       .filter(option =>
-  //         option.toLowerCase().includes(query.toLowerCase()) &&
-  //         !selectedOptions.includes(option) // Omit already selected options
-  //       )
-  //       .slice(0, Config.MAX_DROPDOWN_OPTIONS);
-  //     setFilteredOptions(newOptions);
-  //   };
-
   const handleSelect = (option: string) => {
     if (!selectedOptions.includes(option)) {
       const newSelectedOptions = [...selectedOptions, option];
@@ -107,7 +111,12 @@ function MultiSelectDropdown({
   }, [query, selectedOptions, options]); // Dependencies include query, selectedOptions, and options
 
   return (
-    <FormControl width={width} zIndex="15">
+    <FormControl
+      width={{
+        base: "100%",
+        lg: width
+      }}
+    >
       <Popover
         isOpen={isOpen}
         onClose={() => setIsOpen(false)}
@@ -115,30 +124,20 @@ function MultiSelectDropdown({
         closeOnBlur={true}
       >
         <PopoverTrigger>
-          <Box zIndex="15">
+          <Box>
             <HStack
               //   onClick={() => setIsOpen(!isOpen)}
               p={2}
-              border="1px solid"
-              borderColor={parseInt(baseColor) > 500 ? `gray.600` : `gray.400`}
               borderRadius="md"
               wrap="wrap"
               spacing={1}
               minHeight="40px"
-              bgColor={bgColor}
+              bgColor={"gray.200"}
             >
-              {selectedOptions.map((option) => (
-                <Tag
-                  key={option}
-                  size="sm"
-                  borderRadius="full"
-                  variant="solid"
-                  colorScheme="teal"
-                >
-                  <TagLabel>{option.toUpperCase()}</TagLabel>
-                  <TagCloseButton onClick={() => handleRemove(option)} />
-                </Tag>
-              ))}
+              <TagList
+                selectedOptions={selectedOptions}
+                handleRemove={handleRemove}
+              />
               <Input
                 autoComplete="off"
                 id={id}
@@ -148,7 +147,7 @@ function MultiSelectDropdown({
                 placeholder={
                   selectedOptions.length === 0 ? `${placeholderText}` : ""
                 }
-                // onFocus={() => setIsOpen(true)}
+                _placeholder={{ color: "gray.600" }}
                 onChange={(e) => {
                   setQuery(e.target.value);
                   resetFilter();
@@ -161,13 +160,15 @@ function MultiSelectDropdown({
           </Box>
         </PopoverTrigger>
         <PopoverContent
-          bgColor={bgColor}
+          bgColor={"gray.100"}
           minWidth="200px"
           width={width}
           maxWidth="90vw"
-          zIndex="30"
+          zIndex="999"
+          maxH="3xl"
+          overflowY="auto"
+          boxShadow={"md"}
         >
-          <PopoverArrow />
           <PopoverBody>
             <List
               onMouseDown={(event) => {
@@ -183,7 +184,7 @@ function MultiSelectDropdown({
                   borderRadius="4px"
                   padding="8px"
                 >
-                  {option.toUpperCase()}
+                  {displayedOptions ? displayedOptions[option] : option}
                 </ListItem>
               ))}
             </List>
