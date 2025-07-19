@@ -102,8 +102,8 @@ function App() {
                 mt={isMobile ? "12px" : "24px"}
                 mb={isMobile ? "12px" : "24px"}
               >
-                <Link
-                  as={Button}
+                <Button
+                  as={Link}
                   href="https://2024.reflectionsprojections.org"
                   isExternal
                   variant="outline"
@@ -120,12 +120,13 @@ function App() {
                   _hover={{
                     bg: "linear-gradient(90deg, #e0e0e0 0%, #b9b8b8 100%)",
                     color: "black",
-                    borderColor: "transparent"
+                    borderColor: "transparent",
+                    textDecoration: "none"
                   }}
                   transition="background 0.3s, color 0.3s"
                 >
                   Visit 2024 Site
-                </Link>
+                </Button>
               </Box>
             </VStack>
           </div>
