@@ -27,7 +27,7 @@ const FormRequiredCheckbox = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired
         >
-          <FormLabel>{label}</FormLabel>
+          {/* <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel> */}
           <Checkbox
             isChecked={!!field.value}
             onChange={(e) => {
@@ -36,7 +36,7 @@ const FormRequiredCheckbox = <
             onBlur={field.onBlur}
             name={field.name}
           >
-            {checkboxLabel}
+            <FormLabel m={0}>{checkboxLabel}</FormLabel>
           </Checkbox>
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>

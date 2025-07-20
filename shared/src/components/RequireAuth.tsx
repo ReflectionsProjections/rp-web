@@ -34,8 +34,8 @@ const RequireAuthWrapper: React.FC<RequireAuthWrapperProps> = ({
         }
       })
       .catch(() => {
-        localStorage.removeItem("jwt");
-        window.location.href = "/unauthorized";
+        // This only happens if jwt is expired
+        // middleware will handle the error
       });
   }, [jwt, requiredRoles]);
 

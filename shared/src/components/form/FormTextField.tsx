@@ -29,7 +29,7 @@ const FormTextField = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel>{label}</FormLabel>
+          <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel>
 
           <Input {...field} placeholder={placeholder} />
 

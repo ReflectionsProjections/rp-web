@@ -26,7 +26,7 @@ const Register = () => {
   };
 
   return (
-    <Box p={6}>
+    <Box w="100vw" h="100vh" px={24} py={32}>
       <Formik
         initialValues={{ ...initialValues(displayName, email) }}
         validationSchema={getRegistrationSchemaForPage(page)}
@@ -77,11 +77,43 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   });
 
   return (
-    <Form>
-      <VStack spacing={5} align="stretch">
-        {FORM_PAGES[page]()}
-      </VStack>
-      <HStack mt={8} justify="flex-end">
+    <Box as={Form} position="relative" height="100%">
+      <Box display="flex" gap={16} h="100%">
+        {/* Left side image */}
+        <Box
+          flex="1"
+          bg="gray.100"
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <img
+            src="/your-image-path.jpg"
+            alt="Registration"
+            style={{
+              maxWidth: "80%",
+              maxHeight: "80%",
+              objectFit: "contain"
+            }}
+          />
+        </Box>
+        {/* Right side form */}
+        <Box
+          flex="2"
+          p={16}
+          bg="#7B0201E5"
+          borderRadius="59px"
+          w="100%"
+          h="100%"
+          mx="auto"
+          display="flex"
+          alignItems="center"
+          color="white"
+        >
+          {FORM_PAGES[page]()}
+        </Box>
+      </Box>
+      <HStack mt={8} justify="flex-end" position="absolute" right={4}>
         <Button onClick={backHandler} isDisabled={page === 0} variant="outline">
           Back
         </Button>
@@ -89,7 +121,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
           {page === NUM_PAGES - 1 ? "Submit" : "Next"}
         </Button>
       </HStack>
-    </Form>
+    </Box>
   );
 };
 

@@ -6,7 +6,7 @@ import {
   FormErrorMessage,
   RadioGroup,
   Radio,
-  VStack
+  HStack
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik";
 
@@ -40,7 +40,7 @@ const FormRadioGroup = <
             isInvalid={!!form.errors[name] && !!form.touched[name]}
             isRequired={isRequired}
           >
-            <FormLabel>{label}</FormLabel>
+            <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel>
 
             <RadioGroup
               {...field}
@@ -51,8 +51,9 @@ const FormRadioGroup = <
                   value === "other__" ? "_" : value
                 );
               }}
+              pl={4}
             >
-              <VStack align="left">
+              <HStack alignItems="center" columnGap={16} wrap="wrap" rowGap={4}>
                 {options.map((option) => (
                   <Radio key={option} value={option}>
                     {option}
@@ -63,7 +64,7 @@ const FormRadioGroup = <
                     {customLabel}
                   </Radio>
                 )}
-              </VStack>
+              </HStack>
             </RadioGroup>
 
             {radioValue === "other__" && (

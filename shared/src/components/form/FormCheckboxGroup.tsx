@@ -6,7 +6,7 @@ import {
   Input,
   Box,
   FormErrorMessage,
-  VStack
+  HStack,
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik";
 
@@ -60,13 +60,13 @@ const FormCheckboxGroup = <
 
         return (
           <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
-            <FormLabel>{label}</FormLabel>
+            <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel>
 
             <CheckboxGroup
               value={checkboxValues}
               onChange={(values: string[]) => void updateValues(values)}
             >
-              <VStack align="left">
+              <HStack alignItems="center" columnGap={16} wrap="wrap" rowGap={4}>
                 {options.map((option) => (
                   <Checkbox key={option} value={option} name={name}>
                     {option}
@@ -77,7 +77,7 @@ const FormCheckboxGroup = <
                     {customLabel}
                   </Checkbox>
                 )}
-              </VStack>
+              </HStack>
             </CheckboxGroup>
 
             {showCustomInput && (

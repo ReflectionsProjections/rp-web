@@ -22,11 +22,13 @@ const EventInfo = () => (
       name="howDidYouHear"
       label="How did you hear about Reflection | Projections?"
       options={[
-        "High School",
-        "Associate Degree",
-        "Bachelor's Degree",
-        "Master's Degree",
-        "PhD or Doctorate"
+        "Word of mouth",
+        "In-class marketing",
+        "On campus events",
+        "Instagram",
+        "Email",
+        "Linkedin",
+        "Flyers"
       ]}
       customLabel="Other"
       isRequired
