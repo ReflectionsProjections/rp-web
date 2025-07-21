@@ -65,7 +65,7 @@ const FormRadioGroup = <
                     {options
                       .filter((_, i) => i % 2 === 0)
                       .map((option) => (
-                        <Radio key={option} value={option} w="max-content">
+                        <Radio key={option} value={option}>
                           {option}
                         </Radio>
                       ))}
@@ -74,7 +74,7 @@ const FormRadioGroup = <
                     {options
                       .filter((_, i) => i % 2 === 1)
                       .map((option) => (
-                        <Radio key={option} value={option} w="max-content">
+                        <Radio key={option} value={option}>
                           {option}
                         </Radio>
                       ))}
@@ -82,16 +82,23 @@ const FormRadioGroup = <
                 </HStack>
                 {customLabel && (
                   <HStack gap={4} w="100%">
-                    <Radio key="other__" value="other__" w="max-content">
+                    <Radio key="other__" value="other__" flexShrink={0}>
                       {customLabel}
                     </Radio>
                     <Input
                       {...field}
                       variant="flushed"
                       h="fit-content"
-                      placeholder="Please specify"
+                      placeholder={
+                        radioValue === "other__" ? "Please specify" : ""
+                      }
+                      _placeholder={{ color: "#CCCCCC" }}
                       disabled={radioValue !== "other__"}
-                      value={value !== "other__" ? value.slice(1) : ""}
+                      value={
+                        radioValue === "other__" && value !== "other__"
+                          ? value.slice(1)
+                          : ""
+                      }
                       onChange={(e) => {
                         const custom = `_${e.target.value}`;
                         void form.setFieldValue(name, custom);

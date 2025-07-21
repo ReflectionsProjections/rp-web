@@ -11,6 +11,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   label: string;
   placeholder?: string;
   isRequired?: boolean;
+  type?: React.HTMLInputTypeAttribute;
 };
 
 const FormTextField = <
@@ -20,7 +21,8 @@ const FormTextField = <
   name,
   label,
   placeholder,
-  isRequired
+  isRequired,
+  type
 }: Props<TValues, TFieldName>) => {
   return (
     <Field name={name}>
@@ -33,7 +35,7 @@ const FormTextField = <
             {label}
           </FormLabel>
 
-          <Input {...field} placeholder={placeholder} />
+          <Input {...field} type={type} placeholder={placeholder} />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>

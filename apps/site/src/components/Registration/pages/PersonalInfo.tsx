@@ -22,6 +22,7 @@ const PersonalInfo = () => (
         name="email"
         label="Email"
         placeholder="Email"
+        type="email"
         isRequired
       />
     </HStack>

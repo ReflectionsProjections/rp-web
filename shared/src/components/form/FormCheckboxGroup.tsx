@@ -97,12 +97,18 @@ const FormCheckboxGroup = <
                   </HStack>
                   {customLabel && (
                     <HStack gap={4} w="100%">
-                      <Checkbox key="other__" value="other__" name={name}>
+                      <Checkbox
+                        key="other__"
+                        value="other__"
+                        name={name}
+                        flexShrink={0}
+                      >
                         {customLabel}
                       </Checkbox>
                       <Input
                         {...field}
-                        placeholder="Please specify"
+                        placeholder={showCustomInput ? "Please specify" : ""}
+                        _placeholder={{ color: "#CCCCCC" }}
                         variant="flushed"
                         h="fit-content"
                         disabled={!showCustomInput}
