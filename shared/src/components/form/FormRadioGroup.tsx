@@ -2,11 +2,11 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Box,
   FormErrorMessage,
   RadioGroup,
   Radio,
-  HStack
+  HStack,
+  VStack
 } from "@chakra-ui/react";
 import { Field, FieldProps } from "formik";
 
@@ -40,10 +40,13 @@ const FormRadioGroup = <
             isInvalid={!!form.errors[name] && !!form.touched[name]}
             isRequired={isRequired}
           >
-            <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel>
+            <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+              {label}
+            </FormLabel>
 
             <RadioGroup
               {...field}
+              pl={4}
               value={radioValue}
               onChange={(value) => {
                 void form.setFieldValue(
@@ -51,36 +54,53 @@ const FormRadioGroup = <
                   value === "other__" ? "_" : value
                 );
               }}
-              pl={4}
             >
-              <HStack alignItems="center" columnGap={16} wrap="wrap" rowGap={4}>
-                {options.map((option) => (
-                  <Radio key={option} value={option}>
-                    {option}
-                  </Radio>
-                ))}
+              <VStack alignItems="start" gap={4}>
+                <HStack
+                  alignItems="start"
+                  justifyContent="space-between"
+                  w="100%"
+                >
+                  <VStack alignItems="start" gap={4} flex={1}>
+                    {options
+                      .filter((_, i) => i % 2 === 0)
+                      .map((option) => (
+                        <Radio key={option} value={option} w="max-content">
+                          {option}
+                        </Radio>
+                      ))}
+                  </VStack>
+                  <VStack alignItems="start" gap={4} flex={1}>
+                    {options
+                      .filter((_, i) => i % 2 === 1)
+                      .map((option) => (
+                        <Radio key={option} value={option} w="max-content">
+                          {option}
+                        </Radio>
+                      ))}
+                  </VStack>
+                </HStack>
                 {customLabel && (
-                  <Radio key="other__" value="other__">
-                    {customLabel}
-                  </Radio>
+                  <HStack gap={4} w="100%">
+                    <Radio key="other__" value="other__" w="max-content">
+                      {customLabel}
+                    </Radio>
+                    <Input
+                      {...field}
+                      variant="flushed"
+                      h="fit-content"
+                      placeholder="Please specify"
+                      disabled={radioValue !== "other__"}
+                      value={value !== "other__" ? value.slice(1) : ""}
+                      onChange={(e) => {
+                        const custom = `_${e.target.value}`;
+                        void form.setFieldValue(name, custom);
+                      }}
+                    />
+                  </HStack>
                 )}
-              </HStack>
+              </VStack>
             </RadioGroup>
-
-            {radioValue === "other__" && (
-              <Box mt={2}>
-                <Input
-                  {...field}
-                  placeholder="Please specify"
-                  value={value !== "other__" ? value.slice(1) : ""}
-                  onChange={(e) => {
-                    const custom = `_${e.target.value}`;
-                    void form.setFieldValue(name, custom);
-                  }}
-                />
-              </Box>
-            )}
-
             <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
           </FormControl>
         );

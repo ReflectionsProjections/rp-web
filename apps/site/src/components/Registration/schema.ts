@@ -21,7 +21,7 @@ export const initialValues = (
   opportunities: [],
   resume: "",
   personalLinks: [],
-  howDidYouHear: "",
+  howDidYouHear: [],
   tags: [],
   over18: false
 });

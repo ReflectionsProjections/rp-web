@@ -84,7 +84,7 @@ export type RegistrationDraft = {
   personalLinks: string[];
   gender: string;
   ethnicity: string[];
-  howDidYouHear: string;
+  howDidYouHear: string[];
   tags: string[];
 };
 

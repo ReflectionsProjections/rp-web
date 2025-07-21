@@ -9,7 +9,6 @@ import { Field, FieldProps } from "formik";
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
-  checkboxLabel: string;
 };
 
 const FormRequiredCheckbox = <
@@ -17,8 +16,7 @@ const FormRequiredCheckbox = <
   TFieldName extends keyof TValues & string
 >({
   name,
-  label,
-  checkboxLabel
+  label
 }: Props<TValues, TFieldName>) => {
   return (
     <Field name={name}>
@@ -27,7 +25,6 @@ const FormRequiredCheckbox = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired
         >
-          {/* <FormLabel fontSize="xl" fontWeight="bold" mb={2}>{label}</FormLabel> */}
           <Checkbox
             isChecked={!!field.value}
             onChange={(e) => {
@@ -36,7 +33,7 @@ const FormRequiredCheckbox = <
             onBlur={field.onBlur}
             name={field.name}
           >
-            <FormLabel m={0}>{checkboxLabel}</FormLabel>
+            <FormLabel m={0}>{label}</FormLabel>
           </Checkbox>
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>

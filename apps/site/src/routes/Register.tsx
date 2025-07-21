@@ -1,4 +1,4 @@
-import { Box, Button, HStack, useToast, VStack } from "@chakra-ui/react";
+import { Box, Button, HStack, useToast } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import { useState } from "react";
 import { RoleObject, useFormAutosave } from "@rp/shared";
@@ -10,9 +10,8 @@ import {
 } from "@/components/Registration/schema";
 import CareerInfo from "@/components/Registration/pages/CareerInfo";
 import { useOutletContext } from "react-router-dom";
-import EventInfo from "@/components/Registration/pages/EventInfo";
 
-const FORM_PAGES = [PersonalInfo, CareerInfo, EventInfo];
+const FORM_PAGES = [PersonalInfo, CareerInfo];
 
 const NUM_PAGES = FORM_PAGES.length;
 
@@ -26,7 +25,7 @@ const Register = () => {
   };
 
   return (
-    <Box w="100vw" h="100vh" px={24} py={32}>
+    <Box w="100vw" h="100vh" px={24} py={28}>
       <Formik
         initialValues={{ ...initialValues(displayName, email) }}
         validationSchema={getRegistrationSchemaForPage(page)}
@@ -79,7 +78,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
   return (
     <Box as={Form} position="relative" height="100%">
       <Box display="flex" gap={16} h="100%">
-        {/* Left side image */}
         <Box
           flex="1"
           bg="gray.100"
@@ -97,10 +95,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({
             }}
           />
         </Box>
-        {/* Right side form */}
         <Box
           flex="2"
-          p={16}
+          py={12}
+          px={16}
           bg="#7B0201E5"
           borderRadius="59px"
           w="100%"
