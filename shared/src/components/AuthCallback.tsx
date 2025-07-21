@@ -21,7 +21,7 @@ const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
     }
 
     api
-      .post("/auth/login", { code, redirectUri: redirect_uri })
+      .post("/auth/login/web", { code, redirectUri: redirect_uri })
       .then((response) => {
         localStorage.setItem("jwt", response.data.token);
         void navigate(returnTo);
