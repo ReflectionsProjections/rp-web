@@ -77,7 +77,7 @@ body {
 }
 
 .title-container {
-  margin-top: 0vh;
+  transform: translateY(-5vh);
   text-align: center;
   width: 100%;
   color: #b9b8b8;

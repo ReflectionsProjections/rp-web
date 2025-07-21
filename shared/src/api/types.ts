@@ -177,7 +177,7 @@ export interface APIRoutes {
       response: RoleObject[];
     };
   };
-  "/auth/login": {
+  "/auth/login/web": {
     POST: {
       request: { code: string; redirectUri: string };
       response: { token: string };
