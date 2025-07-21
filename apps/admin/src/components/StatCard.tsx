@@ -1,9 +1,8 @@
-import api from "@/util/api";
 import { Stat, StatLabel, StatNumber } from "@chakra-ui/react";
 import { APIRoutes, usePolling } from "@rp/shared";
-import { GettablePaths } from "@rp/shared/src/api/type-wrapper";
 import { AnimatedCounter } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
+import { GettablePaths } from "@rp/shared/src/api/type-wrapper";
 
 type Transformer<T extends GettablePaths> = (
   data: APIRoutes[T]["GET"]["response"]
@@ -26,7 +25,6 @@ const StatCard = <T extends GettablePaths>({
 }: StatCardProps<T>) => {
   const mirrorStyles = useMirrorStyles(true);
   const { data, error, isLoading } = usePolling(
-    api,
     endpoint,
     enabled ?? true,
     interval

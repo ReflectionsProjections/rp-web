@@ -19,7 +19,7 @@
     "@yudiel/react-qr-scanner": "^2.2.1",
     "axios": "*",
     "chart.js": "^4.4.9",
-    "formik": "^2.4.6",
+    "formik": "*",
     "framer-motion": "*",
     "lottie-react": "^2.4.1",
     "moment": "^2.30.1",

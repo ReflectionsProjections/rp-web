@@ -24,7 +24,6 @@ import { Chart, registerables } from "chart.js";
 Chart.register(...registerables);
 
 import { useMemo, useState } from "react";
-import api from "../../util/api";
 import { path, usePolling } from "@rp/shared";
 import StatCard from "@/components/StatCard";
 import { useMirrorStyles } from "@/styles/Mirror";
@@ -39,14 +38,13 @@ function Stats() {
 
   const mirrorStyles = useMirrorStyles(true);
   const { data: pastAttendanceData, isLoading: pastAttendanceLoading } =
-    usePolling(api, path("/stats/attendance/:n", { n: numEvents }), authorized);
+    usePolling(path("/stats/attendance/:n", { n: numEvents }), authorized);
   const { data: eligiblePrize, isLoading: eligiblePrizeLoading } = usePolling(
-    api,
     path("/stats/merch-item/:price", { price }),
     authorized
   );
   const { data: dietaryRestrictions, isLoading: dietaryRestrictionsLoading } =
-    usePolling(api, "/stats/dietary-restrictions", authorized);
+    usePolling("/stats/dietary-restrictions", authorized);
 
   const pastAttendance = useMemo(() => {
     if (!pastAttendanceData) {

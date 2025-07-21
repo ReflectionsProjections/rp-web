@@ -1,12 +1,8 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TypedAxiosInstance } from "../api/type-wrapper";
+import api from "../api/api";
 
-type AuthCallbackProps = {
-  api: TypedAxiosInstance;
-};
-
-const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
+const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +25,7 @@ const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
       .catch(() => {
         void navigate("/unauthorized");
       });
-  }, [api, navigate]);
+  }, [navigate]);
 
   return <p>Completing login...</p>;
 };

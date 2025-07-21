@@ -29,14 +29,14 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import api from "../util/api";
 import {
   AttendanceType,
   Meeting,
   path,
   Staff,
   CommitteeType,
-  usePolling
+  usePolling,
+  api
 } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MainContext } from "@/routes/Main";
@@ -93,9 +93,8 @@ const AttendanceBox = () => {
     data: staff,
     isLoading: staffLoading,
     mutate: mutateStaff
-  } = usePolling(api, "/staff", authorized);
+  } = usePolling("/staff", authorized);
   const { data: meetings, isLoading: meetingsLoading } = usePolling(
-    api,
     "/meetings",
     authorized
   );
