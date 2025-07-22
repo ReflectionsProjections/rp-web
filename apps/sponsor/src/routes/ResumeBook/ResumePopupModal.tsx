@@ -3,6 +3,7 @@ import {
   Box,
   Button,
   Flex,
+  HStack,
   IconButton,
   Modal,
   ModalBody,
@@ -18,13 +19,13 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { path } from "@rp/shared";
+import axios from "axios";
+import { saveAs } from "file-saver";
 import { useState } from "react";
+import { FaTimes } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa6";
 import PortfolioLinks from "../../components/PortfolioLinks";
 import { Resume } from "./ResumeBook";
-import { FaDownload } from "react-icons/fa6";
-import { FaTimes } from "react-icons/fa";
-import { saveAs } from "file-saver";
-import axios from "axios";
 
 type ResumePopupModalProps = {
   isMediumScreen: boolean;
@@ -109,6 +110,8 @@ const ResumePopupModal = ({
     }
   };
 
+  const hasLinks = resume?.portfolios && resume.portfolios.length > 0;
+
   return (
     <Modal isOpen={resume !== null} onClose={onClose} size="6xl">
       <ModalOverlay />
@@ -138,7 +141,6 @@ const ResumePopupModal = ({
                       {resume.degree} | {resume.major} | {resume.graduationYear}
                     </Text>
                   </Flex>
-                  {/* Close button */}
                   <IconButton
                     display={{
                       base: "flex",
@@ -154,6 +156,7 @@ const ResumePopupModal = ({
                 </Flex>
                 <Flex
                   w="100%"
+                  mt={1}
                   justifyContent={{
                     base: "flex-start",
                     md: "flex-end"
@@ -163,13 +166,29 @@ const ResumePopupModal = ({
                     <Spinner />
                   ) : (
                     <>
-                      <PortfolioLinks resume={resume} showPlaceholders />
-                      {resumeUrl && (
+                      <HStack spacing={2}>
+                        <PortfolioLinks
+                          resume={resume}
+                          showPlaceholders={false}
+                        />
                         <IconButton
+                          display={{
+                            base: "none",
+                            md: "flex"
+                          }}
+                          aria-label="Close Resume"
+                          icon={<FaTimes />}
+                          onClick={onClose}
+                          ml={2}
+                        />
+                      </HStack>
+                      {resumeUrl && (
+                        <Button
                           colorScheme="blue"
                           aria-label="Download Resume"
-                          icon={<FaDownload />}
-                          ml={"auto"}
+                          leftIcon={hasLinks ? undefined : <FaDownload />}
+                          ml={hasLinks ? "auto" : undefined}
+                          px={hasLinks ? 2 : 4}
                           display={{
                             base: "flex",
                             md: "none"
@@ -177,7 +196,9 @@ const ResumePopupModal = ({
                           onClick={() => {
                             void handleDownloadResume();
                           }}
-                        />
+                        >
+                          {hasLinks ? <FaDownload /> : "Download Resume"}
+                        </Button>
                       )}
                     </>
                   )}
@@ -207,28 +228,48 @@ const ResumePopupModal = ({
             </ModalBody>
             <ModalFooter
               display={"flex"}
-              flexDir={isMediumScreen ? "row" : "column"}
+              // flexDir={isMediumScreen ? "row" : "column"}
+              flexDir={{
+                base: "column",
+                md: "row"
+              }}
               pt={2}
               w="100%"
             >
-              <Flex gap={2} hidden={!isMediumScreen}>
+              <Flex
+                gap={2}
+                // hidden={!isMediumScreen}
+                display={{
+                  base: "none",
+                  md: "flex"
+                }}
+              >
                 {resumeUrl && (
-                  <IconButton
+                  <Button
                     colorScheme="blue"
                     aria-label="Download Resume"
-                    icon={<FaDownload />}
-                    onClick={() => {
-                      void handleDownloadResume();
-                    }}
-                  />
+                    onClick={() => void handleDownloadResume()}
+                  >
+                    <FaDownload />
+                    <Box
+                      as="span"
+                      ml={2}
+                      display={{ base: "none", md: "inline" }}
+                    >
+                      Download Resume
+                    </Box>
+                  </Button>
                 )}
-                <Button onClick={onClose}>Close</Button>
               </Flex>
               <Spacer />
 
               <Flex
                 gap={2}
-                justifyContent={isMediumScreen ? "flex-end" : "space-between"}
+                // justifyContent={isMediumScreen ? "flex-end" : "space-between"}
+                justifyContent={{
+                  base: "space-between",
+                  md: "flex-end"
+                }}
                 w="100%"
               >
                 <Button
