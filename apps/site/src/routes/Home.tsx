@@ -1,7 +1,13 @@
-export default function Home() {
+import Landing from "../pages/Landing";
+import Description from "../pages/Description";
+
+const Home = () => {
   return (
     <>
-      <p>Reflections | Projections 2025</p>
+      <Landing />
+      <Description />
     </>
   );
-}
+};
+
+export default Home;
