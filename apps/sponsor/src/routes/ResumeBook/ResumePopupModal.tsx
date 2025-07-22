@@ -152,6 +152,8 @@ const ResumePopupModal = ({
                     icon={<FaTimes />}
                     onClick={onClose}
                     ml="auto"
+                    variant={"outline"}
+                    colorScheme="blue"
                   />
                 </Flex>
                 <Flex
@@ -180,6 +182,8 @@ const ResumePopupModal = ({
                           icon={<FaTimes />}
                           onClick={onClose}
                           ml={2}
+                          variant={"outline"}
+                          colorScheme="blue"
                         />
                       </HStack>
                       {resumeUrl && (
@@ -228,7 +232,6 @@ const ResumePopupModal = ({
             </ModalBody>
             <ModalFooter
               display={"flex"}
-              // flexDir={isMediumScreen ? "row" : "column"}
               flexDir={{
                 base: "column",
                 md: "row"
@@ -238,7 +241,6 @@ const ResumePopupModal = ({
             >
               <Flex
                 gap={2}
-                // hidden={!isMediumScreen}
                 display={{
                   base: "none",
                   md: "flex"
@@ -265,7 +267,6 @@ const ResumePopupModal = ({
 
               <Flex
                 gap={2}
-                // justifyContent={isMediumScreen ? "flex-end" : "space-between"}
                 justifyContent={{
                   base: "space-between",
                   md: "flex-end"
