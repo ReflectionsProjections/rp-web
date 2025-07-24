@@ -62,8 +62,7 @@ function ScheduleDayButton({
       borderLeftWidth={"8px"}
       borderLeftColor={color}
       px={3}
-      py={1.5}
-      pb={4}
+      py={3}
       pr={8}
       onClick={() => onSelectDay(date)}
       transition="all 0.2s"
@@ -77,8 +76,8 @@ function ScheduleDayButton({
         fontSize="lg"
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
-        noOfLines={1}
-        py={0.5}
+        transform="scaleX(0.7)"
+        transformOrigin="center left"
       >
         {date.toUpperCase()}
       </Text>

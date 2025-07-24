@@ -47,11 +47,12 @@ export default function EventModal({
           <ModalHeader p={0} w="100%">
             <Flex align="flex-start" justify="space-between" w="100%">
               <Text
-                fontFamily="ProRacing"
-                fontWeight="bold"
-                fontStyle="italic"
-                fontSize="2xl"
+                fontFamily="ProRacingSlant"
+                fontSize="3xl"
                 as="h2"
+                transform="scaleX(0.7)"
+                transformOrigin={"top left"}
+                className="condensed"
               >
                 {event.name.toUpperCase()}
               </Text>
@@ -76,6 +77,8 @@ export default function EventModal({
             fontFamily="Magistral"
             letterSpacing="0.5px"
             mt={4}
+            transform="scaleX(1.1)"
+            transformOrigin={"top left"}
           >
             {event.description}
           </Text>

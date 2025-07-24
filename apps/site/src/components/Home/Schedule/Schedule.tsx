@@ -185,6 +185,7 @@ function DayEventsSection({
   return (
     <Box flex={1} h="100%" py={0}>
       <HStack
+        display="flex"
         alignItems={"center"}
         justifyContent={"center"}
         gap={3}
@@ -370,8 +371,8 @@ function DayEvent({
       }}
       py={3}
       templateColumns={{
-        base: "40px 10px 1fr 40px",
-        md: "40px 10px 1fr 40px"
+        base: "20px 10px 1fr 40px",
+        md: "20px 10px 1fr 40px"
       }}
       alignItems="center"
       bgColor={hoveredIndex === number ? "#333131" : "#242424"}
@@ -398,8 +399,8 @@ function DayEvent({
         display="flex"
         justifyContent={"center"}
         alignItems={"center"}
-        w="40px"
-        h="40px"
+        w="20px"
+        h="20px"
         borderRadius="sm"
       >
         <Text
@@ -410,6 +411,7 @@ function DayEvent({
           fontFamily="ProRacingSlant"
           mb={"2px"}
           mt={"4px"}
+          transform="scaleX(0.6)"
         >
           {number}
         </Text>
@@ -427,7 +429,14 @@ function DayEvent({
       ></Box>
 
       <Flex flexDirection={"column"} gap={0}>
-        <Text fontSize={"lg"} color="white" fontFamily={"ProRacing"}>
+        <Text
+          fontSize={"lg"}
+          color="white"
+          fontFamily={"ProRacing"}
+          transform="scaleX(0.6)"
+          transformOrigin={"top left"}
+          w="100%"
+        >
           {event.name}
         </Text>
 
@@ -438,6 +447,9 @@ function DayEvent({
             fontWeight="bold"
             fontFamily="Magistral"
             letterSpacing="0.5px"
+            transform="scaleX(1.1)"
+            transformOrigin={"top left"}
+            mr={3}
           >
             {event.location}
           </Text>
@@ -449,6 +461,8 @@ function DayEvent({
             fontFamily="Magistral"
             letterSpacing="0.5px"
             whiteSpace={"nowrap"}
+            transform="scaleX(1.1)"
+            transformOrigin={"top left"}
           >
             {moment(event.startTime).format("h:mma")} –{" "}
             {moment(event.endTime).format("h:mma")}
