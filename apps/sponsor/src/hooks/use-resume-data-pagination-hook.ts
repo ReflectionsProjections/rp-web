@@ -295,7 +295,10 @@ export function useResumeDataPaginationHook({
   }, [allFilteredResumes.length]);
 
   const startIndex = (page - 1) * RESUMES_PER_PAGE;
-  const endIndex = startIndex + RESUMES_PER_PAGE;
+  const endIndex = Math.min(
+    startIndex + RESUMES_PER_PAGE,
+    allFilteredResumes.length
+  );
 
   const handlePageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newPageValue = e.target.value;
