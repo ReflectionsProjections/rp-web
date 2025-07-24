@@ -95,7 +95,7 @@ export function FilterModal(props: FilterModalProps) {
             selectedOptions={props.filtering.selectedJobInterests}
             displayedOptions={props.filtering.jobInterestsWithCounts}
             onSelectionChange={props.filtering.setSelectedJobInterests}
-            placeholderText="Filter Job Interest(s)"
+            placeholderText="Filter Role Interest(s)"
           />
           <Button
             colorScheme="red"
