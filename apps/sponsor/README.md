@@ -105,7 +105,6 @@ export default {
 #### Recommended Plugins
 
 - Replace `plugin:@typescript-eslint/recommended` with:
-
   - `plugin:@typescript-eslint/recommended-type-checked`
   - `plugin:@typescript-eslint/strict-type-checked`
   - Optionally: `plugin:@typescript-eslint/stylistic-type-checked`
