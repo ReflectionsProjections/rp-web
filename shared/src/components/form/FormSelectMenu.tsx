@@ -46,6 +46,43 @@ const FormSelectMenu = <
             onBlur={() => void form.setFieldTouched(name, true)}
             options={options}
             placeholder={placeholder}
+            chakraStyles={{
+              placeholder: (provided) => ({
+                ...provided,
+                color: "#CCCCCC"
+              }),
+              menuList: (provided) => ({
+                ...provided,
+                backgroundColor: "#2D2D2D",
+                color: "whiteAlpha.900",
+                border: "none"
+              }),
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "transparent",
+                color: "whiteAlpha.900",
+                cursor: "pointer"
+              }),
+              multiValue: (provided) => ({
+                ...provided,
+                backgroundColor: "#2D2D2D",
+                color: "white"
+              }),
+              multiValueLabel: (provided) => ({
+                ...provided,
+                color: "white"
+              }),
+              multiValueRemove: (provided) => ({
+                ...provided,
+                color: "white",
+                ":hover": {
+                  backgroundColor: "gray.600",
+                  color: "white"
+                }
+              })
+            }}
           />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>

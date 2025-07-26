@@ -34,7 +34,14 @@ const FileUpload = <
         isInvalid={!!form.errors[name] && !!form.touched[name]}
         isRequired={isRequired}
       >
-        <FormLabel htmlFor={`${name}-file`}>{label}</FormLabel>
+        <FormLabel
+          htmlFor={`${name}-file`}
+          fontSize="xl"
+          fontWeight="bold"
+          mb={2}
+        >
+          {label}
+        </FormLabel>
 
         <HStack>
           <Box position="relative">
@@ -57,6 +64,8 @@ const FileUpload = <
                     leftIcon={<Icon as={FiUpload} />}
                     variant="outline"
                     cursor="pointer"
+                    color="#CCCCCC"
+                    _hover={{ color: "black", backgroundColor: "white" }}
                   >
                     Choose File
                   </Button>

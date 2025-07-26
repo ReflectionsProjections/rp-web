@@ -35,7 +35,12 @@ const FormTextField = <
             {label}
           </FormLabel>
 
-          <Input {...field} type={type} placeholder={placeholder} />
+          <Input
+            {...field}
+            type={type}
+            placeholder={placeholder}
+            _placeholder={{ color: "#CCCCCC" }}
+          />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
