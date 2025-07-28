@@ -22,7 +22,7 @@ export default function ScheduleDaySelector({
       }}
       mx="auto"
       mb={{
-        base: 7,
+        base: 0,
         md: 0,
         lg: 10
       }}

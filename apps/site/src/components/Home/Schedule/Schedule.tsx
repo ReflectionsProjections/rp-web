@@ -112,12 +112,22 @@ export default function Schedule() {
     <>
       <Box
         w="100%"
+        minH={{
+          base: "100dvh", // To keep the background consistent on mobile
+          md: "70dvh"
+        }}
         justifyContent="center"
-        bgImage="url('/schedule.svg')"
+        bgImage={{
+          base: "url('/schedule-mobile.svg')",
+          lg: "url('/schedule.svg')"
+        }}
         bgSize="cover"
         bgPosition="center"
         bgRepeat="no-repeat"
-        py={10}
+        py={{
+          base: 5,
+          md: 10
+        }}
       >
         <ScheduleDaySelector
           selectedDay={selectedDay}
@@ -129,7 +139,7 @@ export default function Schedule() {
           maxWidth="1500px"
           justifyContent={"center"}
           flexDirection={{
-            base: "column-reverse",
+            md: "column-reverse",
             lg: "row"
           }}
           mt={{
@@ -154,6 +164,7 @@ export default function Schedule() {
           <RaceTrackSection
             dayEvents={dayEvents}
             hoveredEventIndex={hoveredEventIndex}
+            selectedDayIndex={selectedDayIndex}
             handleHover={handleHover}
             handleSelectEvent={handleSelectEvent}
           />
@@ -221,7 +232,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box minH={{ md: "70vh" }} maxH={{ md: "70vh" }} overflowY="auto">
+        <Box overflowY="auto" h={{ lg: "50dvh" }} maxH={{ lg: "50dvh" }}>
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
@@ -249,11 +260,13 @@ function DayEventsSection({
 }
 
 function RaceTrackSection({
+  selectedDayIndex,
   dayEvents,
   hoveredEventIndex,
   handleHover,
   handleSelectEvent
 }: {
+  selectedDayIndex: number;
   dayEvents: Event[];
   hoveredEventIndex: number | null;
   handleHover: (index: number) => void;
@@ -261,18 +274,18 @@ function RaceTrackSection({
 }) {
   return (
     <Flex
-      flex={{
-        md: 1
+      display={{
+        base: "none",
+        md: "flex"
       }}
+      flex={1}
       justifyContent={"center"}
       alignItems={"center"}
     >
       <Box
         display="flex"
         flexDir={"column"}
-        flex={{
-          md: 1
-        }}
+        flex={1}
         borderRadius="lg"
         h="100%"
       >
@@ -301,6 +314,7 @@ function RaceTrackSection({
             hoveredIndex={hoveredEventIndex}
             onHover={handleHover}
             onClick={handleSelectEvent}
+            selectedDayIndex={selectedDayIndex}
           />
         </Box>
         <Spacer flex={1} />
@@ -365,19 +379,20 @@ function DayEvent({
 }) {
   return (
     <Grid
+      w="100%"
       px={{
         base: 3,
         md: 5
       }}
       py={3}
       templateColumns={{
-        base: "20px 10px 1fr 40px",
+        base: "12px 8px 1fr 40px",
         md: "20px 10px 1fr 40px"
       }}
       alignItems="center"
       bgColor={hoveredIndex === number ? "#333131" : "#242424"}
       gap={{
-        base: 3,
+        base: 2,
         md: 3
       }}
       _hover={{
@@ -399,12 +414,17 @@ function DayEvent({
         display="flex"
         justifyContent={"center"}
         alignItems={"center"}
-        w="20px"
-        h="20px"
+        w={{
+          base: "10px",
+          md: "20px"
+        }}
         borderRadius="sm"
       >
         <Text
-          fontSize="2xl"
+          fontSize={{
+            base: "lg",
+            md: "2xl"
+          }}
           color="gray.200"
           fontWeight="thin"
           textAlign="center"
@@ -420,7 +440,10 @@ function DayEvent({
         display="flex"
         justifyContent={"center"}
         alignItems={"center"}
-        w="10px"
+        w={{
+          base: "5px",
+          md: "10px"
+        }}
         h="40px"
         bg={circleColors[(number - 1) % circleColors.length]}
         boxShadow="md"
@@ -438,7 +461,13 @@ function DayEvent({
           {event.name}
         </Text>
 
-        <HStack>
+        <Flex
+          flexDirection={{
+            base: "column",
+            md: "row"
+          }}
+          gap={0}
+        >
           <Text
             fontSize={"md"}
             color="gray.100"
@@ -446,6 +475,8 @@ function DayEvent({
             fontFamily="Magistral"
             letterSpacing="0.5px"
             transformOrigin={"top left"}
+            wordBreak="break-all"
+            whiteSpace="normal"
             mr={3}
           >
             {event.location}
@@ -457,13 +488,15 @@ function DayEvent({
             fontWeight="bold"
             fontFamily="Magistral"
             letterSpacing="0.5px"
-            whiteSpace={"nowrap"}
             transformOrigin={"top left"}
+            whiteSpace={{
+              md: "nowrap"
+            }}
           >
             {moment(event.startTime).format("h:mma")} –{" "}
             {moment(event.endTime).format("h:mma")}
           </Text>
-        </HStack>
+        </Flex>
       </Flex>
 
       <Tooltip

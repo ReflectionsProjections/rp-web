@@ -1,48 +1,51 @@
+import { TRACK_PATHS, TrackLocation } from "@/constants/track-paths";
 import { Box, Text, Tooltip } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
-import { useMemo } from "react";
-
-type RaceTrackLocation = {
-  x: number;
-  y: number;
-  order: number;
-};
-
-const locations: RaceTrackLocation[] = [
-  { x: 165, y: 0, order: 1 },
-  { x: 945, y: 190, order: 5 },
-  { x: 100, y: 510, order: 10 },
-  { x: 550, y: 275, order: 8 },
-  { x: 560, y: 15, order: 3 },
-
-  { x: 320, y: 450, order: 9 },
-  { x: 50, y: 180, order: 12 },
-  { x: 805, y: 425, order: 7 },
-  { x: 15, y: 340, order: 11 },
-  { x: 780, y: 45, order: 4 },
-
-  { x: 390, y: -10, order: 2 },
-  { x: 940, y: 370, order: 6 }
-];
+import { useEffect, useMemo, useRef, useState } from "react";
 
 export function RaceTrack({
+  selectedDayIndex,
   dayEvents,
   colors,
   hoveredIndex,
   onHover,
   onClick
 }: {
+  selectedDayIndex: number;
   dayEvents: Event[];
   colors: string[];
   hoveredIndex: number | null;
   onHover?: (index: number) => void;
   onClick: (event: Event) => void;
 }) {
-  const selectedLocations = useMemo(() => {
-    return locations.slice(0, dayEvents.length).sort((a, b) => {
-      return a.order - b.order;
-    });
-  }, [dayEvents.length]);
+  const pathRef = useRef<SVGPathElement>(null);
+
+  const trackPath = useMemo(() => {
+    return TRACK_PATHS[(selectedDayIndex - 1) % TRACK_PATHS.length];
+  }, [selectedDayIndex]);
+
+  const [selectedLocations, setSelectedLocations] = useState<TrackLocation[]>(
+    []
+  );
+
+  useEffect(() => {
+    if (!pathRef?.current) return;
+
+    const pathEl = pathRef.current;
+    const totalLen = pathEl.getTotalLength();
+    const numLocations = dayEvents.length; // Ensure at least one location
+    if (numLocations === 0) return;
+
+    const locations: TrackLocation[] = [];
+    for (let i = 0; i < numLocations; i++) {
+      const t = i / numLocations;
+      const { x, y } = pathEl.getPointAtLength(t * totalLen);
+      locations.push({ x, y, order: i });
+    }
+
+    setSelectedLocations(locations);
+  }, [pathRef.current, trackPath.path, dayEvents.length]);
+
   return (
     <Box
       position="relative"
@@ -54,7 +57,9 @@ export function RaceTrack({
       overflow="visible"
     >
       <Box
-        position="relative"
+        position="absolute"
+        top={0}
+        left={0}
         as="svg"
         width="100%"
         height={{
@@ -62,27 +67,28 @@ export function RaceTrack({
           md: "500px"
         }}
         overflow="visible"
-        viewBox="0 0 985 500"
+        viewBox={`0 0 ${trackPath.width} ${trackPath.height}`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
       >
-        <RaceTrackPath />
-        {selectedLocations.map((location, index) => {
-          const hovered = hoveredIndex ? hoveredIndex - 1 === index : false;
+        <RaceTrackPath pathRef={pathRef} path={trackPath.path} />
+        {selectedLocations &&
+          selectedLocations.map((location, index) => {
+            const hovered = hoveredIndex ? hoveredIndex - 1 === index : false;
 
-          return (
-            <RaceTrackLocation
-              key={`${location.x}-${location.y}`}
-              index={index}
-              color={colors[index % colors.length]}
-              location={location}
-              hovered={hovered}
-              dayEvent={dayEvents[index]}
-              onClick={onClick}
-              onHover={onHover}
-            />
-          );
-        })}
+            return (
+              <RaceTrackLocation
+                key={`${location.x}-${location.y}-${index}`}
+                index={index}
+                color={colors[index % colors.length]}
+                location={location}
+                hovered={hovered}
+                dayEvent={dayEvents[index % dayEvents.length]}
+                onClick={onClick}
+                onHover={onHover}
+              />
+            );
+          })}
       </Box>
     </Box>
   );
@@ -99,7 +105,7 @@ function RaceTrackLocation({
 }: {
   index: number;
   color: string;
-  location: RaceTrackLocation;
+  location: TrackLocation;
   hovered: boolean;
   dayEvent: Event;
   onClick: (event: Event) => void;
@@ -108,83 +114,75 @@ function RaceTrackLocation({
   return (
     <foreignObject
       key={`${location.x}-${location.y}-circle`}
-      x={location.x - (hovered ? 20 : 0)}
-      y={location.y - (hovered ? 20 : 0)}
-      width={120}
-      height={120}
+      x={location.x - 50}
+      y={location.y - 50}
+      width={100}
+      height={100}
       onClick={() => onClick(dayEvent)}
     >
-      <Tooltip
-        label={dayEvent.location}
-        placement="bottom"
-        hasArrow
-        openDelay={200}
-        closeDelay={100}
-        isOpen={hovered}
-        fontWeight={"bold"}
-        fontFamily="Magistral"
-        hideBelow={"md"} // Hide on mobile to prevent the tooltip from being visible in the modal
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        w="100%"
+        h="100%"
       >
-        <Box
-          width={
-            hovered
-              ? "100px"
-              : {
-                  base: "60px",
-                  md: "50px"
-                }
-          }
-          height={
-            hovered
-              ? "100px"
-              : {
-                  base: "60px",
-                  md: "50px"
-                }
-          }
-          borderRadius="full"
-          bg={color}
-          borderWidth={hovered ? "4px" : "3px"}
-          borderColor={"white"}
-          boxShadow="lg"
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-          cursor="pointer" // makes it clear it’s interactive
-          onMouseEnter={() => onHover && onHover(index + 1)}
-          onMouseLeave={() => onHover && onHover(-1)}
+        <Tooltip
+          label={dayEvent.location}
+          placement="bottom"
+          hasArrow
+          openDelay={200}
+          closeDelay={100}
+          isOpen={hovered}
+          fontWeight={"bold"}
+          fontFamily="Magistral"
+          hideBelow={"md"} // Hide on mobile to prevent the tooltip from being visible in the modal
         >
-          <Text
-            fontSize={hovered ? "4xl" : "2xl"}
-            fontFamily="Magistral"
-            color="white"
-            fontWeight={"bold"}
+          <Box
+            width={hovered ? "60px" : "40px"}
+            height={hovered ? "60px" : "40px"}
+            borderRadius="full"
+            bg={color}
+            borderWidth={hovered ? "3px" : "3px"}
+            borderColor={"white"}
+            boxShadow="lg"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            cursor="pointer" // makes it clear it’s interactive
+            onMouseEnter={() => onHover && onHover(index + 1)}
+            onMouseLeave={() => onHover && onHover(-1)}
           >
-            {index + 1}
-          </Text>
-        </Box>
-      </Tooltip>
+            <Text
+              fontSize={hovered ? "4xl" : "xl"}
+              fontFamily="Magistral"
+              color="white"
+              fontWeight={"bold"}
+            >
+              {index + 1}
+            </Text>
+          </Box>
+        </Tooltip>
+      </Box>
     </foreignObject>
   );
 }
 
-function RaceTrackPath() {
+function RaceTrackPath({
+  path,
+  pathRef
+}: {
+  path: string;
+  pathRef?: React.Ref<SVGPathElement>;
+}) {
   return (
     <path
-      d={`
-        M175.467 37.1794C82.4521 156.247 47.501 235.129 32.4667 409.179
-        M174.861 36.5197C215.521 18.3097 239.031 11.965 281.861 5.51969
-        M282.062 5.50388C519.5 20.5988 643 57.5 879.062 80.5039
-        M886.5 470.01C1034 425.5 990.5 106 878.5 81.0103
-        M886.753 470.435C815 484.5 712 309.5 585.753 299.435
-        M227.678 599.617C254.092 614.377 470.198 282.657 585.678 298.617
-        M227.651 600.358C145.112 596.714 104.264 506.872 31.6509 409.358
-      `}
+      ref={pathRef}
+      d={path}
       stroke="white"
-      strokeWidth="5"
+      strokeWidth="8"
       strokeLinecap="round"
       fill="none"
-      opacity={0.6}
     />
   );
 }
