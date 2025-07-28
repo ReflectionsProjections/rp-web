@@ -76,7 +76,6 @@ function ScheduleDayButton({
         fontSize="lg"
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
-        transform="scaleX(0.7)"
         transformOrigin="center left"
       >
         {date.toUpperCase()}

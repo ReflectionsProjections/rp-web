@@ -5,7 +5,7 @@
 
 @font-face {
   font-family: "Magistral";
-  src: url("/magistral.ttf") format("truetype");
+  src: url("/magistral-wide.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -13,7 +13,7 @@
 
 @font-face {
   font-family: "ProRacingSlant";
-  src: url("/pro-racing.slant.otf") format("opentype");
+  src: url("/pro-racing-slant-narrow.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -21,7 +21,7 @@
 
 @font-face {
   font-family: "ProRacing";
-  src: url("/pro-racing.regular.otf") format("opentype");
+  src: url("/pro-racing-narrow.ttf") format("truetype");
   font-weight: 400;
   font-style: normal;
   font-display: swap;

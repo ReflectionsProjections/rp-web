@@ -411,7 +411,6 @@ function DayEvent({
           fontFamily="ProRacingSlant"
           mb={"2px"}
           mt={"4px"}
-          transform="scaleX(0.6)"
         >
           {number}
         </Text>
@@ -433,7 +432,6 @@ function DayEvent({
           fontSize={"lg"}
           color="white"
           fontFamily={"ProRacing"}
-          transform="scaleX(0.6)"
           transformOrigin={"top left"}
           w="100%"
         >
@@ -447,7 +445,6 @@ function DayEvent({
             fontWeight="bold"
             fontFamily="Magistral"
             letterSpacing="0.5px"
-            transform="scaleX(1.1)"
             transformOrigin={"top left"}
             mr={3}
           >
@@ -461,7 +458,6 @@ function DayEvent({
             fontFamily="Magistral"
             letterSpacing="0.5px"
             whiteSpace={"nowrap"}
-            transform="scaleX(1.1)"
             transformOrigin={"top left"}
           >
             {moment(event.startTime).format("h:mma")} –{" "}
