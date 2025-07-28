@@ -113,7 +113,7 @@ export default function Schedule() {
       <Box
         w="100%"
         minH={{
-          base: "100dvh", // To keep the background consistent on mobile
+          base: "100vh", // To keep the background consistent on mobile
           md: "70dvh"
         }}
         justifyContent="center"
@@ -122,7 +122,7 @@ export default function Schedule() {
           lg: "url('/schedule.svg')"
         }}
         bgSize="cover"
-        bgPosition="center"
+        bgPosition="center" // ← anchor the image at its top
         bgRepeat="no-repeat"
         py={{
           base: 5,
@@ -232,7 +232,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box overflowY="auto" h={{ lg: "50dvh" }} maxH={{ lg: "50dvh" }}>
+        <Box overflowY="auto" h={{ lg: "60dvh" }} maxH={{ lg: "60dvh" }}>
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
