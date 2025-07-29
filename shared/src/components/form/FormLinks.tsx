@@ -104,7 +104,7 @@ const FormLinks = <
                       <HStack
                         key={index}
                         align="center"
-                        w="min(500px, 50vw)"
+                        w="min(500px, 80vw)"
                         gap={4}
                       >
                         {(index < field.value.length ||

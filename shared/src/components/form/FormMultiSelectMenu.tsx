@@ -54,6 +54,8 @@ const FormMultiSelectMenu = <
               onBlur={() => void form.setFieldTouched(name, true)}
               options={options}
               placeholder={placeholder}
+              menuPortalTarget={document.body}
+              menuPosition="fixed"
               chakraStyles={{
                 placeholder: (provided) => ({
                   ...provided,
@@ -61,7 +63,7 @@ const FormMultiSelectMenu = <
                 }),
                 menuList: (provided) => ({
                   ...provided,
-                  backgroundColor: "#2D2D2D",
+                  backgroundColor: "#360b0bff",
                   color: "whiteAlpha.900",
                   border: "none"
                 }),
@@ -75,7 +77,7 @@ const FormMultiSelectMenu = <
                 }),
                 multiValue: (provided) => ({
                   ...provided,
-                  backgroundColor: "#2D2D2D",
+                  backgroundColor: "#430C0C",
                   color: "white"
                 }),
                 multiValueLabel: (provided) => ({

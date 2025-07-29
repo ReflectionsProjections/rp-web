@@ -12,7 +12,7 @@ import {
 import { RegistrationValues } from "../schema";
 import { HStack, VStack } from "@chakra-ui/react";
 
-export const SchoolSelect = () => (
+export const SchoolField = () => (
   <FormSelectMenu<RegistrationValues, "school">
     name="school"
     label="What school do you attend?"
@@ -22,7 +22,7 @@ export const SchoolSelect = () => (
   />
 );
 
-export const EducationLevelRadio = () => (
+export const EducationLevelField = () => (
   <FormRadioGroup<RegistrationValues, "educationLevel">
     name="educationLevel"
     label="What is your highest level of education (currently pursuing or completed)?"
@@ -38,7 +38,7 @@ export const EducationLevelRadio = () => (
   />
 );
 
-export const MajorsMultiSelect = () => (
+export const MajorsField = () => (
   <FormMultiSelectMenu<RegistrationValues, "majors">
     name="majors"
     label="What is your current (or intended) major?"
@@ -48,7 +48,7 @@ export const MajorsMultiSelect = () => (
   />
 );
 
-export const MinorsMultiSelect = () => (
+export const MinorsField = () => (
   <FormMultiSelectMenu<RegistrationValues, "minors">
     name="minors"
     label="What is your current (or intended) minor?"
@@ -66,7 +66,7 @@ export const GraduationYearField = () => (
   />
 );
 
-export const OpportunitiesCheckboxGroup = () => (
+export const OpportunitiesField = () => (
   <FormCheckboxGroup<RegistrationValues, "opportunities">
     name="opportunities"
     label="What opportunities are you open to?"
@@ -83,11 +83,11 @@ export const OpportunitiesCheckboxGroup = () => (
   />
 );
 
-export const ResumeFileUpload = () => (
+export const ResumeField = () => (
   <FormFileUpload<RegistrationValues, "resume"> name="resume" label="Resume" />
 );
 
-export const PersonalLinks = () => (
+export const PersonalLinksField = () => (
   <FormLinks<RegistrationValues, "personalLinks">
     name="personalLinks"
     label="Personal Links"
@@ -98,18 +98,18 @@ export const PersonalLinks = () => (
 const CareerInfo = () => (
   <VStack gap={8} w="100%" h="100%" justifyContent="space-between">
     <HStack gap={16} w="100%" alignItems="start">
-      <SchoolSelect />
+      <SchoolField />
       <GraduationYearField />
     </HStack>
-    <EducationLevelRadio />
+    <EducationLevelField />
     <HStack gap={16} w="100%" alignItems="start">
-      <MajorsMultiSelect />
-      <MinorsMultiSelect />
+      <MajorsField />
+      <MinorsField />
     </HStack>
-    <OpportunitiesCheckboxGroup />
+    <OpportunitiesField />
     <HStack gap={16} w="100%" alignItems="start">
-      <PersonalLinks />
-      <ResumeFileUpload />
+      <PersonalLinksField />
+      <ResumeField />
     </HStack>
   </VStack>
 );
