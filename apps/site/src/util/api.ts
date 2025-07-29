@@ -1,5 +1,4 @@
-import { Config } from "@/config";
-import { createApi } from "@rp/shared";
+import { Config, createApi } from "@rp/shared";
 
 const api = createApi(Config.API_BASE_URL);
 
