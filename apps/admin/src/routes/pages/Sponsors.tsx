@@ -13,8 +13,7 @@ import {
   FormErrorMessage,
   Heading
 } from "@chakra-ui/react";
-import api from "../../util/api";
-import { usePolling } from "@rp/shared";
+import { api, usePolling } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { Formik, FormikHelpers } from "formik";
 import {
@@ -31,7 +30,7 @@ const Sponsors = () => {
     data: sponsors,
     update: updateSponsors,
     isLoading
-  } = usePolling(api, "/auth/corporate", authorized);
+  } = usePolling("/auth/corporate", authorized);
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 

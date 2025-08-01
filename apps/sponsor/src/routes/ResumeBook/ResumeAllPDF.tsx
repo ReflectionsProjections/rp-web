@@ -1,7 +1,6 @@
 import { Box, Text, useToast } from "@chakra-ui/react";
 import { useEffect } from "react";
-import api from "@/util/api";
-import { path } from "@rp/shared";
+import { api, path } from "@rp/shared";
 
 export function ResumeAllPDF() {
   const toast = useToast();

@@ -1,5 +1,4 @@
 import { Heading, Flex } from "@chakra-ui/react";
-import api from "../../util/api.ts";
 import { usePolling } from "@rp/shared";
 import AddModal from "@/components/Meetings/AddModal.tsx";
 import MeetingCard, {
@@ -14,7 +13,7 @@ function Meetings() {
     data: meetings,
     update: updateMeetings,
     isLoading
-  } = usePolling(api, "/meetings", authorized);
+  } = usePolling("/meetings", authorized);
 
   return (
     <>

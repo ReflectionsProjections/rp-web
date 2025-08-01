@@ -7,7 +7,6 @@ import {
   CardBody,
   VStack
 } from "@chakra-ui/react";
-import api from "../../util/api";
 import StatCard from "@/components/StatCard";
 import { motion } from "framer-motion";
 import { usePolling } from "@rp/shared";
@@ -21,7 +20,6 @@ const MotionHeader = motion(Heading);
 function Dashboard() {
   const { authorized, displayName } = useOutletContext<MainContext>();
   const { data: currentEvent } = usePolling(
-    api,
     "/events/currentOrNext",
     authorized
   );

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Input, Text, HStack, VStack } from "@chakra-ui/react";
-import api from "@/util/api";
+import { api } from "@rp/shared";
 
 interface TwoFactorProps {
   email: string;

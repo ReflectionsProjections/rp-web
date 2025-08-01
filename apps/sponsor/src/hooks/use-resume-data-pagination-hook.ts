@@ -7,10 +7,10 @@ import {
 } from "@/routes/ResumeBook/constants";
 import { Resume } from "@/routes/ResumeBook/ResumeBook";
 import { SingleCol } from "@/routes/ResumeBook/ResumeList";
-import api from "@/util/api";
 import { useEffect, useMemo, useState } from "react";
 import { useResumeSelectionAndDownloadHook } from "./use-resume-selection-and-download-hook";
 import moment from "moment";
+import { api } from "@rp/shared";
 
 export function useResumeDataPaginationHook({
   onToast
@@ -349,10 +349,10 @@ export function useResumeDataPaginationHook({
               id: registrant.userId,
               name: registrant.name,
               major: registrant.major,
-              degree: registrant.degree,
-              graduationYear: registrant.graduation,
-              jobInterest: registrant.jobInterest,
-              portfolios: registrant.portfolios
+              degree: registrant.educationLevel,
+              graduationYear: registrant.graduationYear,
+              jobInterest: registrant.opportunities,
+              portfolios: registrant.personalLinks
             }) as Resume
         );
         setResumes(resumes);

@@ -22,9 +22,8 @@ import {
   FormLabel,
   Button
 } from "@chakra-ui/react";
-import api from "../../util/api";
 import React from "react";
-import { path, Role, usePolling, RoleObject } from "@rp/shared";
+import { path, Role, usePolling, RoleObject, api } from "@rp/shared";
 import { Config } from "@/config";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { Formik, FormikHelpers } from "formik";
@@ -48,13 +47,13 @@ const RolesCard: React.FC<RolesCardProps> = () => {
     data: adminUsers,
     update: updateAdminUsers,
     isLoading: adminLoading
-  } = usePolling(api, path("/auth/:role", { role: "ADMIN" }), authorized);
+  } = usePolling(path("/auth/:role", { role: "ADMIN" }), authorized);
 
   const {
     data: staffUsers,
     update: updateStaffUsers,
     isLoading: staffLoading
-  } = usePolling(api, path("/auth/:role", { role: "STAFF" }), authorized);
+  } = usePolling(path("/auth/:role", { role: "STAFF" }), authorized);
 
   // Combine and deduplicate users
   const allUsers = React.useMemo((): UserWithRoles[] => {

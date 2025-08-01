@@ -15,15 +15,14 @@ import {
   Text
 } from "@chakra-ui/react";
 import { Scanner } from "@yudiel/react-qr-scanner";
-import api from "../../util/api.ts";
-import { path, usePolling } from "@rp/shared";
+import { api, path, usePolling } from "@rp/shared";
 import { useOutletContext } from "react-router-dom";
 import { MainContext } from "../Main.tsx";
 
 function Merch() {
   const { authorized } = useOutletContext<MainContext>();
   const toast = useToast();
-  const { data: emails } = usePolling(api, "/attendee/emails", authorized);
+  const { data: emails } = usePolling("/attendee/emails", authorized);
   const [showWebcam, setShowWebcam] = useState(false); // Toggle between webcam and email input
   const [email, setEmail] = useState("");
   const [userId, setUserId] = useState("");

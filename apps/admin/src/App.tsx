@@ -9,16 +9,27 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
 import Attendance from "./routes/Attendance";
 import routes from "./routes";
-import { AuthCallback } from "@rp/shared";
-import api from "./util/api";
+import { AuthCallback, googleAuth } from "@rp/shared";
 import Main from "./routes/Main";
+import { useEffect } from "react";
+
+function RefreshHandler() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+    googleAuth(false, redirect ?? undefined);
+  }, []);
+
+  return <p>Redirecting to login...</p>;
+}
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/auth/callback" element={<AuthCallback api={api} />} />
+          <Route path="/auth/refresh" element={<RefreshHandler />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/attendance" element={<Attendance />} />
           <Route element={<Main />}>
             {routes.map(({ path, element }) => (
