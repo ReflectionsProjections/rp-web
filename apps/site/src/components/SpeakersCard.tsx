@@ -145,8 +145,8 @@ export default function SpeakerCard({ row }: { row: SpeakerRow }) {
             opacity={displayedHoveredIndex !== null ? 1 : 0.5}
             zIndex={displayedHoveredIndex === index ? 1 : 0}
             transition={"all 0.3s"}
-            onClick={() => handleHover(index)}
-            cursor="pointer"
+            onClick={!speakerSelected ? () => handleHover(index) : undefined}
+            cursor={speakerSelected ? "default" : "pointer"}
           >
             <Avatar
               boxSize={{
@@ -187,7 +187,7 @@ export default function SpeakerCard({ row }: { row: SpeakerRow }) {
           fontWeight={"semibold"}
         >
           {displayedHoveredIndex !== null
-            ? row.speakers[displayedHoveredIndex].eventDescription
+            ? row.speakers[displayedHoveredIndex].bio
             : null}
         </Box>
         <Box

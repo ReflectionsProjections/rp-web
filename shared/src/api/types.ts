@@ -301,7 +301,7 @@ export interface APIRoutes {
       response: { data: (string | null)[]; errorCount: number };
     };
   };
-  "/sponsors": {
+  "/speakers": {
     GET: {
       response: Speaker[];
     };
