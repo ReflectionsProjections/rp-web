@@ -1,7 +1,6 @@
 import axios from "axios";
 import { ApiError, TypedAxiosInstance } from "./type-wrapper";
 import Config from "../config";
-import { googleAuth } from "./auth";
 
 const axiosObject = axios.create({ baseURL: Config.API_BASE_URL });
 
@@ -27,7 +26,12 @@ axiosObject.interceptors.response.use(
       errorType === "InvalidJWT"
     ) {
       localStorage.removeItem("jwt");
-      googleAuth();
+      const currentPath =
+        window.location.pathname +
+        window.location.search +
+        window.location.hash;
+      window.location.href = `/auth/refresh?redirect=${encodeURIComponent(currentPath)}`;
+      return;
     }
 
     console.error("API error:", error);
