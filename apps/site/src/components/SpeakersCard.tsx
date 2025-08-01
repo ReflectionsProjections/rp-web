@@ -1,59 +1,100 @@
 import { SpeakerRow } from "@/types/speaker-types";
-import { Avatar, Box, HStack, Text, VStack } from "@chakra-ui/react";
-import { useState } from "react";
+import { CloseIcon } from "@chakra-ui/icons";
+import {
+  Avatar,
+  Box,
+  HStack,
+  IconButton,
+  Text,
+  VStack
+} from "@chakra-ui/react";
+import { useEffect, useState } from "react";
 
 export default function SpeakerCard({ row }: { row: SpeakerRow }) {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
   const handleHover = (index: number) => {
+    if (hoveredIndex) {
+      return;
+    }
     setHoveredIndex(index);
   };
 
   const handleLeave = () => {
-    setHoveredIndex(null);
+    if (hoveredIndex !== null) {
+      setHoveredIndex(null);
+    }
   };
 
+  useEffect(() => {
+    // Reset hovered index when the number of speakers changes
+    setHoveredIndex(null);
+  }, [row.speakers.length]);
+
+  const speakerSelected = hoveredIndex !== null;
+
+  /** For the split-second between changing the number of speakers in a row on a screen width change */
+  const displayedHoveredIndex =
+    hoveredIndex !== null
+      ? Math.min(hoveredIndex, row.speakers.length - 1)
+      : null;
+
   return (
-    <VStack w="80%" mb={10} position="relative">
+    <VStack
+      w={{
+        base: "80%",
+        lg: "80%"
+      }}
+      mb={10}
+      position="relative"
+    >
       <HStack
         gap={0}
         w="100%"
         maxW="1000px"
-        ml={28}
+        ml={{
+          base: 7,
+          md: 28
+        }}
         transition={"all 0.3s"}
-        mb={3}
+        mb={{
+          base: 1,
+          md: 3
+        }}
       >
         {row.speakers.map((speaker, index) => (
           <Text
             display={"flex"}
-            flex={{
-              base: 1,
-              md: hoveredIndex !== null ? (hoveredIndex === index ? 1 : 0) : 1
-            }}
+            flex={
+              displayedHoveredIndex !== null
+                ? displayedHoveredIndex === index
+                  ? 1
+                  : 0
+                : 1
+            }
             color={row.color}
             fontFamily="Magistral"
-            fontSize="2xl"
+            fontSize={{ base: "lg", md: "2xl" }}
             letterSpacing={"1px"}
             fontWeight={"bold"}
             transition={"all 0.3s"}
-            whiteSpace={"nowrap"}
             w={
-              hoveredIndex !== null
-                ? hoveredIndex === index
+              displayedHoveredIndex !== null
+                ? displayedHoveredIndex === index
                   ? "100%"
                   : "0"
                 : "100%"
             }
             opacity={
-              hoveredIndex !== null ? (hoveredIndex === index ? 1 : 0) : 1
+              displayedHoveredIndex !== null
+                ? displayedHoveredIndex === index
+                  ? 1
+                  : 0
+                : 1
             }
-            overflow={
-              hoveredIndex !== null
-                ? hoveredIndex === index
-                  ? "visible"
-                  : "hidden"
-                : "visible"
-            }
+            isTruncated
+            minWidth="0"
+            overflow={"hidden"}
           >
             {speaker.name}
           </Text>
@@ -61,12 +102,19 @@ export default function SpeakerCard({ row }: { row: SpeakerRow }) {
       </HStack>
       <HStack
         position="relative"
-        h="150px"
+        h={{
+          base: speakerSelected ? "300px" : "150px",
+          sm: speakerSelected ? "200px" : "150px",
+          md: "150px"
+        }}
         w="100%"
         maxW="1000px"
-        gap={hoveredIndex !== null ? 0 : 5}
+        gap={displayedHoveredIndex !== null ? 0 : 5}
         transition={"all 0.3s"}
-        ml={10}
+        ml={{
+          base: 0,
+          md: 10
+        }}
       >
         {row.speakers.map((_, index) => (
           <Box
@@ -74,32 +122,43 @@ export default function SpeakerCard({ row }: { row: SpeakerRow }) {
             justifyContent={"center"}
             alignItems={"center"}
             flex={1}
-            h="150px"
+            h={{
+              base: speakerSelected ? "300px" : "150px",
+              sm: speakerSelected ? "200px" : "150px",
+              md: "150px"
+            }}
             mx="-1px"
             bg={row.color}
-            transform="skewX(-20deg)"
+            transform={{
+              base: "skewX(-10deg)",
+              md: "skewX(-20deg)"
+            }}
             borderLeftRadius={
-              index === 0 || hoveredIndex === null ? "md" : "none"
+              index === 0 || displayedHoveredIndex === null ? "md" : "none"
             }
             borderRightRadius={
-              index === row.speakers.length - 1 || hoveredIndex === null
+              index === row.speakers.length - 1 ||
+              displayedHoveredIndex === null
                 ? "md"
                 : "none"
             }
-            opacity={hoveredIndex !== null ? 1 : 0.5}
-            zIndex={hoveredIndex === index ? 1 : 0}
-            whiteSpace={"nowrap"}
+            opacity={displayedHoveredIndex !== null ? 1 : 0.5}
+            zIndex={displayedHoveredIndex === index ? 1 : 0}
             transition={"all 0.3s"}
-            onMouseEnter={() => {
-              handleHover(index);
-            }}
-            onMouseLeave={handleLeave}
+            onClick={() => handleHover(index)}
+            cursor="pointer"
           >
             <Avatar
-              boxSize="130px"
+              boxSize={{
+                base: "100px",
+                md: "130px"
+              }}
               ml={-3}
-              transform="skewX(20deg)"
-              opacity={hoveredIndex !== null ? 0 : 1}
+              transform={{
+                base: "skewX(10deg)",
+                md: "skewX(20deg)"
+              }}
+              opacity={displayedHoveredIndex !== null ? 0 : 1}
               transition={"all 0.1s"}
             />
           </Box>
@@ -112,50 +171,91 @@ export default function SpeakerCard({ row }: { row: SpeakerRow }) {
           left={0}
           right={0}
           px={10}
-          h="150px"
+          h={{
+            base: speakerSelected ? "300px" : "150px",
+            sm: speakerSelected ? "200px" : "150px",
+            md: "150px"
+          }}
           textAlign="left"
           color="white"
           fontFamily="Magistral"
           fontSize="xl"
-          opacity={hoveredIndex !== null ? 1 : 0.5}
+          opacity={displayedHoveredIndex !== null ? 1 : 0.5}
           transition="all 0.3s"
           zIndex={3}
-          pointerEvents="none"
+          pointerEvents={displayedHoveredIndex !== null ? undefined : "none"}
           fontWeight={"semibold"}
         >
-          {hoveredIndex !== null
-            ? row.speakers[hoveredIndex].description
+          {displayedHoveredIndex !== null
+            ? row.speakers[displayedHoveredIndex].eventDescription
             : null}
         </Box>
+        <Box
+          position="absolute"
+          top={2}
+          right={1}
+          zIndex={99}
+          opacity={displayedHoveredIndex !== null ? "1" : "0"}
+          display={displayedHoveredIndex !== null ? "flex" : "none"}
+        >
+          {/* Exit button, x icon */}
+          <IconButton
+            size="sm"
+            aria-label="Exit"
+            icon={<CloseIcon />}
+            onClick={handleLeave}
+          />
+        </Box>
       </HStack>
-      <HStack gap={0} w="100%" maxW="1000px" transition={"all 0.3s"} mt={2}>
+      <HStack
+        gap={{
+          base: 2,
+          md: 0
+        }}
+        w="100%"
+        maxW="1000px"
+        transition={"all 0.3s"}
+        mt={{
+          base: 0,
+          md: 2
+        }}
+        ml={{
+          base: -4,
+          md: 0
+        }}
+      >
         {row.speakers.map((speaker, index) => (
           <Text
             display={"block"}
-            flex={hoveredIndex !== null ? (hoveredIndex === index ? 1 : 0) : 1}
+            flex={
+              displayedHoveredIndex !== null
+                ? displayedHoveredIndex === index
+                  ? 1
+                  : 0
+                : 1
+            }
             color={row.color}
             fontFamily="Magistral"
             letterSpacing={"1px"}
-            fontSize="xl"
+            fontSize={{
+              base: "md",
+              md: "xl"
+            }}
+            isTruncated
+            minWidth="0"
             transition={"all 0.3s"}
             w={
-              hoveredIndex !== null
-                ? hoveredIndex === index
+              displayedHoveredIndex !== null
+                ? displayedHoveredIndex === index
                   ? "100%"
                   : "0"
                 : "100%"
             }
-            whiteSpace={"nowrap"}
-            // opacity={hoveredIndex !== null ? (hoveredIndex === index ? 1 : 0) : 1}
-            overflow={
-              hoveredIndex !== null
-                ? hoveredIndex === index
-                  ? "visible"
-                  : "hidden"
-                : "visible"
-            }
+            // whiteSpace={"nowrap"}
+            // opacity={displayedHoveredIndex !== null ? (displayedHoveredIndex === index ? 1 : 0) : 1}
+            overflow={"hidden"}
           >
-            {speaker.company}
+            {speaker.title}
           </Text>
         ))}
       </HStack>
