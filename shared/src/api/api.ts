@@ -18,7 +18,7 @@ axiosObject.interceptors.request.use((config) => {
 axiosObject.interceptors.response.use(
   (response) => response,
   (error: ApiError) => {
-    const errorType = error.response.data.error;
+    const errorType = error.response?.data?.error;
 
     if (
       errorType === "NoJWT" ||
