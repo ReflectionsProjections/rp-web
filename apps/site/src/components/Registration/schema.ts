@@ -1,7 +1,7 @@
-import { RegistrationDraft } from "@rp/shared";
+import { Registration } from "@rp/shared";
 import * as yup from "yup";
 
-export type RegistrationValues = RegistrationDraft & { over18: boolean };
+export type RegistrationValues = Registration & { over18: boolean };
 
 export const initialValues = (
   name: string,

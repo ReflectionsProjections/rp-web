@@ -6,11 +6,13 @@ import {
   IconButton,
   useToast,
   VStack,
-  useBreakpointValue
+  useBreakpointValue,
+  Center,
+  Spinner
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
-import { RoleObject, useFormAutosave } from "@rp/shared";
+import React, { useEffect, useState } from "react";
+import { api, RoleObject, useFormAutosave } from "@rp/shared";
 import PersonalInfo, {
   AllergiesField,
   DietaryRestrictionsField,
@@ -51,6 +53,20 @@ const Register = () => {
   const mobile = useBreakpointValue({ base: true, "2xl": false });
   const { displayName, email } = useOutletContext<RoleObject>();
   const [confirmation, setConfirmation] = useState(false);
+  const [values, setValues] = useState(initialValues(displayName, email));
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    api
+      .get("/registration/draft")
+      .then((response) => {
+        setValues({ ...values, ...response.data });
+      })
+      .catch(() => {})
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [values]);
 
   if (confirmation) {
     return (
@@ -73,18 +89,35 @@ const Register = () => {
     );
   }
 
-  return mobile ? (
-    <MobileRegistration
-      displayName={displayName}
-      email={email}
-      setConfirmation={() => setConfirmation(true)}
-    />
-  ) : (
-    <BaseRegistration
-      displayName={displayName}
-      email={email}
-      setConfirmation={() => setConfirmation(true)}
-    />
+  return (
+    <>
+      {isLoading && (
+        <Center
+          w="100vw"
+          h="100vh"
+          position="fixed"
+          top={0}
+          left={0}
+          zIndex={9999}
+          bg="rgba(0,0,0,0.4)"
+        >
+          <Spinner size="xl" thickness="6px" color="red.500" />
+        </Center>
+      )}
+      {mobile ? (
+        <MobileRegistration
+          displayName={displayName}
+          email={email}
+          setConfirmation={() => setConfirmation(true)}
+        />
+      ) : (
+        <BaseRegistration
+          displayName={displayName}
+          email={email}
+          setConfirmation={() => setConfirmation(true)}
+        />
+      )}
+    </>
   );
 };
 
@@ -124,21 +157,14 @@ const BaseRegistration: React.FC<RegistrationProps> = ({
         initialValues={{ ...initialValues(displayName, email) }}
         validationSchema={registrationSchemas[page]}
         onSubmit={async (values, actions) => {
-          console.log(values);
           if (page === NUM_PAGES - 1) {
-            // handle submit
-            await new Promise<void>((resolve) => {
-              setTimeout(() => {
-                console.log("submitted");
-                setConfirmation();
-                resolve();
-              }, 5000);
-            });
+            await api.post("/registration/submit", values);
+            setConfirmation();
             return;
           }
 
           setPage((previous) => previous + 1);
-          // save draft form
+          await api.post("/registration/draft", values);
           await actions.setTouched({});
           actions.setSubmitting(false);
         }}
@@ -349,9 +375,8 @@ const MobileRegistration: React.FC<RegistrationProps> = ({
       <Formik
         initialValues={{ ...initialValues(displayName, email) }}
         validationSchema={registrationSchema}
-        onSubmit={async (values, actions) => {
-          // handle submit
-          console.log("submitted");
+        onSubmit={async (values) => {
+          await api.post("/registration/submit", values);
           setConfirmation();
         }}
       >
@@ -400,9 +425,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ children }) => {
   const toast = useToast();
 
   useFormAutosave<RegistrationValues>((values) => {
-    console.log(values);
-    toast({ title: "Form autosaved", status: "info" });
-    //do autosave things
+    toast.promise(api.post("/registration/draft", values), {
+      success: { title: "Autosave Successful!" },
+      loading: { title: "Autosaving..." },
+      error: { title: "Autosave failed" }
+    });
   });
 
   return children;

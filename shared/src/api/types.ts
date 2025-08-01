@@ -70,6 +70,25 @@ export type Event = {
 };
 
 export type RegistrationDraft = {
+  name?: string;
+  email?: string;
+  dietaryRestrictions?: string[];
+  allergies?: string[];
+  school?: string;
+  educationLevel?: string;
+  majors?: string[];
+  minors?: string[];
+  graduationYear?: string;
+  opportunities?: string[];
+  resume?: string;
+  personalLinks?: string[];
+  gender?: string;
+  ethnicity?: string[];
+  howDidYouHear?: string[];
+  tags?: string[];
+};
+
+export type Registration = {
   name: string;
   email: string;
   dietaryRestrictions: string[];
@@ -86,23 +105,6 @@ export type RegistrationDraft = {
   ethnicity: string[];
   howDidYouHear: string[];
   tags: string[];
-};
-
-export type Registration = {
-  name: string;
-  dietaryRestrictions?: string[];
-  allergies?: string[];
-  school: string;
-  educationLevel: string;
-  major: string;
-  graduationYear: string;
-  opportunities?: string[];
-  hasResume?: boolean;
-  personalLinks?: string[];
-  gender?: string;
-  ethnicity?: string[];
-  howDidYouHear?: string[];
-  tags?: string[];
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
@@ -252,7 +254,7 @@ export interface APIRoutes {
       response: Event;
     };
   };
-  "/registration/drafts": {
+  "/registration/draft": {
     POST: {
       request: RegistrationDraft;
       response: { message: string };
