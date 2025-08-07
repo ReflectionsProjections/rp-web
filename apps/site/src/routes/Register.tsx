@@ -82,7 +82,7 @@ const Register = () => {
         <VStack position="absolute" top="15vh" w="100%" gap="12">
           <Heading size="3xl">Thank you for registering!</Heading>
           <Text fontSize="xl">
-            Please check your inbox for a confimation email
+            Please check your inbox for a confirmation email
           </Text>
         </VStack>
       </Box>
