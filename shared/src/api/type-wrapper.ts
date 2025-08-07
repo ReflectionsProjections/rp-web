@@ -27,6 +27,8 @@ type DeletablePaths = {
     : never;
 }[keyof APIRoutes];
 
+export type ApiError = Error & { response?: { data?: { error: string } } };
+
 export interface TypedAxiosInstance {
   get<Path extends GettablePaths>(
     url: Path,

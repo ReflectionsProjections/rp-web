@@ -1,4 +1,3 @@
-import api from "@/util/api";
 import {
   Box,
   Button,
@@ -18,7 +17,7 @@ import {
   useSafeLayoutEffect,
   useToast
 } from "@chakra-ui/react";
-import { path } from "@rp/shared";
+import { api, path } from "@rp/shared";
 import axios from "axios";
 import { saveAs } from "file-saver";
 import { useState } from "react";
