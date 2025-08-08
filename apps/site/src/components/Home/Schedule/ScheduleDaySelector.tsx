@@ -1,6 +1,7 @@
 import { DAY_COLORS } from "@/constants/day-colors";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
+import { useMemo } from "react";
 
 export default function ScheduleDaySelector({
   selectedDay,
@@ -13,20 +14,25 @@ export default function ScheduleDaySelector({
 }) {
   return (
     <Flex
-      flexWrap={"wrap"}
-      gap={5}
+      gap={{
+        base: 2,
+        md: 5
+      }}
       maxWidth={{
-        base: "1000px",
         md: "700px", // Ensures that there are 2 or more buttons per line
         lg: "1000px"
       }}
       mx="auto"
       mb={{
-        base: 0,
         md: 0,
         lg: 10
       }}
-      justifyContent={"center"}
+      px={{
+        base: 3,
+        md: undefined
+      }}
+      justifyContent={{ md: "center" }}
+      overflowX="auto"
     >
       {Object.keys(eventsByDay).map((date, index) => (
         <ScheduleDayButton
@@ -52,8 +58,22 @@ function ScheduleDayButton({
   selected?: boolean;
   onSelectDay: (date: string) => void;
 }) {
+  const { displayedDay, displayedDate } = useMemo(() => {
+    const splitDate = date.split(" ");
+    if (splitDate.length < 2) {
+      return { displayedDay: date, displayedDate: "" };
+    }
+    return {
+      displayedDay: splitDate[0],
+      displayedDate: splitDate[1]
+    };
+  }, [date]);
   return (
     <Box
+      flex={{
+        base: 1,
+        md: "unset"
+      }}
       role="group"
       bgColor={selected ? "white" : "black"}
       borderRightRadius="lg"
@@ -61,9 +81,9 @@ function ScheduleDayButton({
       borderColor={selected ? "orange.300" : "gray.600"}
       borderLeftWidth={"8px"}
       borderLeftColor={color}
-      px={3}
-      py={3}
-      pr={8}
+      px={{ base: 2, md: 3 }}
+      py={{ base: 2, md: 3 }}
+      pr={{ base: 2, md: 4 }}
       onClick={() => onSelectDay(date)}
       transition="all 0.2s"
       _hover={{
@@ -72,14 +92,51 @@ function ScheduleDayButton({
       boxShadow="md"
     >
       <Text
+        display={{
+          base: "none",
+          md: "block"
+        }}
         fontFamily="ProRacing"
         fontSize="lg"
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
         transformOrigin="center left"
       >
-        {date.toUpperCase()}
+        {`${displayedDay.toUpperCase()} ${displayedDate.toUpperCase()}`}
       </Text>
+      <VStack
+        display={{
+          base: "flex",
+          md: "none"
+        }}
+        alignItems="flex-start"
+        gap={0}
+      >
+        <Text
+          display={{
+            base: "block",
+            md: "none"
+          }}
+          fontFamily="ProRacing"
+          fontSize={{ base: "md", md: "lg" }}
+          textColor={selected ? "black" : "white"}
+          transition="all 0.2s, transform 0.2s"
+        >
+          {displayedDay.toUpperCase()}
+        </Text>
+        <Text
+          display={{
+            base: "block",
+            md: "none"
+          }}
+          fontFamily="ProRacing"
+          fontSize={{ base: "sm", md: "md" }}
+          textColor={selected ? "gray.600" : "gray.400"}
+          transition="all 0.2s, transform 0.2s"
+        >
+          {displayedDate.toUpperCase()}
+        </Text>
+      </VStack>
     </Box>
   );
 }

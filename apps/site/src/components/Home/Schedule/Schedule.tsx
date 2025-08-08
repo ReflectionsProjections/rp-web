@@ -143,7 +143,7 @@ export default function Schedule() {
             lg: "row"
           }}
           mt={{
-            base: 20,
+            base: 5,
             md: 5
           }}
           mx="auto"
@@ -196,7 +196,10 @@ function DayEventsSection({
   return (
     <Box flex={1} h="100%" py={0}>
       <HStack
-        display="flex"
+        display={{
+          base: "none",
+          lg: "flex"
+        }}
         alignItems={"center"}
         justifyContent={"center"}
         gap={3}
@@ -206,12 +209,23 @@ function DayEventsSection({
         py={2}
         boxShadow="md"
       >
-        <Text fontSize="5xl" color="#8A8A8A" fontFamily="ProRacingSlant" my={0}>
+        <Text
+          fontSize={{
+            base: "3xl",
+            lg: "5xl"
+          }}
+          color="#8A8A8A"
+          fontFamily="ProRacingSlant"
+          my={0}
+        >
           Lap
         </Text>
         <HStack gap={0}>
           <Text
-            fontSize="5xl"
+            fontSize={{
+              base: "3xl",
+              lg: "5xl"
+            }}
             fontWeight="bold"
             color="white"
             fontFamily="Magistral"
@@ -219,13 +233,21 @@ function DayEventsSection({
           >
             {selectedDayIndex}
           </Text>
-          <Text fontSize="5xl" color="#8A8A8A" fontFamily="Magistral" my={0}>
+          <Text
+            fontSize={{
+              base: "3xl",
+              lg: "5xl"
+            }}
+            color="#8A8A8A"
+            fontFamily="Magistral"
+            my={0}
+          >
             /{numDays}
           </Text>
         </HStack>
       </HStack>
       <Box
-        bgColor="#242424"
+        bgColor={{ md: "#242424" }}
         pb={5}
         borderBottomRadius="xl"
         overflowY={{ md: "auto" }}
@@ -247,6 +269,7 @@ function DayEventsSection({
             <DayEvent
               key={index}
               number={index + 1}
+              lastIndex={dayEvents.length}
               hoveredIndex={hoveredIndex}
               event={event}
               onHover={onHover}
@@ -367,12 +390,14 @@ function RaceTrackSection({
 function DayEvent({
   number,
   hoveredIndex,
+  lastIndex,
   event,
   onHover,
   onClick
 }: {
   number: number;
   hoveredIndex: number | null;
+  lastIndex: number;
   event: Event;
   onHover: (index: number) => void;
   onClick: (event: Event) => void;
@@ -391,6 +416,8 @@ function DayEvent({
       }}
       alignItems="center"
       bgColor={hoveredIndex === number ? "#333131" : "#242424"}
+      borderTopRadius={number === 1 ? "xl" : undefined}
+      borderBottomRadius={number === lastIndex ? "xl" : undefined}
       gap={{
         base: 2,
         md: 3
