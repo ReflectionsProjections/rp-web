@@ -1,5 +1,3 @@
-import api from "@/util/api";
-
 import {
   Box,
   Flex,
@@ -11,15 +9,15 @@ import {
   Tooltip,
   useToast
 } from "@chakra-ui/react";
-import { Event, path } from "@rp/shared";
+import { Event, path, api } from "@rp/shared";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
 import { EVENT_ICONS } from "@/constants/event-icons";
+import { AudioVisualizer } from "./AudioVisualizer";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
-import { AudioVisualizer } from "./AudioVisualizer";
 
 export const circleColors = [
   "green.400",
