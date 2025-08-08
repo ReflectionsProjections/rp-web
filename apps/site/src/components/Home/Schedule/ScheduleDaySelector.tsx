@@ -1,4 +1,4 @@
-import { DAY_COLORS } from "@/constants/day-colors";
+import { DAY_COLORS } from "@/constants/colors";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
 import { useMemo } from "react";

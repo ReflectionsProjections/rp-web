@@ -18,32 +18,7 @@ import { AudioVisualizer } from "./AudioVisualizer";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
-
-export const circleColors = [
-  "green.400",
-  "purple.600",
-  "pink.500",
-  "red.500",
-  "orange.500",
-  "teal.400",
-  "cyan.400",
-  "blue.500",
-  "yellow.400",
-  "pink.600"
-];
-
-export const circleColorsLighter = [
-  "green.600",
-  "purple.800",
-  "pink.700",
-  "red.700",
-  "orange.700",
-  "teal.600",
-  "cyan.600",
-  "blue.700",
-  "yellow.600",
-  "pink.800"
-];
+import { CIRCLE_COLORS } from "@/constants/colors";
 
 export default function Schedule() {
   const toast = useToast();
@@ -331,7 +306,7 @@ function RaceTrackSection({
         >
           <RaceTrack
             dayEvents={dayEvents}
-            colors={circleColors}
+            colors={CIRCLE_COLORS}
             hoveredIndex={hoveredEventIndex}
             onHover={handleHover}
             onClick={handleSelectEvent}
@@ -470,7 +445,7 @@ function DayEvent({
           md: "10px"
         }}
         h="40px"
-        bg={circleColors[(number - 1) % circleColors.length]}
+        bg={CIRCLE_COLORS[(number - 1) % CIRCLE_COLORS.length]}
         boxShadow="md"
         borderRadius="sm"
       ></Box>

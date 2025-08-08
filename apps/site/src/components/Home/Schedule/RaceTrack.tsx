@@ -64,7 +64,7 @@ export function RaceTrack({
     }
 
     setSelectedLocations(locations);
-  }, [pathRef.current, trackPath.path, dayEvents.length]);
+  }, [trackPath.path, dayEvents.length]);
 
   return (
     <Box
