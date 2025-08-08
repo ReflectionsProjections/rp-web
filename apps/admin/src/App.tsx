@@ -5,30 +5,38 @@
 import "./App.css";
 // import axios from 'axios';
 import { ChakraProvider, theme } from "@chakra-ui/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 
-import Auth from "./routes/Auth";
-import Login from "./routes/Login";
-import Home from "./routes/Home";
 import Attendance from "./routes/Attendance";
-import Unauthorized from "./routes/Unauthorized";
-import ProtectedRoute from "./routes/ProtectedRoute";
+import routes from "./routes";
+import { AuthCallback, googleAuth } from "@rp/shared";
+import Main from "./routes/Main";
+import { useEffect } from "react";
+
+function RefreshHandler() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const redirect = params.get("redirect");
+    googleAuth(false, redirect ?? undefined);
+  }, []);
+
+  return <p>Redirecting to login...</p>;
+}
 
 function App() {
   return (
     <ChakraProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/auth/" element={<Auth />}>
-            {" "}
+          <Route path="/auth/refresh" element={<RefreshHandler />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="/attendance" element={<Attendance />} />
+          <Route element={<Main />}>
+            {routes.map(({ path, element }) => (
+              <Route key={path} path={path} element={element} />
+            ))}
           </Route>
-          <Route path="/unauthorized/" element={<Unauthorized />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/home/" element={<Home />} />
-            <Route path="/attendance/" element={<Attendance />} />
-            <Route path="*" />
-          </Route>
-          <Route path="/" element={<Login />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

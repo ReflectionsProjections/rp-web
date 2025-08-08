@@ -1,23 +1,23 @@
-import { Box, Grid, Heading } from "@chakra-ui/react";
-import RolesCard from "./RolesCard";
+import { Flex, Heading } from "@chakra-ui/react";
+import RolesCard from "../../components/Roles/RoleCard";
 
 function Roles() {
   return (
-    <Box flex="1" minW="90vw" p={4}>
-      <Heading size="lg">Roles</Heading>
+    <>
+      <Flex justifyContent="center" alignItems="center">
+        <Heading size="lg">Roles</Heading>
+      </Flex>
       <br />
-      <Grid
-        templateColumns={{
-          base: "repeat(1, 1fr)",
-          md: "repeat(2, 1fr)",
-          lg: "repeat(2, 1fr)"
-        }}
+      <Flex
+        w="100%"
+        p={4}
+        flexWrap="wrap"
+        justifyContent="space-evenly"
         gap={6}
       >
-        <RolesCard role="ADMIN" />
-        <RolesCard role="STAFF" />
-      </Grid>
-    </Box>
+        <RolesCard />
+      </Flex>
+    </>
   );
 }
 

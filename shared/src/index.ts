@@ -1,4 +1,10 @@
 export { default as Banner } from "./components/Banner";
-export { default as createApi } from "./api/axios";
+export { default as AnimatedCounter } from "./components/AnimatedCounter";
 export * from "./api/types";
+export { default as usePolling } from "./hooks/polling";
 export { default as Config } from "./config";
+export { default as RequireAuthWrapper } from "./components/RequireAuth";
+export { default as AuthCallback } from "./components/AuthCallback";
+export { googleAuth } from "./api/auth";
+export { default as api } from "./api/api";
+export { default as getRequireAuth } from "./utils/require-auth";

@@ -1,184 +1,193 @@
+import { CloseIcon, CheckIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Stack,
   Card,
   CardBody,
-  CardHeader,
+  StackDivider,
   Flex,
-  Grid,
-  Heading,
   IconButton,
   Input,
-  Stack,
-  StackDivider,
-  useToast
+  useToast,
+  FormControl,
+  FormErrorMessage,
+  Heading
 } from "@chakra-ui/react";
-import React from "react";
-import { CheckIcon, CloseIcon } from "@chakra-ui/icons";
-import api from "../../util/api.ts";
-import { Corporate } from "@rp/shared";
+import { api, usePolling } from "@rp/shared";
+import { useMirrorStyles } from "@/styles/Mirror";
+import { Formik, FormikHelpers } from "formik";
+import {
+  SponsorFormInitialValues,
+  SponsorFormSchema,
+  SponsorFormValues
+} from "@/components/Sponsors/SponsorSchema";
+import { useOutletContext } from "react-router-dom";
+import { MainContext } from "../Main";
 
-function CorporateCard() {
+const Sponsors = () => {
+  const { authorized } = useOutletContext<MainContext>();
+  const {
+    data: sponsors,
+    update: updateSponsors,
+    isLoading
+  } = usePolling("/auth/corporate", authorized);
   const toast = useToast();
-  const [sponsorList, setSponsors] = React.useState<Corporate[]>([]);
-  const [email, setEmail] = React.useState("");
-  const [name, setName] = React.useState("");
+  const mirrorStyle = useMirrorStyles();
 
-  const showToast = (message: string, error: boolean) => {
-    toast({
-      title: message,
-      status: error ? "error" : "success",
-      duration: 9000,
-      isClosable: true
-    });
+  const removeSponsor = (email: string) => {
+    toast.promise(
+      api
+        .delete("/auth/corporate", { data: { email } })
+        .then(() => updateSponsors()),
+      {
+        success: { title: `${email} is no longer a sponsor` },
+        error: { title: "Failed to remove sponsor. Try again soon!" },
+        loading: { title: "Removing sponsor..." }
+      }
+    );
   };
 
-  const refreshSponsors = () => {
-    api
-      .get("/auth/corporate")
-      .then(function (response) {
-        const sponsorData = response.data.map(
-          (item: Record<string, string>) => ({
-            name: item.name,
-            email: item.email
-          })
-        );
-        setSponsors(sponsorData);
-      })
-      .catch(function (error) {
-        // handle error
-        console.log(error);
-      });
-  };
-
-  React.useEffect(() => {
-    let firstRender = true;
-
-    if (firstRender) {
-      refreshSponsors();
-      firstRender = false;
-    }
-  }, []);
-
-  const removeFromRole = (email: string) => {
-    api
-      .delete("/auth/corporate", {
-        data: {
-          email: email
-        }
-      })
-      .then((response) => {
-        console.log("User role updated:", response.data);
-        showToast(
-          email + " User Role updated: No longer Corporate role",
-          false
-        );
-        refreshSponsors();
-      })
-      .catch((error) => {
-        console.log(error);
-        showToast("Failed to update user role. Try again soon!", true);
-      });
-  };
-
-  const renderSponsors = (sponsors: { name: string; email: string }[]) => {
-    return sponsors.map((sponsor) => (
-      <Flex
-        key={sponsor.email}
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        {/*         <Box>{sponsor.name}</Box> */}
-        {/*         <Box>{sponsor.email}</Box> */}
-        <Box flex="1" textAlign="left">
-          {sponsor.name}
-        </Box>
-        <Box flex="1" textAlign="left">
-          {sponsor.email}
-        </Box>
-        <IconButton
-          size={"md"}
-          icon={<CloseIcon />}
-          aria-label={"Open Menu"}
-          onClick={() => removeFromRole(sponsor.email)}
-        />
-      </Flex>
-    ));
-  };
-
-  const addToRole = (name: string, email: string) => {
-    api
+  const addSponsor = (
+    values: SponsorFormValues,
+    helpers: FormikHelpers<SponsorFormValues>
+  ) => {
+    const request = api
       .post("/auth/corporate", {
-        name: name,
-        email: email
+        name: values.name,
+        email: values.email
       })
-      .then((response) => {
-        console.log("User role updated:", response.data);
-        showToast(email + " User Role updated: Now Corporate role", false);
-        refreshSponsors();
+      .then(() => {
+        updateSponsors();
       })
-      .catch((error) => {
-        console.log(error);
-        showToast("Failed to update user role. Try again soon!", true);
+      .finally(() => {
+        helpers.setSubmitting(false);
       });
-  };
 
-  const handleSubmit = () => {
-    addToRole(name, email); // Replace 'YOUR_ROLE_HERE' with the actual role
-    setEmail("");
-    setName("");
+    toast.promise(request, {
+      success: { title: `${values.name} is now a sponsor` },
+      error: { title: "Failed to add sponsor. Try again soon!" },
+      loading: { title: "Adding sponsor..." }
+    });
+    return request;
   };
 
   return (
-    <Card overflowY="auto" maxHeight="70vh">
-      <CardHeader>
-        <Heading size="md">Corporate</Heading>
-      </CardHeader>
-      <CardBody>
-        <Flex mb={4}>
-          <Input
-            placeholder="Enter name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            mr={2}
-          />
-          <Input
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            mr={2}
-          />
-          <IconButton
-            size={"md"}
-            icon={<CheckIcon />}
-            aria-label={"Open Menu"}
-            onClick={handleSubmit}
-          />
-        </Flex>
-        <Stack divider={<StackDivider />} spacing="4">
-          {renderSponsors(sponsorList)}
-        </Stack>
-      </CardBody>
-    </Card>
-  );
-}
-
-function Sponsors() {
-  return (
-    <Box flex="1" minW="90vw" p={4}>
-      <Heading size="lg">Roles</Heading>
+    <>
+      <Flex justifyContent="center" alignItems="center">
+        <Heading size="lg">Sponsors</Heading>
+      </Flex>
       <br />
-      <Grid
-        templateColumns={{
-          base: "repeat(1, 1fr)",
-          md: "repeat(1, 1fr)",
-          lg: "repeat(1, 1fr)"
-        }}
+      <Flex
+        w="100%"
+        p={4}
+        flexWrap="wrap"
+        justifyContent="space-evenly"
         gap={6}
       >
-        <CorporateCard />
-      </Grid>
-    </Box>
+        <Card
+          sx={mirrorStyle}
+          overflowY="auto"
+          maxHeight="80vh"
+          flex={{ xl: 1 }}
+        >
+          <CardBody>
+            <Formik<SponsorFormValues>
+              initialValues={SponsorFormInitialValues}
+              validationSchema={SponsorFormSchema}
+              onSubmit={addSponsor}
+            >
+              {({
+                values,
+                handleChange,
+                handleSubmit,
+                isSubmitting,
+                errors,
+                touched
+              }) => (
+                <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+                  <Flex mb={4}>
+                    <FormControl
+                      mr={2}
+                      isRequired
+                      isInvalid={!!errors.name && touched.name}
+                    >
+                      <Input
+                        name="name"
+                        placeholder="Enter name"
+                        value={values.name}
+                        onChange={handleChange}
+                      />
+                      <FormErrorMessage>{errors.name}</FormErrorMessage>
+                    </FormControl>
+                    <FormControl
+                      mr={2}
+                      isRequired
+                      isInvalid={!!errors.email && touched.email}
+                    >
+                      <Input
+                        name="email"
+                        placeholder="Enter email"
+                        value={values.email}
+                        onChange={handleChange}
+                      />
+                      <FormErrorMessage>{errors.email}</FormErrorMessage>
+                    </FormControl>
+                    <IconButton
+                      size="md"
+                      icon={<CheckIcon />}
+                      aria-label="Add Sponsor"
+                      type="submit"
+                      isLoading={isSubmitting}
+                    />
+                  </Flex>
+                </form>
+              )}
+            </Formik>
+            <Stack divider={<StackDivider />} spacing="4" mt={8}>
+              {isLoading
+                ? Array.from({ length: 10 }).map((_, index) => (
+                    <SponsorCardSkeleton key={index} />
+                  ))
+                : sponsors?.map((sponsor) => (
+                    <Flex
+                      key={sponsor.email}
+                      justifyContent="space-between"
+                      alignItems="center"
+                    >
+                      <Box flex="1" textAlign="left">
+                        {sponsor.name}
+                      </Box>
+                      <Box flex="1" textAlign="left">
+                        {sponsor.email}
+                      </Box>
+                      <IconButton
+                        size={"md"}
+                        icon={<CloseIcon />}
+                        aria-label={"Open Menu"}
+                        onClick={() => removeSponsor(sponsor.email)}
+                      />
+                    </Flex>
+                  ))}
+            </Stack>
+          </CardBody>
+        </Card>
+      </Flex>
+    </>
   );
-}
+};
+
+const SponsorCardSkeleton: React.FC = () => (
+  <Flex justifyContent="space-between" alignItems="center" py={2} opacity={0.7}>
+    <Box flex={1} mr={7}>
+      <Box height="20px" bg="gray.200" borderRadius="md" width="70%" />
+    </Box>
+    <Box flex={1} mr={2}>
+      <Box height="32px" bg="gray.200" borderRadius="md" />
+    </Box>
+    <Box>
+      <Box height="32px" width="32px" bg="gray.200" borderRadius="full" />
+    </Box>
+  </Flex>
+);
 
 export default Sponsors;
