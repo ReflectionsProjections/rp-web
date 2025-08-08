@@ -30,7 +30,6 @@ export function RaceTrack({
 
   const [finishLineLocation, setFinishLineLocation] =
     useState<TrackLocation | null>(null);
-  const [finishLineAngle, setFinishLineAngle] = useState<number | null>(null);
 
   useEffect(() => {
     if (!pathRef?.current) return;
@@ -49,16 +48,7 @@ export function RaceTrack({
         const { x: finalX, y: finalY } = pathEl.getPointAtLength(
           t_final * totalLen
         );
-
-        const epsilon = 0.5; // a small length offset
-        const finishPos = t_final * totalLen;
-        const p1 = pathEl.getPointAtLength(finishPos - epsilon);
-        const p2 = pathEl.getPointAtLength(finishPos + epsilon);
-        const dx = p2.x - p1.x;
-        const dy = p2.y - p1.y;
-        const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
         setFinishLineLocation({ x: finalX, y: finalY, order: i });
-        setFinishLineAngle(angleDeg);
       }
       locations.push({ x, y, order: i });
     }
@@ -109,32 +99,21 @@ export function RaceTrack({
               />
             );
           })}
-        {finishLineLocation && finishLineAngle && (
-          <FinishLocation
-            location={finishLineLocation}
-            angle={finishLineAngle}
-          />
-        )}
+        {finishLineLocation && <FinishLocation location={finishLineLocation} />}
       </Box>
     </Box>
   );
 }
 
-function FinishLocation({
-  location,
-  angle
-}: {
-  location: TrackLocation;
-  angle: number;
-}) {
+function FinishLocation({ location }: { location: TrackLocation }) {
   return (
     <foreignObject
       key={`${location.x}-${location.y}-circle`}
-      x={location.x - 25}
-      y={location.y - 25}
-      width={50}
-      height={50}
-      transform={`rotate(${angle + 90}, ${location.x}, ${location.y})`}
+      x={location.x - 50}
+      y={location.y - 50}
+      width={100}
+      height={100}
+      transform={`${location.x}, ${location.y})`}
     >
       <Box
         display="flex"
@@ -142,6 +121,7 @@ function FinishLocation({
         justifyContent="center"
         w="100%"
         h="100%"
+        pointerEvents={"none"}
       >
         <img
           src="/finish-line.svg"
