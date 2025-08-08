@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
-import { GettablePaths, TypedAxiosInstance } from "../api/type-wrapper";
+import { GettablePaths } from "../api/type-wrapper";
 import { APIRoutes } from "../api/types";
+import api from "../api/api";
 
 const usePolling = <T extends GettablePaths>(
-  api: TypedAxiosInstance,
   endpoint: T,
   enabled: boolean = true,
   interval: number = 30000
@@ -27,7 +27,7 @@ const usePolling = <T extends GettablePaths>(
       .catch((err: { error: string }) => {
         setError(err.error);
       });
-  }, [api, endpoint, enabled]);
+  }, [endpoint, enabled]);
 
   useEffect(() => {
     fetchData();

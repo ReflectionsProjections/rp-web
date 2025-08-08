@@ -1,6 +1,6 @@
 import { HStack, Icon, Text, Tooltip } from "@chakra-ui/react";
+import { api } from "@rp/shared";
 import { useEffect, useState } from "react";
-import api from "../util/api";
 import {
   MdSignalWifi4Bar,
   MdSignalWifiConnectedNoInternet4
