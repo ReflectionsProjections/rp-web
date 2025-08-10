@@ -1,26 +1,16 @@
-FROM ubuntu:22.04
+FROM node:18-alpine
 
-ENV DEBIAN_FRONTEND=noninteractive
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-  curl \
+# Install system dependencies (only what's absolutely necessary)
+RUN apk add \
   git \
-  build-essential \
-  vim \
   tini \
-  sudo \
-  && rm -rf /var/lib/apt/lists/*
-
-# Install Node.js (LTS) and Yarn
-RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && apt-get install -y nodejs \
-    && npm install -g yarn
+  bash
 
 WORKDIR /shared
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+# Copy entrypoint script first and verify it exists
+COPY ./entrypoint.sh /entrypoint.sh
+RUN ls -la /entrypoint.sh && chmod +x /entrypoint.sh
 
 COPY ./.env /
 
