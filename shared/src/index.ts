@@ -7,4 +7,4 @@ export { default as RequireAuthWrapper } from "./components/RequireAuth";
 export { default as AuthCallback } from "./components/AuthCallback";
 export { googleAuth } from "./api/auth";
 export { default as api } from "./api/api";
-export { default as getRequireAuth } from "./utils/require-auth";
+export { default as RequireAuth } from "./utils/require-auth";
