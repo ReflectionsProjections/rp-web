@@ -6,6 +6,7 @@ import Roles from "./routes/pages/Roles";
 import Sponsors from "./routes/pages/Sponsors";
 import Merch from "./routes/pages/Merch";
 import EventCheckin from "./routes/pages/EventCheckin";
+import Leaderboard from "./routes/pages/Leaderboard";
 import Attendance from "./routes/pages/Attendance";
 
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
   { path: "/sponsors", element: <Sponsors /> },
   { path: "/merch", element: <Merch /> },
   { path: "/event-checkin", element: <EventCheckin /> },
+  { path: "/leaderboard-view", element: <Leaderboard /> },
   { path: "/attendance-view", element: <Attendance /> }
 ];
 

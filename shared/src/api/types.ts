@@ -32,6 +32,19 @@ export type Attendee = {
   puzzlesCompleted: string[];
 };
 
+export type LeaderboardUser = {
+  userId: number;
+  name: string;
+  email: string;
+  points: number;
+  isEligibleMerch: {
+    base: boolean;
+    first: boolean;
+    second: boolean;
+    third: boolean;
+  };
+};
+
 export type Corporate = {
   name: string;
   email: string;
