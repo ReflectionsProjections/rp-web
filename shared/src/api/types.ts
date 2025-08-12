@@ -62,11 +62,32 @@ export type Event = {
   points: number;
   description: string;
   isVirtual: boolean;
-  imageUrl: string;
+  imageUrl: string | null;
   location: string;
   isVisible: boolean;
   attendanceCount: number;
   eventType: EventType;
+};
+
+export type Registration = {
+  userId: string;
+  name: string;
+  email: string;
+  university: string;
+  graduation: string | null;
+  major: string | null;
+  dietaryRestrictions: string[];
+  allergies: string[];
+  gender: string | null;
+  ethnicity: string[];
+  hearAboutRP: string[];
+  portfolios: string[];
+  jobInterest: string[];
+  isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  hasResume: boolean;
+  hasSubmitted: boolean;
+  degree?: string;
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
@@ -78,7 +99,7 @@ export type RoleObject = {
   roles: Role[];
 };
 
-export type TeamName =
+export type CommitteeType =
   | "FULL TEAM"
   | "CONTENT"
   | "CORPORATE"
@@ -92,7 +113,7 @@ export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 export type Staff = {
   userId: string;
   name: string;
-  team: TeamName;
+  team: CommitteeType;
   attendances: Record<string, AttendanceType>;
 };
 
@@ -141,6 +162,12 @@ export interface APIRoutes {
       response: RoleObject[];
     };
   };
+  "/auth/login/web": {
+    POST: {
+      request: { code: string; redirectUri: string };
+      response: { token: string };
+    };
+  };
   "/auth/info": {
     GET: {
       response: RoleObject;
@@ -157,6 +184,15 @@ export interface APIRoutes {
     DELETE: {
       request: { email: string };
       response: never;
+    };
+  };
+  "/auth/sponsor/verify": {
+    POST: {
+      request: {
+        sixDigitCode: string;
+        email: string;
+      };
+      response: { token: string };
     };
   };
   "/checkin/event": {
@@ -183,21 +219,35 @@ export interface APIRoutes {
     };
     POST: {
       request: Omit<Event, "eventId">;
-      response: Event;
+      response: never;
     };
   };
   "/events/:eventId": {
     PUT: {
       request: Partial<Omit<Event, "eventId">>;
-      response: Event;
+      response: never;
     };
     DELETE: {
+      request: never;
       response: never;
     };
   };
   "/events/currentOrNext": {
     GET: {
       response: Event;
+    };
+  };
+  "/registration/all": {
+    GET: {
+      request: {
+        graduations?: string[];
+        majors?: string[];
+        jobInterests?: string[];
+        degrees?: string[];
+      };
+      response: {
+        registrants: Registration[];
+      };
     };
   };
   "/staff": {
@@ -216,8 +266,8 @@ export interface APIRoutes {
       response: Meeting[];
     };
     POST: {
-      request: { committeeType: TeamName; startTime: string };
-      response: Meeting;
+      request: { committeeType: CommitteeType; startTime: string };
+      response: Omit<Meeting, "meetingId">;
     };
   };
   "/meetings/:meetingId": {
@@ -226,7 +276,19 @@ export interface APIRoutes {
       response: Meeting;
     };
     DELETE: {
+      request: never;
       response: never;
+    };
+  };
+  "/s3/download/user/:userId": {
+    GET: {
+      response: { url: string };
+    };
+  };
+  "/s3/download/batch": {
+    POST: {
+      request: { userIds: string[] };
+      response: { data: (string | null)[]; errorCount: number };
     };
   };
   "/staff/:staffId/attendance": {

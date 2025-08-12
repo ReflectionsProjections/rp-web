@@ -1,8 +1,8 @@
-import { z } from "zod";
+import * as yup from "yup";
 
 interface ImportMetaEnv {
   VITE_ENV?: "PRODUCTION" | "DEVELOPMENT" | "TESTING";
-  VITE_DEV_JWT?: string;
+  VITE_GOOGLE_OAUTH_CLIENT_ID?: string;
 }
 
 declare global {
@@ -11,29 +11,21 @@ declare global {
   }
 }
 
-// Validation
-const envSchema = z
-  .object({
-    VITE_ENV: z.enum(["PRODUCTION", "DEVELOPMENT", "TESTING"]).optional(),
-    VITE_DEV_JWT: z.string().optional()
-  })
-  .passthrough();
+// Validation using zup
 
-const parsed = envSchema.safeParse(import.meta.env);
+const envSchema = yup.object({
+  VITE_ENV: yup
+    .string()
+    .oneOf(["PRODUCTION", "DEVELOPMENT", "TESTING"])
+    .optional(),
+  VITE_GOOGLE_OAUTH_CLIENT_ID: yup.string().required()
+});
 
-if (!parsed.success) {
-  console.error(
-    "Invalid environment variables:",
-    parsed.error.flatten().fieldErrors
-  );
-  throw new Error("Environment validation failed.");
-}
-
-const env = parsed.data;
+const env = envSchema.validateSync(import.meta.env, { abortEarly: false });
 
 const isDefined = env.VITE_ENV !== undefined;
 
-const isProduction = !!env.VITE_DEV_JWT || env.VITE_ENV === "PRODUCTION";
+const isProduction = env.VITE_ENV === "PRODUCTION";
 
 const IS_DEV = isDefined && !isProduction;
 
@@ -52,7 +44,7 @@ const Config = {
     "MEALS",
     "CHECKIN"
   ] as const,
-  DEV_JWT: env.VITE_DEV_JWT
+  GOOGLE_OAUTH_CLIENT_ID: env.VITE_GOOGLE_OAUTH_CLIENT_ID
 };
 
 export default Config;

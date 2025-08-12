@@ -4,6 +4,7 @@ Webpages:
 
 - [hype.reflectionsprojections.org](https://hype.reflectionsprojections.org)
 - [admin.reflectionsprojections.org](https://admin.reflectionsprojections.org)
+- [sponsor.reflectionsprojections.org](https://sponsor.reflectionsprojections.org)
 
 ## Development Guide
 
@@ -286,7 +287,6 @@ To create a new app:
    ```
 
 2. Update the `package.json` in the new app:
-
    - Replace all instances of `@rp/template` with `@rp/<new-app-name>`.
    - Careful! `@rp/template` appears in multiple places in the `package.json`.
 
