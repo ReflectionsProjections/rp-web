@@ -14,6 +14,5 @@ export default defineConfig({
       "@": resolve(__dirname, "./src"),
       "@rp/shared": resolve(__dirname, "../../shared/src")
     }
-  },
-  build: { sourcemap: true }
+  }
 });
