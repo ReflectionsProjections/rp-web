@@ -97,6 +97,7 @@ export default function Landing() {
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
+                color="black"
               >
                 reflections
               </Text>
@@ -115,6 +116,7 @@ export default function Landing() {
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
+                color="black"
               >
                 projections
               </Text>
