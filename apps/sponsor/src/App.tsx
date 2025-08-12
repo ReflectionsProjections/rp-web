@@ -2,10 +2,10 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Page } from "./components/Page";
 import { Home } from "./routes/Home";
 import { Login } from "./routes/Login";
-import { ResumeAllPDF } from "./routes/ResumeBook/ResumeAllPDF";
+// import { ResumeAllPDF } from "./routes/ResumeBook/ResumeAllPDF";
 import { ResumeBook } from "./routes/ResumeBook/ResumeBook";
 import { DownloadPage } from "./routes/DownloadPage";
-import { getRequireAuth, googleAuth } from "@rp/shared";
+import { /*getRequireAuth,*/ googleAuth } from "@rp/shared";
 import { useEffect } from "react";
 
 function RefreshHandler() {
@@ -41,14 +41,14 @@ function App() {
           path="/login"
           element={<Page showNav={true} pageContent={<Login />} />}
         />
-        {getRequireAuth({
+        {/* {getRequireAuth({
           children: [
             <Route
               path="/resume-book/dev"
               element={<Page showNav={false} pageContent={<ResumeAllPDF />} />}
             />
           ]
-        })}
+        })} */}
       </Routes>
     </BrowserRouter>
   );
