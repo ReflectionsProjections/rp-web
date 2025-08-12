@@ -41,7 +41,7 @@ function App() {
           path="/login"
           element={<Page showNav={true} pageContent={<Login />} />}
         />
-        {...getRequireAuth({
+        {getRequireAuth({
           children: [
             <Route
               path="/resume-book/dev"
