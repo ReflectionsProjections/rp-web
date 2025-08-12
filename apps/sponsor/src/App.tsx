@@ -44,9 +44,9 @@ function App() {
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route element={<RequireAuth />}>
           <Route
-              path="/resume-book/dev"
-              element={<Page showNav={false} pageContent={<ResumeAllPDF />} />}
-            />
+            path="/resume-book/dev"
+            element={<Page showNav={false} pageContent={<ResumeAllPDF />} />}
+          />
         </Route>
       </Routes>
     </BrowserRouter>

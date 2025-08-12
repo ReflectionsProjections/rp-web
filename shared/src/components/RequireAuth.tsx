@@ -9,9 +9,7 @@ type RequireAuthProps = {
   requiredRoles?: Role[];
 };
 
-const RequireAuth: React.FC<RequireAuthProps> = ({
-  requiredRoles = []
-}) => {
+const RequireAuth: React.FC<RequireAuthProps> = ({ requiredRoles = [] }) => {
   const [authInfo, setAuthInfo] = useState<RoleObject | null>(null);
   const jwt = localStorage.getItem("jwt");
 
