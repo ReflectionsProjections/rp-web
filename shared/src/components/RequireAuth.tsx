@@ -5,12 +5,12 @@ import { Role, RoleObject } from "../api/types";
 import { useState } from "react";
 import api from "../api/api";
 
-type RequireAuthWrapperProps = {
-  requiredRoles: Role[];
+type RequireAuthProps = {
+  requiredRoles?: Role[];
 };
 
-const RequireAuthWrapper: React.FC<RequireAuthWrapperProps> = ({
-  requiredRoles
+const RequireAuth: React.FC<RequireAuthProps> = ({
+  requiredRoles = []
 }) => {
   const [authInfo, setAuthInfo] = useState<RoleObject | null>(null);
   const jwt = localStorage.getItem("jwt");
@@ -50,4 +50,4 @@ const RequireAuthWrapper: React.FC<RequireAuthWrapperProps> = ({
   return <Outlet context={authInfo} />;
 };
 
-export default RequireAuthWrapper;
+export default RequireAuth;
