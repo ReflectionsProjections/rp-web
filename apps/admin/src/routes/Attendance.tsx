@@ -16,6 +16,7 @@ import axios from "axios";
 import { api } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MdArrowBack } from "react-icons/md";
+import { api } from "@rp/shared";
 
 type Status =
   | "loading"

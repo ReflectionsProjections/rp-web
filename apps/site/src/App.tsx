@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./routes/Home";
 import theme from "./theme";
 import Register from "./routes/Register";
-import { getRequireAuth, googleAuth } from "@rp/shared";
+import { AuthCallback, googleAuth, RequireAuth } from "@rp/shared";
 import { useEffect } from "react";
 
 function RefreshHandler() {
@@ -23,11 +23,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/auth/refresh" element={<RefreshHandler />} />
-          {...getRequireAuth({
-            children: [
-              <Route key="/register" path="/register" element={<Register />} />
-            ]
-          })}
+          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route element={<RequireAuth />}>
+            <Route key="/register" path="/register" element={<Register />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

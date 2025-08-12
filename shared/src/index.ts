@@ -4,7 +4,7 @@ export * from "./api/types";
 export { default as usePolling } from "./hooks/polling";
 export { default as useFormAutosave } from "./hooks/form-autosave";
 export { default as Config } from "./config";
-export { default as RequireAuthWrapper } from "./components/RequireAuth";
+export { default as RequireAuth } from "./components/RequireAuth";
 export { default as AuthCallback } from "./components/AuthCallback";
 export { googleAuth } from "./api/auth";
 export { default as FormCheckboxGroup } from "./components/form/FormCheckboxGroup";
@@ -18,4 +18,3 @@ export { default as FormRequiredCheckbox } from "./components/form/FormRequiredC
 export { schools } from "./assets/schools";
 export { majors } from "./assets/majors";
 export { default as api } from "./api/api";
-export { default as getRequireAuth } from "./utils/require-auth";

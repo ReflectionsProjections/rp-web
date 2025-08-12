@@ -52,7 +52,7 @@ const EventCheckin = () => {
       {
         success: { title: "Succesfully checked into event!" },
         error: (error: ApiError) => {
-          switch (error.response?.data?.error) {
+          switch (error?.response?.data?.error) {
             case "QR code has expired":
               return { title: "Event QR code has expired", status: "error" };
             case "IsDuplicate":
