@@ -23,7 +23,7 @@ export const SchoolField = () => (
 );
 
 export const EducationLevelField = () => (
-  <FormRadioGroup<RegistrationValues, "educationLevel">
+  <FormRadioGroup<RegistrationValues, "educationLevel", "educationOther">
     name="educationLevel"
     label="What is your highest level of education (currently pursuing or completed)?"
     options={[
@@ -33,8 +33,8 @@ export const EducationLevelField = () => (
       "Master's Degree",
       "PhD or Doctorate"
     ]}
-    customLabel="Other"
     isRequired
+    custom={{ name: "educationOther", label: "Other" }}
   />
 );
 

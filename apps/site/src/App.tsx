@@ -25,7 +25,7 @@ function App() {
           <Route path="/auth/refresh" element={<RefreshHandler />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           {/* <Route element={<RequireAuth />}> */}
-            <Route key="/register" path="/register" element={<Register />} />
+          <Route key="/register" path="/register" element={<Register />} />
           {/* </Route> */}
         </Routes>
       </BrowserRouter>

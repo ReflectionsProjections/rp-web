@@ -30,17 +30,17 @@ export const EmailField = () => (
 );
 
 export const GenderField = () => (
-  <FormRadioGroup<RegistrationValues, "gender">
+  <FormRadioGroup<RegistrationValues, "gender", "genderOther">
     name="gender"
     label="Gender"
     options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
     isRequired
-    customLabel="Prefer to self-describe"
+    custom={{ name: "genderOther", label: "Prefer to self-describe" }}
   />
 );
 
 export const EthnicityField = () => (
-  <FormCheckboxGroup<RegistrationValues, "ethnicity">
+  <FormCheckboxGroup<RegistrationValues, "ethnicity", "ethnicityOther">
     name="ethnicity"
     label="Race and/or Ethnicity"
     options={[
@@ -53,12 +53,12 @@ export const EthnicityField = () => (
       "White",
       "Prefer not to answer"
     ]}
-    customLabel="Other"
+    custom={{ name: "ethnicityOther", label: "Other" }}
   />
 );
 
 export const AllergiesField = () => (
-  <FormCheckboxGroup<RegistrationValues, "allergies">
+  <FormCheckboxGroup<RegistrationValues, "allergies", "allergiesOther">
     name="allergies"
     label="Allergies"
     options={[
@@ -71,12 +71,12 @@ export const AllergiesField = () => (
       "Fish",
       "Sesame"
     ]}
-    customLabel="Other"
+    custom={{ name: "allergiesOther", label: "Other" }}
   />
 );
 
 export const DietaryRestrictionsField = () => (
-  <FormCheckboxGroup<RegistrationValues, "dietaryRestrictions">
+  <FormCheckboxGroup<RegistrationValues, "dietaryRestrictions", "dietaryOther">
     name="dietaryRestrictions"
     label="Dietary Restrictions"
     options={[
@@ -89,7 +89,7 @@ export const DietaryRestrictionsField = () => (
       "Dairy-Free",
       "No Beef"
     ]}
-    customLabel="Other"
+    custom={{ name: "dietaryOther", label: "Other" }}
   />
 );
 

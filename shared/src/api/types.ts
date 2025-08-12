@@ -73,9 +73,12 @@ export type RegistrationDraft = {
   name?: string;
   email?: string;
   dietaryRestrictions?: string[];
+  dietaryOther: string;
   allergies?: string[];
+  allergiesOther: string;
   school?: string;
   educationLevel?: string;
+  educationOther: string;
   majors?: string[];
   minors?: string[];
   graduationYear?: string;
@@ -83,7 +86,9 @@ export type RegistrationDraft = {
   resume?: string;
   personalLinks?: string[];
   gender?: string;
+  genderOther: string;
   ethnicity?: string[];
+  ethnicityOther: string;
   howDidYouHear?: string[];
   tags?: string[];
 };
@@ -92,9 +97,12 @@ export type Registration = {
   name: string;
   email: string;
   dietaryRestrictions: string[];
+  dietaryOther: string;
   allergies: string[];
+  allergiesOther: string;
   school: string;
   educationLevel: string;
+  educationOther: string;
   majors: string[];
   minors: string[];
   graduationYear: string;
@@ -102,7 +110,9 @@ export type Registration = {
   resume: string;
   personalLinks: string[];
   gender: string;
+  genderOther: string;
   ethnicity: string[];
+  ethnicityOther: string;
   howDidYouHear: string[];
   tags: string[];
 };

@@ -329,7 +329,7 @@ const MobileRegistration: React.FC<RegistrationProps> = ({
         <MotionBox
           w="min(100%, 800px)"
           backgroundImage="/registration/page-one-shadow.svg"
-          backgroundSize={{ base: "cover", md: "contain"}}
+          backgroundSize={{ base: "cover", md: "contain" }}
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
           style={{ opacity: image1ShadowOpacity, zIndex: 1 }}
@@ -343,7 +343,7 @@ const MobileRegistration: React.FC<RegistrationProps> = ({
         <MotionBox
           w="min(100%, 800px)"
           backgroundImage="/registration/page-one.svg"
-          backgroundSize={{ base: "cover", md: "contain"}}
+          backgroundSize={{ base: "cover", md: "contain" }}
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
           position="fixed"
@@ -357,7 +357,7 @@ const MobileRegistration: React.FC<RegistrationProps> = ({
         <MotionBox
           w="min(105%, 850px)"
           backgroundImage="/registration/page-two-shadow.svg"
-          backgroundSize={{ base: "cover", md: "contain"}}
+          backgroundSize={{ base: "cover", md: "contain" }}
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
           position="fixed"
@@ -372,7 +372,7 @@ const MobileRegistration: React.FC<RegistrationProps> = ({
         <MotionBox
           w="min(105%, 850px)"
           backgroundImage="/registration/page-two.svg"
-          backgroundSize={{ base: "cover", md: "contain"}}
+          backgroundSize={{ base: "cover", md: "contain" }}
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
           position="fixed"

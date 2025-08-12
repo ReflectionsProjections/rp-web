@@ -8,7 +8,8 @@ import {
   Input,
   VStack,
   Text,
-  Icon
+  Icon,
+  Box
 } from "@chakra-ui/react";
 import { Field, FieldArray, FieldProps } from "formik";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -100,13 +101,8 @@ const FormLinks = <
                   const isInvalid = !!inputError && !!inputTouched;
 
                   return (
-                    <>
-                      <HStack
-                        key={index}
-                        align="center"
-                        w="min(500px, 80vw)"
-                        gap={4}
-                      >
+                    <Box key={index}>
+                      <HStack align="center" w="min(500px, 80vw)" gap={4}>
                         {(index < field.value.length ||
                           field.value.length === maxLinks) &&
                           (specialPrefix === "https://github.com/" ? (
@@ -181,7 +177,7 @@ const FormLinks = <
                       <FormErrorMessage>
                         {inputError as string}
                       </FormErrorMessage>
-                    </>
+                    </Box>
                   );
                 })}
               </VStack>
