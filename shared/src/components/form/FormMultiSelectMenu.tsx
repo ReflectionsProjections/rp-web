@@ -56,6 +56,9 @@ const FormMultiSelectMenu = <
               placeholder={placeholder}
               menuPortalTarget={document.body}
               menuPosition="fixed"
+              styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 10 })
+              }}
               chakraStyles={{
                 placeholder: (provided) => ({
                   ...provided,
@@ -63,7 +66,7 @@ const FormMultiSelectMenu = <
                 }),
                 menuList: (provided) => ({
                   ...provided,
-                  backgroundColor: "#360b0bff",
+                  backgroundColor: "#2D2D2D",
                   color: "whiteAlpha.900",
                   border: "none"
                 }),
@@ -77,7 +80,7 @@ const FormMultiSelectMenu = <
                 }),
                 multiValue: (provided) => ({
                   ...provided,
-                  backgroundColor: "#430C0C",
+                  backgroundColor: "#2D2D2D",
                   color: "white"
                 }),
                 multiValueLabel: (provided) => ({

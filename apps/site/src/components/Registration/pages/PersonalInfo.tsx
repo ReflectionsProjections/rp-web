@@ -9,12 +9,14 @@ import {
 } from "@rp/shared";
 
 export const NameField = () => (
+  // <Box p={4} background="blackAlpha.300" borderRadius="3xl">
   <FormTextField<RegistrationValues, "name">
     name="name"
     label="Name"
     placeholder="Preferred Name"
     isRequired
   />
+  // </Box>
 );
 
 export const EmailField = () => (
@@ -95,7 +97,7 @@ export const HowDidYouHearField = () => (
   <FormMultiSelectMenu<RegistrationValues, "howDidYouHear">
     name="howDidYouHear"
     label="How did you hear about us?"
-    placeholder="Select where you heard about the event"
+    placeholder="Select where you heard about us"
     options={[
       "Word of mouth",
       "In-class marketing",
@@ -115,7 +117,7 @@ export const TagsField = () => (
   <FormMultiSelectMenu<RegistrationValues, "tags">
     name="tags"
     label="Which events types are you interested in?"
-    placeholder="Select the types of events you are interested in"
+    placeholder="Select your interests"
     options={["placeholder1", "placeholder2"].map((school) => ({
       label: school,
       value: school

@@ -65,7 +65,7 @@ const FormCheckboxGroup = <
               {label}
             </FormLabel>
 
-            <Box pl={4}>
+            <Box>
               <CheckboxGroup
                 value={checkboxValues}
                 onChange={(values: string[]) => void updateValues(values)}
