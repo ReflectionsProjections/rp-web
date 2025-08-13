@@ -44,5 +44,8 @@
     "husky": "^9.1.7",
     "lint-staged": "^15.5.0"
   },
-  "packageManager": "yarn@4.9.1"
+  "packageManager": "yarn@4.9.1",
+  "dependencies": {
+    "fonteditor-core": "^2.6.1"
+  }
 }

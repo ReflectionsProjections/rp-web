@@ -8,7 +8,7 @@
       "@rp/shared": ["../../shared"]
     }
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts", "svg.d.ts"],
   "references": [
     {
       "path": "../../shared"
