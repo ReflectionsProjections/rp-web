@@ -100,32 +100,26 @@ const FormLinks = <
                     Array.isArray(touchedValue) && touchedValue[index];
                   const isInvalid = !!inputError && !!inputTouched;
 
+                  const isActive =
+                    index < field.value.length ||
+                    field.value.length === maxLinks;
+
                   return (
                     <Box key={index}>
                       <HStack align="center" w="min(500px, 80vw)" gap={4}>
-                        {(index < field.value.length ||
-                          field.value.length === maxLinks) &&
+                        {isActive &&
                           (specialPrefix === "https://github.com/" ? (
                             <Icon
                               as={FaGithub}
                               boxSize={5}
-                              color="gray.500"
-                              backgroundColor="#ffffff"
                               borderRadius="full"
                             />
                           ) : specialPrefix === "https://linkedin.com/in/" ? (
-                            <Icon
-                              as={FaLinkedin}
-                              boxSize={5}
-                              color="blue.500"
-                              backgroundColor="#ffffff"
-                            />
+                            <Icon as={FaLinkedin} boxSize={5} />
                           ) : (
                             <Icon
                               as={FaGlobe}
                               boxSize={5}
-                              color="gray.400"
-                              backgroundColor="#ffffff"
                               borderRadius="full"
                             />
                           ))}
@@ -159,7 +153,11 @@ const FormLinks = <
                             _placeholder={{ color: "#CCCCCC" }}
                             flex="1"
                             isInvalid={isInvalid}
-                            variant="flushed"
+                            variant={isActive ? "outline" : "flushed"}
+                            backgroundColor={
+                              isActive ? "#12131A" : "transparent"
+                            }
+                            py={0.5}
                             w="100%"
                             height="fit-content"
                           />

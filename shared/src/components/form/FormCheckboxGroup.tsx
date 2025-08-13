@@ -109,7 +109,11 @@ const FormCheckboxGroup = <
                               showCustomInput ? "Please specify" : ""
                             }
                             _placeholder={{ color: "#CCCCCC" }}
-                            variant="flushed"
+                            variant={showCustomInput ? "outline" : "flushed"}
+                            backgroundColor={
+                              showCustomInput ? "#12131A" : "transparent"
+                            }
+                            py={0.5}
                             h="fit-content"
                             disabled={!showCustomInput}
                           />

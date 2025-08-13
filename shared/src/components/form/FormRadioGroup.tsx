@@ -87,11 +87,15 @@ const FormRadioGroup = <
                     return (
                       <Input
                         {...customField}
-                        variant="flushed"
                         h="fit-content"
                         placeholder={showCustomInput ? "Please specify" : ""}
                         _placeholder={{ color: "#CCCCCC" }}
                         disabled={!showCustomInput}
+                        variant={showCustomInput ? "outline" : "flushed"}
+                        backgroundColor={
+                          showCustomInput ? "#12131A" : "transparent"
+                        }
+                        py={0.5}
                       />
                     );
                   }}
