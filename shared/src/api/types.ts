@@ -91,6 +91,8 @@ export type RegistrationDraft = {
   ethnicityOther: string;
   howDidYouHear?: string[];
   tags?: string[];
+  isInterestedPuzzleBang?: boolean;
+  isInterestedMechMania?: boolean;
 };
 
 export type Registration = {
@@ -115,6 +117,8 @@ export type Registration = {
   ethnicityOther: string;
   howDidYouHear: string[];
   tags: string[];
+  isInterestedPuzzleBang: boolean;
+  isInterestedMechMania: boolean;
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";

@@ -11,7 +11,7 @@ import {
   Input,
   Text
 } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, FieldProps } from "formik";
 import { FiUpload } from "react-icons/fi";
 
 type Props<TValues, TFieldName extends keyof TValues> = {
@@ -28,7 +28,7 @@ const FileUpload = <
   label,
   isRequired
 }: Props<TValues, TFieldName>) => (
-  <Field name={name}>
+  <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl
         isInvalid={!!form.errors[name] && !!form.touched[name]}
@@ -106,7 +106,7 @@ const FileUpload = <
         <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
       </FormControl>
     )}
-  </Field>
+  </FastField>
 );
 
 export default FileUpload;

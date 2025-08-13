@@ -9,7 +9,7 @@ import {
   HStack,
   VStack
 } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, Field, FieldProps } from "formik";
 
 type Props<
   TValues,
@@ -33,7 +33,7 @@ const FormCheckboxGroup = <
   options,
   custom
 }: Props<TValues, TFieldName, TOtherName>) => (
-  <Field name={name}>
+  <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => {
       const updateValues = async (values: string[]) => {
         await form.setFieldValue(name, values);
@@ -128,7 +128,7 @@ const FormCheckboxGroup = <
         </FormControl>
       );
     }}
-  </Field>
+  </FastField>
 );
 
 export default FormCheckboxGroup;

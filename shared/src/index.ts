@@ -14,7 +14,7 @@ export { default as FormSelectMenu } from "./components/form/FormSelectMenu";
 export { default as FormMultiSelectMenu } from "./components/form/FormMultiSelectMenu";
 export { default as FormFileUpload } from "./components/form/FormFileUpload";
 export { default as FormLinks } from "./components/form/FormLinks";
-export { default as FormRequiredCheckbox } from "./components/form/FormRequiredCheckbox";
+export { default as FormCheckbox } from "./components/form/FormRequiredCheckbox";
 export { schools } from "./assets/schools";
 export { majors } from "./assets/majors";
 export { default as api } from "./api/api";

@@ -8,7 +8,7 @@ import {
   HStack,
   VStack
 } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, Field, FieldProps } from "formik";
 
 type Props<
   TValues,
@@ -34,7 +34,7 @@ const FormRadioGroup = <
   isRequired,
   custom
 }: Props<TValues, TFieldName, TOtherName>) => (
-  <Field name={name}>
+  <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl
         isInvalid={
@@ -47,7 +47,10 @@ const FormRadioGroup = <
           {label}
         </FormLabel>
 
-        <RadioGroup {...field}>
+        <RadioGroup
+          {...field}
+          onChange={(val) => void form.setFieldValue(name, val)}
+        >
           <VStack alignItems="start" gap={4}>
             <HStack alignItems="start" justifyContent="space-between" w="100%">
               <VStack alignItems="start" gap={4} flex={1}>
@@ -103,7 +106,7 @@ const FormRadioGroup = <
         </FormErrorMessage>
       </FormControl>
     )}
-  </Field>
+  </FastField>
 );
 
 export default FormRadioGroup;

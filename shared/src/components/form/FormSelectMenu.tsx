@@ -1,5 +1,5 @@
 import { FormControl, FormLabel, FormErrorMessage } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, FieldProps } from "formik";
 import { Select } from "chakra-react-select";
 
 type SelectOption = {
@@ -25,7 +25,7 @@ const FormSelectMenu = <
   placeholder,
   isRequired
 }: Props<TValues, TFieldName>) => (
-  <Field name={name}>
+  <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => {
       const selectedOption =
         options.find((option) => option.value === field.value) ?? null;
@@ -91,7 +91,7 @@ const FormSelectMenu = <
         </FormControl>
       );
     }}
-  </Field>
+  </FastField>
 );
 
 export default FormSelectMenu;

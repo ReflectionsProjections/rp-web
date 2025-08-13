@@ -4,26 +4,28 @@ import {
   FormErrorMessage,
   Checkbox
 } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, FieldProps } from "formik";
 
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
+  isRequired?: boolean;
 };
 
-const FormRequiredCheckbox = <
+const FormCheckbox = <
   TValues extends Record<string, unknown> & Record<TFieldName, boolean>,
   TFieldName extends keyof TValues & string
 >({
   name,
-  label
+  label,
+  isRequired = false
 }: Props<TValues, TFieldName>) => {
   return (
-    <Field name={name}>
+    <FastField name={name}>
       {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
         <FormControl
           isInvalid={!!form.errors[name] && !!form.touched[name]}
-          isRequired
+          isRequired={isRequired}
         >
           <Checkbox
             isChecked={!!field.value}
@@ -33,13 +35,15 @@ const FormRequiredCheckbox = <
             onBlur={field.onBlur}
             name={field.name}
           >
-            <FormLabel m={0}>{label}</FormLabel>
+            <FormLabel m={0} fontSize="xl">
+              {label}
+            </FormLabel>
           </Checkbox>
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
       )}
-    </Field>
+    </FastField>
   );
 };
 
-export default FormRequiredCheckbox;
+export default FormCheckbox;

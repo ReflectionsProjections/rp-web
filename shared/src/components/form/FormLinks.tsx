@@ -11,7 +11,7 @@ import {
   Icon,
   Box
 } from "@chakra-ui/react";
-import { Field, FieldArray, FieldProps } from "formik";
+import { FastField, FieldArray, FieldProps } from "formik";
 import { DeleteIcon } from "@chakra-ui/icons";
 import { FaGithub, FaLinkedin, FaGlobe } from "react-icons/fa";
 
@@ -32,7 +32,7 @@ const FormLinks = <
   label,
   maxLinks = 5
 }: Props<TValues, TFieldName>) => (
-  <Field name={name}>
+  <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
         <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
@@ -186,7 +186,7 @@ const FormLinks = <
         </FieldArray>
       </FormControl>
     )}
-  </Field>
+  </FastField>
 );
 
 export default FormLinks;

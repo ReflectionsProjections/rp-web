@@ -4,7 +4,7 @@ import {
   Input,
   FormErrorMessage
 } from "@chakra-ui/react";
-import { Field, FieldProps } from "formik";
+import { FastField, FieldProps } from "formik";
 
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
@@ -25,7 +25,7 @@ const FormTextField = <
   type
 }: Props<TValues, TFieldName>) => {
   return (
-    <Field name={name}>
+    <FastField name={name}>
       {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
         <FormControl
           isInvalid={!!form.errors[name] && !!form.touched[name]}
@@ -45,7 +45,7 @@ const FormTextField = <
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>
       )}
-    </Field>
+    </FastField>
   );
 };
 
