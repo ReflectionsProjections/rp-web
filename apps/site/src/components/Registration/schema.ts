@@ -57,6 +57,8 @@ export const registrationSchema = yup.object({
     .of(yup.string().required())
     .required()
     .min(1, "Please select at least one"),
+  isInterestedPuzzleBang: yup.boolean().required(),
+  isInterestedMechMania: yup.boolean().required(),
   over18: yup.boolean().oneOf([true], "You must be over 18").required(),
   school: yup.string().required("School is required"),
   educationLevel: yup.string().required("Education Level is required"),
