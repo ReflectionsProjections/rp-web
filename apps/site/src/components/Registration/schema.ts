@@ -34,9 +34,12 @@ export const initialValues = (
 });
 
 export const registrationSchema = yup.object({
-  name: yup.string().required(),
-  email: yup.string().email().required(),
-  gender: yup.string().required(),
+  name: yup.string().required("Name is required"),
+  email: yup
+    .string()
+    .email("Please enter a valid email")
+    .required("Email is required"),
+  gender: yup.string().required("Gender is required"),
   genderOther: yup.string().nonNullable(),
   ethnicity: yup.array().of(yup.string().required()).required(),
   ethnicity_other: yup.string().nonNullable(),
@@ -44,25 +47,37 @@ export const registrationSchema = yup.object({
   dietary_other: yup.string().nonNullable(),
   allergies: yup.array().of(yup.string().required()).required(),
   allergies_other: yup.string().nonNullable(),
-  howDidYouHear: yup.array().of(yup.string().required()).required(),
-  tags: yup.array().of(yup.string().required()).required(),
+  howDidYouHear: yup
+    .array()
+    .of(yup.string().required())
+    .required()
+    .min(1, "Please select at least one"),
+  tags: yup
+    .array()
+    .of(yup.string().required())
+    .required()
+    .min(1, "Please select at least one"),
   over18: yup.boolean().oneOf([true], "You must be over 18").required(),
-  school: yup.string().required("Required"),
-  educationLevel: yup.string().required("Required"),
+  school: yup.string().required("School is required"),
+  educationLevel: yup.string().required("Education Level is required"),
   educationOther: yup.string().nonNullable(),
-  majors: yup.array().of(yup.string().required()).min(1).required(),
+  majors: yup
+    .array()
+    .of(yup.string().required())
+    .required()
+    .min(1, "Please select at least one"),
   minors: yup.array().of(yup.string().required()).required(),
   graduationYear: yup
     .string()
-    .required("Required")
-    .test("valid-year", "Enter a valid year", (value) => {
+    .required("Graduation year is required")
+    .test("valid-year", "Please enter a valid year", (value) => {
       if (!value) return false;
       const year = Number(value);
       const currentYear = new Date().getFullYear();
       return year >= 1985 && year <= currentYear + 10;
     }),
   opportunities: yup.array().of(yup.string().required()).required(),
-  resume: yup.string(),
+  resume: yup.string().required("Please upload a resume"),
   personalLinks: yup
     .array()
     .of(

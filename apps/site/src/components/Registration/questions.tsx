@@ -208,7 +208,11 @@ export const OpportunitiesField = () => (
 );
 
 export const ResumeField = () => (
-  <FormFileUpload<RegistrationValues, "resume"> name="resume" label="Resume" />
+  <FormFileUpload<RegistrationValues, "resume">
+    name="resume"
+    label="Resume"
+    isRequired
+  />
 );
 
 export const PersonalLinksField = () => (
