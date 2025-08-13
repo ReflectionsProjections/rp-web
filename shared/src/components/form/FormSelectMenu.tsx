@@ -35,7 +35,7 @@ const FormSelectMenu = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
             {label}
           </FormLabel>
 
@@ -49,6 +49,10 @@ const FormSelectMenu = <
             options={options}
             placeholder={placeholder}
             chakraStyles={{
+              container: (provided) => ({
+                ...provided,
+                backgroundColor: "#12131A"
+              }),
               placeholder: (provided) => ({
                 ...provided,
                 color: "#CCCCCC"

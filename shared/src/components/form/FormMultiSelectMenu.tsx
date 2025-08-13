@@ -37,7 +37,7 @@ const FormMultiSelectMenu = <
             isInvalid={!!form.errors[name] && !!form.touched[name]}
             isRequired={isRequired}
           >
-            <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+            <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
               {label}
             </FormLabel>
 
@@ -60,6 +60,10 @@ const FormMultiSelectMenu = <
                 menuPortal: (base) => ({ ...base, zIndex: 10 })
               }}
               chakraStyles={{
+                container: (provided) => ({
+                  ...provided,
+                  backgroundColor: "#12131A"
+                }),
                 placeholder: (provided) => ({
                   ...provided,
                   color: "#CCCCCC"

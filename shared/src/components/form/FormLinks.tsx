@@ -35,7 +35,7 @@ const FormLinks = <
   <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
-        <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+        <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
           {label}{" "}
           <Text as="span" fontSize="sm" color="#CCCCCC">
             (max {maxLinks})

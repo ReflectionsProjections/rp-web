@@ -311,7 +311,7 @@ const Register = () => {
   );
 
   const MobileForm = () => (
-    <VStack gap={6} width="min(100%, 800px)" alignItems="center">
+    <VStack gap={16} width="min(100%, 800px)" alignItems="center">
       <NameField />
       <EmailField />
       <GenderField />
@@ -335,7 +335,7 @@ const Register = () => {
   );
 
   return (
-    <Box backgroundColor="#12131A">
+    <Box backgroundColor="#12131A" fontFamily="ProRacing">
       {isLoading && <LoadingIndicator />}
       <Background />
       <ProgressBar />

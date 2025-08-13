@@ -118,7 +118,7 @@ export const HowDidYouHearField = () => (
 export const TagsField = () => (
   <FormMultiSelectMenu<RegistrationValues, "tags">
     name="tags"
-    label="Which events types are you interested in?"
+    label="What are you interested in?"
     placeholder="Select your interests"
     options={["placeholder1", "placeholder2"].map((school) => ({
       label: school,

@@ -35,7 +35,7 @@ const FormCheckbox = <
             onBlur={field.onBlur}
             name={field.name}
           >
-            <FormLabel m={0} fontSize="xl">
+            <FormLabel m={0} fontSize="2xl">
               {label}
             </FormLabel>
           </Checkbox>

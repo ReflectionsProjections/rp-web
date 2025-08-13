@@ -47,7 +47,7 @@ const FormCheckboxGroup = <
             !!form.touched[name]
           }
         >
-          <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
             {label}
           </FormLabel>
 

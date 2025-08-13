@@ -31,7 +31,7 @@ const FormTextField = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
             {label}
           </FormLabel>
 
@@ -40,6 +40,7 @@ const FormTextField = <
             type={type}
             placeholder={placeholder}
             _placeholder={{ color: "#CCCCCC" }}
+            backgroundColor="#12131A"
           />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>

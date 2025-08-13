@@ -36,7 +36,7 @@ const FileUpload = <
       >
         <FormLabel
           htmlFor={`${name}-file`}
-          fontSize="xl"
+          fontSize="2xl"
           fontWeight="bold"
           mb={2}
         >
@@ -66,6 +66,7 @@ const FileUpload = <
                     cursor="pointer"
                     color="#CCCCCC"
                     _hover={{ color: "black", backgroundColor: "white" }}
+                    backgroundColor="#12131A"
                   >
                     Choose File
                   </Button>

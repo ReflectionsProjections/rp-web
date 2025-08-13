@@ -43,7 +43,7 @@ const FormRadioGroup = <
         }
         isRequired={isRequired}
       >
-        <FormLabel fontSize="xl" fontWeight="bold" mb={2}>
+        <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
           {label}
         </FormLabel>
 
