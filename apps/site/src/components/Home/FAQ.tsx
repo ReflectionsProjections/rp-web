@@ -36,9 +36,22 @@ export const FAQ: React.FC = () => {
 
   return (
     <VStack
-      p={{
-        base: 4,
-        md: undefined
+      w="100%"
+      minH={{
+        base: "100vh", // To keep the background consistent on mobile
+        md: "70dvh"
+      }}
+      justifyContent="center"
+      bgImage={{
+        base: "url('/faq-backdrop.svg')",
+        lg: "url('/faq-backdrop.svg')"
+      }}
+      bgSize="cover"
+      bgPosition="center" // ← anchor the image at its top
+      bgRepeat="no-repeat"
+      py={{
+        base: 5,
+        md: 10
       }}
     >
       <VStack spacing={0} mb={4}>
@@ -109,7 +122,7 @@ type FAQQuestionProps = {
 
 const FAQQuestion: React.FC<FAQQuestionProps> = ({
   index,
-  faqItem: { question, answer },
+  faqItem: { question, answer, colors },
   onFaqToggle
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -126,66 +139,67 @@ const FAQQuestion: React.FC<FAQQuestionProps> = ({
         display="flex"
         alignItems={{ md: "center" }}
         justifyContent={"flex-start"}
-        bgColor="gray.200"
-        w="100%"
-        maxW="1000px"
+        bgColor={colors.light}
+        w="80%"
         p={4}
         py={3}
-        h={{
-          base: "65px",
-          md: "60px"
-        }}
-        pt={{
-          base: 2,
-          md: undefined
-        }}
+        h={{ base: "65px", md: "60px" }}
+        ml={{ base: "0%", md: isOpen ? "10%" : "20%" }}
+        pt={{ base: 2, md: undefined }}
         borderRadius={"lg"}
         borderBottomRadius={isOpen ? 0 : "lg"}
         onClick={handleToggle}
         cursor="pointer"
       >
+        {/* shaded wedge */}
+        <Box
+          position="absolute"
+          right="0"
+          top="0"
+          bottom="0"
+          w={{ base: "42%", md: "35%" }}
+          bgColor={colors.dark}
+          // create the angled edge
+          sx={{ clipPath: "polygon(28% 0, 100% 0, 100% 100%, 0 100%)" }}
+          borderTopRightRadius="lg"
+          borderBottomRightRadius={isOpen ? 0 : "lg"}
+          pointerEvents="none"
+          zIndex={0}
+        />
+
         <Image
           position="absolute"
           left={{
             base: isOpen ? "62%" : -1,
             sm: isOpen ? "70%" : -3,
-            md: isOpen ? "72%" : -5
+            md: isOpen ? "72%" : "-20%"
           }}
-          bottom={{
-            base: 0,
-            md: undefined
-          }}
+          bottom={{ base: 0, md: undefined }}
           borderRadius="lg"
-          h={{
-            base: "30px",
-            md: "60px"
-          }}
+          h={{ base: "30px", md: "60px" }}
           transition={"left 0.3s ease-in-out"}
           src={cars[index % cars.length]}
           alt="Car"
           objectFit="cover"
           transform={{ md: "scale(1.05)" }}
-          zIndex="99999"
-        ></Image>
+          zIndex={1}
+        />
+
         <Text
-          ml={{
-            md: isOpen ? 0 : "270px"
-          }}
-          mr={{
-            md: isOpen ? 28 : 0
-          }}
-          pl={{
-            base: 1,
-            md: 2
-          }}
+          ml={{ md: isOpen ? 0 : "130px" }}
+          mr={{ md: isOpen ? 28 : 0 }}
+          pl={{ base: 1, md: 2 }}
+          color="white"
           maxH="100%"
           overflow="hidden"
-          fontWeight={"bold"}
+          fontFamily="ProRacing"
           fontSize="xl"
+          zIndex={1}
         >
           {question}
         </Text>
       </Box>
+
       <Collapse in={isOpen} animateOpacity unmountOnExit>
         <Box bg="gray.50" p={4} borderBottomRadius="lg">
           <Text>{answer}</Text>

@@ -2,3 +2,36 @@
   color: #213547;
   background-color: #ffffff;
 }
+
+:root {
+  color: #213547;
+  background-color: #ffffff;
+}
+
+@font-face {
+  font-family: "Magistral";
+  src: url("/magistral.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ProRacing";
+  src: url("/pro-racing.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "ProRacingSlant";
+  src: url("/pro-racing-slant.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.condensed {
+  font-stretch: condensed;
+}
