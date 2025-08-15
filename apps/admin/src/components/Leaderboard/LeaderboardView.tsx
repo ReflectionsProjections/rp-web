@@ -4,22 +4,32 @@ import { LeaderboardUser } from "@rp/shared";
 const LeaderboardCard: React.FC<{
   user: LeaderboardUser;
   ranking: number;
-}> = ({ user }) => (
+}> = ({ user, ranking }) => (
   <Flex
     id={`leaderboard-card-${user.userId}`}
     justifyContent="space-between"
     alignItems="center"
     gap={4}
   >
-    {/* <Text pos="absolute" zIndex={2}>
-      {ranking}.
-    </Text> */}
+    <Box
+      pos="relative"
+      zIndex={2}
+      w={10}
+      right={5}
+      overflow="shown"
+      textAlign="right"
+    >
+      <Text whiteSpace="nowrap" fontSize="0.8rem">
+        {ranking + 1}.
+      </Text>
+    </Box>
     <Box
       flex={4}
       textAlign="left"
-      whiteSpace={{ base: "nowrap", sm: "normal" }}
+      whiteSpace="nowrap"
       overflow="hidden"
       textOverflow="ellipsis"
+      ml={-8}
     >
       {user.name}
     </Box>
@@ -126,22 +136,22 @@ const LeaderboardView: React.FC<{
     <Box>
       <Stack
         divider={<StackDivider borderColor="yellow.500" />}
-        spacing={2}
+        spacing={3}
         mt={8}
       >
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-            <LeaderboardCardSkeleton key={index} />
-          ))
+              <LeaderboardCardSkeleton key={index} />
+            ))
           : leaderboardUsers
-            ?.slice(0, numberAwards)
-            .map((user, index) => (
-              <LeaderboardCard
-                user={user}
-                key={user.userId}
-                ranking={index}
-              />
-            ))}
+              ?.slice(0, numberAwards)
+              .map((user, index) => (
+                <LeaderboardCard
+                  user={user}
+                  key={user.userId}
+                  ranking={index}
+                />
+              ))}
         {breakpoint > 0 && (
           <Text as="b" color="yellow.500">
             Minimum point threshold: {breakpoint}
@@ -149,20 +159,20 @@ const LeaderboardView: React.FC<{
         )}
       </Stack>
 
-      <Stack divider={<StackDivider />} spacing="4" mt={8}>
+      <Stack divider={<StackDivider />} spacing={3} mt={8}>
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-            <LeaderboardCardSkeleton key={index} />
-          ))
+              <LeaderboardCardSkeleton key={index} />
+            ))
           : leaderboardUsers
-            ?.slice(numberAwards)
-            .map((user, index) => (
-              <LeaderboardCard
-                user={user}
-                key={user.userId}
-                ranking={index}
-              />
-            ))}
+              ?.slice(numberAwards)
+              .map((user, index) => (
+                <LeaderboardCard
+                  user={user}
+                  key={user.userId}
+                  ranking={index + numberAwards}
+                />
+              ))}
       </Stack>
     </Box>
   );

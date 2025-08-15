@@ -95,15 +95,16 @@ export const ExtendedLeaderboardStats: React.FC<{
           This will award merch to <b>{effectiveNumberAwards} attendees</b>
           <br />(
           {parseFloat(
-            (effectiveNumberAwards / leaderboardUsers.length).toFixed(2)
-          ) * 100}
+            ((effectiveNumberAwards / leaderboardUsers.length) * 100).toFixed(0)
+          )}
           % of total attendees and&nbsp;
           {parseFloat(
             (
-              effectiveNumberAwards /
-              leaderboardUsers.filter((user) => user.points > 0).length
-            ).toFixed(2)
-          ) * 100}
+              (effectiveNumberAwards /
+                leaderboardUsers.filter((user) => user.points > 0).length) *
+              100
+            ).toFixed(0)
+          )}
           % of attendees with nonzero points) based on a target of{" "}
           <b>{previewNumberAwards}</b>
         </Text>

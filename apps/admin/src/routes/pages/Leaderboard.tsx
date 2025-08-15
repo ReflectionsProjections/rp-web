@@ -19,7 +19,7 @@ import { LeaderboardUser, usePolling } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { useOutletContext } from "react-router-dom";
 import { MainContext } from "../Main";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { fakeLeaderboardData as testData } from "@/components/Leaderboard/TestData";
 import LeaderboardView from "@/components/Leaderboard/LeaderboardView";
@@ -57,6 +57,7 @@ const Leaderboard: React.FC = () => {
     isLoading
   } = usePolling(api, "/attendee/emails", authorized);
   const mirrorStyle = useMirrorStyles();
+  const leaderboardViewRef = useRef<HTMLDivElement>(null);
 
   const [previewNumberAwards, setPreviewNumberAwards] = useState(
     `${defaultNumberAwards}`
@@ -146,9 +147,19 @@ const Leaderboard: React.FC = () => {
       `leaderboard-card-${breakpointUserId}`
     );
     if (breakpointUser) {
-      breakpointUser.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
+      if (!breakpointUser) return;
+
+      const container = leaderboardViewRef.current;
+      if (!container) return;
+
+      const offset = breakpointUser.offsetTop - container.offsetTop;
+      // center the breakpoint (roughly)
+      const scrollAmount =
+        offset - container.clientHeight / 2 + breakpointUser.offsetHeight / 2;
+
+      container.scrollTo({
+        top: scrollAmount,
+        behavior: "smooth"
       });
     }
   };
@@ -250,7 +261,7 @@ const Leaderboard: React.FC = () => {
             borderBottomWidth="2px"
             borderColor="var(--chakra-colors-chakra-border-color)"
           />
-          <CardBody overflowY="scroll">
+          <CardBody overflowY="scroll" ref={leaderboardViewRef}>
             <LeaderboardView
               leaderboardUsers={leaderboardUsers}
               numberAwards={effectiveNumberAwards}
