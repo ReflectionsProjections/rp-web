@@ -11,11 +11,23 @@ const LeaderboardCard: React.FC<{
     gap={4}
     // todo? make a stack -> add dividers at low width
   >
-    <Box flex="4" textAlign="left">
+    <Box
+      flex="4"
+      textAlign="left"
+      whiteSpace={{ base: "nowrap", sm: "normal" }}
+      overflow="hidden"
+      textOverflow="ellipsis"
+    >
       {user.name}
     </Box>
     {/* add proper small web display -- probably remove email and stack merch (or remove merch labels?) */}
-    <Box flex="5" textAlign="left" fontStyle="oblique" opacity="0.7">
+    <Box
+      flex="5"
+      textAlign="left"
+      fontStyle="oblique"
+      opacity="0.7"
+      display={{ base: "none", lg: "block" }}
+    >
       {user.email}
     </Box>
     <Flex
@@ -38,6 +50,27 @@ const LeaderboardCard: React.FC<{
         {user.isEligibleMerch.third ? "☑" : "□"}
       </Text>
       <Text>cap&nbsp;&nbsp;</Text>
+    </Flex>
+    <Flex
+      flex="2"
+      textAlign="left"
+      alignItems="center"
+      gap={{ base: "0", sm: "3" }}
+      display={{ base: "flex", lg: "none" }}
+      direction={{ base: "column", sm: "row" }}
+    >
+      <Text>Prizes:</Text>
+      <Flex gap={{ base: "0", sm: "1" }}>
+        <Text as="span" fontSize="xl" lineHeight={1}>
+          {user.isEligibleMerch.first ? "☑" : "□"}
+        </Text>
+        <Text as="span" fontSize="xl" lineHeight={1}>
+          {user.isEligibleMerch.second ? "☑" : "□"}
+        </Text>
+        <Text as="span" fontSize="xl" lineHeight={1}>
+          {user.isEligibleMerch.third ? "☑" : "□"}
+        </Text>
+      </Flex>
     </Flex>
     <Box flex="2" textAlign="center">
       <Text as="b">{user.points}</Text>

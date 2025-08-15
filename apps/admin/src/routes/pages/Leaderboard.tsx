@@ -11,7 +11,8 @@ import {
   FormErrorMessage,
   Heading,
   Text,
-  FormLabel
+  FormLabel,
+  Box
 } from "@chakra-ui/react";
 import api from "@/util/api";
 import { LeaderboardUser, usePolling } from "@rp/shared";
@@ -169,7 +170,11 @@ const Leaderboard: React.FC = () => {
               {/* input */}
               <Flex direction="column" w={{ base: "50%" }}>
                 <FormLabel>Target number of prizes to award</FormLabel>
-                <Stack w={{ base: "100%" }} direction="row" mr={4}>
+                <Stack
+                  w={{ base: "100%" }}
+                  direction={{ base: "column", md: "row" }}
+                  mr={4}
+                >
                   <FormControl
                     mr={2}
                     isRequired
@@ -177,24 +182,35 @@ const Leaderboard: React.FC = () => {
                       !previewNumberAwards || !parseInt(previewNumberAwards)
                     }
                   >
-                    <Input
-                      name="name"
-                      type="number"
-                      min={0}
-                      value={previewNumberAwards}
-                      onChange={handleChangePreviewNumber}
-                    />
-                    <Text pos="absolute" left={4} top={2} pointerEvents="none">
-                      <Text as="span" color="transparent">
-                        {previewNumberAwards}
-                      </Text>
-                      &nbsp;&nbsp;
-                      {!!effectiveNumberAwards && (
-                        <Text as="span" fontStyle="oblique" opacity="0.7">
-                          ({effectiveNumberAwards})
+                    <Box>
+                      <Input
+                        name="name"
+                        type="number"
+                        min={0}
+                        value={previewNumberAwards}
+                        onChange={handleChangePreviewNumber}
+                      />
+                      <Box
+                        pos="absolute"
+                        left={4}
+                        top={2}
+                        pr={8}
+                        pointerEvents="none"
+                        maxW="100%"
+                        overflow="hidden"
+                        h="1.5rem"
+                      >
+                        <Text as="span" color="transparent">
+                          {previewNumberAwards}
                         </Text>
-                      )}
-                    </Text>
+                        &nbsp;&nbsp;
+                        {!!effectiveNumberAwards && (
+                          <Text as="span" fontStyle="oblique" opacity="0.7">
+                            ({effectiveNumberAwards})
+                          </Text>
+                        )}
+                      </Box>
+                    </Box>
                     {/* <FormHelperText>Max awards to give today</FormHelperText> */}
                     <FormErrorMessage>Field must be a number</FormErrorMessage>
                   </FormControl>
