@@ -46,7 +46,6 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
         onClick={handleToggle}
         cursor="pointer"
       >
-        {/* shaded wedge */}
         <Box
           position="absolute"
           right="0"
@@ -54,7 +53,6 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
           bottom="0"
           w={{ base: "42%", md: "35%" }}
           bgColor={colors.dark}
-          // create the angled edge
           sx={{ clipPath: "polygon(28% 0, 100% 0, 100% 100%, 0 100%)" }}
           borderTopRightRadius="lg"
           borderBottomRightRadius={isOpen ? 0 : "lg"}
