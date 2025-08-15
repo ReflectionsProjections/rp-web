@@ -2,6 +2,7 @@
 **/node_modules
 **/.husky
 **/.github
+**/README.md
 LICENSE
 .prettierignore
 .gitignore
