@@ -13,7 +13,6 @@ import {
 import Lottie from "lottie-react";
 import successAnimation from "../assets/animations/success.json";
 import axios from "axios";
-import { api } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MdArrowBack } from "react-icons/md";
 import { api } from "@rp/shared";
