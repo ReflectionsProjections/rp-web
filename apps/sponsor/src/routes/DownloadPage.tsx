@@ -42,10 +42,10 @@ export function DownloadPage() {
               id: registrant.userId,
               name: registrant.name,
               major: registrant.major,
-              degree: registrant.degree,
-              graduationYear: registrant.graduation,
-              jobInterest: registrant.jobInterest,
-              portfolios: registrant.portfolios
+              degree: registrant.educationLevel,
+              graduationYear: registrant.graduationYear,
+              jobInterest: registrant.opportunities,
+              portfolios: registrant.personalLinks
             }) as Resume
         );
       })

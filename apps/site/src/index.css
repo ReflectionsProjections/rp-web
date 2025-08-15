@@ -2,3 +2,11 @@
   color: #213547;
   background-color: #ffffff;
 }
+
+@font-face {
+  font-family: "Magistral";
+  src: url("/magistral.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
