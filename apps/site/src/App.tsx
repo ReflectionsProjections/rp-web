@@ -5,6 +5,7 @@ import theme from "./theme";
 import Register from "./routes/Register";
 import { AuthCallback, googleAuth, RequireAuth } from "@rp/shared";
 import { useEffect } from "react";
+import Resume from "./routes/Resume";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -26,6 +27,7 @@ function App() {
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route element={<RequireAuth />}>
             <Route key="/register" path="/register" element={<Register />} />
+            <Route key="/resume" path="/resume" element={<Resume />} />
           </Route>
         </Routes>
       </BrowserRouter>

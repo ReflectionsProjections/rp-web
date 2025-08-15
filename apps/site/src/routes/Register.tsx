@@ -161,17 +161,10 @@ const Register = () => {
             response.data.resume !== ""
               ? {
                   name: response.data.resume,
-                  open: () => {
-                    toast.promise(
-                      api.get("/s3/download").then((response) => {
-                        window.open(response.data.url, "_blank");
-                      }),
-                      {
-                        success: { title: "File opened successfully!" },
-                        loading: { title: "Opening file..." },
-                        error: { title: "Failed to open file" }
-                      }
-                    );
+                  open: async () => {
+                    await api
+                      .get("/s3/download")
+                      .then((response) => window.open(response.data.url));
                   }
                 }
               : null,
@@ -184,7 +177,6 @@ const Register = () => {
       .finally(() => {
         setIsLoading(false);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayName, email]);
 
   if (confirmation) {
