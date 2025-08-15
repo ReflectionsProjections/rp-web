@@ -3,16 +3,19 @@ import { LeaderboardUser } from "@rp/shared";
 
 const LeaderboardCard: React.FC<{
   user: LeaderboardUser;
+  ranking: number;
 }> = ({ user }) => (
   <Flex
     id={`leaderboard-card-${user.userId}`}
     justifyContent="space-between"
     alignItems="center"
     gap={4}
-    // todo? make a stack -> add dividers at low width
   >
+    {/* <Text pos="absolute" zIndex={2}>
+      {ranking}.
+    </Text> */}
     <Box
-      flex="4"
+      flex={4}
       textAlign="left"
       whiteSpace={{ base: "nowrap", sm: "normal" }}
       overflow="hidden"
@@ -20,9 +23,8 @@ const LeaderboardCard: React.FC<{
     >
       {user.name}
     </Box>
-    {/* add proper small web display -- probably remove email and stack merch (or remove merch labels?) */}
     <Box
-      flex="5"
+      flex={5}
       textAlign="left"
       fontStyle="oblique"
       opacity="0.7"
@@ -52,7 +54,7 @@ const LeaderboardCard: React.FC<{
       <Text>cap&nbsp;&nbsp;</Text>
     </Flex>
     <Flex
-      flex="2"
+      flex={2}
       textAlign="left"
       alignItems="center"
       gap={{ base: "0", sm: "3" }}
@@ -72,32 +74,42 @@ const LeaderboardCard: React.FC<{
         </Text>
       </Flex>
     </Flex>
-    <Box flex="2" textAlign="center">
+    <Box flex={2} textAlign="center">
       <Text as="b">{user.points}</Text>
     </Box>
   </Flex>
 );
 
 const LeaderboardCardSkeleton: React.FC = () => (
-  <Flex justifyContent="space-between" alignItems="center" py={0} opacity={0.7}>
-    <Box flex={1} mr={7}>
+  <Flex
+    justifyContent="space-between"
+    alignItems="center"
+    gap={4}
+    py={0}
+    opacity={0.7}
+  >
+    <Box flex={4}>
       <Box height="24px" bg="gray.200" borderRadius="md" width="70%" />
     </Box>
-    <Box flex={1} mr={2}>
+    <Box flex={5} display={{ base: "none", lg: "block" }}>
       <Box height="24px" bg="gray.200" borderRadius="md" width="80%" />
     </Box>
-    <Box flex={1} mr={2}>
-      {/* todo update this one to match the actual boxes when they're implemented */}
-      <Box height="24px" bg="gray.200" borderRadius="md" />
-    </Box>
-    <Box flex={1} mr={2}>
+    <Box flex={{ base: 2, lg: 4, xl: 6 }}>
       <Box
         height="24px"
         bg="gray.200"
         borderRadius="md"
-        width="50px"
-        ml="auto"
-        mr={4}
+        width="90%"
+        minW="60px"
+      />
+    </Box>
+    <Box flex={2}>
+      <Box
+        height="24px"
+        bg="gray.200"
+        borderRadius="md"
+        width="40px"
+        mx="auto"
       />
     </Box>
   </Flex>
@@ -114,16 +126,22 @@ const LeaderboardView: React.FC<{
     <Box>
       <Stack
         divider={<StackDivider borderColor="yellow.500" />}
-        spacing="4"
+        spacing={2}
         mt={8}
       >
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-              <LeaderboardCardSkeleton key={index} />
-            ))
+            <LeaderboardCardSkeleton key={index} />
+          ))
           : leaderboardUsers
-              ?.slice(0, numberAwards)
-              .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
+            ?.slice(0, numberAwards)
+            .map((user, index) => (
+              <LeaderboardCard
+                user={user}
+                key={user.userId}
+                ranking={index}
+              />
+            ))}
         {breakpoint > 0 && (
           <Text as="b" color="yellow.500">
             Minimum point threshold: {breakpoint}
@@ -134,11 +152,17 @@ const LeaderboardView: React.FC<{
       <Stack divider={<StackDivider />} spacing="4" mt={8}>
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-              <LeaderboardCardSkeleton key={index} />
-            ))
+            <LeaderboardCardSkeleton key={index} />
+          ))
           : leaderboardUsers
-              ?.slice(numberAwards)
-              .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
+            ?.slice(numberAwards)
+            .map((user, index) => (
+              <LeaderboardCard
+                user={user}
+                key={user.userId}
+                ranking={index}
+              />
+            ))}
       </Stack>
     </Box>
   );

@@ -98,6 +98,14 @@ const Leaderboard: React.FC = () => {
     );
   }, [effectiveNumberAwards, leaderboardUsers]);
 
+  const previewNumberIsInvalid = useMemo(
+    () =>
+      !previewNumberAwards ||
+      !parseInt(previewNumberAwards) ||
+      parseInt(previewNumberAwards) < 1,
+    [previewNumberAwards]
+  );
+
   const handleChangePreviewNumber = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -172,15 +180,13 @@ const Leaderboard: React.FC = () => {
                 <FormLabel>Target number of prizes to award</FormLabel>
                 <Stack
                   w={{ base: "100%" }}
-                  direction={{ base: "column", md: "row" }}
+                  direction={{ base: "column", lg: "row" }}
                   mr={4}
                 >
                   <FormControl
                     mr={2}
                     isRequired
-                    isInvalid={
-                      !previewNumberAwards || !parseInt(previewNumberAwards)
-                    }
+                    isInvalid={previewNumberIsInvalid}
                   >
                     <Box>
                       <Input
@@ -212,10 +218,14 @@ const Leaderboard: React.FC = () => {
                       </Box>
                     </Box>
                     {/* <FormHelperText>Max awards to give today</FormHelperText> */}
-                    <FormErrorMessage>Field must be a number</FormErrorMessage>
+                    <FormErrorMessage>
+                      Field must be a positive number
+                    </FormErrorMessage>
                   </FormControl>
                   <ConfirmButton
-                    disabled={!roles.includes("ADMIN")}
+                    disabled={
+                      !roles.includes("ADMIN") || previewNumberIsInvalid
+                    }
                     leaderboardUsers={leaderboardUsers}
                     previewNumberAwards={parseInt(previewNumberAwards) ?? 0}
                     effectiveNumberAwards={effectiveNumberAwards}
@@ -226,7 +236,7 @@ const Leaderboard: React.FC = () => {
               </Flex>
               {/* stats */}
               <Stack w={{ base: "50%" }} direction="row" ml={4}>
-                <Section w="100%" h="100%" p={4}>
+                <Section w="100%" h="100%" p={3}>
                   <LeaderboardStats
                     leaderboardUsers={leaderboardUsers}
                     effectiveNumberAwards={effectiveNumberAwards}

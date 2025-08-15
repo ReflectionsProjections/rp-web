@@ -145,61 +145,99 @@ export const LeaderboardStats: React.FC<{
         ) * 100}
         % of first place ({leaderboardUsers[0]?.points ?? 0})
       </Text>
-      <Stack spacing={0} textAlign="left" w="100%" alignItems="center">
-        <Stack direction="row" py={1} display="flex">
+      <Stack
+        spacing={0}
+        textAlign="left"
+        w="100%"
+        alignItems="center"
+        overflow="hidden"
+      >
+        <Stack
+          textAlign="center"
+          h="100%"
+          w="100%"
+          justifyContent="center"
+          spacing={3}
+          direction="row"
+          divider={<StackDivider />}
+          py={1}
+          display={{ base: "none", lg: "flex" }}
+        >
+          <Text>
+            Given buttons:{" "}
+            {
+              leaderboardUsers.filter((user) => user.isEligibleMerch.first)
+                .length
+            }{" "}
+            &rarr;{" "}
+            {
+              updatedLeaderboardPreview.filter(
+                (user) => user.isEligibleMerch.first
+              ).length
+            }
+          </Text>
+          <Text>
+            totes:{" "}
+            {
+              leaderboardUsers.filter((user) => user.isEligibleMerch.second)
+                .length
+            }{" "}
+            &rarr;{" "}
+            {
+              updatedLeaderboardPreview.filter(
+                (user) => user.isEligibleMerch.second
+              ).length
+            }
+          </Text>
+          <Text>
+            caps:{" "}
+            {
+              leaderboardUsers.filter((user) => user.isEligibleMerch.third)
+                .length
+            }{" "}
+            &rarr;{" "}
+            {
+              updatedLeaderboardPreview.filter(
+                (user) => user.isEligibleMerch.third
+              ).length
+            }
+          </Text>
+        </Stack>
+        <Stack direction="row" py={1} display={{ base: "flex", lg: "none" }}>
           <Stack
             textAlign="center"
             h="100%"
             w="100%"
             alignContent="space-between"
-            spacing={3}
-            direction="row"
-            divider={<StackDivider />}
+            spacing={0}
+            direction="column"
           >
             <Text>
-              Given buttons:{" "}
-              {
-                leaderboardUsers.filter((user) => user.isEligibleMerch.first)
-                  .length
-              }{" "}
-              &rarr;{" "}
-              {
+              {`${
                 updatedLeaderboardPreview.filter(
                   (user) => user.isEligibleMerch.first
                 ).length
-              }
+              } buttons`}
             </Text>
             <Text>
-              totes:{" "}
-              {
-                leaderboardUsers.filter((user) => user.isEligibleMerch.second)
-                  .length
-              }{" "}
-              &rarr;{" "}
-              {
+              {`${
                 updatedLeaderboardPreview.filter(
                   (user) => user.isEligibleMerch.second
                 ).length
-              }
+              } totes`}
             </Text>
             <Text>
-              caps:{" "}
-              {
-                leaderboardUsers.filter((user) => user.isEligibleMerch.third)
-                  .length
-              }{" "}
-              &rarr;{" "}
-              {
+              {`${
                 updatedLeaderboardPreview.filter(
                   (user) => user.isEligibleMerch.third
                 ).length
-              }
+              } caps`}
             </Text>
           </Stack>
         </Stack>
-        {/* <Text fontSize="2xs">
-                        (fix this to use leaderboardData once implemented)
-                    </Text> */}
+        <Text fontSize="2xs">
+          (fix this to use leaderboardData once implemented)
+        </Text>
       </Stack>
     </Stack>
   );
