@@ -428,7 +428,7 @@ const Register = () => {
   );
 
   return (
-    <Box backgroundColor="#12131A" fontFamily="ProRacing">
+    <Box backgroundColor="#12131A" fontFamily="Magistral">
       {isLoading && <LoadingIndicator />}
       <Background />
       <ProgressBar />
