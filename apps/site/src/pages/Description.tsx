@@ -166,14 +166,14 @@ export default function Description() {
           boxShadow="xl"
           p={{ base: 6, md: 8 }}
         >
-          <Heading mb={3} fontSize={{ base: "2xl", md: "3xl" }}>
+          <Heading mb={4} fontSize={{ base: "2xl", md: "3xl" }}>
             Welcome to R|P!
           </Heading>
-          <Text fontSize={{ base: "md", md: "lg" }} lineHeight="1.8">
-            Miss the 80's? Look no further because the Midwest’s largest student
-            run tech-conference is bringing the raddest decade back! Join us for
-            a week of insightful talks from industry & academia leaders,
-            recruitment events by renowned companies, and more!
+          <Text mb={4} fontSize={{ base: "lg", md: "xl" }} lineHeight="1.8">
+            Start your engines and step into the driver’s seat at the Midwest’s largest student-run technology conference 🏎️!
+          </Text>
+          <Text fontSize={{ base: "lg", md: "xl" }} lineHeight="1.8">
+            Hosted at the Siebel Center for Computer Science at UIUC from September 16-20, we’ll race towards the future with captivating guest speakers, corporate tech talks, a career fair, free food/merch, and more. At R|P, you’ll gear up for the road ahead 🏁.
           </Text>
         </Box>
       </MotionBox>
