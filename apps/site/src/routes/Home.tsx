@@ -1,11 +1,11 @@
 import { Box, Flex, Grid, Image, Link, Text } from "@chakra-ui/react";
 
 const footerLinkIcons: { src: string; to: string }[] = [
-  { src: "linkedin_red.svg", to: "https://reflectionsprojections.org" },
-  { src: "instagram_red.svg", to: "https://reflectionsprojections.org" },
+  { src: "linkedin_red.svg", to: "https://linkedin.com/company/reflections-projections-uiuc" },
+  { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
   { src: "tiktok_red.svg", to: "https://reflectionsprojections.org" },
-  { src: "facebook_red.svg", to: "https://reflectionsprojections.org" },
-  { src: "github_red.svg", to: "https://reflectionsprojections.org" },
+  { src: "facebook_red.svg", to: "https:/https://facebook.com/acmrp/" },
+  { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
   { src: "email_red.svg", to: "https://reflectionsprojections.org" }
 ]; // there should be <= 6 of these
 
