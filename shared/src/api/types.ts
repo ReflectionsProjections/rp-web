@@ -110,7 +110,6 @@ export type Registration = {
   name: string;
   opportunities: string[];
   personalLinks: string[];
-  resume: string;
   school: string;
   isInterestedMechMania: boolean;
   isInterestedPuzzleBang: boolean;
@@ -267,7 +266,9 @@ export interface APIRoutes {
   };
   "/registration/draft": {
     POST: {
-      request: Omit<RegistrationDraft, "userId">;
+      request: Omit<RegistrationDraft, "userId" | "resume"> & {
+        resume?: string;
+      };
       response: { message: string };
     };
     GET: {
@@ -323,6 +324,16 @@ export interface APIRoutes {
     DELETE: {
       request: never;
       response: never;
+    };
+  };
+  "/s3/upload": {
+    GET: {
+      response: { url: string; fields: Record<string, unknown> };
+    };
+  };
+  "/s3/download": {
+    GET: {
+      response: { url: string };
     };
   };
   "/s3/download/user/:userId": {

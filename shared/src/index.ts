@@ -13,6 +13,7 @@ export { default as FormRadioGroup } from "./components/form/FormRadioGroup";
 export { default as FormSelectMenu } from "./components/form/FormSelectMenu";
 export { default as FormMultiSelectMenu } from "./components/form/FormMultiSelectMenu";
 export { default as FormFileUpload } from "./components/form/FormFileUpload";
+export type { UploadFile } from "./components/form/FormFileUpload";
 export { default as FormLinks } from "./components/form/FormLinks";
 export { default as FormCheckbox } from "./components/form/FormCheckbox";
 export { schools } from "./assets/schools";

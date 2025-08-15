@@ -14,6 +14,12 @@ import {
 import { FastField, FieldProps } from "formik";
 import { FiUpload } from "react-icons/fi";
 
+export type UploadFile = {
+  open: () => void;
+  name: string;
+  file?: File;
+};
+
 type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
@@ -21,7 +27,8 @@ type Props<TValues, TFieldName extends keyof TValues> = {
 };
 
 const FileUpload = <
-  TValues extends Record<string, unknown> & Record<TFieldName, string>,
+  TValues extends Record<string, unknown> &
+    Record<TFieldName, UploadFile | null>,
   TFieldName extends keyof TValues & string
 >({
   name,
@@ -48,7 +55,20 @@ const FileUpload = <
                   accept="*"
                   onChange={(e) => {
                     const file = e.currentTarget.files?.[0];
-                    void form.setFieldValue(name, file?.name ?? "");
+
+                    void form.setFieldValue(
+                      name,
+                      file
+                        ? {
+                            open: () => {
+                              const fileUrl = URL.createObjectURL(file);
+                              window.open(fileUrl, "_blank");
+                            },
+                            name: file.name,
+                            file
+                          }
+                        : null
+                    );
                   }}
                   onBlur={() => void form.setFieldTouched(name, true)}
                   hidden
@@ -79,16 +99,21 @@ const FileUpload = <
               borderColor="gray.200"
               px={3}
               py={1}
+              cursor="pointer"
+              onClick={() => {
+                field.value?.open();
+              }}
             >
               <Text mr={2} fontWeight="semibold">
-                {field.value}
+                {field.value.name}
               </Text>
               <IconButton
                 icon={<SmallCloseIcon />}
                 size="sm"
                 variant="ghost"
                 colorScheme="red"
-                onClick={() => {
+                onClick={(e) => {
+                  e.stopPropagation();
                   void form.setFieldValue(name, "");
                 }}
                 borderRadius="full"

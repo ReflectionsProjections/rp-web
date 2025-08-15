@@ -1,7 +1,11 @@
-import { RegistrationDraft } from "@rp/shared";
+import { RegistrationDraft, UploadFile } from "@rp/shared";
 import * as yup from "yup";
 
-export type RegistrationValues = Omit<RegistrationDraft, "userId"> & {
+export type RegistrationValues = Omit<
+  RegistrationDraft,
+  "userId" | "resume"
+> & {
+  resume: UploadFile | null;
   over18: boolean;
 };
 
@@ -23,7 +27,7 @@ export const initialValues = (): RegistrationValues => ({
   minors: [],
   graduationYear: "",
   opportunities: [],
-  resume: "",
+  resume: null,
   personalLinks: [],
   howDidYouHear: [],
   tags: [],
@@ -72,7 +76,6 @@ export const finalRegistrationSchema = yup.object({
       return year >= 1985 && year <= currentYear + 10;
     }),
   opportunities: yup.array().of(yup.string().required()).required(),
-  resume: yup.string().required("Please upload a resume"),
   personalLinks: yup
     .array()
     .of(
@@ -95,5 +98,6 @@ export const registrationSchema = finalRegistrationSchema.shape({
   dietaryOther: yup.string().nonNullable(),
   allergiesOther: yup.string().nonNullable(),
   educationOther: yup.string().nonNullable(),
+  resume: yup.object().required("Please upload a resume"),
   over18: yup.boolean().oneOf([true], "You must be over 18").required()
 });

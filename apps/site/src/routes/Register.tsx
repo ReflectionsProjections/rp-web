@@ -12,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState } from "react";
+import axios from "axios";
 import { api, RoleObject, useFormAutosave } from "@rp/shared";
 import {
   finalRegistrationSchema,
@@ -52,6 +53,31 @@ import {
 
 const MotionBox = motion(Box);
 
+const uploadResume = async (
+  url: string,
+  fields: Record<string, unknown>,
+  file: File
+) => {
+  const form = new FormData();
+
+  for (const [key, value] of Object.entries(fields)) {
+    if (value instanceof Blob || typeof value === "string") {
+      form.append(key, value);
+    } else {
+      console.error(`Unexpected value type for key "${key}":`, value);
+    }
+  }
+
+  form.append("file", file);
+
+  await axios.post(url, form, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+      // ...fields,
+    }
+  });
+};
+
 type RegisterFormProps = {
   children: React.ReactNode;
 };
@@ -60,11 +86,17 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ children }) => {
   const toast = useToast();
 
   useFormAutosave<RegistrationValues>((values) => {
-    toast.promise(api.post("/registration/draft", values), {
-      success: { title: "Autosave Successful!" },
-      loading: { title: "Autosaving..." },
-      error: { title: "Autosave failed" }
-    });
+    toast.promise(
+      api.post("/registration/draft", {
+        ...values,
+        resume: undefined
+      }),
+      {
+        success: { title: "Autosave Successful!" },
+        loading: { title: "Autosaving..." },
+        error: { title: "Autosave failed" }
+      }
+    );
   });
 
   return children;
@@ -123,7 +155,28 @@ const Register = () => {
     api
       .get("/registration/draft")
       .then((response) => {
-        setValues({ ...response.data, over18: false });
+        setValues({
+          ...response.data,
+          resume:
+            response.data.resume !== ""
+              ? {
+                  name: response.data.resume,
+                  open: () => {
+                    toast.promise(
+                      api.get("/s3/download").then((response) => {
+                        window.open(response.data.url, "_blank");
+                      }),
+                      {
+                        success: { title: "File opened successfully!" },
+                        loading: { title: "Opening file..." },
+                        error: { title: "Failed to open file" }
+                      }
+                    );
+                  }
+                }
+              : null,
+          over18: false
+        });
       })
       .catch(() => {
         setValues({ ...initialValues(), name: displayName, email });
@@ -131,6 +184,7 @@ const Register = () => {
       .finally(() => {
         setIsLoading(false);
       });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [displayName, email]);
 
   if (confirmation) {
@@ -389,7 +443,21 @@ const Register = () => {
             toast.promise(
               Promise.all([
                 api.post("/registration/submit", registration),
-                api.post("/registration/draft", values)
+                api.post("/registration/draft", {
+                  ...values,
+                  resume: values.resume?.name ?? ""
+                }),
+                async () => {
+                  if (!values.resume?.file) {
+                    throw new Error("Missing resume");
+                  }
+                  const { data: download } = await api.get("/s3/upload");
+                  await uploadResume(
+                    download.url,
+                    download.fields,
+                    values.resume.file
+                  );
+                }
               ])
                 .then(() => {
                   setConfirmation(true);
