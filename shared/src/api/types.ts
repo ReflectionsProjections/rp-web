@@ -69,25 +69,52 @@ export type Event = {
   eventType: EventType;
 };
 
-export type Registration = {
-  userId: string;
-  name: string;
-  email: string;
-  university: string;
-  graduation: string | null;
-  major: string | null;
-  dietaryRestrictions: string[];
+export type RegistrationDraft = {
   allergies: string[];
-  gender: string | null;
+  allergiesOther: string;
+  dietaryRestrictions: string[];
+  dietaryOther: string;
+  educationLevel: string;
+  educationOther: string;
+  email: string;
   ethnicity: string[];
-  hearAboutRP: string[];
-  portfolios: string[];
-  jobInterest: string[];
+  ethnicityOther: string;
+  gender: string;
+  genderOther: string;
+  graduationYear: string;
+  howDidYouHear: string[];
+  majors: string[];
+  minors: string[];
+  name: string;
+  opportunities: string[];
+  personalLinks: string[];
+  resume: string;
+  school: string;
   isInterestedMechMania: boolean;
   isInterestedPuzzleBang: boolean;
-  hasResume: boolean;
-  hasSubmitted: boolean;
-  degree?: string;
+  tags: string[];
+  userId: string;
+};
+
+export type Registration = {
+  allergies: string[];
+  dietaryRestrictions: string[];
+  educationLevel: string;
+  email: string;
+  ethnicity: string[];
+  gender: string;
+  graduationYear: string;
+  howDidYouHear: string[];
+  majors: string[];
+  minors: string[];
+  name: string;
+  opportunities: string[];
+  personalLinks: string[];
+  school: string;
+  isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  tags: string[];
+  userId: string;
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
@@ -237,16 +264,35 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/registration/draft": {
+    POST: {
+      request: Omit<RegistrationDraft, "userId" | "resume"> & {
+        resume?: string;
+      };
+      response: { message: string };
+    };
+    GET: {
+      response: RegistrationDraft;
+    };
+  };
+  "/registration/submit": {
+    POST: {
+      request: Omit<Registration, "userId">;
+      response: { message: string };
+    };
+  };
   "/registration/all": {
     GET: {
-      request: {
-        graduations?: string[];
-        majors?: string[];
-        jobInterests?: string[];
-        degrees?: string[];
-      };
       response: {
-        registrants: Registration[];
+        registrants: Array<{
+          userId: string;
+          name: string;
+          major: string;
+          graduationYear: string;
+          educationLevel: string;
+          opportunities?: string[];
+          personalLinks?: string[];
+        }>;
       };
     };
   };
@@ -278,6 +324,16 @@ export interface APIRoutes {
     DELETE: {
       request: never;
       response: never;
+    };
+  };
+  "/s3/upload": {
+    GET: {
+      response: { url: string; fields: Record<string, unknown> };
+    };
+  };
+  "/s3/download": {
+    GET: {
+      response: { url: string };
     };
   };
   "/s3/download/user/:userId": {

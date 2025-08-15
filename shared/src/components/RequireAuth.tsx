@@ -19,23 +19,27 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ requiredRoles = [] }) => {
       return;
     }
 
-    api
-      .get("/auth/info")
-      .then((response) => {
-        const roles = response.data.roles;
+    if (!authInfo) {
+      api
+        .get("/auth/info")
+        .then((response) => {
+          const roles = response.data.roles;
 
-        const missingRole = requiredRoles.find((role) => !roles.includes(role));
-        if (missingRole) {
-          window.location.href = "/unauthorized";
-        } else {
-          setAuthInfo(response.data);
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem("jwt");
-        window.location.href = "/unauthorized";
-      });
-  }, [jwt, requiredRoles]);
+          const missingRole = requiredRoles.find(
+            (role) => !roles.includes(role)
+          );
+          if (missingRole) {
+            window.location.href = "/unauthorized";
+          } else {
+            setAuthInfo(response.data);
+          }
+        })
+        .catch(() => {
+          // This only happens if jwt is expired
+          // middleware will handle the error
+        });
+    }
+  }, [authInfo, jwt, requiredRoles]);
 
   if (!jwt) {
     return <p>Redirecting to login...</p>;
