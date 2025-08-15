@@ -31,12 +31,13 @@ const FormTextField = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2} htmlFor={name}>
             {label}
           </FormLabel>
 
           <Input
             {...field}
+            id={name}
             type={type}
             placeholder={placeholder}
             _placeholder={{ color: "#CCCCCC" }}

@@ -24,9 +24,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/auth/refresh" element={<RefreshHandler />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
-          {/* <Route element={<RequireAuth />}> */}
-          <Route key="/register" path="/register" element={<Register />} />
-          {/* </Route> */}
+          <Route element={<RequireAuth />}>
+            <Route key="/register" path="/register" element={<Register />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </ChakraProvider>

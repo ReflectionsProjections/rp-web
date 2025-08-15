@@ -50,6 +50,7 @@ const FormRadioGroup = <
         <RadioGroup
           {...field}
           onChange={(val) => void form.setFieldValue(name, val)}
+          id={name}
         >
           <VStack alignItems="start" gap={4}>
             <HStack alignItems="start" justifyContent="space-between" w="100%">
@@ -72,10 +73,15 @@ const FormRadioGroup = <
             </HStack>
             {custom && (
               <HStack gap={4} w="100%">
-                <Radio key={custom.label} value={custom.label} flexShrink={0}>
+                <Radio
+                  key={custom.label}
+                  value={custom.label}
+                  flexShrink={0}
+                  id={`${name}-other`}
+                >
                   {custom.label}
                 </Radio>
-                <Field name={custom.name}>
+                <Field name={custom.name} id={custom.name}>
                   {({
                     field: customField
                   }: FieldProps<

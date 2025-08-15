@@ -42,7 +42,7 @@ const FormMultiSelectMenu = <
             </FormLabel>
 
             <Select<SelectOption, true>
-              name={field.name}
+              name={name}
               isMulti
               value={selectedOptions}
               onChange={(selected) =>

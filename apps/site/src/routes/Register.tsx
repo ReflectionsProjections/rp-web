@@ -11,14 +11,15 @@ import {
   Spinner
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useState } from "react";
-import { useFormAutosave } from "@rp/shared";
+import React, { useEffect, useState } from "react";
+import { api, RoleObject, useFormAutosave } from "@rp/shared";
 import {
+  finalRegistrationSchema,
   initialValues,
   registrationSchema,
   RegistrationValues
 } from "@/components/Registration/schema";
-// import{ useOutletContext } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import {
   motion,
   MotionValue,
@@ -59,40 +60,78 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ children }) => {
   const toast = useToast();
 
   useFormAutosave<RegistrationValues>((values) => {
-    // toast.promise(api.post("/registration/draft", values), {
-    //   success: { title: "Autosave Successful!" },
-    //   loading: { title: "Autosaving..." },
-    //   error: { title: "Autosave failed" }
-    // });
-    console.log("autosave draft", values);
-    toast({ title: "Autosave Successful" });
+    toast.promise(api.post("/registration/draft", values), {
+      success: { title: "Autosave Successful!" },
+      loading: { title: "Autosaving..." },
+      error: { title: "Autosave failed" }
+    });
   });
 
   return children;
 };
 
 const Register = () => {
-  // const { displayName, email } = useOutletContext<RoleObject>();
-  const displayName = "Jacob Edley";
-  const email = "edley2@illinois.edu";
+  const { displayName, email } = useOutletContext<RoleObject>();
   const [confirmation, setConfirmation] = useState(false);
-  const [values, setValues] = useState(initialValues(displayName, email));
+  const [values, setValues] = useState<RegistrationValues | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const { scrollYProgress } = useScroll();
   const mobile = useBreakpointValue({ base: true, "2xl": false });
 
-  // useEffect(() => {
-  //   api
-  //     .get("/registration/draft")
-  //     .then((response) => {
-  //       setValues({ ...values, ...response.data });
-  //     })
-  //     .catch(() => {})
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  // }, [values]);
+  const toast = useToast();
+
+  const processFinalRegistration = (values: RegistrationValues) => {
+    const processedValues = finalRegistrationSchema.validateSync(values, {
+      stripUnknown: true
+    });
+
+    if (values.allergiesOther !== "") {
+      processedValues.allergies = processedValues.allergies.map((item) =>
+        item === "Other" ? values.allergiesOther : item
+      );
+    }
+
+    if (values.dietaryOther !== "") {
+      processedValues.dietaryRestrictions =
+        processedValues.dietaryRestrictions.map((item) =>
+          item === "Other" ? values.dietaryOther : item
+        );
+    }
+
+    if (
+      processedValues.educationLevel === "Other" &&
+      values.educationOther !== ""
+    ) {
+      processedValues.educationLevel = values.educationOther;
+    }
+
+    if (values.ethnicityOther !== "") {
+      processedValues.ethnicity = processedValues.ethnicity.map((item) =>
+        item === "Other" ? values.ethnicityOther : item
+      );
+    }
+
+    if (processedValues.gender === "Other" && values.genderOther !== "") {
+      processedValues.gender = values.genderOther;
+    }
+
+    return processedValues;
+  };
+
+  useEffect(() => {
+    api
+      .get("/registration/draft")
+      .then((response) => {
+        setValues({ ...response.data, over18: false });
+      })
+      .catch(() => {
+        setValues({ ...initialValues(), name: displayName, email });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [displayName, email]);
 
   if (confirmation) {
     return (
@@ -340,43 +379,61 @@ const Register = () => {
       <Background />
       <ProgressBar />
 
-      <Formik
-        initialValues={values}
-        validationSchema={registrationSchema}
-        onSubmit={(values) => {
-          console.log("submit", values);
-          // await api.post("/registration/submit", values);
-          setConfirmation(true);
-        }}
-      >
-        {({ isSubmitting }) => (
-          <Box
-            w={{ "2xl": "75%" }}
-            ml={{ "2xl": "25%" }}
-            display="flex"
-            justifyContent="center"
-            px={4}
-            pt={8}
-            pb={{ base: "50vh", "2xl": 8 }}
-            mt="32px"
-          >
-            <RegisterForm>
-              <VStack as={Form} color="white" zIndex={3} gap={16}>
-                {mobile ? <MobileForm /> : <DesktopForm />}
-                <IconButton
-                  icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
-                  aria-label="Submit"
-                  isLoading={isSubmitting}
-                  variant="ghost"
-                  type="submit"
-                  alignSelf="flex-end"
-                  color="white"
-                />
-              </VStack>
-            </RegisterForm>
-          </Box>
-        )}
-      </Formik>
+      {values && (
+        <Formik
+          initialValues={values}
+          validationSchema={registrationSchema}
+          onSubmit={(values) => {
+            setIsLoading(true);
+            const registration = processFinalRegistration(values);
+            toast.promise(
+              Promise.all([
+                api.post("/registration/submit", registration),
+                api.post("/registration/draft", values)
+              ])
+                .then(() => {
+                  setConfirmation(true);
+                })
+                .finally(() => {
+                  setIsLoading(false);
+                }),
+              {
+                success: { title: "Form Submitted!" },
+                loading: { title: "Submitting..." },
+                error: { title: "Submission failed" }
+              }
+            );
+          }}
+        >
+          {({ isSubmitting }) => (
+            <Box
+              w={{ "2xl": "75%" }}
+              ml={{ "2xl": "25%" }}
+              display="flex"
+              justifyContent="center"
+              px={4}
+              pt={8}
+              pb={{ base: "50vh", "2xl": 8 }}
+              mt="32px"
+            >
+              <RegisterForm>
+                <VStack as={Form} color="white" zIndex={3} gap={16}>
+                  {mobile ? <MobileForm /> : <DesktopForm />}
+                  <IconButton
+                    icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
+                    aria-label="Submit"
+                    isLoading={isSubmitting}
+                    variant="ghost"
+                    type="submit"
+                    alignSelf="flex-end"
+                    color="white"
+                  />
+                </VStack>
+              </RegisterForm>
+            </Box>
+          )}
+        </Formik>
+      )}
     </Box>
   );
 };

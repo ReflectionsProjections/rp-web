@@ -1,12 +1,11 @@
 import {
   FormControl,
-  FormLabel,
   CheckboxGroup,
   Checkbox,
   Input,
-  Box,
   FormErrorMessage,
   HStack,
+  Text,
   VStack
 } from "@chakra-ui/react";
 import { FastField, Field, FieldProps } from "formik";
@@ -47,84 +46,92 @@ const FormCheckboxGroup = <
             !!form.touched[name]
           }
         >
-          <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
+          <Text fontSize="2xl" fontWeight="bold" mb={2}>
             {label}
-          </FormLabel>
+          </Text>
 
-          <Box>
-            <CheckboxGroup
-              value={field.value}
-              onChange={(values: string[]) => void updateValues(values)}
-            >
-              <VStack alignItems="start" gap={4}>
-                <HStack
-                  alignItems="start"
-                  justifyContent="space-between"
-                  w="100%"
-                >
-                  <VStack alignItems="start" gap={4} flex={1}>
-                    {options
-                      .slice(0, Math.ceil(options.length / 2))
-                      .map((option) => (
-                        <Checkbox key={option} value={option} name={name}>
-                          {option}
-                        </Checkbox>
-                      ))}
-                  </VStack>
-                  <VStack alignItems="start" gap={4} flex={1}>
-                    {options
-                      .slice(Math.ceil(options.length / 2))
-                      .map((option) => (
-                        <Checkbox key={option} value={option} name={name}>
-                          {option}
-                        </Checkbox>
-                      ))}
-                  </VStack>
+          <CheckboxGroup
+            value={field.value}
+            onChange={(values: string[]) => void updateValues(values)}
+          >
+            <VStack alignItems="start" gap={4}>
+              <HStack
+                alignItems="start"
+                justifyContent="space-between"
+                w="100%"
+              >
+                <VStack alignItems="start" gap={4} flex={1}>
+                  {options
+                    .slice(0, Math.ceil(options.length / 2))
+                    .map((option, i) => (
+                      <Checkbox
+                        key={option}
+                        value={option}
+                        name={name}
+                        id={`${name}-0-${i}`}
+                      >
+                        {option}
+                      </Checkbox>
+                    ))}
+                </VStack>
+                <VStack alignItems="start" gap={4} flex={1}>
+                  {options
+                    .slice(Math.ceil(options.length / 2))
+                    .map((option, i) => (
+                      <Checkbox
+                        key={option}
+                        value={option}
+                        name={name}
+                        id={`${name}-1-${i}`}
+                      >
+                        {option}
+                      </Checkbox>
+                    ))}
+                </VStack>
+              </HStack>
+              {custom && (
+                <HStack gap={4} w="100%">
+                  <Checkbox
+                    key={custom.label}
+                    value={custom.label}
+                    name={name}
+                    flexShrink={0}
+                    id={`${name}-other`}
+                  >
+                    {custom.label}
+                  </Checkbox>
+                  <Field name={custom.name}>
+                    {({
+                      field: customField
+                    }: FieldProps<
+                      TValues[TOtherName & keyof TValues],
+                      TValues
+                    >) => {
+                      const showCustomInput = field.value?.includes(
+                        custom.label
+                      );
+
+                      return (
+                        <Input
+                          {...customField}
+                          id={custom.name}
+                          placeholder={showCustomInput ? "Please specify" : ""}
+                          _placeholder={{ color: "#CCCCCC" }}
+                          variant={showCustomInput ? "outline" : "flushed"}
+                          backgroundColor={
+                            showCustomInput ? "#12131A" : "transparent"
+                          }
+                          py={0.5}
+                          h="fit-content"
+                          disabled={!showCustomInput}
+                        />
+                      );
+                    }}
+                  </Field>
                 </HStack>
-                {custom && (
-                  <HStack gap={4} w="100%">
-                    <Checkbox
-                      key={custom.label}
-                      value={custom.label}
-                      name={name}
-                      flexShrink={0}
-                    >
-                      {custom.label}
-                    </Checkbox>
-                    <Field name={custom.name}>
-                      {({
-                        field: customField
-                      }: FieldProps<
-                        TValues[TOtherName & keyof TValues],
-                        TValues
-                      >) => {
-                        const showCustomInput = field.value?.includes(
-                          custom.label
-                        );
-
-                        return (
-                          <Input
-                            {...customField}
-                            placeholder={
-                              showCustomInput ? "Please specify" : ""
-                            }
-                            _placeholder={{ color: "#CCCCCC" }}
-                            variant={showCustomInput ? "outline" : "flushed"}
-                            backgroundColor={
-                              showCustomInput ? "#12131A" : "transparent"
-                            }
-                            py={0.5}
-                            h="fit-content"
-                            disabled={!showCustomInput}
-                          />
-                        );
-                      }}
-                    </Field>
-                  </HStack>
-                )}
-              </VStack>
-            </CheckboxGroup>
-          </Box>
+              )}
+            </VStack>
+          </CheckboxGroup>
           <FormErrorMessage>
             {(form.errors[name] as string) ??
               (custom ? form.errors[custom.name] : undefined)}

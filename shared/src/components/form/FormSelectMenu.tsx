@@ -40,7 +40,7 @@ const FormSelectMenu = <
           </FormLabel>
 
           <Select<SelectOption>
-            name={field.name}
+            name={name}
             value={selectedOption}
             onChange={(option) =>
               void form.setFieldValue(name, option?.value ?? "")

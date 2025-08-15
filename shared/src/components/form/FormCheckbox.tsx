@@ -33,9 +33,10 @@ const FormCheckbox = <
               void form.setFieldValue(name, e.target.checked);
             }}
             onBlur={field.onBlur}
-            name={field.name}
+            name={name}
+            id={name}
           >
-            <FormLabel m={0} fontSize="2xl">
+            <FormLabel m={0} fontSize="2xl" htmlFor={name}>
               {label}
             </FormLabel>
           </Checkbox>

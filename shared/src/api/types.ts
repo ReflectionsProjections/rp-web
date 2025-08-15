@@ -70,55 +70,52 @@ export type Event = {
 };
 
 export type RegistrationDraft = {
-  name?: string;
-  email?: string;
-  dietaryRestrictions?: string[];
-  dietaryOther: string;
-  allergies?: string[];
+  allergies: string[];
   allergiesOther: string;
-  school?: string;
-  educationLevel?: string;
+  dietaryRestrictions: string[];
+  dietaryOther: string;
+  educationLevel: string;
   educationOther: string;
-  majors?: string[];
-  minors?: string[];
-  graduationYear?: string;
-  opportunities?: string[];
-  resume?: string;
-  personalLinks?: string[];
-  gender?: string;
-  genderOther: string;
-  ethnicity?: string[];
+  email: string;
+  ethnicity: string[];
   ethnicityOther: string;
-  howDidYouHear?: string[];
-  tags?: string[];
-  isInterestedPuzzleBang?: boolean;
-  isInterestedMechMania?: boolean;
+  gender: string;
+  genderOther: string;
+  graduationYear: string;
+  howDidYouHear: string[];
+  majors: string[];
+  minors: string[];
+  name: string;
+  opportunities: string[];
+  personalLinks: string[];
+  resume: string;
+  school: string;
+  isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  tags: string[];
+  userId: string;
 };
 
 export type Registration = {
-  name: string;
-  email: string;
-  dietaryRestrictions: string[];
-  dietaryOther: string;
   allergies: string[];
-  allergiesOther: string;
-  school: string;
+  dietaryRestrictions: string[];
   educationLevel: string;
-  educationOther: string;
+  email: string;
+  ethnicity: string[];
+  gender: string;
+  graduationYear: string;
+  howDidYouHear: string[];
   majors: string[];
   minors: string[];
-  graduationYear: string;
+  name: string;
   opportunities: string[];
-  resume: string;
   personalLinks: string[];
-  gender: string;
-  genderOther: string;
-  ethnicity: string[];
-  ethnicityOther: string;
-  howDidYouHear: string[];
-  tags: string[];
-  isInterestedPuzzleBang: boolean;
+  resume: string;
+  school: string;
   isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  tags: string[];
+  userId: string;
 };
 
 export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
@@ -270,7 +267,7 @@ export interface APIRoutes {
   };
   "/registration/draft": {
     POST: {
-      request: RegistrationDraft;
+      request: Omit<RegistrationDraft, "userId">;
       response: { message: string };
     };
     GET: {
@@ -279,7 +276,7 @@ export interface APIRoutes {
   };
   "/registration/submit": {
     POST: {
-      request: Registration;
+      request: Omit<Registration, "userId">;
       response: { message: string };
     };
   };

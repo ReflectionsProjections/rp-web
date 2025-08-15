@@ -1,14 +1,13 @@
-import { Registration } from "@rp/shared";
+import { RegistrationDraft } from "@rp/shared";
 import * as yup from "yup";
 
-export type RegistrationValues = Registration & { over18: boolean };
+export type RegistrationValues = Omit<RegistrationDraft, "userId"> & {
+  over18: boolean;
+};
 
-export const initialValues = (
-  name: string,
-  email: string
-): RegistrationValues => ({
-  name,
-  email,
+export const initialValues = (): RegistrationValues => ({
+  name: "",
+  email: "",
   gender: "",
   genderOther: "",
   ethnicity: [],
@@ -33,20 +32,16 @@ export const initialValues = (
   over18: false
 });
 
-export const registrationSchema = yup.object({
+export const finalRegistrationSchema = yup.object({
   name: yup.string().required("Name is required"),
   email: yup
     .string()
     .email("Please enter a valid email")
     .required("Email is required"),
   gender: yup.string().required("Gender is required"),
-  genderOther: yup.string().nonNullable(),
   ethnicity: yup.array().of(yup.string().required()).required(),
-  ethnicity_other: yup.string().nonNullable(),
   dietaryRestrictions: yup.array().of(yup.string().required()).required(),
-  dietary_other: yup.string().nonNullable(),
   allergies: yup.array().of(yup.string().required()).required(),
-  allergies_other: yup.string().nonNullable(),
   howDidYouHear: yup
     .array()
     .of(yup.string().required())
@@ -59,10 +54,8 @@ export const registrationSchema = yup.object({
     .min(1, "Please select at least one"),
   isInterestedPuzzleBang: yup.boolean().required(),
   isInterestedMechMania: yup.boolean().required(),
-  over18: yup.boolean().oneOf([true], "You must be over 18").required(),
   school: yup.string().required("School is required"),
   educationLevel: yup.string().required("Education Level is required"),
-  educationOther: yup.string().nonNullable(),
   majors: yup
     .array()
     .of(yup.string().required())
@@ -94,4 +87,13 @@ export const registrationSchema = yup.object({
     )
     .required()
     .max(5)
+});
+
+export const registrationSchema = finalRegistrationSchema.shape({
+  genderOther: yup.string().nonNullable(),
+  ethnicityOther: yup.string().nonNullable(),
+  dietaryOther: yup.string().nonNullable(),
+  allergiesOther: yup.string().nonNullable(),
+  educationOther: yup.string().nonNullable(),
+  over18: yup.boolean().oneOf([true], "You must be over 18").required()
 });

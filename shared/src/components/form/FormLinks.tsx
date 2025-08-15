@@ -2,7 +2,6 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   HStack,
   IconButton,
   Input,
@@ -35,12 +34,12 @@ const FormLinks = <
   <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
       <FormControl isInvalid={!!form.errors[name] && !!form.touched[name]}>
-        <FormLabel fontSize="2xl" fontWeight="bold" mb={2}>
+        <Text fontSize="2xl" fontWeight="bold" mb={2}>
           {label}{" "}
           <Text as="span" fontSize="sm" color="#CCCCCC">
             (max {maxLinks})
           </Text>
-        </FormLabel>
+        </Text>
 
         <FieldArray name={name}>
           {({
@@ -147,6 +146,7 @@ const FormLinks = <
 
                               void form.setFieldValue(name, updated);
                             }}
+                            id={`${name}-${index}`}
                             placeholder={
                               specialPrefix ? "username" : "example.com"
                             }
