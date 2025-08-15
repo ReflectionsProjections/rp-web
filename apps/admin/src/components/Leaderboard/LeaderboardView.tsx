@@ -9,7 +9,7 @@ const LeaderboardCard: React.FC<{
     justifyContent="space-between"
     alignItems="center"
     gap={4}
-  // todo? make a stack -> add dividers at low width
+    // todo? make a stack -> add dividers at low width
   >
     <Box flex="4" textAlign="left">
       {user.name}
@@ -18,16 +18,29 @@ const LeaderboardCard: React.FC<{
     <Box flex="5" textAlign="left" fontStyle="oblique" opacity="0.7">
       {user.email}
     </Box>
-    <Flex flex="6" textAlign="left" alignItems="center" gap={1.5} display={{ base: "none", lg: "flex" }}>
-      <Text>Earned:&nbsp;&nbsp;</Text>
-      <Text as="span" fontSize="xl" lineHeight={1}>{user.isEligibleMerch.first ? "☑" : "□"}</Text><Text>button&nbsp;&nbsp;</Text>
-      <Text as="span" fontSize="xl" lineHeight={1}>{user.isEligibleMerch.second ? "☑" : "□"}</Text><Text>tote&nbsp;&nbsp;</Text>
-      <Text as="span" fontSize="xl" lineHeight={1}>{user.isEligibleMerch.third ? "☑" : "□"}</Text><Text>cap&nbsp;&nbsp;</Text>
-    </Flex>
-    <Box flex="2" textAlign="right">
-      <Text as="b" mr="8">
-        {user.points}
+    <Flex
+      flex={{ base: "4", xl: "6" }}
+      textAlign="left"
+      alignItems="center"
+      gap={1.5}
+      display={{ base: "none", lg: "flex" }}
+    >
+      <Text display={{ base: "none", xl: "block" }}>Earned:&nbsp;&nbsp;</Text>
+      <Text as="span" fontSize="xl" lineHeight={1}>
+        {user.isEligibleMerch.first ? "☑" : "□"}
       </Text>
+      <Text>button&nbsp;&nbsp;</Text>
+      <Text as="span" fontSize="xl" lineHeight={1}>
+        {user.isEligibleMerch.second ? "☑" : "□"}
+      </Text>
+      <Text>tote&nbsp;&nbsp;</Text>
+      <Text as="span" fontSize="xl" lineHeight={1}>
+        {user.isEligibleMerch.third ? "☑" : "□"}
+      </Text>
+      <Text>cap&nbsp;&nbsp;</Text>
+    </Flex>
+    <Box flex="2" textAlign="center">
+      <Text as="b">{user.points}</Text>
     </Box>
   </Flex>
 );
@@ -73,11 +86,11 @@ const LeaderboardView: React.FC<{
       >
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-            <LeaderboardCardSkeleton key={index} />
-          ))
+              <LeaderboardCardSkeleton key={index} />
+            ))
           : leaderboardUsers
-            ?.slice(0, numberAwards)
-            .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
+              ?.slice(0, numberAwards)
+              .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
         {breakpoint > 0 && (
           <Text as="b" color="yellow.500">
             Minimum point threshold: {breakpoint}
@@ -88,11 +101,11 @@ const LeaderboardView: React.FC<{
       <Stack divider={<StackDivider />} spacing="4" mt={8}>
         {isLoading
           ? Array.from({ length: 10 }).map((_, index) => (
-            <LeaderboardCardSkeleton key={index} />
-          ))
+              <LeaderboardCardSkeleton key={index} />
+            ))
           : leaderboardUsers
-            ?.slice(numberAwards)
-            .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
+              ?.slice(numberAwards)
+              .map((user) => <LeaderboardCard user={user} key={user.userId} />)}
       </Stack>
     </Box>
   );

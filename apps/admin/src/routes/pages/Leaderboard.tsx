@@ -10,7 +10,8 @@ import {
   FormControl,
   FormErrorMessage,
   Heading,
-  Text
+  Text,
+  FormLabel
 } from "@chakra-ui/react";
 import api from "@/util/api";
 import { LeaderboardUser, usePolling } from "@rp/shared";
@@ -27,26 +28,25 @@ import Section from "@/components/Section";
 
 const defaultNumberAwards = 50;
 
-const unlockNextMerch =
-  (user: LeaderboardUser): LeaderboardUser => {
-    const updatedUser = {
-      ...user,
-      isEligibleMerch: { ...user.isEligibleMerch }
-    };
-    if (user.isEligibleMerch.third) {
-      return updatedUser;
-    }
-    if (user.isEligibleMerch.second) {
-      updatedUser.isEligibleMerch.third = true;
-      return updatedUser;
-    }
-    if (user.isEligibleMerch.first) {
-      updatedUser.isEligibleMerch.second = true;
-      return updatedUser;
-    }
-    updatedUser.isEligibleMerch.first = true;
-    return updatedUser;
+const unlockNextMerch = (user: LeaderboardUser): LeaderboardUser => {
+  const updatedUser = {
+    ...user,
+    isEligibleMerch: { ...user.isEligibleMerch }
   };
+  if (user.isEligibleMerch.third) {
+    return updatedUser;
+  }
+  if (user.isEligibleMerch.second) {
+    updatedUser.isEligibleMerch.third = true;
+    return updatedUser;
+  }
+  if (user.isEligibleMerch.first) {
+    updatedUser.isEligibleMerch.second = true;
+    return updatedUser;
+  }
+  updatedUser.isEligibleMerch.first = true;
+  return updatedUser;
+};
 
 const Leaderboard: React.FC = () => {
   const { roles, authorized } = useOutletContext<MainContext>();
@@ -87,7 +87,11 @@ const Leaderboard: React.FC = () => {
     if (!leaderboardUsers) {
       return [];
     }
-    const breakpoint = leaderboardUsers[effectiveNumberAwards - 1]?.points ?? 0;
+    const breakpoint =
+      leaderboardUsers[effectiveNumberAwards - 1]?.points ?? null;
+    if (!breakpoint) {
+      return leaderboardUsers;
+    }
     return leaderboardUsers.map((user) =>
       user.points >= breakpoint ? unlockNextMerch(user) : user
     );
@@ -163,52 +167,63 @@ const Leaderboard: React.FC = () => {
           <CardHeader>
             <Flex mb={4}>
               {/* input */}
-              <Stack w={{ base: "50%" }} direction="row" mr={4}>
-                <FormControl
-                  mr={2}
-                  isRequired
-                  isInvalid={
-                    !previewNumberAwards || !parseInt(previewNumberAwards)
-                  }
-                >
-                  <Input
-                    name="name"
-                    type="number"
-                    min={0}
-                    value={previewNumberAwards}
-                    onChange={handleChangePreviewNumber}
-                  />
-                  <Text pos="absolute" left={4} top={2} pointerEvents="none">
-                    <Text as="span" color="transparent">
-                      {previewNumberAwards}
-                    </Text>
-                    &nbsp;&nbsp;
-                    {!!effectiveNumberAwards && (
-                      <Text as="span" fontStyle="oblique" opacity="0.7">
-                        ({effectiveNumberAwards})
+              <Flex direction="column" w={{ base: "50%" }}>
+                <FormLabel>Target number of prizes to award</FormLabel>
+                <Stack w={{ base: "100%" }} direction="row" mr={4}>
+                  <FormControl
+                    mr={2}
+                    isRequired
+                    isInvalid={
+                      !previewNumberAwards || !parseInt(previewNumberAwards)
+                    }
+                  >
+                    <Input
+                      name="name"
+                      type="number"
+                      min={0}
+                      value={previewNumberAwards}
+                      onChange={handleChangePreviewNumber}
+                    />
+                    <Text pos="absolute" left={4} top={2} pointerEvents="none">
+                      <Text as="span" color="transparent">
+                        {previewNumberAwards}
                       </Text>
-                    )}
-                  </Text>
-                  {/* <FormHelperText>Max awards to give today</FormHelperText> */}
-                  <FormErrorMessage>Field must be a number</FormErrorMessage>
-                </FormControl>
-                <ConfirmButton
-                  disabled={!roles.includes("ADMIN")}
-                  leaderboardUsers={leaderboardUsers}
-                  effectiveNumberAwards={effectiveNumberAwards}
-                  updatedLeaderboardPreview={updatedLeaderboardPreview}
-                  updateLeaderboard={updateLeaderboard}
-                />
-              </Stack>
+                      &nbsp;&nbsp;
+                      {!!effectiveNumberAwards && (
+                        <Text as="span" fontStyle="oblique" opacity="0.7">
+                          ({effectiveNumberAwards})
+                        </Text>
+                      )}
+                    </Text>
+                    {/* <FormHelperText>Max awards to give today</FormHelperText> */}
+                    <FormErrorMessage>Field must be a number</FormErrorMessage>
+                  </FormControl>
+                  <ConfirmButton
+                    disabled={!roles.includes("ADMIN")}
+                    leaderboardUsers={leaderboardUsers}
+                    previewNumberAwards={parseInt(previewNumberAwards) ?? 0}
+                    effectiveNumberAwards={effectiveNumberAwards}
+                    updatedLeaderboardPreview={updatedLeaderboardPreview}
+                    updateLeaderboard={updateLeaderboard}
+                  />
+                </Stack>
+              </Flex>
               {/* stats */}
               <Stack w={{ base: "50%" }} direction="row" ml={4}>
                 <Section w="100%" h="100%" p={4}>
-                  <LeaderboardStats leaderboardUsers={leaderboardUsers} effectiveNumberAwards={effectiveNumberAwards} updatedLeaderboardPreview={updatedLeaderboardPreview} />
+                  <LeaderboardStats
+                    leaderboardUsers={leaderboardUsers}
+                    effectiveNumberAwards={effectiveNumberAwards}
+                    updatedLeaderboardPreview={updatedLeaderboardPreview}
+                  />
                 </Section>
               </Stack>
             </Flex>
           </CardHeader>
-          <Divider borderBottomWidth="2px" borderColor="var(--chakra-colors-chakra-border-color)" />
+          <Divider
+            borderBottomWidth="2px"
+            borderColor="var(--chakra-colors-chakra-border-color)"
+          />
           <CardBody overflowY="scroll">
             <LeaderboardView
               leaderboardUsers={leaderboardUsers}
