@@ -2,7 +2,6 @@ import { FAQS } from "@/constants/faq-questions";
 import { VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 
-import FAQBackdrop from "../../../assets/faq-backdrop.png";
 import { FAQHeader } from "./FAQHeader";
 import { FAQQuestion } from "./FAQQuestion";
 
@@ -31,7 +30,7 @@ export const FAQ: React.FC = () => {
         md: "90dvh"
       }}
       justifyContent="flex-start"
-      bgImage={FAQBackdrop}
+      bgImage={"/faq/faq-backdrop.png"}
       bgColor={"black"}
       bgSize="cover"
       bgPosition="center"

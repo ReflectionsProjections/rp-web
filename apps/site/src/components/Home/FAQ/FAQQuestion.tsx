@@ -2,13 +2,13 @@ import { FAQItem } from "@/constants/faq-questions";
 import { Box, Collapse, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
 
-import Car1 from "../../../assets/car1.svg";
-import Car2 from "../../../assets/car2.svg";
-import Car3 from "../../../assets/car3.svg";
-import Car4 from "../../../assets/car4.svg";
-import Car5 from "../../../assets/car5.svg";
-
-const CARS = [Car1, Car2, Car3, Car4, Car5];
+const CAR_URLS = [
+  "/faq/car1.svg",
+  "/faq/car2.svg",
+  "/faq/car3.svg",
+  "/faq/car4.svg",
+  "/faq/car5.svg"
+];
 
 type FAQQuestionProps = {
   index: number;
@@ -71,7 +71,7 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
           borderRadius="lg"
           h={{ base: "30px", md: "70px" }}
           transition={"left 0.3s ease-in-out"}
-          src={CARS[index % CARS.length]}
+          src={CAR_URLS[index % CAR_URLS.length]}
           alt="Car"
           objectFit="cover"
           transform={{ md: "scale(0.8)" }}
@@ -79,7 +79,7 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
         />
 
         <Text
-          ml={{ md: isOpen ? 0 : "130px" }}
+          ml={{ md: isOpen ? 0 : "140px" }}
           mr={{ md: isOpen ? 28 : 0 }}
           pl={{ base: 1, md: 2 }}
           color="white"

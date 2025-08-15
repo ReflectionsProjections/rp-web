@@ -1,8 +1,6 @@
 import { FAQS } from "@/constants/faq-questions";
 import { Box, HStack, Image, Text, VStack } from "@chakra-ui/react";
 import React from "react";
-import FAQHeaderLeftBars from "../../../assets/faq-header-left-bars.svg";
-import FAQHeaderRightBars from "../../../assets/faq-header-right-bars.svg";
 import { StopLight } from "./StopLight";
 
 export const FAQHeader: React.FC<{
@@ -11,21 +9,21 @@ export const FAQHeader: React.FC<{
   return (
     <Box position="relative" w="100%" overflow="hidden">
       <Image
-        src={FAQHeaderLeftBars}
+        src={"/faq/faq-header-left-bars.svg"}
         position="absolute"
         top={{ base: 0, md: -5 }}
         left={{ base: -0, md: 0 }}
-        h={{ base: "50px", sm: "75px", md: "140px" }}
+        h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
         opacity={0.9}
         zIndex={0}
       />
 
       <Image
-        src={FAQHeaderRightBars}
+        src={"/faq/faq-header-right-bars.svg"}
         position="absolute"
         top={{ base: 0, md: -0 }}
         right={{ base: -10, sm: -14, md: -90 }}
-        h={{ base: "50px", sm: "75px", md: "140px" }}
+        h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
         opacity={0.9}
         zIndex={0}
       />
