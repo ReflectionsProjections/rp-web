@@ -34,9 +34,9 @@ const FileUpload = <
         isInvalid={!!form.errors[name] && !!form.touched[name]}
         isRequired={isRequired}
       >
-        <Text fontSize="2xl" fontWeight="bold" mb={2}>
+        <FormLabel fontSize="2xl" fontWeight="bold" mb={2} htmlFor={undefined}>
           {label}
-        </Text>
+        </FormLabel>
 
         <HStack>
           <Box position="relative">
@@ -53,7 +53,7 @@ const FileUpload = <
                   onBlur={() => void form.setFieldTouched(name, true)}
                   hidden
                 />
-                <FormLabel htmlFor={name}>
+                <label htmlFor={name}>
                   <Button
                     as="span"
                     leftIcon={<Icon as={FiUpload} />}
@@ -65,7 +65,7 @@ const FileUpload = <
                   >
                     Choose File
                   </Button>
-                </FormLabel>
+                </label>
               </>
             )}
           </Box>

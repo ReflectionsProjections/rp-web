@@ -383,7 +383,7 @@ const Register = () => {
         <Formik
           initialValues={values}
           validationSchema={registrationSchema}
-          onSubmit={(values) => {
+          onSubmit={(values, helpers) => {
             setIsLoading(true);
             const registration = processFinalRegistration(values);
             toast.promise(
@@ -393,6 +393,9 @@ const Register = () => {
               ])
                 .then(() => {
                   setConfirmation(true);
+                })
+                .catch(() => {
+                  helpers.setSubmitting(false);
                 })
                 .finally(() => {
                   setIsLoading(false);
