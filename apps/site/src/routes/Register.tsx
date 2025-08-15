@@ -447,9 +447,9 @@ const Register = () => {
                   ...values,
                   resume: values.resume?.name ?? ""
                 }),
-                async () => {
+                (async () => {
                   if (!values.resume?.file) {
-                    throw new Error("Missing resume");
+                    return;
                   }
                   const { data: download } = await api.get("/s3/upload");
                   await uploadResume(
@@ -457,7 +457,7 @@ const Register = () => {
                     download.fields,
                     values.resume.file
                   );
-                }
+                })()
               ])
                 .then(() => {
                   setConfirmation(true);
