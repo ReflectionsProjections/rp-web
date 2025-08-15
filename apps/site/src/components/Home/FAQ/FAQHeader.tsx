@@ -1,4 +1,4 @@
-import { FAQS } from "@/constants/faq";
+import { FAQS } from "@/constants/faq-questions";
 import { Box, HStack, Image, Text, VStack } from "@chakra-ui/react";
 import React from "react";
 import FAQHeaderLeftBars from "../../../assets/faq-header-left-bars.svg";

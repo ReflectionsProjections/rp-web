@@ -7,15 +7,6 @@ export interface FAQItem {
   };
 }
 
-export interface FAQItem {
-  question: string;
-  answer: string;
-  colors: {
-    light: string;
-    dark: string;
-  };
-}
-
 export const FAQS: FAQItem[] = [
   {
     question: "What is Reflections | Projections?",
