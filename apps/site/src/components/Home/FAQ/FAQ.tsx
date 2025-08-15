@@ -25,27 +25,25 @@ export const FAQ: React.FC = () => {
   return (
     <VStack
       w="100%"
-      minH={{
-        base: "100dvh",
-        md: "90dvh"
-      }}
+      minH={"100dvh"}
       justifyContent="flex-start"
       bgImage={"/faq/faq-backdrop.png"}
       bgColor={"black"}
       bgSize="cover"
       bgPosition="center"
       bgRepeat="no-repeat"
-      gap={10}
+      gap={3}
+      pb={20}
     >
       <VStack spacing={0} mb={4} w="100%" overflowX={"hidden"}>
         <FAQHeader selectedFaqIndices={selectedFaqIndices} />
       </VStack>
       <VStack
-        maxW="1000px"
+        maxW="850px"
         w="100%"
         mx="auto"
         spacing={{
-          base: 8,
+          base: 5,
           md: 5
         }}
       >

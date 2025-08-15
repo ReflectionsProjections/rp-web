@@ -12,7 +12,7 @@ export const FAQHeader: React.FC<{
         src={"/faq/faq-header-left-bars.svg"}
         position="absolute"
         top={{ base: 0, md: -5 }}
-        left={{ base: -0, md: 0 }}
+        left={{ base: -5, md: 0 }}
         h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
         opacity={0.9}
         zIndex={0}
@@ -22,7 +22,7 @@ export const FAQHeader: React.FC<{
         src={"/faq/faq-header-right-bars.svg"}
         position="absolute"
         top={{ base: 0, md: -0 }}
-        right={{ base: -10, sm: -14, md: -90 }}
+        right={{ base: -14, sm: -14, md: -90 }}
         h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
         opacity={0.9}
         zIndex={0}

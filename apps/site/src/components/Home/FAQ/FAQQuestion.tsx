@@ -29,7 +29,7 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
   };
 
   return (
-    <Box w="80%">
+    <Box w="100%" px={10}>
       <Box
         position={"relative"}
         display="flex"
@@ -65,7 +65,8 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
           left={{
             base: isOpen ? "62%" : -1,
             sm: isOpen ? "70%" : -3,
-            md: isOpen ? "72%" : "-20%"
+            md: isOpen ? "72%" : "-20%",
+            lg: isOpen ? "72%" : "-20%"
           }}
           bottom={{ base: 0, md: undefined }}
           borderRadius="lg"
@@ -74,19 +75,19 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
           src={CAR_URLS[index % CAR_URLS.length]}
           alt="Car"
           objectFit="cover"
-          transform={{ md: "scale(0.8)" }}
+          transform={{ md: "scale(0.7)", lg: "scale(0.8)" }}
           zIndex={2}
         />
 
         <Text
-          ml={{ md: isOpen ? 0 : "140px" }}
+          ml={{ md: isOpen ? 0 : "120px", lg: isOpen ? 0 : "140px" }}
           mr={{ md: isOpen ? 28 : 0 }}
           pl={{ base: 1, md: 2 }}
           color="white"
           maxH="100%"
           overflow="hidden"
           fontFamily="ProRacing"
-          fontSize="2xl"
+          fontSize={{ base: "xl", md: "2xl" }}
           zIndex={1}
           transition="all 0.3s ease-in-out"
         >
