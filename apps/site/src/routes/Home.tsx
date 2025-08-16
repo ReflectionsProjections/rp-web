@@ -26,7 +26,7 @@ export default function Home() {
           flexDirection="column"
           h="80%"
           pos="absolute"
-          zIndex={1}
+          zIndex={2}
           right={{ base: "0", sm: "8%" }}
           w={{ base: "100%", sm: "auto" }}
           alignItems="center"
@@ -47,7 +47,11 @@ export default function Home() {
                 alignItems="center"
                 justifyContent="center"
               >
-                <Image w="100%" h="100%" src={item.src} />
+                <Image
+                  w="100%"
+                  h="100%"
+                  src={`/main/footer/socials/${item.src}`}
+                />
               </Link>
             ))}
           </Grid>
@@ -71,17 +75,17 @@ export default function Home() {
           alignSelf="flex-end"
         >
           <Image
-            src="footer_car.svg"
+            src="main/footer/footer_car.svg"
             pos="absolute"
             zIndex={2}
             w="70%"
-            minW="500px"
+            minW="450px"
             bottom="50px"
           />
           {/* ask design for text in svg and/or final svg of car */}
           <Box pos="absolute" zIndex={1} w="100%" height="54px">
             <Image
-              src="footer_bar_left.svg"
+              src="main/footer/footer_bar_left.svg"
               pos="absolute"
               zIndex={3}
               w="55%"
@@ -90,7 +94,7 @@ export default function Home() {
               fit="none"
             />
             <Image
-              src="footer_bar_right.svg"
+              src="main/footer/footer_bar_right.svg"
               pos="absolute"
               zIndex={2}
               w="55%"
@@ -104,9 +108,9 @@ export default function Home() {
         <Image
           display={{ base: "block", sm: "none" }}
           alignSelf="flex-end"
-          src="footer_bar_left.svg"
+          src="main/footer/footer_bar_left.svg"
           pos="absolute"
-          zIndex={3}
+          zIndex={1}
           w="100%"
           h="25vh"
           left="0"
