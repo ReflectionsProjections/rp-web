@@ -4,6 +4,7 @@ import { Home } from "./routes/Home";
 import { Archive } from "./routes/Archive";
 import { FAQ } from "./routes/FAQ";
 import { Navbar } from "./components/Navbar";
+import TeamPage from "./routes/Team";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/archive" element={<Archive />} />
         <Route path="/faq" element={<FAQ />} />
+        <Route path="/team" element={<TeamPage />} />
       </Routes>
     </Router>
   );

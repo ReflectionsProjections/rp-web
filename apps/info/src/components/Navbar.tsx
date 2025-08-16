@@ -17,6 +17,9 @@ export const Navbar = () => {
           <Link as={NavLink} to="/faq">
             FAQ
           </Link>
+          <Link as={NavLink} to="/team">
+            Team
+          </Link>
         </HStack>
       </Flex>
     </Box>
