@@ -160,6 +160,7 @@ const FormLinks = <
                             py={0.5}
                             w="100%"
                             height="fit-content"
+                            maxLength={100}
                           />
                         </HStack>
                         {index < field.value.length && (
