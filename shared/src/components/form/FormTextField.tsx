@@ -42,6 +42,7 @@ const FormTextField = <
             placeholder={placeholder}
             _placeholder={{ color: "#CCCCCC" }}
             backgroundColor="#12131A"
+            maxLength={100}
           />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>

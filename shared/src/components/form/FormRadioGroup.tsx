@@ -102,6 +102,7 @@ const FormRadioGroup = <
                           showCustomInput ? "#12131A" : "transparent"
                         }
                         py={0.5}
+                        maxLength={100}
                       />
                     );
                   }}

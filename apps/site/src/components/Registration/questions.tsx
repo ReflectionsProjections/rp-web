@@ -211,6 +211,7 @@ export const ResumeField = () => (
   <FormFileUpload<RegistrationValues, "resume">
     name="resume"
     label="Resume"
+    accept=".pdf,.docx"
     isRequired
   />
 );

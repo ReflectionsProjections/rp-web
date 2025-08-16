@@ -124,6 +124,7 @@ const FormCheckboxGroup = <
                           py={0.5}
                           h="fit-content"
                           disabled={!showCustomInput}
+                          maxLength={100}
                         />
                       );
                     }}
