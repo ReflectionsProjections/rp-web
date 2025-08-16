@@ -25,6 +25,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   name: TFieldName;
   label: string;
   isRequired?: boolean;
+  accept?: string;
 };
 
 const FileUpload = <
@@ -34,7 +35,8 @@ const FileUpload = <
 >({
   name,
   label,
-  isRequired
+  isRequired,
+  accept = "*"
 }: Props<TValues, TFieldName>) => {
   const toast = useToast();
 
@@ -61,7 +63,7 @@ const FileUpload = <
                   <Input
                     id={name}
                     type="file"
-                    accept="*"
+                    accept={accept}
                     onChange={(e) => {
                       const file = e.currentTarget.files?.[0];
 

@@ -54,6 +54,7 @@ const FormMultiSelectMenu = <
               onBlur={() => void form.setFieldTouched(name, true)}
               options={options}
               placeholder={placeholder}
+              isOptionDisabled={() => selectedOptions.length >= 5}
               menuPortalTarget={document.body}
               menuPosition="fixed"
               styles={{
