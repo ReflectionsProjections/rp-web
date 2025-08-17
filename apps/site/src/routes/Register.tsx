@@ -489,13 +489,14 @@ const Register = () => {
                 <VStack as={Form} color="white" zIndex={3} gap={16}>
                   {mobile ? <MobileForm /> : <DesktopForm />}
                   <IconButton
-                    icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
+                    icon={<MdOutlineKeyboardDoubleArrowRight size="48" />}
                     aria-label="Submit"
                     isLoading={isSubmitting}
                     variant="ghost"
                     type="submit"
                     alignSelf="flex-end"
                     color="white"
+                    size="3xl"
                   />
                 </VStack>
               </RegisterForm>
