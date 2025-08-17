@@ -47,12 +47,7 @@ const FileUpload = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel
-            fontSize="2xl"
-            fontWeight="bold"
-            mb={2}
-            htmlFor={undefined}
-          >
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2} htmlFor={name}>
             {label}
           </FormLabel>
 
@@ -131,6 +126,7 @@ const FileUpload = <
                 </Text>
                 <IconButton
                   icon={<SmallCloseIcon />}
+                  id={name}
                   size="sm"
                   variant="ghost"
                   colorScheme="red"
