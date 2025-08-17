@@ -311,6 +311,22 @@ const Register = () => {
     });
     const progress = useTransform(width, (v) => `calc(${v * 100}% + 48px)`);
 
+    const roadMarkers = Array.from({ length: 12 }, (_, i) => (
+      <Box
+        key={i}
+        position="absolute"
+        left={`${i * 8 + 4}%`}
+        top="50%"
+        transform="translateY(-50%)"
+        width="16px"
+        height="2px"
+        backgroundColor="#ffd700"
+        borderRadius="1px"
+        zIndex={1}
+        opacity={0.8}
+      />
+    ));
+
     return (
       <Box
         height="32px"
@@ -318,20 +334,48 @@ const Register = () => {
         zIndex={4}
         display="flex"
         alignItems="center"
-        backgroundColor="#241f1fff"
+        backgroundColor="#1a1a1a"
         position="fixed"
         top={0}
       >
-        <Box height="100%" width="100%" overflow="hidden" position="relative">
+        <Box
+          height="20px"
+          width="calc(100% - 24px)"
+          overflow="hidden"
+          position="relative"
+          backgroundColor="#333"
+          borderRadius="10px"
+          margin="0 12px"
+          border="1px solid #555"
+        >
+          {/* ROAD */}
           <MotionBox
             height="100%"
             style={{ width: progress }}
-            bg="#a01c1cff"
+            backgroundColor="#666"
             transition="width 0.8s ease-out"
             position="absolute"
             left={0}
             top={0}
+            borderRadius="10px"
           />
+
+          {/* LINE */}
+          <Box
+            position="absolute"
+            top="50%"
+            left={0}
+            right={0}
+            height="1px"
+            transform="translateY(-50%)"
+            backgroundColor="#ffd700"
+            opacity={0.4}
+            zIndex={0}
+          />
+
+          {/* DASHED */}
+          {roadMarkers}
+
           <MotionBox
             position="absolute"
             top="50%"
