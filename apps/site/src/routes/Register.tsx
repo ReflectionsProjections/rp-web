@@ -114,9 +114,15 @@ const Register = () => {
   const toast = useToast();
 
   const processFinalRegistration = (values: RegistrationValues) => {
-    const processedValues = finalRegistrationSchema.validateSync(values, {
-      stripUnknown: true
-    });
+    const processedValues = finalRegistrationSchema.validateSync(
+      {
+        ...values,
+        hasResume: values.resume !== null
+      },
+      {
+        stripUnknown: true
+      }
+    );
 
     if (values.allergiesOther !== "") {
       processedValues.allergies = processedValues.allergies.map((item) =>

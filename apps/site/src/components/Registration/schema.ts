@@ -36,7 +36,7 @@ export const initialValues = (): RegistrationValues => ({
   over18: false
 });
 
-export const finalRegistrationSchema = yup.object({
+const baseRegistrationSchema = yup.object({
   name: yup.string().required("Name is required"),
   email: yup
     .string()
@@ -92,12 +92,16 @@ export const finalRegistrationSchema = yup.object({
     .max(5)
 });
 
-export const registrationSchema = finalRegistrationSchema.shape({
+export const finalRegistrationSchema = baseRegistrationSchema.shape({
+  hasResume: yup.boolean().required()
+});
+
+export const registrationSchema = baseRegistrationSchema.shape({
   genderOther: yup.string().nonNullable(),
   ethnicityOther: yup.string().nonNullable(),
   dietaryOther: yup.string().nonNullable(),
   allergiesOther: yup.string().nonNullable(),
   educationOther: yup.string().nonNullable(),
-  resume: yup.object().required("Please upload a resume"),
+  resume: yup.object().nullable(),
   over18: yup.boolean().oneOf([true], "You must be over 18").required()
 });

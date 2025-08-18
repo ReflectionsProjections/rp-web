@@ -114,6 +114,7 @@ export type Registration = {
   isInterestedMechMania: boolean;
   isInterestedPuzzleBang: boolean;
   tags: string[];
+  hasResume: boolean;
   userId: string;
 };
 
