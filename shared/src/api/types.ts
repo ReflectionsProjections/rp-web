@@ -117,7 +117,13 @@ export type Registration = {
   userId: string;
 };
 
-export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
+export type Role =
+  | "USER"
+  | "STAFF"
+  | "ADMIN"
+  | "CORPORATE"
+  | "PUZZLEBANG"
+  | "PENDING";
 
 export type RoleObject = {
   userId?: string;
@@ -138,7 +144,7 @@ export type CommitteeType =
 export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 
 export type Staff = {
-  userId: string;
+  email: string;
   name: string;
   team: CommitteeType;
   attendances: Record<string, AttendanceType>;
@@ -176,17 +182,17 @@ export interface APIRoutes {
   };
   "/auth": {
     PUT: {
-      request: { email: string; role: Role };
+      request: { userId: string; role: Role };
       response: Role;
     };
     DELETE: {
-      request: { email: string; role: Role };
+      request: { userId: string; role: Role };
       response: never;
     };
   };
   "/auth/:role": {
     GET: {
-      response: RoleObject[];
+      response: string[]; // Array of userIds
     };
   };
   "/auth/login/web": {
@@ -200,6 +206,17 @@ export interface APIRoutes {
       response: RoleObject;
     };
   };
+  "/auth/user/:userId": {
+    GET: {
+      response: RoleObject;
+    };
+  };
+  "/auth/team": {
+    GET: {
+      response: RoleObject[];
+    };
+  };
+
   "/auth/corporate": {
     GET: {
       response: Corporate[];
@@ -296,9 +313,21 @@ export interface APIRoutes {
       };
     };
   };
+  "/staff/": {
+    POST: {
+      request: Omit<Staff, "attendances">;
+      response: Staff;
+    };
+  };
   "/staff": {
     GET: {
       response: Staff[];
+    };
+  };
+  "/staff/:EMAIL": {
+    DELETE: {
+      request: never;
+      response: never;
     };
   };
   "/staff/check-in": {
@@ -347,7 +376,7 @@ export interface APIRoutes {
       response: { data: (string | null)[]; errorCount: number };
     };
   };
-  "/staff/:staffId/attendance": {
+  "/staff/:EMAIL/attendance": {
     POST: {
       request: { meetingId: string; attendanceType: AttendanceType };
       response: Staff;
