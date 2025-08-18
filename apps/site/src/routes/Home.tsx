@@ -1,10 +1,15 @@
-import { FAQ } from "../components/Home/FAQ/FAQ";
+import Landing from "../pages/Landing";
+import Description from "../pages/Description";
+import { FAQ } from "@/components/Home/FAQ/FAQ";
 
-export default function Home() {
+const Home = () => {
   return (
     <>
-      <p>Reflections | Projections 2025</p>
+      <Landing />
+      <Description />
       <FAQ />
     </>
   );
-}
+};
+
+export default Home;
