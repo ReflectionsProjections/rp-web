@@ -464,6 +464,7 @@ const Register = () => {
                 })()
               ])
                 .then(() => {
+                  localStorage.removeItem("jwt");
                   setConfirmation(true);
                 })
                 .catch(() => {
