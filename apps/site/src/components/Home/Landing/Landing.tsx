@@ -57,7 +57,7 @@ export const Landing = () => {
             zIndex={1}
           >
             <img
-              src={titleLeft as string}
+              src={titleLeft}
               alt="Title decoration left"
               style={{ height: "100%", width: "auto" }}
             />
@@ -73,7 +73,7 @@ export const Landing = () => {
             zIndex={1}
           >
             <img
-              src={titleRight as string}
+              src={titleRight}
               alt="Title decoration right"
               style={{ height: "100%", width: "auto" }}
             />

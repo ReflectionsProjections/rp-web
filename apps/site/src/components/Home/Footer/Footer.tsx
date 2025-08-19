@@ -60,6 +60,8 @@ export const Footer = () => {
             color="white"
             mt={{ base: 6, lg: 12 }}
             w="100%"
+            fontFamily="ProRacing"
+            fontSize={{ base: "sm", md: "md" }}
             textAlign={{ base: "center", sm: "right" }}
           >
             © 2025 by Reflections | Projections

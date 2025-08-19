@@ -9,12 +9,11 @@ import blueCar from "@/assets/Description/cars/blue.svg";
 import blueTrail from "@/assets/Description/cars/blueTrail.svg";
 
 const MotionBox = motion(Box);
-const MotionImg = motion("img");
 
 const CARS = [
   {
-    car: blueCar as string,
-    trail: blueTrail as string,
+    car: blueCar,
+    trail: blueTrail,
     from: {
       desktop: { left: "33%", top: "-10%", rot: "-25deg", opacity: 0 },
       mobile: { left: "20%", top: "-10%", rot: "-25deg", opacity: 0 }
@@ -30,8 +29,8 @@ const CARS = [
     trailTransform: "rotate(2deg) translateX(-5%) translateY(-8%)"
   },
   {
-    car: redCar as string,
-    trail: redTrail as string,
+    car: redCar,
+    trail: redTrail,
     from: {
       desktop: { left: "57%", top: "-10%", rot: "15deg", opacity: 0 },
       mobile: { left: "50%", top: "-10%", rot: "15deg", opacity: 0 }
@@ -47,8 +46,8 @@ const CARS = [
     trailTransform: "rotate(3deg) translateX(-5%) translateY(4%)"
   },
   {
-    car: greenCar as string,
-    trail: greenTrail as string,
+    car: greenCar,
+    trail: greenTrail,
     from: {
       desktop: { left: "65%", top: "-10%", rot: "-10deg", opacity: 0 },
       mobile: { left: "80%", top: "-10%", rot: "-10deg", opacity: 0 }
@@ -122,7 +121,8 @@ export const Description = () => {
               delay: c.delay
             }}
           >
-            <MotionImg
+            <MotionBox
+              as="img"
               src={c.trail}
               style={{
                 position: "absolute",
@@ -138,8 +138,8 @@ export const Description = () => {
                 WebkitMaskImage:
                   "linear-gradient(to top, black var(--pct), transparent var(--pct))"
               }}
-              initial={{ "--pct": "0%" }}
-              animate={inView ? { "--pct": "100%" } : {}}
+              initial={{ "--pct": "0%" } as React.CSSProperties}
+              animate={inView ? { "--pct": "100%" } as React.CSSProperties : {}}
               transition={{ delay: c.delay + 0.1, duration: 0.8 }}
             />
             <Box as="img" src={c.car} position="relative" w="100%" zIndex={1} />
@@ -150,11 +150,11 @@ export const Description = () => {
       {/* Text card */}
       <MotionBox
         position={{ base: "relative", md: "absolute" }}
-        top={{ base: "auto", md: "50%" }}
-        right={{ base: "auto", md: "8%" }}
+        top={isMobile ? "auto" : "34%"}
+        right={{ base: "auto", md: "5%" }}
         transform={{ base: "none", md: "translateY(-50%)" }}
         zIndex={1}
-        maxW={isMobile ? "100vw" : "520px"}
+        maxW={isMobile ? "100vw" : "52vw"}
         mx={{ base: "auto", md: 0 }}
         initial={{ x: "20%", opacity: 0 }}
         animate={inView ? { x: 0, opacity: 1 } : {}}
@@ -164,9 +164,10 @@ export const Description = () => {
           color="white"
           borderRadius="2xl"
           boxShadow="xl"
-          p={{ base: 6, md: 8 }}
+          fontFamily="Racing Sans One"
+          p={{ base: 8, md: 10 }}
         >
-          <Heading mb={4} fontSize={{ base: "2xl", md: "3xl" }}>
+          <Heading mb={4} fontFamily="ProRacingSlant" letterSpacing={1.5} fontSize={{ base: "3xl", md: "4xl" }}>
             Welcome to R|P!
           </Heading>
           <Text mb={4} fontSize={{ base: "lg", md: "xl" }} lineHeight="1.8">
