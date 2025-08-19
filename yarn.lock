@@ -1450,6 +1450,7 @@ __metadata:
     react-icons: "npm:^5.5.0"
     react-qrcode-logo: "npm:^3.0.0"
     react-router-dom: "npm:^7.5.2"
+    typescript: "npm:*"
     vite: "npm:^5.2.0"
     yup: "npm:^1.6.1"
   languageName: unknown
@@ -1478,6 +1479,7 @@ __metadata:
     framer-motion: "npm:11.3.23"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    typescript: "npm:*"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -1507,6 +1509,7 @@ __metadata:
     react-icons: "npm:^5.5.0"
     react-router-dom: "npm:^7.4.1"
     tailwindcss: "npm:^4.1.4"
+    typescript: "npm:*"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -1516,6 +1519,7 @@ __metadata:
   resolution: "@rp/shared@workspace:shared"
   dependencies:
     tsup: "npm:^8.4.0"
+    typescript: "npm:*"
   peerDependencies:
     "@chakra-ui/icons": ^2.1.1
     "@chakra-ui/react": ^2.8.2
@@ -1549,6 +1553,7 @@ __metadata:
     lottie-react: "npm:^2.4.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    typescript: "npm:*"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -1587,6 +1592,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-icons: "npm:^5.2.1"
     react-router-dom: "npm:^6.23.0"
+    typescript: "npm:*"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -5038,7 +5044,7 @@ __metadata:
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.0"
     prettier: "npm:^3.5.3"
-    typescript: "npm:^5.2.2"
+    typescript: "npm:*"
     typescript-eslint: "npm:^8.27.0"
   languageName: unknown
   linkType: soft
