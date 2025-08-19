@@ -113,14 +113,14 @@ const AttendanceBox = () => {
   };
 
   const handleStaffAttendance = (
-    staffId: string,
+    staffEmail: string,
     meetingId: string,
     attendanceType: AttendanceType
   ) => {
     setUpdating(true);
 
     const request = api
-      .post(path("/staff/:staffId/attendance", { staffId }), {
+      .post(path("/staff/:EMAIL/attendance", { EMAIL: staffEmail }), {
         meetingId,
         attendanceType
       })
@@ -128,7 +128,7 @@ const AttendanceBox = () => {
         mutateStaff(
           (previous) =>
             previous?.map((member) =>
-              member.userId === response.data.userId ? response.data : member
+              member.email === response.data.email ? response.data : member
             ) ?? [response.data]
         );
       })
@@ -371,11 +371,15 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
 
   const SelectAttendance = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    staffId: string,
+    staffEmail: string,
     attendanceType: AttendanceType
   ) => {
     event.stopPropagation();
-    handleStaffAttendance(staffId, selectedMeeting.meetingId, attendanceType);
+    handleStaffAttendance(
+      staffEmail,
+      selectedMeeting.meetingId,
+      attendanceType
+    );
   };
 
   useEffect(() => {
@@ -491,11 +495,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                         <MenuItem
                           bg="transparent"
                           onClick={(event) =>
-                            SelectAttendance(
-                              event,
-                              staffMember.userId,
-                              "ABSENT"
-                            )
+                            SelectAttendance(event, staffMember.email, "ABSENT")
                           }
                         >
                           🔴 Absent
@@ -506,7 +506,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                           onClick={(event) =>
                             SelectAttendance(
                               event,
-                              staffMember.userId,
+                              staffMember.email,
                               "PRESENT"
                             )
                           }
@@ -519,7 +519,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                           onClick={(event) =>
                             SelectAttendance(
                               event,
-                              staffMember.userId,
+                              staffMember.email,
                               "EXCUSED"
                             )
                           }
