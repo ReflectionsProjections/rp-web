@@ -71,8 +71,7 @@ const FileUpload = <
                         if (maxFileSize && file.size > maxFileSize) {
                           toast({
                             title: "File too large",
-                            description:
-                              "Please select a file smaller than 10 MB",
+                            description: `Please select a file smaller than ${Math.round(maxFileSize / (1024 * 1024))} MB`,
                             status: "error"
                           });
                           e.currentTarget.value = "";
