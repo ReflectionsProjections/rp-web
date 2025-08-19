@@ -304,12 +304,33 @@ const Register = () => {
   };
 
   const ProgressBar = () => {
-    const width = useSpring(scrollYProgress, {
+    const [hasScrolled, setHasScrolled] = useState(false);
+
+    useEffect(() => {
+      const handleScroll = () => {
+        if (window.scrollY > 0) {
+          setHasScrolled(true);
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    const controlledProgress = useTransform(scrollYProgress, (value) => {
+      return hasScrolled ? value : 0;
+    });
+
+    const width = useSpring(controlledProgress, {
       stiffness: 100,
       damping: 30,
       restDelta: 0.001
     });
-    const progress = useTransform(width, (v) => `calc(${v * 100}% + 48px)`);
+    const initialProgress = "48px";
+    const progress = useTransform(
+      width,
+      (v) => `calc(${v * 100}% + ${initialProgress})`
+    );
 
     const roadMarkers = Array.from({ length: 12 }, (_, i) => (
       <Box
@@ -379,6 +400,7 @@ const Register = () => {
           <MotionBox
             position="absolute"
             top="50%"
+            initial={{ left: initialProgress }}
             style={{ left: progress }}
             transform="translateY(-50%)"
             zIndex={2}
