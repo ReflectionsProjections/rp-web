@@ -1578,6 +1578,7 @@ __metadata:
     formik: "npm:*"
     framer-motion: "npm:*"
     globals: "npm:*"
+    lottie-react: "npm:^2.4.1"
     prettier: "npm:*"
     react: "npm:*"
     react-dom: "npm:*"
