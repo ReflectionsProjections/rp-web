@@ -139,7 +139,9 @@ export const Description = () => {
                   "linear-gradient(to top, black var(--pct), transparent var(--pct))"
               }}
               initial={{ "--pct": "0%" } as React.CSSProperties}
-              animate={inView ? { "--pct": "100%" } as React.CSSProperties : {}}
+              animate={
+                inView ? ({ "--pct": "100%" } as React.CSSProperties) : {}
+              }
               transition={{ delay: c.delay + 0.1, duration: 0.8 }}
             />
             <Box as="img" src={c.car} position="relative" w="100%" zIndex={1} />
@@ -167,7 +169,12 @@ export const Description = () => {
           fontFamily="Racing Sans One"
           p={{ base: 8, md: 10 }}
         >
-          <Heading mb={4} fontFamily="ProRacingSlant" letterSpacing={1.5} fontSize={{ base: "3xl", md: "4xl" }}>
+          <Heading
+            mb={4}
+            fontFamily="ProRacingSlant"
+            letterSpacing={1.5}
+            fontSize={{ base: "3xl", md: "4xl" }}
+          >
             Welcome to R|P!
           </Heading>
           <Text mb={4} fontSize={{ base: "lg", md: "xl" }} lineHeight="1.8">
