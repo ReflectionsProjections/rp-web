@@ -2063,6 +2063,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@xmldom/xmldom@npm:^0.8.3":
+  version: 0.8.10
+  resolution: "@xmldom/xmldom@npm:0.8.10"
+  checksum: 10c0/c7647c442502720182b0d65b17d45d2d95317c1c8c497626fe524bda79b4fb768a9aa4fae2da919f308e7abcff7d67c058b102a9d641097e9a57f0b80187851f
+  languageName: node
+  linkType: hard
+
 "@yudiel/react-qr-scanner@npm:^2.2.1":
   version: 2.2.1
   resolution: "@yudiel/react-qr-scanner@npm:2.2.1"
@@ -3235,6 +3242,15 @@ __metadata:
     debug:
       optional: true
   checksum: 10c0/5829165bd112c3c0e82be6c15b1a58fa9dcfaede3b3c54697a82fe4a62dd5ae5e8222956b448d2f98e331525f05d00404aba7d696de9e761ef6e42fdc780244f
+  languageName: node
+  linkType: hard
+
+"fonteditor-core@npm:^2.6.1":
+  version: 2.6.1
+  resolution: "fonteditor-core@npm:2.6.1"
+  dependencies:
+    "@xmldom/xmldom": "npm:^0.8.3"
+  checksum: 10c0/92147277bc124794aaa34fda9c70b82acf29b49bfbb82ad375189119415797cf63ae223144b430e6a230f1112f7f4e2768b9032066dcb40077354ef9b0080c17
   languageName: node
   linkType: hard
 
@@ -5047,6 +5063,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "rp-web@workspace:."
   dependencies:
+    fonteditor-core: "npm:^2.6.1"
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.0"
   languageName: unknown
