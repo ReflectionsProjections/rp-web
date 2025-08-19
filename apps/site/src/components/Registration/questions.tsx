@@ -213,6 +213,7 @@ export const ResumeField = () => (
     label="Resume"
     helperText="Your resume will be shared with our corporate sponsors. You may return to this page at any time to update it."
     accept=".pdf,.docx"
+    maxFileSize={10 * 1024 * 1024}
   />
 );
 
