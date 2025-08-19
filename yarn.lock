@@ -1450,7 +1450,7 @@ __metadata:
     react-icons: "npm:^5.5.0"
     react-qrcode-logo: "npm:^3.0.0"
     react-router-dom: "npm:^7.5.2"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
     yup: "npm:^1.6.1"
   languageName: unknown
@@ -1479,7 +1479,7 @@ __metadata:
     framer-motion: "npm:11.3.23"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -1509,7 +1509,7 @@ __metadata:
     react-icons: "npm:^5.5.0"
     react-router-dom: "npm:^7.4.1"
     tailwindcss: "npm:^4.1.4"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -1519,7 +1519,7 @@ __metadata:
   resolution: "@rp/shared@workspace:shared"
   dependencies:
     tsup: "npm:^8.4.0"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
   peerDependencies:
     "@chakra-ui/icons": ^2.1.1
     "@chakra-ui/react": ^2.8.2
@@ -1553,7 +1553,7 @@ __metadata:
     lottie-react: "npm:^2.4.1"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
   languageName: unknown
   linkType: soft
@@ -5044,7 +5044,7 @@ __metadata:
     husky: "npm:^9.1.7"
     lint-staged: "npm:^15.5.0"
     prettier: "npm:^3.5.3"
-    typescript: "npm:*"
+    typescript: "npm:^5.2.2"
     typescript-eslint: "npm:^8.27.0"
   languageName: unknown
   linkType: soft
@@ -5578,6 +5578,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"typescript@npm:*":
+  version: 5.9.2
+  resolution: "typescript@npm:5.9.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/cd635d50f02d6cf98ed42de2f76289701c1ec587a363369255f01ed15aaf22be0813226bff3c53e99d971f9b540e0b3cc7583dbe05faded49b1b0bed2f638a18
+  languageName: node
+  linkType: hard
+
 "typescript@npm:^5.2.2":
   version: 5.8.3
   resolution: "typescript@npm:5.8.3"
@@ -5585,6 +5595,16 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/5f8bb01196e542e64d44db3d16ee0e4063ce4f3e3966df6005f2588e86d91c03e1fb131c2581baf0fb65ee79669eea6e161cd448178986587e9f6844446dbb48
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@npm%3A*#optional!builtin<compat/typescript>":
+  version: 5.9.2
+  resolution: "typescript@patch:typescript@npm%3A5.9.2#optional!builtin<compat/typescript>::version=5.9.2&hash=5786d5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 10c0/34d2a8e23eb8e0d1875072064d5e1d9c102e0bdce56a10a25c0b917b8aa9001a9cf5c225df12497e99da107dc379360bc138163c66b55b95f5b105b50578067e
   languageName: node
   linkType: hard
 
