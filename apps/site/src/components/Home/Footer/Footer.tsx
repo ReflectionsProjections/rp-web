@@ -24,8 +24,9 @@ export const Footer = () => {
       >
         <Flex
           flexDirection="column"
-          h="80%"
+          h="inherit"
           pos="absolute"
+          pb="90px"
           zIndex={2}
           right={{ base: "0", sm: "8%" }}
           w={{ base: "100%", sm: "auto" }}
@@ -80,6 +81,7 @@ export const Footer = () => {
             zIndex={2}
             w="70%"
             minW="450px"
+            maxH="250px"
             bottom="50px"
           />
           {/* ask design for text in svg and/or final svg of car */}
@@ -91,7 +93,7 @@ export const Footer = () => {
               w="55%"
               h="100%"
               left="0"
-              fit="none"
+              fit="cover"
             />
             <Image
               src="main/footer/footer_bar_right.svg"
