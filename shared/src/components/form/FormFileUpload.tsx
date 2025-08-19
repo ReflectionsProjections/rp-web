@@ -4,6 +4,7 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
+  FormHelperText,
   FormLabel,
   HStack,
   Icon,
@@ -26,6 +27,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   label: string;
   isRequired?: boolean;
   accept?: string;
+  helperText?: string;
 };
 
 const FileUpload = <
@@ -36,7 +38,8 @@ const FileUpload = <
   name,
   label,
   isRequired,
-  accept = "*"
+  accept = "*",
+  helperText
 }: Props<TValues, TFieldName>) => {
   const toast = useToast();
 
@@ -47,12 +50,7 @@ const FileUpload = <
           isInvalid={!!form.errors[name] && !!form.touched[name]}
           isRequired={isRequired}
         >
-          <FormLabel
-            fontSize="2xl"
-            fontWeight="bold"
-            mb={2}
-            htmlFor={undefined}
-          >
+          <FormLabel fontSize="2xl" fontWeight="bold" mb={2} htmlFor={name}>
             {label}
           </FormLabel>
 
@@ -131,6 +129,7 @@ const FileUpload = <
                 </Text>
                 <IconButton
                   icon={<SmallCloseIcon />}
+                  id={name}
                   size="sm"
                   variant="ghost"
                   colorScheme="red"
@@ -145,6 +144,12 @@ const FileUpload = <
               </Box>
             )}
           </HStack>
+
+          {helperText && (
+            <FormHelperText mt={3} color="gray.300" fontSize="lg">
+              {helperText}
+            </FormHelperText>
+          )}
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>
         </FormControl>

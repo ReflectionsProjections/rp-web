@@ -114,9 +114,15 @@ const Register = () => {
   const toast = useToast();
 
   const processFinalRegistration = (values: RegistrationValues) => {
-    const processedValues = finalRegistrationSchema.validateSync(values, {
-      stripUnknown: true
-    });
+    const processedValues = finalRegistrationSchema.validateSync(
+      {
+        ...values,
+        hasResume: values.resume !== null
+      },
+      {
+        stripUnknown: true
+      }
+    );
 
     if (values.allergiesOther !== "") {
       processedValues.allergies = processedValues.allergies.map((item) =>
@@ -458,6 +464,7 @@ const Register = () => {
                 })()
               ])
                 .then(() => {
+                  localStorage.removeItem("jwt");
                   setConfirmation(true);
                 })
                 .catch(() => {
@@ -489,13 +496,14 @@ const Register = () => {
                 <VStack as={Form} color="white" zIndex={3} gap={16}>
                   {mobile ? <MobileForm /> : <DesktopForm />}
                   <IconButton
-                    icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
+                    icon={<MdOutlineKeyboardDoubleArrowRight size="48" />}
                     aria-label="Submit"
                     isLoading={isSubmitting}
                     variant="ghost"
                     type="submit"
                     alignSelf="flex-end"
                     color="white"
+                    size="3xl"
                   />
                 </VStack>
               </RegisterForm>
