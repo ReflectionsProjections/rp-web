@@ -151,6 +151,6 @@ export const Landing = () => {
       </VStack>
     </Box>
   );
-}
+};
 
 export default Landing;

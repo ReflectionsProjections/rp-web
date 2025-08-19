@@ -3,6 +3,7 @@ import Description from "../components/Home/Landing/Description";
 import { FAQ } from "@/components/Home/FAQ/FAQ";
 import Schedule from "@/components/Home/Schedule/Schedule";
 import Footer from "@/components/Home/Footer/Footer";
+import SponsorSection from "@/components/Home/Sponsors/SponsorSection";
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Description />
       <Schedule />
       <FAQ />
+      <SponsorSection />
       <Footer />
     </>
   );

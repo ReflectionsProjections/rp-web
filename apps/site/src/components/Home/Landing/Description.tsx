@@ -86,8 +86,8 @@ export const Description = () => {
         w={isMobile ? "100vw" : "50vw"}
         h={isMobile ? "50vh" : "100vh"}
         zIndex={0}
-      // You can now easily move all cars as a group:
-      // example: top={{ base: '20px', md: '0' }} left="5%" transform="scale(0.9)"
+        // You can now easily move all cars as a group:
+        // example: top={{ base: '20px', md: '0' }} left="5%" transform="scale(0.9)"
       >
         {CARS.map((c, i) => (
           <MotionBox
@@ -106,13 +106,13 @@ export const Description = () => {
             animate={
               inView
                 ? {
-                  left: isMobile ? c.to.mobile.left : c.to.desktop.left,
-                  top: isMobile ? c.to.mobile.top : c.to.desktop.top,
-                  opacity: isMobile
-                    ? c.to.mobile.opacity
-                    : c.to.desktop.opacity,
-                  transform: `rotate(${isMobile ? c.to.mobile.rot : c.to.desktop.rot})`
-                }
+                    left: isMobile ? c.to.mobile.left : c.to.desktop.left,
+                    top: isMobile ? c.to.mobile.top : c.to.desktop.top,
+                    opacity: isMobile
+                      ? c.to.mobile.opacity
+                      : c.to.desktop.opacity,
+                    transform: `rotate(${isMobile ? c.to.mobile.rot : c.to.desktop.rot})`
+                  }
                 : {}
             }
             transition={{
@@ -183,6 +183,6 @@ export const Description = () => {
       </MotionBox>
     </Box>
   );
-}
+};
 
 export default Description;
