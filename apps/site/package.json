@@ -19,6 +19,7 @@
     "chakra-react-select": "*",
     "formik": "*",
     "framer-motion": "*",
+    "lottie-react": "^2.4.1",
     "react": "*",
     "react-dom": "*"
   },
