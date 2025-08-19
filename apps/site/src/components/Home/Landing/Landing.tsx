@@ -13,7 +13,7 @@ import titleRight from "@/assets/Landing/titleRight.svg";
 import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
 
-export default function Landing() {
+export const Landing = () => {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
   const [isSmall] = useMediaQuery("(max-width: 500px)");
 
@@ -152,3 +152,5 @@ export default function Landing() {
     </Box>
   );
 }
+
+export default Landing;

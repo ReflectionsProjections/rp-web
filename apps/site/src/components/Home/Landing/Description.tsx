@@ -65,7 +65,7 @@ const CARS = [
   }
 ];
 
-export default function Description() {
+export const Description = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
   const [isMobile] = useMediaQuery("(max-width: 1000px)");
@@ -86,8 +86,8 @@ export default function Description() {
         w={isMobile ? "100vw" : "50vw"}
         h={isMobile ? "50vh" : "100vh"}
         zIndex={0}
-        // You can now easily move all cars as a group:
-        // example: top={{ base: '20px', md: '0' }} left="5%" transform="scale(0.9)"
+      // You can now easily move all cars as a group:
+      // example: top={{ base: '20px', md: '0' }} left="5%" transform="scale(0.9)"
       >
         {CARS.map((c, i) => (
           <MotionBox
@@ -106,13 +106,13 @@ export default function Description() {
             animate={
               inView
                 ? {
-                    left: isMobile ? c.to.mobile.left : c.to.desktop.left,
-                    top: isMobile ? c.to.mobile.top : c.to.desktop.top,
-                    opacity: isMobile
-                      ? c.to.mobile.opacity
-                      : c.to.desktop.opacity,
-                    transform: `rotate(${isMobile ? c.to.mobile.rot : c.to.desktop.rot})`
-                  }
+                  left: isMobile ? c.to.mobile.left : c.to.desktop.left,
+                  top: isMobile ? c.to.mobile.top : c.to.desktop.top,
+                  opacity: isMobile
+                    ? c.to.mobile.opacity
+                    : c.to.desktop.opacity,
+                  transform: `rotate(${isMobile ? c.to.mobile.rot : c.to.desktop.rot})`
+                }
                 : {}
             }
             transition={{
@@ -184,3 +184,5 @@ export default function Description() {
     </Box>
   );
 }
+
+export default Description;

@@ -1,5 +1,5 @@
-import Landing from "../pages/Landing";
-import Description from "../pages/Description";
+import Landing from "../components/Home/Landing/Landing";
+import Description from "../components/Home/Landing/Description";
 import { FAQ } from "@/components/Home/FAQ/FAQ";
 
 const Home = () => {
