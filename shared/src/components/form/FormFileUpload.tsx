@@ -27,6 +27,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   label: string;
   isRequired?: boolean;
   accept?: string;
+  maxFileSize?: number;
   helperText?: string;
 };
 
@@ -39,6 +40,7 @@ const FileUpload = <
   label,
   isRequired,
   accept = "*",
+  maxFileSize,
   helperText
 }: Props<TValues, TFieldName>) => {
   const toast = useToast();
@@ -64,6 +66,18 @@ const FileUpload = <
                     accept={accept}
                     onChange={(e) => {
                       const file = e.currentTarget.files?.[0];
+
+                      if (file) {
+                        if (maxFileSize && file.size > maxFileSize) {
+                          toast({
+                            title: "File too large",
+                            description: `Please select a file smaller than ${Math.round(maxFileSize / (1024 * 1024))} MB`,
+                            status: "error"
+                          });
+                          e.currentTarget.value = "";
+                          return;
+                        }
+                      }
 
                       void form.setFieldValue(
                         name,
