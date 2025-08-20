@@ -171,14 +171,15 @@ function RaceTrackLocation({
         h="100%"
       >
         <Tooltip
-          label={dayEvent.location}
+          label={dayEvent.location || "Siebel Center for CS"}
           placement="bottom"
           hasArrow
           openDelay={200}
           closeDelay={100}
           isOpen={hovered}
-          fontWeight={"bold"}
           fontFamily="Magistral"
+          fontSize="lg"
+          fontWeight={600}
           hideBelow={"md"} // Hide on mobile to prevent the tooltip from being visible in the modal
         >
           <Box

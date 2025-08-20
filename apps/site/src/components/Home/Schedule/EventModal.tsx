@@ -68,7 +68,7 @@ export default function EventModal({
           <EventCard event={event} />
 
           <Text
-            fontSize="lg"
+            fontSize="xl"
             fontWeight="bold"
             lineHeight="1.5"
             whiteSpace="pre-wrap"
@@ -111,7 +111,7 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
           <Icon as={FaClock} boxSize={5} mr={2} />
           <Text
-            fontSize="lg"
+            fontSize="xl"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
@@ -126,7 +126,7 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaMapPin} boxSize={5} mr={2} />
           <Text
-            fontSize="lg"
+            fontSize="xl"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
@@ -134,7 +134,7 @@ function EventCard({ event }: { event: Event }) {
             letterSpacing="0.5px"
             fontWeight="bold"
           >
-            {event.location}
+            {event.location || "Siebel CS"}
           </Text>
         </Flex>
       </Flex>
@@ -149,7 +149,7 @@ function EventCard({ event }: { event: Event }) {
         <Flex flex="1 1 0%" alignItems="center" mb={{ base: 2, md: 0 }}>
           <Icon as={EVENT_ICONS[event.eventType] ?? FaTag} boxSize={5} mr={2} />
           <Text
-            fontSize="lg"
+            fontSize="xl"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
@@ -157,13 +157,13 @@ function EventCard({ event }: { event: Event }) {
             fontWeight="bold"
             letterSpacing="0.5px"
           >
-            {event.eventType}
+            {capitalCase(event.eventType)}
           </Text>
         </Flex>
         <Flex flex="1 1 0%" alignItems="center">
           <Icon as={FaAward} boxSize={5} mr={2} />
           <Text
-            fontSize="lg"
+            fontSize="xl"
             mb={0.5}
             whiteSpace="normal"
             wordBreak="break-all"
@@ -210,4 +210,11 @@ function CheckerBoardPattern() {
       backgroundSize="20px 20px"
     />
   );
+}
+
+function capitalCase(text: string) {
+  if (text.length === 0) {
+    return "";
+  }
+  return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
 }

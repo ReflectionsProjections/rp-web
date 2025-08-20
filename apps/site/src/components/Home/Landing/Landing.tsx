@@ -1,155 +1,260 @@
+import animationData from "@/assets/Landing/homeScreen1.json";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   HStack,
   Text,
-  Button,
   useMediaQuery,
   VStack
 } from "@chakra-ui/react";
-import Player from "lottie-react";
-import animationData from "@/assets/Landing/homeScreen1.json";
-import titleLeft from "@/assets/Landing/titleLeft.svg";
-import titleRight from "@/assets/Landing/titleRight.svg";
-import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
+import "@fontsource/roboto-slab";
+import { motion, useAnimation, useInView } from "framer-motion";
+import Player from "lottie-react";
+import { useEffect, useRef } from "react";
+
+const MotionBox = motion(Box);
+const MotionText = motion(Text);
+const MotionVStack = motion(VStack);
 
 export const Landing = () => {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
   const [isSmall] = useMediaQuery("(max-width: 500px)");
 
-  // responsive separator height (roughly tuned to text size)
-  const sepH = isSmall ? "42px" : isMobile ? "90px" : "150px";
+  // compute separator height
+  const sepH = isSmall ? 42 : isMobile ? 90 : 150;
+
+  // refs & animation controls
+  const barRef = useRef(null);
+  const inView = useInView(barRef, { once: true });
+  const barCtrl = useAnimation();
+  const refCtrl = useAnimation();
+  const projCtrl = useAnimation();
+
+  const handleLoad = async () => {
+    // 1) grow the bar
+    await barCtrl.start({
+      height: sepH,
+      transition: { duration: 0.8, ease: "easeInOut" }
+    });
+
+    // 2) slide in "reflections" from left
+    await refCtrl.start({
+      x: -20,
+      transition: { duration: 0.8, ease: "easeOut" }
+    });
+
+    // 3) slide in "projections" from right
+    await projCtrl.start({
+      x: 20,
+      transition: { duration: 0.8, ease: "easeOut" }
+    });
+  };
+
+  useEffect(() => {
+    if (!inView) return;
+    void handleLoad();
+  }, [inView, barCtrl, refCtrl, projCtrl, sepH]);
 
   return (
-    <Box position="relative" w="100vw" h="100vh" overflow="hidden">
-      <Box position="absolute" inset={0}>
-        <Player
-          autoplay
-          loop
-          animationData={animationData}
-          rendererSettings={{ preserveAspectRatio: "xMidYMid slice" }}
-          style={{ width: "100%", height: "100%", pointerEvents: "none" }}
-        />
-      </Box>
-
+    <Box position="relative" w="100dvw" h="100dvh" overflow="hidden">
+      {/* background animation */}
+      <LandingBackground />
       <VStack
         position="absolute"
         left="50%"
         top={isMobile ? "55vh" : "45%"}
         transform="translate(-50%, -50%)"
+        spacing={6}
+        zIndex={2}
       >
-        <Box
-          w={{ base: "95vw", md: "90vw" }}
-          maxW="1400px"
-          bg="white"
-          p={{ base: 4, md: 8 }}
-          boxShadow="lg"
-          zIndex={2}
-          position="relative"
-        >
-          <Box
-            position="absolute"
-            left={{ base: "0px", md: "0px" }}
-            bottom={{ base: "0px", md: "0px" }}
-            top={{ base: "0px", md: "0px" }}
-            w="auto"
-            h="auto"
-            zIndex={1}
-          >
-            <img
-              src={titleLeft}
-              alt="Title decoration left"
-              style={{ height: "100%", width: "auto" }}
-            />
-          </Box>
-
-          <Box
-            position="absolute"
-            right={{ base: "0px", md: "0px" }}
-            bottom={{ base: "0px", md: "0px" }}
-            top={{ base: "0px", md: "0px" }}
-            w="auto"
-            h="auto"
-            zIndex={1}
-          >
-            <img
-              src={titleRight}
-              alt="Title decoration right"
-              style={{ height: "100%", width: "auto" }}
-            />
-          </Box>
-
-          <Box
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            position="relative"
-            zIndex={2}
-          >
-            <HStack
-              justifyContent="center"
-              spacing="14px"
-              textAlign="center"
-              align="center"
+        {/* headline + animated bar */}
+        <Box position="relative" textAlign="center" gap={0}>
+          <HStack justify="center" alignItems="center" gap={0}>
+            {/* portal container for reflections */}
+            <Box
+              display="flex"
+              overflow="hidden"
+              h={`${sepH}px`}
+              w="500px"
+              alignItems="center"
+              justifyContent="flex-end"
             >
-              <Text
-                fontSize={isSmall ? "20" : isMobile ? "33" : "46"}
+              <MotionText
+                fontSize="6xl"
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
-                color="black"
+                color="white"
+                style={{ x: "100%" }}
+                animate={refCtrl}
+                textAlign="right"
               >
                 reflections
-              </Text>
+              </MotionText>
+            </Box>
 
-              <Box
-                as="span"
-                w={isSmall ? "2px" : isMobile ? "4px" : "6px"}
-                h={sepH}
-                bg="black"
-                borderRadius="1px"
-                display="inline-block"
-              />
+            {/* the separator bar itself */}
+            <MotionBox
+              ref={barRef}
+              as="span"
+              display="inline-block"
+              w={isSmall ? "2px" : isMobile ? "4px" : "6px"}
+              bg="white"
+              borderRadius="1px"
+              height={0} // start collapsed
+              animate={barCtrl}
+            />
 
-              <Text
-                fontSize={isSmall ? "20" : isMobile ? "33" : "46"}
+            {/* portal container for projections */}
+            <Box
+              display="flex"
+              overflow="hidden"
+              h={`${sepH}px`}
+              w="500px"
+              alignItems="center"
+            >
+              <MotionText
+                fontSize="6xl"
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
-                color="black"
+                color="white"
+                style={{ x: "-100%" }}
+                animate={projCtrl}
+                textAlign="left"
               >
                 projections
-              </Text>
-            </HStack>
-          </Box>
+              </MotionText>
+            </Box>
+          </HStack>
+
+          {/* subdate */}
+          <MotionText
+            fontSize="5xl"
+            fontFamily="Magistral"
+            color="gray.200"
+            fontWeight="600"
+            mt={5}
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 3, duration: 0.6, ease: "easeOut" }}
+          >
+            September 18–22, 2025
+          </MotionText>
         </Box>
 
-        <Button
-          as="a"
-          href="/register"
-          zIndex={2}
-          size={isSmall ? "md" : "lg"}
-          px={isSmall ? 8 : 10}
-          py={isSmall ? 8 : 10}
-          mt={isMobile ? "35vh" : "13vh"}
-          bg="#EAA001"
-          color="black"
-          rounded="lg"
-          _hover={{ bg: "gray.800", color: "white" }}
-          _active={{ bg: "#EAA001" }}
-          boxShadow="md"
+        {/* register button */}
+        <MotionBox
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3.5, duration: 0.6, ease: "easeOut" }}
         >
-          <Text
-            fontSize={isSmall ? "30" : isMobile ? "33" : "36"}
-            fontWeight="800"
-            fontStyle="italic"
-            letterSpacing="0.01em"
+          <Button
+            as="a"
+            href="/register"
+            size={isSmall ? "md" : "lg"}
+            px={isSmall ? 8 : 10}
+            py={isSmall ? 8 : 10}
+            bg="#f5bc43ff"
+            color="black"
+            rounded="lg"
+            _hover={{ bg: "gray.800", color: "white" }}
+            _active={{ bg: "#EAA001" }}
+            boxShadow="lg"
+            fontFamily="ProRacing"
           >
-            Register
-          </Text>
-        </Button>
+            <Text
+              fontSize={isSmall ? "30px" : isMobile ? "33px" : "36px"}
+              fontWeight="800"
+              fontStyle="italic"
+              letterSpacing="0.01em"
+            >
+              REGISTER
+            </Text>
+          </Button>
+        </MotionBox>
       </VStack>
+
+      {/* bouncing chevron + learn more */}
+      <MotionVStack
+        position="absolute"
+        bottom="30px"
+        left="50%"
+        transform="translateX(-50%)"
+        spacing={0}
+        zIndex={2}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 4, duration: 0.8, ease: "easeInOut" }}
+      >
+        <Text
+          color="white"
+          fontSize="4xl"
+          fontFamily="Magistral"
+          fontWeight="600"
+          mb={-2}
+        >
+          Learn more
+        </Text>
+        <MotionBox
+          animate={{ y: [0, 10, 0] }}
+          transition={{
+            repeat: Infinity,
+            duration: 1.2,
+            ease: "easeInOut",
+            delay: 4
+          }}
+        >
+          <ChevronDownIcon boxSize={12} color="white" />
+        </MotionBox>
+      </MotionVStack>
+
+      {/* bottom gradient bar */}
+      <Box
+        w="100%"
+        h="12px"
+        bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
+        position="absolute"
+        bottom={0}
+        left={0}
+        zIndex={1}
+      />
     </Box>
+  );
+};
+const LandingBackground = () => {
+  const controls = useAnimation();
+
+  useEffect(() => {
+    // kick off the brightness fade
+    void controls.start({
+      filter: ["blur(3px) brightness(1)", "blur(3px) brightness(0.7)"],
+      transition: { delay: 4.0, duration: 1, ease: "easeInOut" }
+    });
+  }, [controls]);
+
+  return (
+    <MotionBox
+      position="absolute"
+      inset={0}
+      initial={{ filter: "blur(3px) brightness(1)" }}
+      animate={controls}
+    >
+      <Player
+        autoplay
+        loop
+        animationData={animationData}
+        rendererSettings={{ preserveAspectRatio: "xMidYMid slice" }}
+        style={{
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+          transform: "scale(1.05)"
+        }}
+      />
+    </MotionBox>
   );
 };
 

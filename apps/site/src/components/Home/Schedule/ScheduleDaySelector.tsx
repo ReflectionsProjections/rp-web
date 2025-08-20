@@ -3,6 +3,11 @@ import { Box, Flex, Text, VStack } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
 import { useMemo } from "react";
 
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+
+const MotionFlex = motion(Flex);
+
 export default function ScheduleDaySelector({
   selectedDay,
   eventsByDay,
@@ -12,36 +17,40 @@ export default function ScheduleDaySelector({
   eventsByDay: { [key: string]: Event[] };
   onSelectDay: (date: string) => void;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
     <Flex
-      gap={{
-        base: 2,
-        md: 5
-      }}
-      maxWidth={{
-        md: "700px", // Ensures that there are 2 or more buttons per line
-        lg: "1000px"
-      }}
+      ref={ref}
+      gap={{ base: 2, md: 5 }}
+      maxWidth={{ md: "700px", lg: "1000px" }}
       mx="auto"
-      mb={{
-        md: 0,
-        lg: 10
-      }}
-      px={{
-        base: 3,
-        md: undefined
-      }}
+      mb={{ md: 0, lg: 10 }}
+      px={{ base: 3, md: undefined }}
       justifyContent={{ md: "center" }}
       overflowX="auto"
     >
       {Object.keys(eventsByDay).map((date, index) => (
-        <ScheduleDayButton
-          color={DAY_COLORS[index % DAY_COLORS.length]}
+        <MotionFlex
           key={date}
-          date={date}
-          selected={selectedDay === date}
-          onSelectDay={onSelectDay}
-        />
+          // start slightly up & invisible
+          initial={{ opacity: 0, y: -10 }}
+          // animate into place when inView
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{
+            duration: 0.5,
+            delay: 0.2 * index, // stagger by index
+            ease: "easeOut"
+          }}
+        >
+          <ScheduleDayButton
+            color={DAY_COLORS[index % DAY_COLORS.length]}
+            date={date}
+            selected={selectedDay === date}
+            onSelectDay={onSelectDay}
+          />
+        </MotionFlex>
       ))}
     </Flex>
   );
@@ -97,7 +106,7 @@ function ScheduleDayButton({
           md: "block"
         }}
         fontFamily="ProRacing"
-        fontSize="lg"
+        fontSize="2xl"
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
         transformOrigin="center left"

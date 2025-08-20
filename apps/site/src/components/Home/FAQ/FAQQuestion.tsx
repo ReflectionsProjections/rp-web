@@ -96,12 +96,12 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
       </Box>
 
       <Collapse in={isOpen} animateOpacity unmountOnExit>
-        <Box bg="gray.50" p={4} borderBottomRadius="lg">
+        <Box bg="gray.700" p={4} borderBottomRadius="lg">
           <Text
             fontFamily={"Magistral"}
             fontWeight={"medium"}
-            color="gray.800"
-            fontSize={"lg"}
+            color="gray.100"
+            fontSize={"xl"}
           >
             {answer}
           </Text>

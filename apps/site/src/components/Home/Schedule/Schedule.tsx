@@ -9,16 +9,17 @@ import {
   Tooltip,
   useToast
 } from "@chakra-ui/react";
-import { Event, path, api } from "@rp/shared";
+import { api, Event, path } from "@rp/shared";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
+import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
-import { AudioVisualizer } from "./AudioVisualizer";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
-import { CIRCLE_COLORS } from "@/constants/colors";
+import { AnimatedHeader } from "../shared/AnimatedHeader";
+import { AudioVisualizer } from "./AudioVisualizer";
 
 export default function Schedule() {
   const toast = useToast();
@@ -85,15 +86,8 @@ export default function Schedule() {
     <>
       <Box
         w="100%"
-        minH={{
-          base: "100vh", // To keep the background consistent on mobile
-          md: "70dvh"
-        }}
         justifyContent="center"
-        bgImage={{
-          base: "url('/schedule-mobile.svg')",
-          lg: "url('/schedule.svg')"
-        }}
+        bgColor="#100E0E"
         bgSize="cover"
         bgPosition="center" // ← anchor the image at its top
         bgRepeat="no-repeat"
@@ -102,6 +96,7 @@ export default function Schedule() {
           md: 10
         }}
       >
+        <AnimatedHeader>Schedule</AnimatedHeader>
         <ScheduleDaySelector
           selectedDay={selectedDay}
           eventsByDay={eventsByDay}
@@ -227,7 +222,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box overflowY="auto" h={{ lg: "60dvh" }} maxH={{ lg: "60dvh" }}>
+        <Box overflowY="auto" h={{ lg: "50dvh" }} maxH={{ lg: "50dvh" }}>
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
@@ -242,7 +237,6 @@ function DayEventsSection({
             <DayEvent
               key={index}
               number={index + 1}
-              lastIndex={dayEvents.length}
               hoveredIndex={hoveredIndex}
               event={event}
               onHover={onHover}
@@ -344,16 +338,6 @@ function RaceTrackSection({
             </Text>
             <AudioVisualizer />
           </Flex>
-          <Text
-            fontSize="lg"
-            color="gray.400"
-            textAlign="left"
-            fontFamily="Magistral"
-          >
-            LOOKING FOR A JOB IN THE TECH INDUSTRY?
-          </Text>
-          <br />
-          <br />
         </Box>
       </Box>
     </Flex>
@@ -363,14 +347,12 @@ function RaceTrackSection({
 function DayEvent({
   number,
   hoveredIndex,
-  lastIndex,
   event,
   onHover,
   onClick
 }: {
   number: number;
   hoveredIndex: number | null;
-  lastIndex: number;
   event: Event;
   onHover: (index: number) => void;
   onClick: (event: Event) => void;
@@ -389,8 +371,6 @@ function DayEvent({
       }}
       alignItems="center"
       bgColor={hoveredIndex === number ? "#333131" : "#242424"}
-      borderTopRadius={number === 1 ? "xl" : undefined}
-      borderBottomRadius={number === lastIndex ? "xl" : undefined}
       gap={{
         base: 2,
         md: 3
@@ -442,9 +422,9 @@ function DayEvent({
         alignItems={"center"}
         w={{
           base: "5px",
-          md: "10px"
+          md: "7px"
         }}
-        h="40px"
+        h="50px"
         bg={CIRCLE_COLORS[(number - 1) % CIRCLE_COLORS.length]}
         boxShadow="md"
         borderRadius="sm"
@@ -452,7 +432,7 @@ function DayEvent({
 
       <Flex flexDirection={"column"} gap={0}>
         <Text
-          fontSize={"lg"}
+          fontSize={"2xl"}
           color="white"
           fontFamily={"ProRacing"}
           transformOrigin={"top left"}
@@ -469,7 +449,7 @@ function DayEvent({
           gap={0}
         >
           <Text
-            fontSize={"md"}
+            fontSize={"xl"}
             color="gray.100"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -479,11 +459,11 @@ function DayEvent({
             whiteSpace="normal"
             mr={3}
           >
-            {event.location}
+            {event.location || "Siebel CS"}
           </Text>
 
           <Text
-            fontSize={"md"}
+            fontSize={"xl"}
             color="gray.400"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -503,6 +483,9 @@ function DayEvent({
         label={event.eventType
           .toLowerCase()
           .replace(/^\w/, (c) => c.toUpperCase())}
+        fontFamily="Magistral"
+        fontSize="lg"
+        fontWeight={600}
         placement="top"
         hasArrow
       >

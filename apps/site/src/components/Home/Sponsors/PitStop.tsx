@@ -1,5 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
+import { AnimatedHeader } from "../shared/AnimatedHeader";
 
 const slideInLeft = keyframes`
 from { transform: translateX(-100px); opacity: 0; }
@@ -35,7 +36,7 @@ const PitStopScene: React.FC = () => {
       >
         <Box
           pos="absolute"
-          top="50%"
+          top="55%"
           left="50%"
           transform="translate(-50%, -50%)"
           w="100%"
@@ -166,17 +167,18 @@ const PitStopScene: React.FC = () => {
           />
         </Box>
         <Box
-          pos="absolute"
-          top={10}
+          top={0}
           left={0}
           w="100%"
           h="15px"
           bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
           zIndex={1}
         />
+
+        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
-          pos="absolute"
-          bottom={10}
+          pos={"absolute"}
+          bottom={0}
           left={0}
           w="100%"
           h="15px"
