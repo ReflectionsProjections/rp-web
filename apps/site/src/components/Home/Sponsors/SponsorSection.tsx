@@ -8,7 +8,7 @@ export default function SponsorSection() {
       <PitStopScene />
       <StoolsSponsors />
       <Image
-        src="/assets/speaker.jpg"
+        src="/sponsors/speaker.jpg"
         alt="speaker"
         width="100%"
         height="auto"

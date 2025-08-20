@@ -44,7 +44,7 @@ const PitStopScene: React.FC = () => {
           transition="transform 0.5s ease"
         >
           <Image
-            src="/assets/car/7.png"
+            src="/sponsors/car/7.png"
             pos="absolute"
             top="10%"
             left="10%"
@@ -65,7 +65,7 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/assets/car/2.png"
+            src="/sponsors/car/2.png"
             pos="absolute"
             top="10%"
             left="48%"
@@ -85,7 +85,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/3.png"
+            src="/sponsors/car/3.png"
             pos="absolute"
             bottom="8%"
             right="10%"
@@ -105,7 +105,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/4.png"
+            src="/sponsors/car/4.png"
             pos="absolute"
             top="8%"
             left="20%"
@@ -125,7 +125,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/5.png"
+            src="/sponsors/car/5.png"
             pos="absolute"
             top="55%"
             left="30%"
@@ -145,7 +145,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/6.png"
+            src="/sponsors/car/6.png"
             pos="absolute"
             bottom="10%"
             left="50%"
@@ -200,7 +200,7 @@ const PitStopScene: React.FC = () => {
           transition="transform 0.5s ease"
         >
           <Image
-            src="/assets/car/8.png"
+            src="/sponsors/car/8.png"
             pos="absolute"
             transform="translate(-50%, -50%)"
             display="block"
@@ -217,7 +217,7 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/assets/car/5.png"
+            src="/sponsors/car/5.png"
             pos="absolute"
             top="15%"
             right="2%"
@@ -235,7 +235,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/2.png"
+            src="/sponsors/car/2.png"
             pos="absolute"
             bottom="-12%"
             left="10%"
@@ -253,7 +253,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/4.png"
+            src="/sponsors/car/4.png"
             pos="absolute"
             top="8%"
             left="3%"
@@ -271,7 +271,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/3.png"
+            src="/sponsors/car/3.png"
             pos="absolute"
             bottom="8%"
             right="10%"
@@ -290,7 +290,7 @@ const PitStopScene: React.FC = () => {
           />
 
           <Image
-            src="/assets/car/6.png"
+            src="/sponsors/car/6.png"
             pos="absolute"
             top="40%"
             right="10%"
@@ -343,7 +343,7 @@ const PitStopScene: React.FC = () => {
           transition="transform 0.5s ease"
         >
           <Image
-            src="/assets/car/8.png"
+            src="/sponsors/car/8.png"
             pos="absolute"
             top="10%"
             left="10%"
@@ -362,7 +362,7 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/assets/car/5.png"
+            src="/sponsors/car/5.png"
             pos="absolute"
             top="15%"
             right="2%"
@@ -380,7 +380,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/2.png"
+            src="/sponsors/car/2.png"
             pos="absolute"
             bottom="2%"
             left="10%"
@@ -398,7 +398,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/4.png"
+            src="/sponsors/car/4.png"
             pos="absolute"
             top="8%"
             left="3%"
@@ -416,7 +416,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/assets/car/3.png"
+            src="/sponsors/car/3.png"
             pos="absolute"
             bottom="8%"
             right="10%"
@@ -435,7 +435,7 @@ const PitStopScene: React.FC = () => {
           />
 
           <Image
-            src="/assets/car/6.png"
+            src="/sponsors/car/6.png"
             pos="absolute"
             top="40%"
             right="-20%"

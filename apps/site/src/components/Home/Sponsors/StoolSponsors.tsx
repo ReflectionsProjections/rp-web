@@ -13,27 +13,27 @@ const StoolsSponsors: React.FC = () => {
   const characters: Character[] = [
     {
       id: 1,
-      src: "/assets/stools/left.png",
+      src: "/sponsors/stools/left.png",
       position: 0
     },
     {
       id: 2,
-      src: "/assets/stools/left1.png",
+      src: "/sponsors/stools/left1.png",
       position: 1
     },
     {
       id: 3,
-      src: "/assets/stools/middle.png",
+      src: "/sponsors/stools/middle.png",
       position: 2
     },
     {
       id: 4,
-      src: "/assets/stools/right1.png",
+      src: "/sponsors/stools/right1.png",
       position: 3
     },
     {
       id: 5,
-      src: "/assets/stools/right.png",
+      src: "/sponsors/stools/right.png",
       position: 4
     }
   ];
@@ -61,7 +61,7 @@ const StoolsSponsors: React.FC = () => {
         position="relative"
         width="100%"
         height={{ base: "70vh", md: "80vh", lg: "90vh" }}
-        backgroundImage="url('/assets/stools/stool_bg.png')"
+        backgroundImage="url('/sponsors/stools/stool_bg.svg')"
         backgroundSize="cover"
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
