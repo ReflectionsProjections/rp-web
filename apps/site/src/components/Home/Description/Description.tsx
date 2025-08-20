@@ -68,6 +68,8 @@ export const Description = () => {
   return (
     <Box
       display="flex"
+      maxW="1500px"
+      mx="auto"
       flexDirection={{ base: "column", lg: "row" }}
       alignItems="center"
       justifyContent="space-between"
@@ -83,6 +85,7 @@ export const Description = () => {
         ref={ref}
         flexBasis={{ lg: "50%" }}
         w={{ base: "100%", md: "75%", lg: "100%" }}
+        maxW="700px"
         h={{ base: isMobile ? "50vh" : "70vh", md: "40vh", lg: "70vh" }}
         transform={{ base: "scale(0.7)", md: "scale(1)" }}
         position="relative"
