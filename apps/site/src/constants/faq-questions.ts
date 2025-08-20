@@ -21,15 +21,15 @@ export const FAQS: FAQItem[] = [
     colors: { light: "#322BB7", dark: "#221D88" }
   },
   {
-    question: "When is R|P 2024?",
+    question: "When is R|P 2025?",
     answer:
-      "Reflections | Projections 2024 will be from Wednesday, September 18 to Sunday, September 22!",
+      "Reflections | Projections 2025 will be from Wednesday, September 16 to Sunday, September 20!",
     colors: { light: "#56BF59", dark: "#429945" }
   },
   {
     question: "Where are R|P’s events held?",
     answer:
-      "Every event of R|P 2024 will be held in the Siebel Center for Computer Science (201 N Goodwin Ave, Urbana, IL 61801). Our calendar contains the specific room for each event.",
+      "Every event of R|P 2025 will be held in the Siebel Center for Computer Science (201 N Goodwin Ave, Urbana, IL 61801). Our calendar contains the specific room for each event.",
     colors: { light: "#E6930D", dark: "#B77408" }
   },
   {
