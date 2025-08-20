@@ -1,6 +1,7 @@
 import { FAQItem } from "@/constants/faq-questions";
 import { Box, Collapse, Image, Text } from "@chakra-ui/react";
 import { useState } from "react";
+import { parseRichText } from "@/utils/textParser";
 
 const CAR_URLS = [
   "/faq/car1.svg",
@@ -97,14 +98,15 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
 
       <Collapse in={isOpen} animateOpacity unmountOnExit>
         <Box bg="gray.700" p={4} borderBottomRadius="lg">
-          <Text
+          <Box
             fontFamily={"Magistral"}
             fontWeight={"medium"}
             color="gray.100"
             fontSize={"xl"}
+            lineHeight="1.6"
           >
-            {answer}
-          </Text>
+            {parseRichText(answer)}
+          </Box>
         </Box>
       </Collapse>
     </Box>

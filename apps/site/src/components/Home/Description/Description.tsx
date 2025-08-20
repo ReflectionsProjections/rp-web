@@ -164,12 +164,10 @@ export const Description = () => {
       </Box>
 
       {/* Text card */}
-      <Box flexBasis={{ lg: "45%" }} maxW={{ lg: "52vw" }} zIndex={1}>
+      <Box flexBasis={{ lg: "50%" }} maxW={{ lg: "52vw" }} zIndex={1}>
         <Box
           ref={textRef}
           color="white"
-          borderRadius="2xl"
-          boxShadow="xl"
           p={{ base: 8, md: 10 }}
           px={{
             base: 0,
@@ -204,17 +202,16 @@ export const Description = () => {
             transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
           >
             Start your engines and step into the driver’s seat at the Midwest’s
-            largest student-run technology conference{" "}
+            largest student-run technology conference!{" "}
             <Text
               as="span"
               fontFamily="ProRacing"
-              fontSize={{ base: "3xl", md: "4xl" }}
+              fontSize={{ base: "4xl", md: "5xl" }}
               lineHeight={0}
               fontWeight={700}
             >
               🏎️
             </Text>
-            !
           </MotionText>
 
           <MotionText
@@ -230,17 +227,16 @@ export const Description = () => {
             Hosted at the Siebel Center for Computer Science at UIUC from
             September 16–20, we’ll race towards the future with guest speakers,
             tech talks, a career fair, free merch, and more. At R|P, you’ll gear
-            up for the road ahead{" "}
+            up for the road ahead.{" "}
             <Text
               as="span"
               fontFamily="ProRacing"
-              fontSize={{ base: "3xl", md: "4xl" }}
+              fontSize={{ base: "4xl", md: "5xl" }}
               lineHeight={0}
               fontWeight={700}
             >
               🏁
             </Text>
-            .
           </MotionText>
         </Box>
       </Box>

@@ -1,4 +1,12 @@
-import { Box, Flex, Grid, Image, Link, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Grid,
+  Image,
+  Link,
+  Text,
+  useMediaQuery
+} from "@chakra-ui/react";
 
 const footerLinkIcons: { src: string; to: string }[] = [
   {
@@ -13,6 +21,8 @@ const footerLinkIcons: { src: string; to: string }[] = [
 ]; // there should be <= 6 of these
 
 export const Footer = () => {
+  const [isTiny] = useMediaQuery("(max-width: 300px)");
+
   return (
     <>
       <Flex
@@ -43,8 +53,9 @@ export const Footer = () => {
             {footerLinkIcons.map((item) => (
               <Link
                 href={item.to}
-                w="60px"
-                h="60px"
+                key={item.src}
+                w={isTiny ? "40px" : "60px"}
+                h={isTiny ? "40px" : "60px"}
                 display="flex"
                 alignItems="center"
                 justifyContent="center"

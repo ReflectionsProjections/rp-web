@@ -210,6 +210,7 @@ export const Landing = () => {
             fontSize={{ base: "2xl", md: "3xl" }}
             fontFamily="Magistral"
             fontWeight="600"
+            textAlign="center"
             letterSpacing={1.3}
             mb={-2}
           >

@@ -42,6 +42,7 @@ export const FAQ: React.FC = () => {
         bgSize="cover"
         bgPosition="center"
         bgRepeat="no-repeat"
+        overflowX="hidden"
         gap={3}
         pb={20}
         pt={20}
