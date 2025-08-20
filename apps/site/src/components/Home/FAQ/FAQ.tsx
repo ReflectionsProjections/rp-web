@@ -23,39 +23,51 @@ export const FAQ: React.FC = () => {
   };
 
   return (
-    <VStack
-      w="100%"
-      minH={"100dvh"}
-      justifyContent="flex-start"
-      bgImage={"/faq/faq-backdrop.png"}
-      bgColor={"black"}
-      bgSize="cover"
-      bgPosition="center"
-      bgRepeat="no-repeat"
-      gap={3}
-      pb={20}
-    >
-      <VStack spacing={0} mb={4} w="100%" overflowX={"hidden"}>
-        <FAQHeader selectedFaqIndices={selectedFaqIndices} />
-      </VStack>
+    <>
       <VStack
-        maxW="850px"
         w="100%"
-        mx="auto"
-        spacing={{
-          base: 5,
-          md: 5
-        }}
+        minH={"100dvh"}
+        justifyContent="flex-start"
+        bgImage={`
+          linear-gradient(
+            to bottom,
+            #100E0E 0%,
+            rgba(45,39,39,0) 20%,
+            rgba(45,39,39,0) 80%,
+            #100E0E 100%
+          ),
+          url("/faq/faq-backdrop.png")
+        `}
+        bgColor={"#2d2727ff"}
+        bgSize="cover"
+        bgPosition="center"
+        bgRepeat="no-repeat"
+        gap={3}
+        pb={20}
+        pt={20}
       >
-        {FAQS.map((faqItem, index) => (
-          <FAQQuestion
-            key={`faq-item-${index}`}
-            index={index}
-            faqItem={faqItem}
-            onFaqToggle={handleFaqToggle}
-          />
-        ))}
+        <VStack spacing={0} mb={4} w="100%" overflowX={"hidden"}>
+          <FAQHeader selectedFaqIndices={selectedFaqIndices} />
+        </VStack>
+        <VStack
+          maxW="850px"
+          w="100%"
+          mx="auto"
+          spacing={{
+            base: 5,
+            md: 5
+          }}
+        >
+          {FAQS.map((faqItem, index) => (
+            <FAQQuestion
+              key={`faq-item-${index}`}
+              index={index}
+              faqItem={faqItem}
+              onFaqToggle={handleFaqToggle}
+            />
+          ))}
+        </VStack>
       </VStack>
-    </VStack>
+    </>
   );
 };

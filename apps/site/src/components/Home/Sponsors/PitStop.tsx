@@ -1,5 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
+import { AnimatedHeader } from "../shared/AnimatedHeader";
 
 const slideInLeft = keyframes`
 from { transform: translateX(-100px); opacity: 0; }
@@ -23,7 +24,7 @@ to { transform: translateY( 0px); opacity: 1; }
 
 const PitStopScene: React.FC = () => {
   return (
-    <Box as="section" w="100%" minH="100vh" bg="gray.100" pos="relative">
+    <Box as="section" w="100%" minH="100vh" bgColor="#100E0E" pos="relative">
       {/* Desktop View */}
       <Box
         display={{ base: "none", xl: "block" }}
@@ -31,11 +32,11 @@ const PitStopScene: React.FC = () => {
         w="100%"
         h="100vh"
         overflow="hidden"
-        bg="gray.800"
+        bgColor="#100E0E"
       >
         <Box
           pos="absolute"
-          top="50%"
+          top="55%"
           left="50%"
           transform="translate(-50%, -50%)"
           w="100%"
@@ -165,18 +166,10 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
+        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
-          pos="absolute"
-          top={10}
-          left={0}
-          w="100%"
-          h="15px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
-        <Box
-          pos="absolute"
-          bottom={10}
+          pos={"absolute"}
+          bottom={0}
           left={0}
           w="100%"
           h="15px"
@@ -192,7 +185,7 @@ const PitStopScene: React.FC = () => {
         w="100%"
         h="100vh"
         overflow="hidden"
-        bg="gray.800"
+        bg="#100E0E"
       >
         <Box
           pos="absolute"
@@ -316,18 +309,10 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
+        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
           pos="absolute"
-          top={10}
-          left={0}
-          w="100%"
-          h="12px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
-        <Box
-          pos="absolute"
-          bottom={10}
+          bottom={0}
           left={0}
           w="100%"
           h="12px"
@@ -343,7 +328,7 @@ const PitStopScene: React.FC = () => {
         w="100%"
         h="100vh"
         overflow="hidden"
-        bg="gray.800"
+        bg="#100E0E"
       >
         <Box
           pos="absolute"
@@ -469,18 +454,10 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
+        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
           pos="absolute"
-          top={10}
-          left={0}
-          w="100%"
-          h="10px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
-        <Box
-          pos="absolute"
-          bottom={10}
+          bottom={0}
           left={0}
           w="100%"
           h="10px"

@@ -4,21 +4,23 @@ import {
   Grid,
   HStack,
   Icon,
+  Image,
   Spacer,
   Text,
   Tooltip,
   useToast
 } from "@chakra-ui/react";
-import { Event, path, api } from "@rp/shared";
+import { api, Event, path } from "@rp/shared";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
+import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
-import { AudioVisualizer } from "./AudioVisualizer";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
-import { CIRCLE_COLORS } from "@/constants/colors";
+import { AnimatedHeader } from "../shared/AnimatedHeader";
+import { AudioVisualizer } from "./AudioVisualizer";
 
 export default function Schedule() {
   const toast = useToast();
@@ -35,26 +37,23 @@ export default function Schedule() {
     Object.keys(eventsByDay).indexOf(selectedDay || "") + 1,
     1
   );
-
   const dayEvents = selectedDay ? eventsByDay[selectedDay] : [];
 
   const handleLoadEvents = () => {
     api
       .get(path("/events", {}))
       .then((events) => {
-        const eventsByDay: { [key: string]: Event[] } = {};
-        events.data.forEach((event) => {
-          const date = moment(event.startTime).format("ddd M/D");
-          if (!eventsByDay[date]) {
-            eventsByDay[date] = [];
-          }
-          eventsByDay[date].push(event);
+        const grouped: { [key: string]: Event[] } = {};
+        events.data.forEach((evt) => {
+          const date = moment(evt.startTime).format("ddd M/D");
+          if (!grouped[date]) grouped[date] = [];
+          grouped[date].push(evt);
         });
-        setSelectedDay(Object.keys(eventsByDay)[0]);
-        setEventsByDay(eventsByDay);
+        setSelectedDay(Object.keys(grouped)[0]);
+        setEventsByDay(grouped);
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
         toast({
           title: "Error fetching events",
           status: "error",
@@ -68,63 +67,54 @@ export default function Schedule() {
     handleLoadEvents();
   }, []);
 
-  const handleHover = (index: number) => {
-    setHoveredEventIndex(index);
-  };
-
+  const handleHover = (index: number) => setHoveredEventIndex(index);
   const handleSelectDay = (date: string) => {
     setHoveredEventIndex(null);
     setSelectedDay(date);
   };
-
-  const handleSelectEvent = (event: Event) => {
-    setSelectedEvent(event);
-  };
+  const handleSelectEvent = (evt: Event) => setSelectedEvent(evt);
 
   return (
     <>
       <Box
+        position="relative"
         w="100%"
-        minH={{
-          base: "100vh", // To keep the background consistent on mobile
-          md: "70dvh"
-        }}
-        justifyContent="center"
-        bgImage={{
-          base: "url('/schedule-mobile.svg')",
-          lg: "url('/schedule.svg')"
-        }}
+        bgColor="#100E0E"
         bgSize="cover"
-        bgPosition="center" // ← anchor the image at its top
+        bgPosition="center"
         bgRepeat="no-repeat"
-        py={{
-          base: 5,
-          md: 10
-        }}
+        py={{ base: 5, md: 10 }}
       >
-        <ScheduleDaySelector
-          selectedDay={selectedDay}
-          eventsByDay={eventsByDay}
-          onSelectDay={handleSelectDay}
+        {/* Accent SVG behind content */}
+        <Image
+          src="/schedule/schedule-accent.svg"
+          position="absolute"
+          top={{ base: "-15%", lg: "-50%" }} /* tweak as needed */
+          left={{ base: "-25%", lg: "-10%" }}
+          opacity={0.5}
+          pointerEvents="none"
         />
+
+        <Box position="relative" zIndex={1}>
+          <AnimatedHeader zIndex={1}>Schedule</AnimatedHeader>
+          <ScheduleDaySelector
+            selectedDay={selectedDay}
+            eventsByDay={eventsByDay}
+            onSelectDay={handleSelectDay}
+          />
+        </Box>
+
         <Flex
           w="100%"
           maxWidth="1500px"
-          justifyContent={"center"}
-          flexDirection={{
-            md: "column-reverse",
-            lg: "row"
-          }}
-          mt={{
-            base: 5,
-            md: 5
-          }}
+          justifyContent="center"
+          flexDirection={{ md: "column-reverse", lg: "row" }}
+          mt={{ base: 5, md: 5 }}
           mx="auto"
           gap={0}
-          px={{
-            base: 3,
-            md: 10
-          }}
+          px={{ base: 3, md: 10 }}
+          position="relative" /* ensure content sits above accent */
+          zIndex={1}
         >
           <DayEventsSection
             selectedDayIndex={selectedDayIndex}
@@ -143,6 +133,7 @@ export default function Schedule() {
           />
         </Flex>
       </Box>
+
       <EventModal
         event={selectedEvent}
         onClose={() => setSelectedEvent(null)}
@@ -222,6 +213,10 @@ function DayEventsSection({
       <Box
         bgColor={{ md: "#242424" }}
         pb={5}
+        borderTopRadius={{
+          base: "xl",
+          lg: "none"
+        }}
         borderBottomRadius="xl"
         overflowY={{ md: "auto" }}
         shadow={"md"}
@@ -344,16 +339,6 @@ function RaceTrackSection({
             </Text>
             <AudioVisualizer />
           </Flex>
-          <Text
-            fontSize="lg"
-            color="gray.400"
-            textAlign="left"
-            fontFamily="Magistral"
-          >
-            LOOKING FOR A JOB IN THE TECH INDUSTRY?
-          </Text>
-          <br />
-          <br />
         </Box>
       </Box>
     </Flex>
@@ -389,8 +374,14 @@ function DayEvent({
       }}
       alignItems="center"
       bgColor={hoveredIndex === number ? "#333131" : "#242424"}
-      borderTopRadius={number === 1 ? "xl" : undefined}
-      borderBottomRadius={number === lastIndex ? "xl" : undefined}
+      borderTopRadius={{
+        base: number === 1 ? "xl" : "none",
+        md: "none"
+      }}
+      borderBottomRadius={{
+        base: lastIndex === number ? "xl" : "none",
+        md: "none"
+      }}
       gap={{
         base: 2,
         md: 3
@@ -442,9 +433,9 @@ function DayEvent({
         alignItems={"center"}
         w={{
           base: "5px",
-          md: "10px"
+          md: "7px"
         }}
-        h="40px"
+        h="50px"
         bg={CIRCLE_COLORS[(number - 1) % CIRCLE_COLORS.length]}
         boxShadow="md"
         borderRadius="sm"
@@ -452,7 +443,7 @@ function DayEvent({
 
       <Flex flexDirection={"column"} gap={0}>
         <Text
-          fontSize={"lg"}
+          fontSize={{ base: "xl", md: "2xl" }}
           color="white"
           fontFamily={"ProRacing"}
           transformOrigin={"top left"}
@@ -469,7 +460,7 @@ function DayEvent({
           gap={0}
         >
           <Text
-            fontSize={"md"}
+            fontSize={{ base: "md", md: "xl" }}
             color="gray.100"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -479,11 +470,11 @@ function DayEvent({
             whiteSpace="normal"
             mr={3}
           >
-            {event.location}
+            {event.location || "Siebel CS"}
           </Text>
 
           <Text
-            fontSize={"md"}
+            fontSize={{ base: "md", md: "xl" }}
             color="gray.400"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -503,6 +494,9 @@ function DayEvent({
         label={event.eventType
           .toLowerCase()
           .replace(/^\w/, (c) => c.toUpperCase())}
+        fontFamily="Magistral"
+        fontSize="lg"
+        fontWeight={600}
         placement="top"
         hasArrow
       >
