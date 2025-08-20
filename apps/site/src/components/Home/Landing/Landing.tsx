@@ -21,6 +21,7 @@ const MotionVStack = motion(VStack);
 export const Landing = () => {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
   const [isSmall] = useMediaQuery("(max-width: 500px)");
+  const [isShort] = useMediaQuery("(max-height: 500px)");
 
   // compute separator height
   const sepH = isSmall ? 42 : isMobile ? 90 : 150;
@@ -182,38 +183,51 @@ export const Landing = () => {
       </VStack>
 
       {/* bouncing chevron + learn more */}
-      <MotionVStack
-        position="absolute"
-        bottom="30px"
-        left="50%"
-        transform="translateX(-50%)"
-        spacing={0}
-        zIndex={2}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 4, duration: 0.8, ease: "easeInOut" }}
-      >
-        <Text
-          color="white"
-          fontSize={{ base: "2xl", md: "3xl" }}
-          fontFamily="Magistral"
-          fontWeight="600"
-          mb={-2}
-        >
-          Learn more
-        </Text>
-        <MotionBox
-          animate={{ y: [0, 10, 0] }}
-          transition={{
-            repeat: Infinity,
-            duration: 1.2,
-            ease: "easeInOut",
-            delay: 4
+      {!isShort && (
+        <MotionVStack
+          position="absolute"
+          bottom="30px"
+          left="50%"
+          transform="translateX(-50%)"
+          spacing={0}
+          zIndex={2}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 4, duration: 0.8, ease: "easeInOut" }}
+          cursor="pointer"
+          onClick={() => {
+            const descriptionSection = document.getElementById("description");
+            if (descriptionSection) {
+              descriptionSection.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+              });
+            }
           }}
         >
-          <ChevronDownIcon boxSize={{ base: 8, md: 12 }} color="white" />
-        </MotionBox>
-      </MotionVStack>
+          <Text
+            color="white"
+            fontSize={{ base: "2xl", md: "3xl" }}
+            fontFamily="Magistral"
+            fontWeight="600"
+            letterSpacing={1.3}
+            mb={-2}
+          >
+            Learn more
+          </Text>
+          <MotionBox
+            animate={{ y: [0, 10, 0] }}
+            transition={{
+              repeat: Infinity,
+              duration: 1.2,
+              ease: "easeInOut",
+              delay: 4
+            }}
+          >
+            <ChevronDownIcon boxSize={{ base: 8, md: 12 }} color="white" />
+          </MotionBox>
+        </MotionVStack>
+      )}
 
       {/* bottom gradient bar */}
       <Box
