@@ -29,7 +29,7 @@ const CARS = [
     car: redCar,
     from: {
       desktop: { left: "57%", top: "-10%", opacity: 0 },
-      mobile: { left: "50%", top: "-10%", opacity: 0 }
+      mobile: { left: "60%", top: "-10%", opacity: 0 }
     },
     to: {
       desktop: { left: "41%", top: "28%", opacity: 1 },
@@ -44,11 +44,11 @@ const CARS = [
     car: greenCar,
     from: {
       desktop: { left: "80%", top: "-10%", opacity: 0 },
-      mobile: { left: "80%", top: "-10%", opacity: 0 }
+      mobile: { left: "95%", top: "-10%", opacity: 0 }
     },
     to: {
       desktop: { left: "55%", top: "50%", opacity: 1 },
-      mobile: { left: "54%", top: "50%", opacity: 1 }
+      mobile: { left: "65%", top: "50%", opacity: 1 }
     },
     delay: 0.24,
     width: "150px",
@@ -68,7 +68,7 @@ export const Description = () => {
   return (
     <Box
       display="flex"
-      flexDirection={{ base: "column", md: "row" }}
+      flexDirection={{ base: "column", lg: "row" }}
       alignItems="center"
       justifyContent="space-between"
       position="relative"
@@ -81,9 +81,10 @@ export const Description = () => {
       {/* Cars wrapper */}
       <Box
         ref={ref}
-        flexBasis={{ base: "100%", md: "50%" }}
-        w="100%"
-        h={isMobile ? "50vh" : "60vh"}
+        flexBasis={{ lg: "50%" }}
+        w={{ base: "100%", md: "75%", lg: "100%" }}
+        h={{ base: isMobile ? "50vh" : "70vh", md: "40vh", lg: "70vh" }}
+        transform={{ base: "scale(0.7)", md: "scale(1)" }}
         position="relative"
         zIndex={0}
       >
@@ -159,18 +160,22 @@ export const Description = () => {
       </Box>
 
       {/* Text card */}
-      <Box
-        flexBasis={{ base: "100%", md: "45%" }}
-        maxW={{ base: "100%", md: "52vw" }}
-        mt={{ base: 8, md: 0 }}
-        zIndex={1}
-      >
+      <Box flexBasis={{ lg: "45%" }} maxW={{ lg: "52vw" }} zIndex={1}>
         <Box
           ref={textRef}
           color="white"
           borderRadius="2xl"
           boxShadow="xl"
           p={{ base: 8, md: 10 }}
+          px={{
+            base: 0,
+            md: 10
+          }}
+          pt={{
+            base: -8,
+            md: 0,
+            lg: 10
+          }}
         >
           <MotionHeading
             mb={4}
@@ -185,6 +190,7 @@ export const Description = () => {
           </MotionHeading>
           <MotionText
             mb={4}
+            maxW={{ lg: "600px" }}
             fontSize={{ base: "lg", md: "2xl" }}
             lineHeight="1.8"
             fontFamily="Magistral"
@@ -199,6 +205,7 @@ export const Description = () => {
 
           <MotionText
             fontSize={{ base: "lg", md: "2xl" }}
+            maxW={{ lg: "600px" }}
             lineHeight="1.8"
             fontFamily="Magistral"
             fontWeight={700}
@@ -215,7 +222,7 @@ export const Description = () => {
       </Box>
 
       {/* Gradient bar */}
-      <Box
+      {/* <Box
         w="100%"
         h="12px"
         bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
@@ -223,7 +230,7 @@ export const Description = () => {
         bottom={0}
         left={0}
         zIndex={1}
-      />
+      /> */}
     </Box>
   );
 };

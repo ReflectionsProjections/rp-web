@@ -18,7 +18,7 @@ export function AnimatedHeader({ children, ...rest }: AnimatedHeaderProps) {
     <MotionText
       ref={ref}
       w="100%"
-      fontSize="6xl"
+      fontSize={{ base: "5xl", md: "6xl" }}
       fontWeight="bold"
       fontStyle="italic"
       color="white"

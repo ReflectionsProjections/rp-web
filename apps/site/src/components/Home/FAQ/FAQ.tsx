@@ -1,5 +1,5 @@
 import { FAQS } from "@/constants/faq-questions";
-import { Box, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import React, { useState } from "react";
 
 import { FAQHeader } from "./FAQHeader";
@@ -24,23 +24,27 @@ export const FAQ: React.FC = () => {
 
   return (
     <>
-      <Box
-        w="100%"
-        h="12px"
-        bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-        zIndex={1}
-      />
       <VStack
         w="100%"
         minH={"100dvh"}
         justifyContent="flex-start"
-        bgImage={"/faq/faq-backdrop.png"}
+        bgImage={`
+          linear-gradient(
+            to bottom,
+            #100E0E 0%,
+            rgba(45,39,39,0) 20%,
+            rgba(45,39,39,0) 80%,
+            #100E0E 100%
+          ),
+          url("/faq/faq-backdrop.png")
+        `}
         bgColor={"#2d2727ff"}
         bgSize="cover"
         bgPosition="center"
         bgRepeat="no-repeat"
         gap={3}
         pb={20}
+        pt={20}
       >
         <VStack spacing={0} mb={4} w="100%" overflowX={"hidden"}>
           <FAQHeader selectedFaqIndices={selectedFaqIndices} />

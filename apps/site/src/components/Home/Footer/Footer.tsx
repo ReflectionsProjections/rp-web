@@ -6,10 +6,10 @@ const footerLinkIcons: { src: string; to: string }[] = [
     to: "https://linkedin.com/company/reflections-projections-uiuc"
   },
   { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
-  { src: "tiktok_red.svg", to: "https://reflectionsprojections.org" },
-  { src: "facebook_red.svg", to: "https:/https://facebook.com/acmrp/" },
+  { src: "tiktok_red.svg", to: "https://www.tiktok.com/@uiuc_rp" },
+  { src: "facebook_red.svg", to: "https://facebook.com/acmrp/" },
   { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
-  { src: "email_red.svg", to: "https://reflectionsprojections.org" }
+  { src: "email_red.svg", to: "mailto:contact@reflectionsprojections.org" }
 ]; // there should be <= 6 of these
 
 export const Footer = () => {
@@ -45,13 +45,20 @@ export const Footer = () => {
                 href={item.to}
                 w="60px"
                 h="60px"
+                display="flex"
                 alignItems="center"
                 justifyContent="center"
+                target="_blank"
               >
                 <Image
+                  src={`/main/footer/socials/${item.src}`}
                   w="100%"
                   h="100%"
-                  src={`/main/footer/socials/${item.src}`}
+                  transition="transform 0.2s ease, filter 0.2s ease"
+                  _hover={{
+                    transform: "scale(1.1)",
+                    filter: "brightness(0.7)"
+                  }}
                 />
               </Link>
             ))}

@@ -28,8 +28,9 @@ export default function ScheduleDaySelector({
       mx="auto"
       mb={{ md: 0, lg: 10 }}
       px={{ base: 3, md: undefined }}
-      justifyContent={{ md: "center" }}
+      justifyContent={{ base: "flex-start", sm: "center" }}
       overflowX="auto"
+      zIndex={10}
     >
       {Object.keys(eventsByDay).map((date, index) => (
         <MotionFlex
@@ -92,7 +93,7 @@ function ScheduleDayButton({
       borderLeftColor={color}
       px={{ base: 2, md: 3 }}
       py={{ base: 2, md: 3 }}
-      pr={{ base: 2, md: 4 }}
+      pr={{ base: 4, sm: 6 }}
       onClick={() => onSelectDay(date)}
       transition="all 0.2s"
       _hover={{
@@ -127,7 +128,7 @@ function ScheduleDayButton({
             md: "none"
           }}
           fontFamily="ProRacing"
-          fontSize={{ base: "md", md: "lg" }}
+          fontSize={"lg"}
           textColor={selected ? "black" : "white"}
           transition="all 0.2s, transform 0.2s"
         >
@@ -139,7 +140,7 @@ function ScheduleDayButton({
             md: "none"
           }}
           fontFamily="ProRacing"
-          fontSize={{ base: "sm", md: "md" }}
+          fontSize={"md"}
           textColor={selected ? "gray.600" : "gray.400"}
           transition="all 0.2s, transform 0.2s"
         >

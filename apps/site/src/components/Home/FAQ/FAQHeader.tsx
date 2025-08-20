@@ -1,5 +1,5 @@
 import { FAQS } from "@/constants/faq-questions";
-import { Box, HStack, VStack } from "@chakra-ui/react";
+import { Box, HStack, Image, VStack } from "@chakra-ui/react";
 import React, { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { StopLight } from "./StopLight";
@@ -15,7 +15,27 @@ export const FAQHeader: React.FC<{
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <Box position="relative" w="100%" overflow="hidden" pt={20} ref={ref}>
+    <Box position="relative" w="100%" overflow="hidden" ref={ref}>
+      <Image
+        src={"/faq/faq-header-left-bars.svg"}
+        position="absolute"
+        top={{ base: 0, md: -30 }}
+        left={{ base: -5, md: 0 }}
+        h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
+        opacity={0.5}
+        zIndex={0}
+      />
+
+      <Image
+        src={"/faq/faq-header-right-bars.svg"}
+        position="absolute"
+        top={{ base: 0, md: -30 }}
+        right={{ base: -14, sm: -14, md: -90 }}
+        h={{ base: "50px", sm: "75px", md: "100px", lg: "140px" }}
+        opacity={0.5}
+        zIndex={0}
+      />
+
       <HStack
         w="100%"
         p={2}

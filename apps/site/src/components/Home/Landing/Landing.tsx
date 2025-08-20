@@ -41,13 +41,13 @@ export const Landing = () => {
 
     // 2) slide in "reflections" from left
     await refCtrl.start({
-      x: -20,
+      x: isSmall ? -10 : -20,
       transition: { duration: 0.8, ease: "easeOut" }
     });
 
     // 3) slide in "projections" from right
     await projCtrl.start({
-      x: 20,
+      x: isSmall ? 10 : 20,
       transition: { duration: 0.8, ease: "easeOut" }
     });
   };
@@ -58,7 +58,7 @@ export const Landing = () => {
   }, [inView, barCtrl, refCtrl, projCtrl, sepH]);
 
   return (
-    <Box position="relative" w="100dvw" h="100dvh" overflow="hidden">
+    <Box position="relative" h="100dvh" overflow="hidden">
       {/* background animation */}
       <LandingBackground />
       <VStack
@@ -82,7 +82,7 @@ export const Landing = () => {
               justifyContent="flex-end"
             >
               <MotionText
-                fontSize="6xl"
+                fontSize={{ base: "2xl", sm: "4xl", md: "5xl", lg: "6xl" }}
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
@@ -107,7 +107,6 @@ export const Landing = () => {
               animate={barCtrl}
             />
 
-            {/* portal container for projections */}
             <Box
               display="flex"
               overflow="hidden"
@@ -116,7 +115,7 @@ export const Landing = () => {
               alignItems="center"
             >
               <MotionText
-                fontSize="6xl"
+                fontSize={{ base: "2xl", sm: "4xl", md: "5xl", lg: "6xl" }}
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
@@ -132,16 +131,16 @@ export const Landing = () => {
 
           {/* subdate */}
           <MotionText
-            fontSize="5xl"
+            fontSize={{ base: "2xl", md: "4xl" }}
             fontFamily="Magistral"
             color="gray.200"
             fontWeight="600"
-            mt={5}
+            mt={{ base: 1, md: 5 }}
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 3, duration: 0.6, ease: "easeOut" }}
           >
-            September 18–22, 2025
+            September 16–20, 2025
           </MotionText>
         </Box>
 
@@ -154,9 +153,14 @@ export const Landing = () => {
           <Button
             as="a"
             href="/register"
-            size={isSmall ? "md" : "lg"}
-            px={isSmall ? 8 : 10}
-            py={isSmall ? 8 : 10}
+            size={{
+              base: "md",
+              md: "lg"
+            }}
+            p={{
+              base: 6,
+              md: 10
+            }}
             bg="#f5bc43ff"
             color="black"
             rounded="lg"
@@ -166,7 +170,7 @@ export const Landing = () => {
             fontFamily="ProRacing"
           >
             <Text
-              fontSize={isSmall ? "30px" : isMobile ? "33px" : "36px"}
+              fontSize={{ base: "2xl", md: "3xl" }}
               fontWeight="800"
               fontStyle="italic"
               letterSpacing="0.01em"
@@ -191,7 +195,7 @@ export const Landing = () => {
       >
         <Text
           color="white"
-          fontSize="4xl"
+          fontSize={{ base: "2xl", md: "3xl" }}
           fontFamily="Magistral"
           fontWeight="600"
           mb={-2}
@@ -207,7 +211,7 @@ export const Landing = () => {
             delay: 4
           }}
         >
-          <ChevronDownIcon boxSize={12} color="white" />
+          <ChevronDownIcon boxSize={{ base: 8, md: 12 }} color="white" />
         </MotionBox>
       </MotionVStack>
 

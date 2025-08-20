@@ -29,7 +29,7 @@ export const FAQQuestion: React.FC<FAQQuestionProps> = ({
   };
 
   return (
-    <Box w="100%" px={10}>
+    <Box w="100%" px={{ base: 3, md: 10 }}>
       <Box
         position={"relative"}
         display="flex"
