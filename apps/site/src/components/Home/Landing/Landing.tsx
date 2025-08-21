@@ -149,7 +149,7 @@ export const Landing = () => {
         <MotionBox
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 3.5, duration: 0.6, ease: "easeOut" }}
+          transition={{ delay: 3, duration: 0.6, ease: "easeOut" }}
         >
           <Button
             as="a"

@@ -203,15 +203,17 @@ export const Description = () => {
           >
             Start your engines and step into the driver’s seat at the Midwest’s
             largest student-run technology conference!{" "}
-            <Text
-              as="span"
-              fontFamily="ProRacing"
-              fontSize={{ base: "4xl", md: "5xl" }}
+            <Box
+              as="img"
               lineHeight={0}
-              fontWeight={700}
-            >
-              🏎️
-            </Text>
+              src="/description/car.svg"
+              alt="Flag"
+              h="auto"
+              transform={"translateY(2px)"}
+              w={{ base: "3rem", md: "3.5rem" }}
+              display="inline-block"
+              verticalAlign="text-top"
+            />
           </MotionText>
 
           <MotionText
@@ -228,15 +230,16 @@ export const Description = () => {
             September 16–20, we’ll race towards the future with guest speakers,
             tech talks, a career fair, free merch, and more. At R|P, you’ll gear
             up for the road ahead.{" "}
-            <Text
-              as="span"
-              fontFamily="ProRacing"
-              fontSize={{ base: "4xl", md: "5xl" }}
-              lineHeight={0}
-              fontWeight={700}
-            >
-              🏁
-            </Text>
+            <Box
+              as="img"
+              src="/description/flag.svg"
+              alt="Flag"
+              h={{ base: "2rem", md: "2.5rem" }}
+              transform={{ base: "translateY(-11px)", md: "translateY(-15px)" }}
+              w="auto"
+              display="inline-block"
+              verticalAlign="text-top"
+            />
           </MotionText>
         </Box>
       </Box>

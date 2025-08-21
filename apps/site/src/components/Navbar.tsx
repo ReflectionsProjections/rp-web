@@ -111,7 +111,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         }}
         color="#b6b6b6ff"
         fontFamily="magistral"
-        fontSize="md"
+        fontSize="xl"
         fontWeight="bold"
         cursor={isActive ? "default" : "pointer"}
       >
