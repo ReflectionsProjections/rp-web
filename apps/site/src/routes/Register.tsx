@@ -611,16 +611,26 @@ const Register = () => {
                       >
                         {mobile ? <MobileForm /> : <DesktopForm />}
                         <IconButton
-                          icon={<MdOutlineKeyboardDoubleArrowRight size="48" />}
+                          icon={
+                            <>
+                              <Text
+                                fontSize="lg"
+                                fontWeight="bold"
+                                align="center"
+                                px={2}
+                              >
+                                Submit
+                              </Text>
+                              <MdOutlineKeyboardDoubleArrowRight size="48" />
+                            </>
+                          }
                           aria-label="Submit"
                           isLoading={isSubmitting}
                           variant="ghost"
                           type="submit"
                           alignSelf="flex-end"
                           color="white"
-                        >
-                          Submit
-                        </IconButton>
+                        />
                       </VStack>
                     </RegisterForm>
                   </Box>

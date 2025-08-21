@@ -48,6 +48,11 @@ const FormSelectMenu = <
             onBlur={() => void form.setFieldTouched(name, true)}
             options={options}
             placeholder={placeholder}
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            styles={{
+              menuPortal: (base) => ({ ...base, zIndex: 10 })
+            }}
             chakraStyles={{
               container: (provided) => ({
                 ...provided,
