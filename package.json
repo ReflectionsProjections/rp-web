@@ -48,6 +48,6 @@
   },
   "packageManager": "yarn@4.9.1",
   "dependencies": {
-    "formik": "^2.4.6"
+    "fonteditor-core": "^2.6.1"
   }
 }

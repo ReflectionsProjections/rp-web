@@ -218,7 +218,8 @@ const Register = () => {
     const PageBackground: React.FC<{
       backgroundImage: string;
       opacity: MotionValue<number>;
-    }> = ({ backgroundImage, opacity }) => (
+      initialOpacity: number;
+    }> = ({ backgroundImage, opacity, initialOpacity }) => (
       <MotionBox
         w={{ base: "min(100%, 800px)", "2xl": "100%" }}
         h={{ base: "calc(100% - 32px)", "2xl": "125%" }}
@@ -226,6 +227,7 @@ const Register = () => {
         backgroundSize={{ base: "cover", md: "contain" }}
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
+        initial={{ opacity: initialOpacity }}
         style={{ opacity, zIndex: 1 }}
         position="fixed"
         top={{ "2xl": "-12.5%" }}
@@ -265,21 +267,25 @@ const Register = () => {
         <PageBackground
           backgroundImage="/registration/page-one-shadow.svg"
           opacity={image1ShadowOpacity}
+          initialOpacity={1}
         />
 
         <PageBackground
           backgroundImage="/registration/page-one.svg"
           opacity={image1Opacity}
+          initialOpacity={finalOpacity}
         />
 
         <PageBackground
           backgroundImage="/registration/page-two-shadow.svg"
           opacity={image2ShadowOpacity}
+          initialOpacity={0}
         />
 
         <PageBackground
           backgroundImage="/registration/page-two.svg"
           opacity={image2Opacity}
+          initialOpacity={0}
         />
 
         <MotionBox
