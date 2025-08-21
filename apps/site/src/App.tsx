@@ -1,11 +1,18 @@
-import { ChakraProvider } from "@chakra-ui/react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter,
+  Outlet,
+  Route,
+  Routes,
+  useLocation
+} from "react-router-dom";
 import Home from "./routes/Home";
-import theme from "./theme";
 import Register from "./routes/Register";
 import { AuthCallback, googleAuth, RequireAuth } from "@rp/shared";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import Resume from "./routes/Resume";
+import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
+import theme from "./theme";
+import Navbar from "./components/Navbar";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -22,16 +29,66 @@ function App() {
     <ChakraProvider theme={theme}>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/auth/refresh" element={<RefreshHandler />} />
-          <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route element={<Main />}>
+            <Route path="/" element={<Home />} />
+            <Route element={<RequireAuth />}>
+              <Route key="/register" path="/register" element={<Register />} />
+            </Route>
+          </Route>
           <Route element={<RequireAuth />}>
-            <Route key="/register" path="/register" element={<Register />} />
             <Route key="/resume" path="/resume" element={<Resume />} />
           </Route>
+          <Route path="/auth/refresh" element={<RefreshHandler />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
+  );
+}
+
+const FLUSH_ROUTES = ["/register"];
+
+function Main() {
+  const { pathname } = useLocation();
+
+  const isFlush = useMemo(() => FLUSH_ROUTES.includes(pathname), [pathname]);
+
+  return (
+    <VStack
+      w="100%"
+      h="100vh"
+      gap={0}
+      backgroundColor="#100e0e"
+      overflowY={isFlush ? undefined : "scroll"}
+      sx={{
+        scrollbarWidth: "thin",
+        scrollbarColor: "#888 transparent",
+        scrollbarGutter: "stable",
+        "&::-webkit-scrollbar": {
+          width: "8px"
+        },
+        "&::-webkit-scrollbar-track": {
+          background: "none"
+        },
+        "&::-webkit-scrollbar-thumb": {
+          background: "#888",
+          borderRadius: "8px"
+        },
+        "&::-webkit-scrollbar-thumb:hover": {
+          background: "#555"
+        }
+      }}
+    >
+      <Navbar isFlush={isFlush} />
+      <Box
+        w="100%"
+        h="100%"
+        position="relative"
+        overflowY={isFlush ? "hidden" : undefined}
+      >
+        <Outlet />
+      </Box>
+    </VStack>
   );
 }
 

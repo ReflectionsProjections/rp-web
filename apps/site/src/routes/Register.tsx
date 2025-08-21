@@ -11,7 +11,7 @@ import {
   Spinner
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { api, RoleObject, useFormAutosave } from "@rp/shared";
 import {
@@ -106,9 +106,10 @@ const Register = () => {
   const { displayName, email } = useOutletContext<RoleObject>();
   const [confirmation, setConfirmation] = useState(false);
   const [values, setValues] = useState<RegistrationValues | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { scrollYProgress } = useScroll();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container: containerRef });
   const mobile = useBreakpointValue({ base: true, "2xl": false });
 
   const toast = useToast();
@@ -204,7 +205,7 @@ const Register = () => {
     <Center
       w="100vw"
       h="100vh"
-      position="fixed"
+      position="absolute"
       top={0}
       left={0}
       zIndex={9999}
@@ -222,14 +223,14 @@ const Register = () => {
     }> = ({ backgroundImage, opacity, initialOpacity }) => (
       <MotionBox
         w={{ base: "min(100%, 800px)", "2xl": "100%" }}
-        h={{ base: "calc(100% - 32px)", "2xl": "125%" }}
+        h={{ base: "100%", "2xl": "125%" }}
         backgroundImage={backgroundImage}
         backgroundSize={{ base: "cover", md: "contain" }}
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         initial={{ opacity: initialOpacity }}
         style={{ opacity, zIndex: 1 }}
-        position="fixed"
+        position="absolute"
         top={{ "2xl": "-12.5%" }}
         left={{ base: "50%", "2xl": 0 }}
         transform="translateX(-50%)"
@@ -256,8 +257,7 @@ const Register = () => {
       <Box
         w="100%"
         h="calc(100% - 32px)"
-        position="fixed"
-        inset={0}
+        position="absolute"
         top="32px"
         background={{
           base: "#12131A",
@@ -290,14 +290,13 @@ const Register = () => {
 
         <MotionBox
           w="100%"
-          h="calc(100% - 32px)"
+          h="100%"
           backgroundImage="/registration/background.svg"
           backgroundSize="cover"
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
-          position="fixed"
+          position="absolute"
           inset={0}
-          top="32px"
         />
       </Box>
     );
@@ -319,7 +318,7 @@ const Register = () => {
         display="flex"
         alignItems="center"
         backgroundColor="#241f1fff"
-        position="fixed"
+        position="sticky"
         top={0}
       >
         <Box height="100%" width="100%" overflow="hidden" position="relative">
@@ -426,84 +425,92 @@ const Register = () => {
   );
 
   return (
-    <Box backgroundColor="#12131A" fontFamily="Magistral">
+    <VStack backgroundColor="#12131A" fontFamily="Magistral" h="100%" gap={0}>
       {isLoading && <LoadingIndicator />}
-      <Background />
       <ProgressBar />
+      <Background />
 
-      {values && (
-        <Formik
-          initialValues={values}
-          validationSchema={registrationSchema}
-          onSubmit={(values, helpers) => {
-            setIsLoading(true);
-            const registration = processFinalRegistration(values);
-            toast.promise(
-              Promise.all([
-                api.post("/registration/submit", registration),
-                api.post("/registration/draft", {
-                  ...values,
-                  resume: values.resume?.name ?? ""
-                }),
-                (async () => {
-                  if (!values.resume?.file) {
-                    return;
-                  }
-                  const { data: download } = await api.get("/s3/upload");
-                  await uploadResume(
-                    download.url,
-                    download.fields,
-                    values.resume.file
-                  );
-                })()
-              ])
-                .then(() => {
-                  setConfirmation(true);
-                })
-                .catch(() => {
-                  helpers.setSubmitting(false);
-                })
-                .finally(() => {
-                  setIsLoading(false);
-                }),
-              {
-                success: { title: "Form Submitted!" },
-                loading: { title: "Submitting..." },
-                error: { title: "Submission failed" }
-              }
-            );
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Box
-              w={{ "2xl": "75%" }}
-              ml={{ "2xl": "25%" }}
-              display="flex"
-              justifyContent="center"
-              px={4}
-              pt={8}
-              pb={{ base: "50vh", "2xl": 8 }}
-              mt="32px"
-            >
-              <RegisterForm>
-                <VStack as={Form} color="white" zIndex={3} gap={16}>
-                  {mobile ? <MobileForm /> : <DesktopForm />}
-                  <IconButton
-                    icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
-                    aria-label="Submit"
-                    isLoading={isSubmitting}
-                    variant="ghost"
-                    type="submit"
-                    alignSelf="flex-end"
+      <Box ref={containerRef} h="100%" w="100%" zIndex={3} overflowY="scroll">
+        {values && (
+          <Formik
+            initialValues={values}
+            validationSchema={registrationSchema}
+            onSubmit={(values, helpers) => {
+              setIsLoading(true);
+              const registration = processFinalRegistration(values);
+              toast.promise(
+                Promise.all([
+                  api.post("/registration/submit", registration),
+                  api.post("/registration/draft", {
+                    ...values,
+                    resume: values.resume?.name ?? ""
+                  }),
+                  (async () => {
+                    if (!values.resume?.file) {
+                      return;
+                    }
+                    const { data: download } = await api.get("/s3/upload");
+                    await uploadResume(
+                      download.url,
+                      download.fields,
+                      values.resume.file
+                    );
+                  })()
+                ])
+                  .then(() => {
+                    setConfirmation(true);
+                  })
+                  .catch(() => {
+                    helpers.setSubmitting(false);
+                  })
+                  .finally(() => {
+                    setIsLoading(false);
+                  }),
+                {
+                  success: { title: "Form Submitted!" },
+                  loading: { title: "Submitting..." },
+                  error: { title: "Submission failed" }
+                }
+              );
+            }}
+          >
+            {({ isSubmitting }) => (
+              <Box
+                w={{ "2xl": "75%" }}
+                ml={{ "2xl": "25%" }}
+                display="flex"
+                justifyContent="center"
+                px={4}
+                pt={8}
+                position="relative"
+              >
+                <RegisterForm>
+                  <VStack
+                    as={Form}
                     color="white"
-                  />
-                </VStack>
-              </RegisterForm>
-            </Box>
-          )}
-        </Formik>
-      )}
-    </Box>
+                    gap={16}
+                    h="fit-content"
+                    // pb={8}
+                    mb={{ base: "50vh", "2xl": 8 }}
+                  >
+                    {mobile ? <MobileForm /> : <DesktopForm />}
+                    <IconButton
+                      icon={<MdOutlineKeyboardDoubleArrowRight size="3xl" />}
+                      aria-label="Submit"
+                      isLoading={isSubmitting}
+                      variant="ghost"
+                      type="submit"
+                      alignSelf="flex-end"
+                      color="white"
+                    />
+                  </VStack>
+                </RegisterForm>
+              </Box>
+            )}
+          </Formik>
+        )}
+      </Box>
+    </VStack>
   );
 };
 
