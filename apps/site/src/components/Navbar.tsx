@@ -128,8 +128,8 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         isOpen
           ? "calc(100vh - 16px)"
           : isFlush
-            ? "max(10vh, 60px)"
-            : "max(12vh, 60px)"
+            ? "max(8vh, 60px)"
+            : "max(10vh, 60px)"
       }
       w="100%"
       justifyContent="center"
@@ -164,7 +164,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
           <HStack
             px={{ base: "3%", xl: 0 }}
             h={{
-              base: isFlush ? "max(10vh, 60px)" : "max(12vh, 60px)",
+              base: isFlush ? "max(8vh, 60px)" : "max(10vh, 60px)",
               xl: "100%"
             }}
             w={{ base: "100%", xl: "fit-content" }}

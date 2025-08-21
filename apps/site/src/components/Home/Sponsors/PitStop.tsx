@@ -1,6 +1,5 @@
 import { Box, Image } from "@chakra-ui/react";
 import { keyframes } from "@emotion/react";
-import { AnimatedHeader } from "../shared/AnimatedHeader";
 
 const slideInLeft = keyframes`
 from { transform: translateX(-100px); opacity: 0; }
@@ -24,13 +23,24 @@ to { transform: translateY( 0px); opacity: 1; }
 
 const PitStopScene: React.FC = () => {
   return (
-    <Box as="section" w="100%" minH="100vh" bgColor="#100E0E" pos="relative">
+    <Box
+      as="section"
+      w="100%"
+      maxW="1500px"
+      pos="relative"
+      mx="auto"
+      pointerEvents={"none"}
+      opacity={0.5}
+      filter="blur(3px)"
+    >
       {/* Desktop View */}
       <Box
-        display={{ base: "none", xl: "block" }}
+        display={{ base: "none", lg: "block" }}
         pos="relative"
         w="100%"
-        h="100vh"
+        h="90vh"
+        minH="1200px"
+        mt={20}
         overflow="hidden"
         bgColor="#100E0E"
       >
@@ -47,70 +57,48 @@ const PitStopScene: React.FC = () => {
             src="/sponsors/car/7.png"
             pos="absolute"
             top="10%"
-            left="10%"
-            transform="translate(-50%, -50%)"
+            left="5%"
             display="block"
-            w="1300px"
+            w={{ lg: "1000px", xl: "1300px" }}
             h="auto"
             animation={`${slideInUp} 1s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "translate(-50%, -50%) scale(1.05)",
-              filter: "brightness(1.2) drop-shadow(0 0 30px rgba(255,0,0,0.5))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
             zIndex={2}
           />
           <Image
             src="/sponsors/car/2.png"
             pos="absolute"
-            top="10%"
-            left="48%"
+            top="2%"
+            left="60%"
             display="block"
-            w="200px"
+            w={{ lg: "220px", xl: "300px" }}
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.5) translateX(-15px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/3.png"
             pos="absolute"
-            bottom="8%"
+            bottom={{ lg: "38%", xl: "27%" }}
             right="10%"
             display="block"
-            w="200px"
+            w={{ lg: "220px", xl: "300px" }}
             h="auto"
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.5) translate(-15px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/4.png"
             pos="absolute"
-            top="8%"
+            top="5%"
             left="20%"
             display="block"
-            w="200px"
+            w={{ lg: "200px", xl: "300px" }}
             h="auto"
             animation={`${slideInLeft} 1.6s ease-out`}
             css={{ animationDelay: "0.4s", animationFillMode: "both" }}
@@ -125,7 +113,7 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/sponsors/car/5.png"
+            src="/assets/car/5.png"
             pos="absolute"
             top="55%"
             left="30%"
@@ -147,53 +135,35 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/6.png"
             pos="absolute"
-            bottom="10%"
-            left="50%"
+            bottom={{ lg: "37%", xl: "30%" }}
+            left="20%"
             transform="translateX(-50%)"
             display="block"
-            w="200px"
+            w={{ lg: "220px", xl: "300px" }}
             h="auto"
             animation={`${slideInDown} 2s ease-out`}
             css={{ animationDelay: "0.6s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "translateX(-50%) scale(1.5) translateY(-15px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
             zIndex={3}
           />
         </Box>
-        <AnimatedHeader>Sponsors</AnimatedHeader>
-        <Box
-          pos={"absolute"}
-          bottom={0}
-          left={0}
-          w="100%"
-          h="15px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
-
-      {/* Tablet View */}
       <Box
-        display={{ base: "none", md: "block", xl: "none" }}
+        display={{ base: "none", md: "block", lg: "none" }}
         pos="relative"
         w="100%"
-        h="100vh"
+        maxW="1000px"
+        mx="auto"
+        h="130dvh"
         overflow="hidden"
         bg="#100E0E"
       >
         <Box
           pos="absolute"
-          top="50%"
-          left="50%"
+          top="46%"
+          left="20%"
           transform={{
-            base: "translate(-50%, -50%) scale(0.5)",
-            lg: "translate(-50%, -50%) scale(0.65)"
+            base: "translate(-50%, -50%) scale(0.65)"
           }}
           w="100%"
           h="100%"
@@ -202,81 +172,61 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/8.png"
             pos="absolute"
-            transform="translate(-50%, -50%)"
+            left="45%"
             display="block"
-            w="1300px"
+            w="900px"
             h="auto"
             animation={`${slideInUp} 1s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "translate(-50%, -50%) scale(1.05)",
-              filter: "brightness(1.2) drop-shadow(0 0 30px rgba(255,0,0,0.5))",
-              cursor: "pointer"
-            }}
             zIndex={2}
           />
           <Image
             src="/sponsors/car/5.png"
             pos="absolute"
-            top="15%"
-            right="2%"
+            top="13%"
+            right="-65%"
             display="block"
-            w="200px"
+            w="450px"
             h="auto"
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/2.png"
             pos="absolute"
-            bottom="-12%"
-            left="10%"
+            bottom="15%"
+            left="20%"
             display="block"
-            w="200px"
+            w="400px"
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translateX(-10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/4.png"
             pos="absolute"
-            top="8%"
-            left="3%"
+            top="15%"
+            left="20%"
             display="block"
-            w="200px"
+            w="350px"
             h="auto"
             animation={`${slideInLeft} 1.6s ease-out`}
             css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/3.png"
             pos="absolute"
-            bottom="8%"
-            right="10%"
+            bottom="15%"
+            right="-65%"
             display="block"
-            w="200px"
+            w="350px"
             h="auto"
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
@@ -290,7 +240,7 @@ const PitStopScene: React.FC = () => {
           />
 
           <Image
-            src="/sponsors/car/6.png"
+            src="/assets/car/6.png"
             pos="absolute"
             top="40%"
             right="10%"
@@ -309,7 +259,6 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
-        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
           pos="absolute"
           bottom={0}
@@ -326,17 +275,18 @@ const PitStopScene: React.FC = () => {
         display={{ base: "block", md: "none" }}
         pos="relative"
         w="100%"
+        minW="390px"
         h="100vh"
+        maxH={{ base: "1000px", md: "1300px" }}
         overflow="hidden"
         bg="#100E0E"
       >
         <Box
           pos="absolute"
-          top="50%"
+          top="46%"
           left="50%"
           transform={{
-            base: "translate(-50%, -50%) scale(0.35)",
-            sm: "translate(-50%, -50%) scale(0.45)"
+            base: "translate(-50%, -50%) scale(0.7)"
           }}
           w="100%"
           h="100%"
@@ -345,81 +295,61 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/8.png"
             pos="absolute"
-            top="10%"
-            left="10%"
+            top="0%"
+            left="0%"
             transform="translate(-50%, -50%)"
             display="block"
-            w="1300px"
+            minW="400px"
             h="auto"
             animation={`${slideInUp} 1s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "translate(-50%, -50%) scale(1.02)",
-              filter: "brightness(1.2) drop-shadow(0 0 20px rgba(255,0,0,0.5))",
-              cursor: "pointer"
-            }}
             zIndex={2}
           />
           <Image
             src="/sponsors/car/5.png"
             pos="absolute"
             top="15%"
-            right="2%"
+            right="-35%"
             display="block"
-            w="200px"
+            w="250px"
             h="auto"
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/2.png"
             pos="absolute"
             bottom="2%"
-            left="10%"
+            left="-40%"
             display="block"
-            w="200px"
+            w="250px"
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translateX(-10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/4.png"
             pos="absolute"
             top="8%"
-            left="3%"
+            left="-35%"
             display="block"
             w="200px"
             h="auto"
             animation={`${slideInLeft} 1.6s ease-out`}
             css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
             zIndex={3}
           />
           <Image
             src="/sponsors/car/3.png"
             pos="absolute"
             bottom="8%"
-            right="10%"
+            right="-35%"
             display="block"
             w="200px"
             h="auto"
@@ -435,7 +365,7 @@ const PitStopScene: React.FC = () => {
           />
 
           <Image
-            src="/sponsors/car/6.png"
+            src="/assets/car/6.png"
             pos="absolute"
             top="40%"
             right="-20%"
@@ -454,7 +384,6 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
-        <AnimatedHeader>Sponsors</AnimatedHeader>
         <Box
           pos="absolute"
           bottom={0}

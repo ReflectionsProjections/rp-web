@@ -24,36 +24,50 @@ export const Footer = () => {
   const [isTiny] = useMediaQuery("(max-width: 300px)");
 
   return (
-    <>
+    <Flex
+      w="100%"
+      flexDir="column"
+      bgGradient="linear(to-b, #222020ff 0%, #100E0E 100%)"
+      alignItems="center"
+    >
       <Flex
         w="100%"
-        h="450px"
-        bg="linear-gradient(90deg,rgba(100, 100, 100, 1) 0%, rgba(35, 35, 35, 1) 100%)"
-        alignItems="start"
-        flexDirection="row"
+        maxW="1500px"
+        alignItems="center"
+        justifyContent={{ base: "center", md: "space-between" }}
+        flexDir="row"
+        px={6}
+        py={10}
       >
+        <Image
+          display={{
+            base: "none",
+            md: "block"
+          }}
+          src="main/footer/footer_car.svg"
+          zIndex={2}
+          maxH={{ md: "150px", lg: "200px" }}
+        />
         <Flex
           flexDirection="column"
           h="inherit"
-          pos="absolute"
-          pb="90px"
-          zIndex={2}
-          right={{ base: "0", sm: "8%" }}
-          w={{ base: "100%", sm: "auto" }}
-          alignItems="center"
+          pb={{ base: 0, md: "20px" }}
+          pr={{ base: 0, md: 10 }}
+          alignItems="flex-end"
           justifyContent="center"
+          zIndex={2}
         >
           <Grid
+            maxW="600px"
             templateColumns="1fr 1fr 1fr"
             gridTemplateRows="1fr 1fr"
-            columnGap={{ base: 8, lg: 16 }}
-            rowGap={{ base: 6, lg: 10 }}
-            justifyContent="space-around"
+            columnGap={6}
+            rowGap={4}
           >
             {footerLinkIcons.map((item) => (
               <Link
-                href={item.to}
                 key={item.src}
+                href={item.to}
                 w={isTiny ? "40px" : "60px"}
                 h={isTiny ? "40px" : "60px"}
                 display="flex"
@@ -78,72 +92,28 @@ export const Footer = () => {
             color="white"
             mt={{ base: 6, lg: 12 }}
             w="100%"
-            fontFamily="ProRacing"
-            fontSize={{ base: "sm", md: "md" }}
-            textAlign={{ base: "center", sm: "right" }}
+            fontFamily="Magistral"
+            fontSize={{ base: "md", md: "lg", lg: "xl" }}
+            textAlign={{ base: "center", md: "right" }}
           >
             © 2025 by Reflections | Projections
           </Text>
         </Flex>
-        {/* wide view */}
-        <Box
-          display={{ base: "none", sm: "block" }}
-          w="100%"
-          h="100px"
-          pos="absolute"
-          zIndex={3}
-          bg="black"
-          alignSelf="flex-end"
-        >
-          <Image
-            src="main/footer/footer_car.svg"
-            pos="absolute"
-            zIndex={2}
-            w="70%"
-            minW="450px"
-            maxH="250px"
-            bottom="50px"
-          />
-          {/* ask design for text in svg and/or final svg of car */}
-          <Box pos="absolute" zIndex={1} w="100%" height="54px">
-            <Image
-              src="main/footer/footer_bar_left.svg"
-              pos="absolute"
-              zIndex={3}
-              w="55%"
-              h="100%"
-              left="0"
-              fit="cover"
-            />
-            <Image
-              src="main/footer/footer_bar_right.svg"
-              pos="absolute"
-              zIndex={2}
-              w="55%"
-              h="100%"
-              right="0"
-              fit="fill"
-            />
-          </Box>
-        </Box>
-        {/* mobile view */}
-        <Image
-          display={{ base: "block", sm: "none" }}
-          alignSelf="flex-end"
-          src="main/footer/footer_bar_left.svg"
-          pos="absolute"
-          zIndex={1}
-          w="100%"
-          h="25vh"
-          left="0"
-          fit="cover"
-          sx={{
-            maskImage:
-              "linear-gradient(transparent 0%, rgba(0, 0, 0, 0.1) 15%, black 100%)"
-          }}
-        />
       </Flex>
-    </>
+
+      {/* Bottom bar */}
+      <Box
+        w="100%"
+        h="54px"
+        bgGradient={`
+          repeating-conic-gradient(
+            #000 0% 25%, 
+            #2d2d2d 0% 50%
+          )
+        `}
+        bgSize="70px 40px" // size of each checker square
+      />
+    </Flex>
   );
 };
 

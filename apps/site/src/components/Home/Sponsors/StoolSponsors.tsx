@@ -1,5 +1,5 @@
-import React, { useState } from "react";
 import { Box, Image } from "@chakra-ui/react";
+import React from "react";
 
 interface Character {
   id: number;
@@ -8,8 +8,6 @@ interface Character {
 }
 
 const StoolsSponsors: React.FC = () => {
-  const [hoveredPerson, setHoveredPerson] = useState<number | null>(null);
-
   const characters: Character[] = [
     {
       id: 1,
@@ -56,12 +54,20 @@ const StoolsSponsors: React.FC = () => {
          }
        `}
       </style>
+      <Box
+        bottom={0}
+        left={0}
+        w="100%"
+        h="15px"
+        bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
+        zIndex={1}
+      />
 
       <Box
         position="relative"
         width="100%"
-        height={{ base: "70vh", md: "80vh", lg: "90vh" }}
-        backgroundImage="url('/sponsors/stools/stool_bg.svg')"
+        height={{ base: "65vh" }}
+        backgroundImage="url('/sponsors/stools/stool_bg.png')"
         backgroundSize="cover"
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
@@ -70,17 +76,13 @@ const StoolsSponsors: React.FC = () => {
         alignItems="flex-end"
         justifyContent="center"
         padding={0}
+        filter="blur(4px)"
+        opacity={0.3}
       >
         <Box
           display="flex"
           alignItems="flex-end"
           justifyContent="center"
-          gap={{
-            base: "0.5rem",
-            sm: "1rem",
-            md: "2rem",
-            lg: "3rem"
-          }}
           position="absolute"
           bottom="0"
           left="50%"
@@ -95,29 +97,16 @@ const StoolsSponsors: React.FC = () => {
               alt={`Character ${character.id}`}
               className={`character-${character.id}`}
               height={{
-                base: character.id === 3 ? "45vh" : "40vh",
-                sm: character.id === 3 ? "50vh" : "45vh",
-                md: character.id === 3 ? "65vh" : "60vh"
+                base: "45vh",
+                sm: "45vh",
+                md: "50vh"
               }}
-              maxHeight={{
-                base: character.id === 3 ? "320px" : "280px",
-                sm: character.id === 3 ? "350px" : "300px",
-                md: character.id === 3 ? "550px" : "500px"
-              }}
-              width="auto"
               cursor="pointer"
               transition="all 0.3s ease-out"
-              transform={
-                hoveredPerson === character.id
-                  ? "translateY(-10px)"
-                  : "translateY(0px)"
-              }
-              onMouseEnter={() => setHoveredPerson(character.id)}
-              onMouseLeave={() => setHoveredPerson(null)}
+              transform={"translateY(30px)"}
               _active={{
                 transform: "translateY(-10px)"
               }}
-              zIndex={hoveredPerson === character.id ? 10 : 1}
             />
           ))}
         </Box>
