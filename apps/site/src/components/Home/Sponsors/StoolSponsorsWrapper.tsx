@@ -58,7 +58,7 @@ const StoolsSceneWrapper: React.FC = () => {
           columns={1}
           justifyItems="center"
           alignItems="center"
-          mb={{ base: 5, lg: 16 }}
+          mb={{ base: 2, lg: 16 }}
         >
           <Link
             href={STOOL_SPONSOR_IMAGES[0].url}
