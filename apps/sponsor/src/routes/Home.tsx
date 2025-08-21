@@ -156,7 +156,7 @@ export function Home() {
                 fontWeight={"700"}
               >
                 {" "}
-                18-22{" "}
+                16-20{" "}
               </Text>
             </Box>
           </Stack>

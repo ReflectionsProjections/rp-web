@@ -11,10 +11,10 @@ import {
   Spinner
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { api, RoleObject, useFormAutosave } from "@rp/shared";
-import successAnimation from "../assets/animations/success.json";
+// import successAnimation from "../assets/animations/success.json";
 import confirmationAnimation from "../assets/animations/confirmation.json";
 import {
   finalRegistrationSchema,
@@ -110,9 +110,10 @@ const Register = () => {
   const { displayName, email } = useOutletContext<RoleObject>();
   const [confirmation, setConfirmation] = useState(false);
   const [values, setValues] = useState<RegistrationValues | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const { scrollYProgress } = useScroll();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container: containerRef });
   const mobile = useBreakpointValue({ base: true, "2xl": false });
 
   const toast = useToast();
@@ -193,7 +194,7 @@ const Register = () => {
     <Center
       w="100vw"
       h="100vh"
-      position="fixed"
+      position="absolute"
       top={0}
       left={0}
       zIndex={9999}
@@ -211,14 +212,14 @@ const Register = () => {
     }> = ({ backgroundImage, opacity, initialOpacity }) => (
       <MotionBox
         w={{ base: "min(100%, 800px)", "2xl": "100%" }}
-        h={{ base: "calc(100% - 32px)", "2xl": "125%" }}
+        h={{ base: "100%", "2xl": "125%" }}
         backgroundImage={backgroundImage}
         backgroundSize={{ base: "cover", md: "contain" }}
         backgroundPosition="center"
         backgroundRepeat="no-repeat"
         initial={{ opacity: initialOpacity }}
         style={{ opacity, zIndex: 1 }}
-        position="fixed"
+        position="absolute"
         top={{ "2xl": "-12.5%" }}
         left={{ base: "50%", "2xl": 0 }}
         transform="translateX(-50%)"
@@ -245,8 +246,7 @@ const Register = () => {
       <Box
         w="100%"
         h="calc(100% - 32px)"
-        position="fixed"
-        inset={0}
+        position="absolute"
         top="32px"
         background={{
           base: "#12131A",
@@ -279,14 +279,13 @@ const Register = () => {
 
         <MotionBox
           w="100%"
-          h="calc(100% - 32px)"
+          h="100%"
           backgroundImage="/registration/background.svg"
           backgroundSize="cover"
           backgroundPosition="center"
           backgroundRepeat="no-repeat"
-          position="fixed"
+          position="absolute"
           inset={0}
-          top="32px"
         />
       </Box>
     );
@@ -297,13 +296,16 @@ const Register = () => {
 
     useEffect(() => {
       const handleScroll = () => {
-        if (window.scrollY > 0) {
+        if (containerRef.current && containerRef.current.scrollTop > 0) {
           setHasScrolled(true);
         }
       };
 
-      window.addEventListener("scroll", handleScroll);
-      return () => window.removeEventListener("scroll", handleScroll);
+      const container = containerRef.current;
+      if (container) {
+        container.addEventListener("scroll", handleScroll);
+        return () => container.removeEventListener("scroll", handleScroll);
+      }
     }, []);
 
     const controlledProgress = useTransform(scrollYProgress, (value) => {
@@ -321,15 +323,15 @@ const Register = () => {
       (v) => `calc(${v * 100}% + ${initialProgress})`
     );
 
-    const roadMarkers = Array.from({ length: 12 }, (_, i) => (
+    const roadMarkers = Array.from({ length: 50 }, (_, i) => (
       <Box
         key={i}
         position="absolute"
-        left={`${i * 8 + 4}%`}
+        left={`${i * 2}%`}
         top="50%"
         transform="translateY(-50%)"
         width="16px"
-        height="2px"
+        height="1px"
         backgroundColor="#ffd700"
         borderRadius="1px"
         zIndex={1}
@@ -344,12 +346,12 @@ const Register = () => {
         zIndex={4}
         display="flex"
         alignItems="center"
+        position="sticky"
         backgroundColor="#1a1a1a"
-        position="fixed"
         top={0}
       >
         <Box
-          height="20px"
+          height="24px"
           width="calc(100% - 24px)"
           overflow="hidden"
           position="relative"
@@ -370,19 +372,6 @@ const Register = () => {
             borderRadius="10px"
           />
 
-          {/* LINE */}
-          <Box
-            position="absolute"
-            top="50%"
-            left={0}
-            right={0}
-            height="1px"
-            transform="translateY(-50%)"
-            backgroundColor="#ffd700"
-            opacity={0.4}
-            zIndex={0}
-          />
-
           {/* DASHED */}
           {roadMarkers}
 
@@ -398,7 +387,7 @@ const Register = () => {
             <img
               src="/registration/progress-icon.svg"
               alt="Progress"
-              style={{ display: "block", height: "28px" }}
+              style={{ display: "block", height: "22px" }}
             />
           </MotionBox>
         </Box>
@@ -463,11 +452,11 @@ const Register = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      w="100vw"
-      h="100vh"
+      w="100%"
+      h="100%"
       position="relative"
       overflow="hidden"
-      bgColor="gray.800"
+      bg={"linear-gradient(90deg, #7B0201c0 0%, #12131Ac0 80%)"}
     >
       <Lottie
         animationData={confirmationAnimation}
@@ -487,12 +476,12 @@ const Register = () => {
         }}
       />
 
-      <VStack position="relative" zIndex={3} top="15vh" w="100%" gap={3} px={5}>
-        <Lottie
+      <VStack position="relative" zIndex={3} top="15%" w="100%" gap={3} px={5}>
+        {/* <Lottie
           animationData={successAnimation}
           loop={false}
           style={{ height: 200 }}
-        />
+        /> */}
         <Heading
           size="3xl"
           fontFamily="Magistral"
@@ -542,87 +531,114 @@ const Register = () => {
       {confirmation ? (
         <ConfirmationScreen key="confirmation" />
       ) : (
-        <Box backgroundColor="#12131A" fontFamily="Magistral">
+        <VStack
+          backgroundColor="#12131A"
+          fontFamily="Magistral"
+          h="100%"
+          gap={0}
+        >
           {isLoading && <LoadingIndicator />}
-          <Background />
           <ProgressBar />
+          <Background />
 
-          {values && (
-            <Formik
-              initialValues={values}
-              validationSchema={registrationSchema}
-              onSubmit={(values, helpers) => {
-                setIsLoading(true);
-                const registration = processFinalRegistration(values);
-                toast.promise(
-                  Promise.all([
-                    api.post("/registration/submit", registration),
-                    api.post("/registration/draft", {
-                      ...values,
-                      resume: values.resume?.name ?? ""
-                    }),
-                    (async () => {
-                      if (!values.resume?.file) {
-                        return;
-                      }
-                      const { data: download } = await api.get("/s3/upload");
-                      await uploadResume(
-                        download.url,
-                        download.fields,
-                        values.resume.file
-                      );
-                    })()
-                  ])
-                    .then(() => {
-                      localStorage.removeItem("jwt");
-                      setConfirmation(true);
-                    })
-                    .catch(() => {
-                      helpers.setSubmitting(false);
-                    })
-                    .finally(() => {
-                      setIsLoading(false);
-                    }),
-                  {
-                    success: { title: "Form Submitted!" },
-                    loading: { title: "Submitting..." },
-                    error: { title: "Submission failed" }
-                  }
-                );
-              }}
-            >
-              {({ isSubmitting }) => (
-                <Box
-                  key="form"
-                  w={{ "2xl": "75%" }}
-                  ml={{ "2xl": "25%" }}
-                  display="flex"
-                  justifyContent="center"
-                  px={4}
-                  pt={8}
-                  pb={{ base: "50vh", "2xl": 8 }}
-                  mt="32px"
-                >
-                  <RegisterForm>
-                    <VStack as={Form} color="white" zIndex={3} gap={16}>
-                      {mobile ? <MobileForm /> : <DesktopForm />}
-                      <IconButton
-                        icon={<MdOutlineKeyboardDoubleArrowRight size="48" />}
-                        aria-label="Submit"
-                        isLoading={isSubmitting}
-                        variant="ghost"
-                        type="submit"
-                        alignSelf="flex-end"
+          <Box
+            ref={containerRef}
+            h="100%"
+            w="100%"
+            zIndex={3}
+            overflowY="scroll"
+          >
+            {values && (
+              <Formik
+                initialValues={values}
+                validationSchema={registrationSchema}
+                onSubmit={(values, helpers) => {
+                  setIsLoading(true);
+                  const registration = processFinalRegistration(values);
+                  toast.promise(
+                    Promise.all([
+                      api.post("/registration/submit", registration),
+                      api.post("/registration/draft", {
+                        ...values,
+                        resume: values.resume?.name ?? ""
+                      }),
+                      (async () => {
+                        if (!values.resume?.file) {
+                          return;
+                        }
+                        const { data: download } = await api.get("/s3/upload");
+                        await uploadResume(
+                          download.url,
+                          download.fields,
+                          values.resume.file
+                        );
+                      })()
+                    ])
+                      .then(() => {
+                        setConfirmation(true);
+                      })
+                      .catch(() => {
+                        helpers.setSubmitting(false);
+                      })
+                      .finally(() => {
+                        setIsLoading(false);
+                      }),
+                    {
+                      success: { title: "Form Submitted!" },
+                      loading: { title: "Submitting..." },
+                      error: { title: "Submission failed" }
+                    }
+                  );
+                }}
+              >
+                {({ isSubmitting }) => (
+                  <Box
+                    w={{ "2xl": "75%" }}
+                    ml={{ "2xl": "25%" }}
+                    display="flex"
+                    justifyContent="center"
+                    px={4}
+                    pt={8}
+                    position="relative"
+                  >
+                    <RegisterForm>
+                      <VStack
+                        as={Form}
                         color="white"
-                        size="3xl"
-                      />
-                    </VStack>
-                  </RegisterForm>
-                </Box>
-              )}
-            </Formik>
-          )}
-        </Box>
+                        gap={16}
+                        h="fit-content"
+                        mb={{ base: "50vh", "2xl": 8 }}
+                      >
+                        {mobile ? <MobileForm /> : <DesktopForm />}
+                        <IconButton
+                          icon={
+                            <>
+                              <Text
+                                fontSize="lg"
+                                fontWeight="bold"
+                                align="center"
+                                px={2}
+                              >
+                                Submit
+                              </Text>
+                              <MdOutlineKeyboardDoubleArrowRight size="48" />
+                            </>
+                          }
+                          aria-label="Submit"
+                          isLoading={isSubmitting}
+                          variant="ghost"
+                          type="submit"
+                          alignSelf="flex-end"
+                          color="white"
+                        />
+                      </VStack>
+                    </RegisterForm>
+                  </Box>
+                )}
+              </Formik>
+            )}
+          </Box>
+        </VStack>
       )}
     </AnimatePresence>
   );

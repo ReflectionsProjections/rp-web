@@ -120,9 +120,21 @@ export const TagsField = () => (
     name="tags"
     label="What are you interested in?"
     placeholder="Select your interests"
-    options={["placeholder1", "placeholder2"].map((school) => ({
-      label: school,
-      value: school
+    options={[
+      "Career Readiness",
+      "AI",
+      "Research",
+      "Interactive Events",
+      "HCI",
+      "Ethics",
+      "Fine Arts",
+      "Autonomous Vehicles",
+      "Networking",
+      "Company Talk",
+      "Cybersecurity"
+    ].map((interest) => ({
+      label: interest,
+      value: interest
     }))}
     isRequired
   />

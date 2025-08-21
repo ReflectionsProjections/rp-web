@@ -1,5 +1,5 @@
 export const schools = [
-  "University of Illinois--Urbana-Champaign (IL)",
+  "University of Illinois Urbana-Champaign (IL)",
   "Abilene Christian University (TX)",
   "Abraham Baldwin Agricultural College (GA)",
   "Academy of Art University (CA)",

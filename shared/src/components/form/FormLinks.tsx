@@ -134,9 +134,10 @@ const FormLinks = <
                               const updated = [...field.value];
 
                               if (specialPrefix) {
-                                updated[index] = specialPrefix + e.target.value;
+                                updated[index] =
+                                  specialPrefix + e.target.value.trim();
                               } else {
-                                updated[index] = e.target.value;
+                                updated[index] = e.target.value.trim();
                                 if (e.target.value === "github.com") {
                                   updated[index] = "https://github.com/";
                                 } else if (e.target.value === "linkedin.com") {
