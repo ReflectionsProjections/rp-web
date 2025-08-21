@@ -117,7 +117,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         w={isFlush ? "100%" : { base: "calc(100% - 8px)", xl: "fit-content" }}
         h={
           isFlush
-            ? `calc(${isOpen ? "100vh" : "12vh"})`
+            ? `calc(${isOpen ? "100vh" : "10vh"})`
             : `calc(${isOpen ? "100vh" : "12vh"} - 8px)`
         }
         style={{ transition: "height 0.5s ease-out" }}
@@ -141,7 +141,11 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
             <Link
               as={NavLink}
               to="/"
-              h={{ base: "calc(12vh - 26px)", xl: "calc(12vh - 34px)" }}
+              h={
+                isFlush
+                  ? { base: "calc(10vh - 26px)", xl: "calc(10vh - 34px)" }
+                  : { base: "calc(12vh - 26px)", xl: "calc(12vh - 34px)" }
+              }
               aspectRatio={1}
             >
               <Image src={rpLogo} alt="R|P Logo" h="100%" />
