@@ -1,10 +1,10 @@
 import PitStopScene from "@/components/Home/Sponsors/PitStop";
 import StoolsSponsors from "@/components/Home/Sponsors/StoolSponsors";
-import { Image } from "@chakra-ui/react";
+import { Box, Image } from "@chakra-ui/react";
 
 export default function SponsorSection() {
   return (
-    <>
+    <Box id="sponsors">
       <PitStopScene />
       <StoolsSponsors />
       <Image
@@ -14,6 +14,6 @@ export default function SponsorSection() {
         height="auto"
         objectFit="cover"
       />
-    </>
+    </Box>
   );
 }

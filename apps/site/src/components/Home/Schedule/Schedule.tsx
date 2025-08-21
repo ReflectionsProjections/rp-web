@@ -84,6 +84,7 @@ export default function Schedule() {
         bgPosition="center"
         bgRepeat="no-repeat"
         py={{ base: 5, md: 10 }}
+        id="schedule"
       >
         {/* Accent SVG behind content */}
         <Image

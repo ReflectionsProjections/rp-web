@@ -46,6 +46,7 @@ export const FAQ: React.FC = () => {
         gap={3}
         pb={20}
         pt={20}
+        id="faq"
       >
         <VStack spacing={0} mb={4} w="100%" overflowX={"hidden"}>
           <FAQHeader selectedFaqIndices={selectedFaqIndices} />

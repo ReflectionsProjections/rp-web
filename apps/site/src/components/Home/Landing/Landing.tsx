@@ -59,7 +59,7 @@ export const Landing = () => {
   }, [inView, barCtrl, refCtrl, projCtrl, sepH]);
 
   return (
-    <Box position="relative" h="100dvh" overflow="hidden">
+    <Box position="relative" h="100dvh" overflow="hidden" id="hero">
       {/* background animation */}
       <LandingBackground />
       <VStack

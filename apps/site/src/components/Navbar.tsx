@@ -14,6 +14,15 @@ import { useEffect, ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import rpLogo from "/rp_logo.svg";
 
+const LINKS = [
+  { name: "Schedule", href: "/#schedule", hash: "schedule" },
+  { name: "FAQ", href: "/#faq", hash: "faq" },
+  { name: "Sponsors", href: "/#sponsors", hash: "sponsors" },
+  //   { name: "Speakers", href: "" },
+  { name: "Mechmania", href: "https://mechmania.org/", newTab: true },
+  { name: "PuzzleBang", href: "https://puzzlebang.com/", newTab: true }
+];
+
 const MotionBox = motion(Box);
 
 type NavbarProps = {
@@ -45,19 +54,29 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
 
   const NavbarLink = ({
     children,
-    href
+    href,
+    hash,
+    newTab
   }: {
     children: ReactNode;
     href: string;
+    hash?: string;
+    newTab?: boolean;
   }) => {
-    const isActive = location.pathname === href;
+    const isActive = hash
+      ? location.hash.slice(1) === hash &&
+        location.pathname === href.split("#")[0]
+      : location.pathname === href;
 
     return (
       <Link
         as={NavLink}
         to={href}
+        target={newTab ? "_blank" : undefined}
+        rel={newTab ? "noopener noreferrer" : undefined}
         w="100%"
-        p={2}
+        py="9px"
+        px="33px"
         textAlign="center"
         rounded="xl"
         onClick={() => {
@@ -65,17 +84,35 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
             onClose();
           }
         }}
+        sx={
+          isActive
+            ? {
+                borderRadius: { base: "2xl", xl: "full" },
+                border: "2px solid",
+                borderColor: "whiteAlpha.200",
+                backdropFilter: "blur(24px)",
+                py: "7px",
+                px: "31px"
+              }
+            : undefined
+        }
         _hover={{
           base: {},
           xl: isActive
             ? {}
             : {
-                textDecoration: "underline"
+                borderRadius: { base: "2xl", xl: "full" },
+                border: "1px solid",
+                borderColor: "whiteAlpha.200",
+                boxShadow: "xl",
+                py: "8px",
+                px: "32px"
               }
         }}
-        color="gray.300"
-        fontSize="2xl"
-        fontWeight={isActive ? "bold" : "normal"}
+        color="#b6b6b6ff"
+        fontFamily="magistral"
+        fontSize="md"
+        fontWeight="bold"
         cursor={isActive ? "default" : "pointer"}
       >
         {children}
@@ -87,23 +124,18 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
     <Flex
       position={isFlush ? "sticky" : "fixed"}
       top={0}
+      h={
+        isOpen
+          ? "calc(100vh - 16px)"
+          : isFlush
+            ? "max(10vh, 60px)"
+            : "max(12vh, 60px)"
+      }
       w="100%"
       justifyContent="center"
       zIndex={15}
     >
       <MotionBox
-        sx={
-          isFlush
-            ? undefined
-            : {
-                borderRadius: { base: "2xl", xl: "full" },
-                p: { base: "8px", xl: 3 },
-                border: "1px solid",
-                borderColor: "whiteAlpha.200",
-                boxShadow: "xl",
-                backdropFilter: "blur(24px)"
-              }
-        }
         borderRadius={isFlush ? undefined : { base: "2xl", xl: "full" }}
         p={{ base: "8px", xl: 3 }}
         border={isFlush ? undefined : "1px solid"}
@@ -115,11 +147,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         my={isFlush ? 0 : { base: "4px", xl: "8px" }}
         mx={isFlush ? 0 : { base: "4px", xl: 0 }}
         w={isFlush ? "100%" : { base: "calc(100% - 8px)", xl: "fit-content" }}
-        h={
-          isFlush
-            ? `calc(${isOpen ? "100vh" : "10vh"})`
-            : `calc(${isOpen ? "100vh" : "12vh"} - 8px)`
-        }
+        h="100%"
         style={{ transition: "height 0.5s ease-out" }}
         initial={isFlush ? undefined : { transform: "translateY(-100%)" }}
         animate={{ transform: "translateY(0)" }}
@@ -135,18 +163,28 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         >
           <HStack
             px={{ base: "3%", xl: 0 }}
+            h={{
+              base: isFlush ? "max(10vh, 60px)" : "max(12vh, 60px)",
+              xl: "100%"
+            }}
             w={{ base: "100%", xl: "fit-content" }}
             justifyContent="space-between"
           >
             <Link
               as={NavLink}
               to="/"
-              h={
-                isFlush
-                  ? { base: "calc(10vh - 26px)", xl: "calc(10vh - 34px)" }
-                  : { base: "calc(12vh - 26px)", xl: "calc(12vh - 34px)" }
-              }
+              h="100%"
               aspectRatio={1}
+              transition="transform 0.30s ease-in-out"
+              onClick={() => {
+                const section = document.getElementById("hero");
+                if (section) {
+                  section.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                  });
+                }
+              }}
             >
               <Image src={rpLogo} alt="R|P Logo" h="100%" />
             </Link>
@@ -154,7 +192,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
               bg="transparent"
               icon={
                 isOpen ? (
-                  <CloseIcon fontSize="3xl" />
+                  <CloseIcon fontSize="xl" />
                 ) : (
                   <HamburgerIcon fontSize="3xl" />
                 )
@@ -165,6 +203,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
               color="gray.300"
               height="fit-content"
               aspectRatio={1}
+              _hover={{}}
             />
           </HStack>
 
@@ -178,16 +217,9 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
             alignItems="center"
             justifyContent="space-between"
           >
-            {[
-              "Mechmania",
-              "Puzzlebang",
-              "Schedule",
-              "Speakers",
-              "FAQ",
-              "Sponsors"
-            ].map((link) => (
-              <NavbarLink key={link} href="">
-                {link}
+            {LINKS.map(({ name, href, hash, newTab }) => (
+              <NavbarLink key={name} href={href} hash={hash} newTab={newTab}>
+                {name}
               </NavbarLink>
             ))}
           </Flex>

@@ -14,7 +14,7 @@ import { Form, Formik } from "formik";
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { api, RoleObject, useFormAutosave } from "@rp/shared";
-import successAnimation from "../assets/animations/success.json";
+// import successAnimation from "../assets/animations/success.json";
 import confirmationAnimation from "../assets/animations/confirmation.json";
 import {
   finalRegistrationSchema,
@@ -323,15 +323,15 @@ const Register = () => {
       (v) => `calc(${v * 100}% + ${initialProgress})`
     );
 
-    const roadMarkers = Array.from({ length: 12 }, (_, i) => (
+    const roadMarkers = Array.from({ length: 50 }, (_, i) => (
       <Box
         key={i}
         position="absolute"
-        left={`${i * 8 + 4}%`}
+        left={`${i * 2}%`}
         top="50%"
         transform="translateY(-50%)"
         width="16px"
-        height="2px"
+        height="1px"
         backgroundColor="#ffd700"
         borderRadius="1px"
         zIndex={1}
@@ -351,7 +351,7 @@ const Register = () => {
         top={0}
       >
         <Box
-          height="20px"
+          height="24px"
           width="calc(100% - 24px)"
           overflow="hidden"
           position="relative"
@@ -372,19 +372,6 @@ const Register = () => {
             borderRadius="10px"
           />
 
-          {/* LINE */}
-          <Box
-            position="absolute"
-            top="50%"
-            left={0}
-            right={0}
-            height="1px"
-            transform="translateY(-50%)"
-            backgroundColor="#ffd700"
-            opacity={0.4}
-            zIndex={0}
-          />
-
           {/* DASHED */}
           {roadMarkers}
 
@@ -400,7 +387,7 @@ const Register = () => {
             <img
               src="/registration/progress-icon.svg"
               alt="Progress"
-              style={{ display: "block", height: "28px" }}
+              style={{ display: "block", height: "22px" }}
             />
           </MotionBox>
         </Box>
@@ -465,11 +452,11 @@ const Register = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
-      w="100vw"
-      h="100vh"
+      w="100%"
+      h="100%"
       position="relative"
       overflow="hidden"
-      bgColor="gray.800"
+      bg={"linear-gradient(90deg, #7B0201c0 0%, #12131Ac0 80%)"}
     >
       <Lottie
         animationData={confirmationAnimation}
@@ -489,12 +476,12 @@ const Register = () => {
         }}
       />
 
-      <VStack position="relative" zIndex={3} top="15vh" w="100%" gap={3} px={5}>
-        <Lottie
+      <VStack position="relative" zIndex={3} top="15%" w="100%" gap={3} px={5}>
+        {/* <Lottie
           animationData={successAnimation}
           loop={false}
           style={{ height: 200 }}
-        />
+        /> */}
         <Heading
           size="3xl"
           fontFamily="Magistral"
@@ -631,7 +618,9 @@ const Register = () => {
                           type="submit"
                           alignSelf="flex-end"
                           color="white"
-                        />
+                        >
+                          Submit
+                        </IconButton>
                       </VStack>
                     </RegisterForm>
                   </Box>
