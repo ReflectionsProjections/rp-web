@@ -211,8 +211,9 @@ export const ResumeField = () => (
   <FormFileUpload<RegistrationValues, "resume">
     name="resume"
     label="Resume"
+    helperText="Your resume will be shared with our corporate sponsors. You may return to this page at any time to update it."
     accept=".pdf,.docx"
-    isRequired
+    maxFileSize={10 * 1024 * 1024}
   />
 );
 
