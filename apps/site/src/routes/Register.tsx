@@ -28,8 +28,9 @@ import {
   motion,
   MotionValue,
   useScroll,
-  useSpring,
-  useTransform
+  useTransform,
+  useMotionValue,
+  animate
 } from "framer-motion";
 import { MdOutlineKeyboardDoubleArrowRight } from "react-icons/md";
 import {
@@ -308,18 +309,21 @@ const Register = () => {
       }
     }, []);
 
-    const controlledProgress = useTransform(scrollYProgress, (value) => {
-      return hasScrolled ? value : 0;
-    });
+    const controlledProgress = useTransform(scrollYProgress, (v) =>
+      hasScrolled ? v : 0
+    );
+    const target = useMotionValue(0);
 
-    const width = useSpring(controlledProgress, {
-      stiffness: 100,
-      damping: 30,
-      restDelta: 0.001
-    });
+    useEffect(() => {
+      const unsub = controlledProgress.on("change", (v) => {
+        animate(target, v, { duration: 0.1, ease: "linear" }); // 100ms tween
+      });
+      return () => unsub();
+    }, [controlledProgress, target]);
+
     const initialProgress = "48px";
     const progress = useTransform(
-      width,
+      target,
       (v) => `calc(${v * 100}% + ${initialProgress})`
     );
 
