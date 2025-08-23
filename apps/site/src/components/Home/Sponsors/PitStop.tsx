@@ -27,6 +27,7 @@ const PitStopScene: React.FC = () => {
       as="section"
       w="100%"
       maxW="1500px"
+      h="100%"
       pos="relative"
       mx="auto"
       pointerEvents={"none"}
@@ -38,8 +39,7 @@ const PitStopScene: React.FC = () => {
         display={{ base: "none", lg: "block" }}
         pos="relative"
         w="100%"
-        h="90vh"
-        minH="1200px"
+        h="100%"
         mt={20}
         overflow="hidden"
         bgColor="#100E0E"
@@ -154,7 +154,7 @@ const PitStopScene: React.FC = () => {
         w="100%"
         maxW="1000px"
         mx="auto"
-        h="130dvh"
+        h="100%"
         overflow="hidden"
         bg="#100E0E"
       >
@@ -259,15 +259,6 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
-        <Box
-          pos="absolute"
-          bottom={0}
-          left={0}
-          w="100%"
-          h="12px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
 
       {/* Mobile View */}
@@ -276,7 +267,7 @@ const PitStopScene: React.FC = () => {
         pos="relative"
         w="100%"
         minW="390px"
-        h="100vh"
+        minH="100%"
         maxH={{ base: "1000px", md: "1300px" }}
         overflow="hidden"
         bg="#100E0E"
@@ -322,7 +313,7 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/2.png"
             pos="absolute"
-            bottom="2%"
+            bottom="20%"
             left="-40%"
             display="block"
             w="250px"
@@ -348,7 +339,7 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/3.png"
             pos="absolute"
-            bottom="8%"
+            bottom="20%"
             right="-35%"
             display="block"
             w="200px"
@@ -384,15 +375,6 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
         </Box>
-        <Box
-          pos="absolute"
-          bottom={0}
-          left={0}
-          w="100%"
-          h="10px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
     </Box>
   );

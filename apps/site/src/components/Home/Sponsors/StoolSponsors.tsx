@@ -66,7 +66,7 @@ const StoolsSponsors: React.FC = () => {
       <Box
         position="relative"
         width="100%"
-        height={{ base: "65vh" }}
+        h="100%"
         backgroundImage="url('/sponsors/stools/stool_bg.png')"
         backgroundSize="cover"
         backgroundPosition="center"
@@ -101,6 +101,7 @@ const StoolsSponsors: React.FC = () => {
                 sm: "45vh",
                 md: "50vh"
               }}
+              minH={"500px"}
               cursor="pointer"
               transition="all 0.3s ease-out"
               transform={"translateY(30px)"}
