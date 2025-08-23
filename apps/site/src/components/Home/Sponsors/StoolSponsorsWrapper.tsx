@@ -33,7 +33,7 @@ const StoolsSceneWrapper: React.FC = () => {
     {
       filename: "statefarm.png",
       url: "https://www.statefarm.com/",
-      heights: { base: "30px", md: "55px", lg: "60px" }
+      heights: { base: "30px", md: "40px", lg: "45px" }
     }, // row 3
     {
       filename: "capitalone.png",
@@ -46,9 +46,9 @@ const StoolsSceneWrapper: React.FC = () => {
     <Box as="section" w="100%" bgColor="#191919ff" pos="relative" mx="auto">
       {/* overlay grid */}
       <Box
-        position="absolute"
+        position="relative"
         inset={0}
-        pt={{ base: 24, md: 16, lg: 32 }}
+        py={{ base: 24, md: 16, lg: 32 }}
         zIndex={3}
         maxW="1200px"
         mx="auto"
@@ -58,7 +58,7 @@ const StoolsSceneWrapper: React.FC = () => {
           columns={1}
           justifyItems="center"
           alignItems="center"
-          mb={{ base: 2, lg: 16 }}
+          mb={{ base: 10, lg: 16 }}
         >
           <Link
             href={STOOL_SPONSOR_IMAGES[0].url}
@@ -83,7 +83,7 @@ const StoolsSceneWrapper: React.FC = () => {
         {/* Row 2 - Cloudflare + Everfox */}
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
-          spacing={{ base: 14, lg: 8 }}
+          spacing={{ base: 16, lg: 8 }}
           justifyItems="center"
           alignItems="center"
           mb={{ base: 12, lg: 16 }}
@@ -114,7 +114,7 @@ const StoolsSceneWrapper: React.FC = () => {
         {/* Row 3 - State Farm + Capital One */}
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
-          spacing={{ base: 6, lg: 8 }}
+          spacing={{ base: 12, lg: 8 }}
           justifyItems="center"
           alignItems="center"
         >
@@ -143,7 +143,15 @@ const StoolsSceneWrapper: React.FC = () => {
       </Box>
 
       {/* scene underneath the overlay */}
-      <Box bgColor="#100E0E" zIndex={2} overflow={"hidden"}>
+      <Box
+        position="absolute"
+        top={0}
+        left={0}
+        zIndex={2}
+        overflow={"hidden"}
+        w="100%"
+        h="100%"
+      >
         <StoolsSponsors />
       </Box>
     </Box>

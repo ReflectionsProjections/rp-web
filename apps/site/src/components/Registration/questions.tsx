@@ -8,7 +8,9 @@ import {
   FormSelectMenu,
   FormTextField,
   majors,
-  schools
+  minors,
+  schools,
+  graduationDates
 } from "@rp/shared";
 import { RegistrationValues } from "./schema";
 
@@ -36,7 +38,6 @@ export const GenderField = () => (
     name="gender"
     label="Gender"
     options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
-    isRequired
     custom={{ name: "genderOther", label: "Prefer to self-describe" }}
   />
 );
@@ -118,7 +119,7 @@ export const HowDidYouHearField = () => (
 export const TagsField = () => (
   <FormMultiSelectMenu<RegistrationValues, "tags">
     name="tags"
-    label="What are you interested in?"
+    label="What kinds of events are you interested in?"
     placeholder="Select your interests"
     options={[
       "Career Readiness",
@@ -189,15 +190,16 @@ export const MinorsField = () => (
     name="minors"
     label="What is your current (or intended) minor?"
     placeholder="Select your current (or intended) minor(s)"
-    options={majors.map((major) => ({ label: major, value: major }))}
+    options={minors.map((minor) => ({ label: minor, value: minor }))}
   />
 );
 
 export const GraduationYearField = () => (
-  <FormTextField<RegistrationValues, "graduationYear">
+  <FormSelectMenu<RegistrationValues, "graduationYear">
     name="graduationYear"
     label="When do you intend to graduate?"
     placeholder="Graduation year"
+    options={graduationDates.map((date) => ({ label: date, value: date }))}
     isRequired
   />
 );

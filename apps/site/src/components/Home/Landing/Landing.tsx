@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   HStack,
+  Spacer,
   Text,
   useMediaQuery,
   VStack
@@ -59,17 +60,18 @@ export const Landing = () => {
   }, [inView, barCtrl, refCtrl, projCtrl, sepH]);
 
   return (
-    <Box position="relative" h="100dvh" overflow="hidden" id="hero">
+    <Box
+      position="relative"
+      overflow="hidden"
+      id="hero"
+      display="flex"
+      flexDirection={"column"}
+      justifyContent="center"
+    >
       {/* background animation */}
       <LandingBackground />
-      <VStack
-        position="absolute"
-        left="50%"
-        top={isMobile ? "55vh" : "45%"}
-        transform="translate(-50%, -50%)"
-        spacing={6}
-        zIndex={2}
-      >
+      <VStack spacing={6} zIndex={2} py={32} minH="90dvh">
+        <Spacer />
         {/* headline + animated bar */}
         <Box position="relative" textAlign="center" gap={0}>
           <HStack justify="center" alignItems="center" gap={0}>
@@ -83,7 +85,7 @@ export const Landing = () => {
               justifyContent="flex-end"
             >
               <MotionText
-                fontSize={{ base: "2xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+                fontSize={{ base: "2xl", sm: "3xl", md: "5xl", lg: "6xl" }}
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
@@ -116,7 +118,7 @@ export const Landing = () => {
               alignItems="center"
             >
               <MotionText
-                fontSize={{ base: "2xl", sm: "4xl", md: "5xl", lg: "6xl" }}
+                fontSize={{ base: "2xl", sm: "3xl", md: "5xl", lg: "6xl" }}
                 fontFamily="Roboto Slab"
                 fontWeight="400"
                 letterSpacing="0.08em"
@@ -129,6 +131,8 @@ export const Landing = () => {
               </MotionText>
             </Box>
           </HStack>
+
+          {/* Flex grow 1 */}
 
           {/* subdate */}
           <MotionText
@@ -180,17 +184,15 @@ export const Landing = () => {
             </Text>
           </Button>
         </MotionBox>
+        <Spacer />
       </VStack>
 
       {/* bouncing chevron + learn more */}
       {!isShort && (
         <MotionVStack
-          position="absolute"
-          bottom="30px"
-          left="50%"
-          transform="translateX(-50%)"
           spacing={0}
           zIndex={2}
+          mb={6}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 4, duration: 0.8, ease: "easeInOut" }}
