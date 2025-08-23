@@ -13,6 +13,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   options: SelectOption[];
   placeholder?: string;
   isRequired?: boolean;
+  maxOptions?: number;
 };
 
 const FormMultiSelectMenu = <
@@ -23,6 +24,7 @@ const FormMultiSelectMenu = <
   label,
   options,
   placeholder,
+  maxOptions,
   isRequired
 }: Props<TValues, TFieldName>) => {
   return (
@@ -54,7 +56,9 @@ const FormMultiSelectMenu = <
               onBlur={() => void form.setFieldTouched(name, true)}
               options={options}
               placeholder={placeholder}
-              isOptionDisabled={() => selectedOptions.length >= 5}
+              isOptionDisabled={() =>
+                Boolean(maxOptions && selectedOptions.length >= maxOptions)
+              }
               menuPortalTarget={document.body}
               menuPosition="fixed"
               styles={{

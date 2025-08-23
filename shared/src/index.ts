@@ -18,4 +18,5 @@ export { default as FormLinks } from "./components/form/FormLinks";
 export { default as FormCheckbox } from "./components/form/FormCheckbox";
 export { schools } from "./assets/schools";
 export { majors } from "./assets/majors";
+export { minors } from "./assets/minors";
 export { default as api } from "./api/api";

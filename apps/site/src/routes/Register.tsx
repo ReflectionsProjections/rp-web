@@ -607,7 +607,7 @@ const Register = () => {
                         color="white"
                         gap={16}
                         h="fit-content"
-                        mb={{ base: "50vh", "2xl": 8 }}
+                        mb={{ base: "10vh", "2xl": 8 }}
                       >
                         {mobile ? <MobileForm /> : <DesktopForm />}
                         <IconButton
