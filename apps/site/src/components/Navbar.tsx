@@ -1,16 +1,16 @@
 import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
-  useDisclosure,
-  Link,
   Box,
+  Flex,
+  HStack,
   IconButton,
   Image,
-  HStack,
-  Flex,
-  useBreakpointValue
+  Link,
+  useBreakpointValue,
+  useDisclosure
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { useEffect, ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import rpLogo from "/rp_logo.svg";
 
@@ -84,34 +84,44 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
             onClose();
           }
         }}
-        sx={
-          isActive
+        sx={{
+          xl: isActive
             ? {
                 borderRadius: { base: "2xl", xl: "full" },
                 border: "2px solid",
-                borderColor: "whiteAlpha.200",
+                borderColor: "whiteAlpha.400",
                 backdropFilter: "blur(24px)",
                 py: "7px",
                 px: "31px"
               }
-            : undefined
-        }
+            : {}
+        }}
         _hover={{
-          base: {},
+          base: {
+            borderWidth: "1px",
+            borderColor: "whiteAlpha.300"
+          },
           xl: isActive
             ? {}
             : {
-                borderRadius: { base: "2xl", xl: "full" },
-                border: "1px solid",
-                borderColor: "whiteAlpha.200",
+                borderWidth: "1px",
                 boxShadow: "xl",
                 py: "8px",
                 px: "32px"
               }
         }}
-        color="#b6b6b6ff"
+        color={{ base: "white", xl: "#b6b6b6ff" }}
         fontFamily="magistral"
-        fontSize="xl"
+        border="0px solid"
+        borderColor="whiteAlpha.300"
+        borderRadius={{
+          base: "2xl",
+          xl: "full"
+        }}
+        fontSize={{
+          base: "3xl",
+          xl: "2xl"
+        }}
         fontWeight="bold"
         cursor={isActive ? "default" : "pointer"}
       >
@@ -124,19 +134,17 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
     <Flex
       position={isFlush ? "sticky" : "fixed"}
       top={0}
-      h={
-        isOpen
-          ? "calc(100vh - 16px)"
-          : isFlush
-            ? "max(8vh, 60px)"
-            : "max(10vh, 60px)"
-      }
+      h={isOpen ? "calc(100vh - 16px)" : isFlush ? "max(8vh, 60px)" : undefined}
       w="100%"
       justifyContent="center"
       zIndex={15}
     >
       <MotionBox
         borderRadius={isFlush ? undefined : { base: "2xl", xl: "full" }}
+        borderTopRadius={{
+          base: 0,
+          xl: "full"
+        }}
         p={{ base: "8px", xl: 3 }}
         border={isFlush ? undefined : "1px solid"}
         borderColor={isFlush ? undefined : "whiteAlpha.200"}
@@ -144,8 +152,8 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         backdropFilter={isFlush ? undefined : "blur(24px)"}
         backgroundColor={isFlush ? "#1a1c25ff" : undefined}
         overflowY="hidden"
-        my={isFlush ? 0 : { base: "4px", xl: "8px" }}
-        mx={isFlush ? 0 : { base: "4px", xl: 0 }}
+        my={isFlush ? 0 : { xl: "8px" }}
+        mx={isFlush ? 0 : { base: 0, xl: 0 }}
         w={isFlush ? "100%" : { base: "calc(100% - 8px)", xl: "fit-content" }}
         h="100%"
         style={{ transition: "height 0.5s ease-out" }}
@@ -154,7 +162,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         transition={{ duration: 0.5, ease: "easeOut" }}
       >
         <Flex
-          h={{ base: "100vh", xl: "100%" }}
+          h={{ base: undefined, xl: "100%" }}
           gap={{ base: 8, xl: 32 }}
           px={{ base: 1, xl: 2 }}
           flexDir={{ base: "column", xl: "row" }}
@@ -163,10 +171,6 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         >
           <HStack
             px={{ base: "3%", xl: 0 }}
-            h={{
-              base: isFlush ? "max(8vh, 60px)" : "max(10vh, 60px)",
-              xl: "100%"
-            }}
             w={{ base: "100%", xl: "fit-content" }}
             justifyContent="space-between"
           >
@@ -175,7 +179,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
               to="/"
               h="100%"
               aspectRatio={1}
-              transition="transform 0.30s ease-in-out"
+              // you don’t need the transition here if you put it on the Image
               onClick={() => {
                 const section = document.getElementById("hero");
                 if (section) {
@@ -186,7 +190,18 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
                 }
               }}
             >
-              <Image src={rpLogo} alt="R|P Logo" h="100%" />
+              <Image
+                src={rpLogo}
+                alt="R|P Logo"
+                h="100%"
+                minH="50px"
+                transition="transform 0.3s ease-in-out"
+                _hover={{
+                  transform: "rotate(360deg)"
+                }}
+                // make sure it spins around its center
+                transformOrigin="center"
+              />
             </Link>
             <IconButton
               bg="transparent"
@@ -206,23 +221,24 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
               _hover={{}}
             />
           </HStack>
-
-          <Flex
-            as="nav"
-            mb={{ base: 16, xl: 0 }}
-            gap={{ base: 2, xl: 12 }}
-            mr={8}
-            height="100%"
-            flexDir={{ base: "column", xl: "row" }}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            {LINKS.map(({ name, href, hash, newTab }) => (
-              <NavbarLink key={name} href={href} hash={hash} newTab={newTab}>
-                {name}
-              </NavbarLink>
-            ))}
-          </Flex>
+          {!isOpen && mobile ? null : (
+            <Flex
+              as="nav"
+              mb={{ base: 16, xl: 0 }}
+              gap={{ base: 5, xl: 6 }}
+              mr={{ xl: 8 }}
+              height="100%"
+              flexDir={{ base: "column", xl: "row" }}
+              alignItems="center"
+              justifyContent="space-between"
+            >
+              {LINKS.map(({ name, href, hash, newTab }) => (
+                <NavbarLink key={name} href={href} hash={hash} newTab={newTab}>
+                  {name}
+                </NavbarLink>
+              ))}
+            </Flex>
+          )}
         </Flex>
       </MotionBox>
     </Flex>

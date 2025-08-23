@@ -43,30 +43,28 @@ const PitStopSceneWrapper: React.FC = () => {
       as="section"
       w="100%"
       maxW="1500px"
-      bgColor="#191919ff"
+      // bgColor="#191919ff"
       pos="relative"
       mx="auto"
+      minH="fit-content"
+      overflow="hidden"
     >
       {/* overlay grid */}
-      <Box
-        position="absolute"
-        top={0}
-        left={0}
-        h="100%"
-        w="100%"
-        pt={32}
-        zIndex={3}
-      >
+      <Box pos="relative" w="100%" pt={20} zIndex={3} py={32}>
+        <AnimatedHeader>Sponsors</AnimatedHeader>
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
-          spacing={8}
+          spacing={12}
           columnGap={0}
           rowGap={20}
           justifyItems="center"
           alignItems="start"
-          pt={48}
+          pt={32}
           px={20}
           maxW="1500px"
+          pb={20}
+          bgColor={"rgba(0,0,0,0)"}
+          zIndex={2}
         >
           {SPONSOR_IMAGES.map((img, idx) => (
             <Link
@@ -91,9 +89,7 @@ const PitStopSceneWrapper: React.FC = () => {
           ))}
         </SimpleGrid>
       </Box>
-
-      <Box bgColor="#100E0E" zIndex={2} maxH={{ lg: "1200px" }}>
-        <AnimatedHeader>Sponsors</AnimatedHeader>
+      <Box pos="absolute" top={0} left={0} zIndex={1} h="100%" w="100%">
         <PitStopScene />
       </Box>
     </Box>
