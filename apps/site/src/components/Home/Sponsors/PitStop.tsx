@@ -24,13 +24,13 @@ to { transform: translateY( 0px); opacity: 1; }
 
 const PitStopScene: React.FC = () => {
   return (
-    <Box as="section" w="100%" minH="100vh" bgColor="#100E0E" pos="relative">
+    <Box as="section" w="100%" minH="110vh" bgColor="#100E0E" pos="relative">
       {/* Desktop View */}
       <Box
         display={{ base: "none", xl: "block" }}
         pos="relative"
         w="100%"
-        h="100vh"
+        h="110vh"
         overflow="hidden"
         bgColor="#100E0E"
       >
@@ -50,7 +50,7 @@ const PitStopScene: React.FC = () => {
             left="10%"
             transform="translate(-50%, -50%)"
             display="block"
-            w="1300px"
+            w="1100px"
             h="auto"
             animation={`${slideInUp} 1s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
@@ -65,12 +65,12 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/sponsors/car/2.png"
+            src="/sponsors/car_new/hrt1.png"
             pos="absolute"
-            top="10%"
+            top="2%"
             left="48%"
             display="block"
-            w="200px"
+            w="300px"
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
@@ -85,6 +85,26 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
+            src="/sponsors/car_new/cat.png"
+            pos="absolute"
+            top="10%"
+            left="20%"
+            display="block"
+            w="300px"
+            h="auto"
+            animation={`${slideInLeft} 1.6s ease-out`}
+            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
+            transition="all 0.3s ease"
+            _hover={{
+              transform: "scale(1.5) translate(15px, 10px)",
+              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              cursor: "pointer",
+              outline: "none"
+            }}
+            _focus={{ outline: "none" }}
+            zIndex={3}
+          />
+          {/* <Image
             src="/sponsors/car/3.png"
             pos="absolute"
             bottom="8%"
@@ -103,34 +123,14 @@ const PitStopScene: React.FC = () => {
             }}
             _focus={{ outline: "none" }}
             zIndex={3}
-          />
+          /> */}
           <Image
-            src="/sponsors/car/4.png"
+            src="/sponsors/car_new/qual.png"
             pos="absolute"
-            top="8%"
-            left="20%"
+            top="60%"
+            left="18%"
             display="block"
-            w="200px"
-            h="auto"
-            animation={`${slideInLeft} 1.6s ease-out`}
-            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
-            transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.5) translate(15px, 10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
-            zIndex={3}
-          />
-          <Image
-            src="/sponsors/car/5.png"
-            pos="absolute"
-            top="55%"
-            left="30%"
-            display="block"
-            w="200px"
+            w="330px"
             h="auto"
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
@@ -145,13 +145,13 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/sponsors/car/6.png"
+            src="/sponsors/car_new/aech.png"
             pos="absolute"
             bottom="10%"
-            left="50%"
+            left="49%"
             transform="translateX(-50%)"
             display="block"
-            w="200px"
+            w="300px"
             h="auto"
             animation={`${slideInDown} 2s ease-out`}
             css={{ animationDelay: "0.6s", animationFillMode: "both" }}
@@ -217,12 +217,12 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/sponsors/car/5.png"
+            src="/sponsors/car_new/hrt_small.png"
             pos="absolute"
-            top="15%"
-            right="2%"
+            top="3%"
+            right="-8%"
             display="block"
-            w="200px"
+            w="300px"
             h="auto"
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
@@ -235,12 +235,12 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/sponsors/car/2.png"
+            src="/sponsors/car_new/aech_small.png"
             pos="absolute"
-            bottom="-12%"
-            left="10%"
+            bottom="-15%"
+            right="-10%"
             display="block"
-            w="200px"
+            w="350px"
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
@@ -253,30 +253,12 @@ const PitStopScene: React.FC = () => {
             zIndex={3}
           />
           <Image
-            src="/sponsors/car/4.png"
+            src="/sponsors/car_new/qual_small.png"
             pos="absolute"
-            top="8%"
-            left="3%"
             display="block"
-            w="200px"
-            h="auto"
-            animation={`${slideInLeft} 1.6s ease-out`}
-            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
-            transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
-            zIndex={3}
-          />
-          <Image
-            src="/sponsors/car/3.png"
-            pos="absolute"
-            bottom="8%"
-            right="10%"
-            display="block"
-            w="200px"
+            bottom="-15%"
+            left="-15%"
+            w="400px"
             h="auto"
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
@@ -288,21 +270,19 @@ const PitStopScene: React.FC = () => {
             }}
             zIndex={3}
           />
-
           <Image
-            src="/sponsors/car/6.png"
+            src="/sponsors/car_new/cat_small.png"
             pos="absolute"
-            top="40%"
-            right="10%"
-            transform="translateX(-50%)"
+            top="3%"
+            left="-15%"
             display="block"
-            w="200px"
+            w="350px"
             h="auto"
-            animation={`${slideInDown} 2s ease-out`}
-            css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+            animation={`${slideInLeft} 1.6s ease-out`}
+            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
             _hover={{
-              transform: "translateX(-50%) scale(1.4) translateY(-10px)",
+              transform: "scale(1.4) translate(10px, 8px)",
               filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
               cursor: "pointer"
             }}
@@ -332,7 +312,7 @@ const PitStopScene: React.FC = () => {
       >
         <Box
           pos="absolute"
-          top="50%"
+          top="35%"
           left="50%"
           transform={{
             base: "translate(-50%, -50%) scale(0.35)",
@@ -345,11 +325,9 @@ const PitStopScene: React.FC = () => {
           <Image
             src="/sponsors/car/8.png"
             pos="absolute"
-            top="10%"
-            left="10%"
             transform="translate(-50%, -50%)"
             display="block"
-            w="1300px"
+            w="1000px"
             h="auto"
             animation={`${slideInUp} 1s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
@@ -362,12 +340,12 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/sponsors/car/5.png"
+            src="/sponsors/car_new/hrt_small.png"
             pos="absolute"
-            top="15%"
-            right="2%"
+            top="25%"
+            right="-50%"
             display="block"
-            w="200px"
+            w="300px"
             h="auto"
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
@@ -379,49 +357,14 @@ const PitStopScene: React.FC = () => {
             }}
             zIndex={3}
           />
+
           <Image
-            src="/sponsors/car/2.png"
+            src="/sponsors/car_new/qual_small.png"
             pos="absolute"
-            bottom="2%"
-            left="10%"
             display="block"
-            w="200px"
-            h="auto"
-            animation={`${slideInLeft} 1.2s ease-out`}
-            css={{ animationDelay: "0.2s", animationFillMode: "both" }}
-            transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translateX(-10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
-            zIndex={3}
-          />
-          <Image
-            src="/sponsors/car/4.png"
-            pos="absolute"
-            top="8%"
-            left="3%"
-            display="block"
-            w="200px"
-            h="auto"
-            animation={`${slideInLeft} 1.6s ease-out`}
-            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
-            transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer"
-            }}
-            zIndex={3}
-          />
-          <Image
-            src="/sponsors/car/3.png"
-            pos="absolute"
-            bottom="8%"
-            right="10%"
-            display="block"
-            w="200px"
+            bottom="-5%"
+            left="-50%"
+            w="400px"
             h="auto"
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
@@ -433,21 +376,38 @@ const PitStopScene: React.FC = () => {
             }}
             zIndex={3}
           />
-
           <Image
-            src="/sponsors/car/6.png"
+            src="/sponsors/car_new/cat_small.png"
             pos="absolute"
-            top="40%"
-            right="-20%"
-            transform="translateX(-50%)"
+            top="3%"
+            left="-50%"
             display="block"
-            w="200px"
+            w="350px"
             h="auto"
-            animation={`${slideInDown} 2s ease-out`}
-            css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+            animation={`${slideInLeft} 1.6s ease-out`}
+            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
             _hover={{
-              transform: "translateX(-50%) scale(1.4) translateY(-10px)",
+              transform: "scale(1.4) translate(10px, 8px)",
+              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              cursor: "pointer"
+            }}
+            zIndex={3}
+          />
+
+          <Image
+            src="/sponsors/car_new/aech_small.png"
+            pos="absolute"
+            bottom="-20%"
+            right="-50%"
+            display="block"
+            w="350px"
+            h="auto"
+            animation={`${slideInLeft} 1.2s ease-out`}
+            css={{ animationDelay: "0.2s", animationFillMode: "both" }}
+            transition="all 0.3s ease"
+            _hover={{
+              transform: "scale(1.4) translateX(-10px)",
               filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
               cursor: "pointer"
             }}
