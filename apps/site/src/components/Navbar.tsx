@@ -159,6 +159,8 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         initial={isFlush ? undefined : { transform: "translateY(-100%)" }}
         animate={{ transform: "translateY(0)" }}
         transition={{ duration: 0.5, ease: "easeOut" }}
+        maxH="100%"
+        overflowY="auto"
       >
         <Flex
           h={{ base: undefined, xl: "100%" }}
