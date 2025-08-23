@@ -143,7 +143,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         borderRadius={isFlush ? undefined : { base: "2xl", xl: "full" }}
         borderTopRadius={{
           base: 0,
-          xl: "full"
+          xl: isFlush ? 0 : "full"
         }}
         p={{ base: "8px", xl: 3 }}
         border={isFlush ? undefined : "1px solid"}
