@@ -9,7 +9,8 @@ import {
   FormTextField,
   majors,
   minors,
-  schools
+  schools,
+  graduationDates
 } from "@rp/shared";
 import { RegistrationValues } from "./schema";
 
@@ -194,10 +195,11 @@ export const MinorsField = () => (
 );
 
 export const GraduationYearField = () => (
-  <FormTextField<RegistrationValues, "graduationYear">
+  <FormSelectMenu<RegistrationValues, "graduationYear">
     name="graduationYear"
     label="When do you intend to graduate?"
     placeholder="Graduation year"
+    options={graduationDates.map((date) => ({ label: date, value: date }))}
     isRequired
   />
 );

@@ -66,15 +66,7 @@ const baseRegistrationSchema = yup.object({
     .required()
     .min(1, "Please select at least one"),
   minors: yup.array().of(yup.string().required()).required(),
-  graduationYear: yup
-    .string()
-    .required("Graduation year is required")
-    .test("valid-year", "Please enter a valid year", (value) => {
-      if (!value) return false;
-      const year = Number(value);
-      const currentYear = new Date().getFullYear();
-      return year >= 1985 && year <= currentYear + 10;
-    }),
+  graduationYear: yup.string().required("Graduation year is required"),
   opportunities: yup.array().of(yup.string().required()).required(),
   personalLinks: yup
     .array()
