@@ -1,9 +1,7 @@
-import { CloseIcon, HamburgerIcon } from "@chakra-ui/icons";
 import {
   Box,
   Flex,
   HStack,
-  IconButton,
   Image,
   Link,
   useBreakpointValue,
@@ -31,6 +29,7 @@ type NavbarProps = {
 
 const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
   const mobile = useBreakpointValue({ base: true, xl: false });
+  const compactHeight = useBreakpointValue({ base: 76, xl: 80 }) ?? 76;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const location = useLocation();
 
@@ -130,11 +129,12 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
     );
   };
 
+  const handleToggle = () => (isOpen ? onClose() : onOpen());
+
   return (
     <Flex
       position={isFlush ? "sticky" : "fixed"}
       top={0}
-      h={isOpen ? "calc(100vh - 16px)" : isFlush ? "max(8vh, 60px)" : undefined}
       w="100%"
       justifyContent="center"
       zIndex={15}
@@ -145,7 +145,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
           base: 0,
           xl: isFlush ? 0 : "full"
         }}
-        p={{ base: "8px", xl: 3 }}
+        px={{ base: "8px", xl: 3 }}
         border={isFlush ? undefined : "1px solid"}
         borderColor={isFlush ? undefined : "whiteAlpha.200"}
         boxShadow={isFlush ? undefined : "xl"}
@@ -154,16 +154,17 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         my={isFlush ? 0 : { xl: "8px" }}
         mx={isFlush ? 0 : { base: 0, xl: 0 }}
         w={isFlush ? "100%" : { base: "calc(100% - 8px)", xl: "fit-content" }}
-        h="100%"
-        style={{ transition: "height 0.5s ease-out" }}
-        initial={isFlush ? undefined : { transform: "translateY(-100%)" }}
-        animate={{ transform: "translateY(0)" }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        initial={false}
+        animate={{
+          height: isOpen ? "calc(100dvh - 16px)" : `${compactHeight}px`
+        }}
+        transition={{ height: { duration: 0.4, ease: "easeOut" } }}
+        style={{ overflow: "hidden" }}
         maxH="100%"
-        overflowY="auto"
       >
         <Flex
           h={{ base: undefined, xl: "100%" }}
+          py={{ base: "12px", xl: 3 }}
           gap={{ base: 8, xl: 32 }}
           px={{ base: 1, xl: 2 }}
           flexDir={{ base: "column", xl: "row" }}
@@ -204,23 +205,49 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
                 transformOrigin="center"
               />
             </Link>
-            <IconButton
-              bg="transparent"
-              icon={
-                isOpen ? (
-                  <CloseIcon fontSize="xl" />
-                ) : (
-                  <HamburgerIcon fontSize="3xl" />
-                )
-              }
-              aria-label={"Open Menu"}
+            <Box
+              as="button"
+              onClick={handleToggle}
               display={{ xl: "none" }}
-              onClick={isOpen ? onClose : onOpen}
-              color="gray.300"
-              height="fit-content"
-              aspectRatio={1}
-              _hover={{}}
-            />
+              position="relative"
+              width="30px"
+              height="20px"
+              marginTop="0.25rem"
+              marginRight="1rem"
+              transform="rotate(0deg)"
+              transition=".5s ease-in-out"
+              cursor="pointer"
+            >
+              {[1, 2, 3].map((i) => (
+                <Box
+                  key={i}
+                  position="absolute"
+                  height="3px"
+                  width="100%"
+                  background="white"
+                  borderRadius="9px"
+                  opacity="1"
+                  left="0"
+                  transform={`rotate(0deg)`}
+                  transition=".25s ease-in-out"
+                  top={i === 1 ? "0" : i === 2 ? "9px" : "18px"}
+                  transformOrigin={
+                    i === 1
+                      ? "left center"
+                      : i === 2
+                        ? "left center"
+                        : "left center"
+                  }
+                  _groupHover={{ background: "gray.200" }}
+                  {...(isOpen && {
+                    top: i === 2 ? "9px" : "18px",
+                    width: i === 2 ? "0%" : "100%",
+                    left: i === 2 ? "50%" : "0",
+                    transform: `translateX(${i === 1 ? "5px" : i === 3 ? "5px" : "0"}) translateY(${i === 1 ? "-21px" : i === 3 ? "0px" : "0"}) rotate(${i === 1 ? "45deg" : i === 3 ? "-45deg" : "0"})`
+                  })}
+                />
+              ))}
+            </Box>
           </HStack>
           {!isOpen && mobile ? null : (
             <Flex
