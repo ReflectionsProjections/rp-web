@@ -151,7 +151,6 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
         boxShadow={isFlush ? undefined : "xl"}
         backdropFilter={isFlush ? undefined : "blur(24px)"}
         backgroundColor={isFlush ? "#1a1c25ff" : undefined}
-        overflowY="hidden"
         my={isFlush ? 0 : { xl: "8px" }}
         mx={isFlush ? 0 : { base: 0, xl: 0 }}
         w={isFlush ? "100%" : { base: "calc(100% - 8px)", xl: "fit-content" }}

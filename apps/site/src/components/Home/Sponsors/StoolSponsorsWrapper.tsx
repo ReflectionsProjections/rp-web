@@ -33,7 +33,7 @@ const StoolsSceneWrapper: React.FC = () => {
     {
       filename: "statefarm.png",
       url: "https://www.statefarm.com/",
-      heights: { base: "30px", md: "55px", lg: "60px" }
+      heights: { base: "30px", md: "40px", lg: "45px" }
     }, // row 3
     {
       filename: "capitalone.png",

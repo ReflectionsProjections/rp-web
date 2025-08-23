@@ -27,9 +27,9 @@ const PitStopSceneWrapper: React.FC = () => {
       heights: { base: "90px", md: "125px", lg: "150px" }
     },
     {
-      filename: "qualcomm.svg",
+      filename: "qualcomm.png",
       url: "https://www.qualcomm.com/",
-      heights: { base: "50px", md: "70px", lg: "200px" }
+      heights: { base: "50px", md: "70px", lg: "80px" }
     },
     {
       filename: "aechelon.png",
@@ -58,7 +58,7 @@ const PitStopSceneWrapper: React.FC = () => {
           columnGap={0}
           rowGap={20}
           justifyItems="center"
-          alignItems="start"
+          alignItems="center"
           pt={32}
           px={20}
           maxW="1500px"
