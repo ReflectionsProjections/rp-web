@@ -167,6 +167,8 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
           py={{ base: "12px", xl: 3 }}
           gap={{ base: 8, xl: 32 }}
           px={{ base: 1, xl: 2 }}
+          overflow="scroll"
+          maxH="100vh"
           flexDir={{ base: "column", xl: "row" }}
           justifyContent={{ base: "start", xl: "space-between" }}
           alignItems="center"
