@@ -8,7 +8,8 @@ import {
   VStack,
   Text,
   Icon,
-  Box
+  Box,
+  Link
 } from "@chakra-ui/react";
 import { FastField, FieldArray, FieldProps } from "formik";
 import { DeleteIcon } from "@chakra-ui/icons";
@@ -137,12 +138,16 @@ const FormLinks = <
                                 updated[index] =
                                   specialPrefix + e.target.value.trim();
                               } else {
-                                updated[index] = e.target.value.trim();
-                                if (e.target.value === "github.com") {
-                                  updated[index] = "https://github.com/";
-                                } else if (e.target.value === "linkedin.com") {
-                                  updated[index] = "https://linkedin.com/in/";
-                                }
+                                updated[index] = e.target.value
+                                  .trim()
+                                  .replace(
+                                    /^(https?:\/\/)?(www\.)?github\.com\/?/,
+                                    "https://github.com/"
+                                  )
+                                  .replace(
+                                    /^(https?:\/\/)?(www\.)?linkedin\.com(\/in\/?)?/,
+                                    "https://linkedin.com/in/"
+                                  );
                               }
 
                               void form.setFieldValue(name, updated);
@@ -173,6 +178,18 @@ const FormLinks = <
                           />
                         )}
                       </HStack>
+
+                      {isActive && (
+                        <Link
+                          href={link}
+                          isExternal
+                          color="blue.400"
+                          fontSize="sm"
+                          ml={9}
+                        >
+                          {link}
+                        </Link>
+                      )}
 
                       <FormErrorMessage>
                         {inputError as string}
