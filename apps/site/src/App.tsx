@@ -56,7 +56,9 @@ function Main() {
   return (
     <VStack
       w="100%"
-      h="100vh"
+      h="100dvh"
+      position="relative"
+      zIndex={99}
       gap={0}
       backgroundColor="#100e0e"
       overflowY={isFlush ? undefined : "scroll"}
