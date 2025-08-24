@@ -62,7 +62,7 @@ const FormMultiSelectMenu = <
               menuPortalTarget={document.body}
               menuPosition="fixed"
               styles={{
-                menuPortal: (base) => ({ ...base, zIndex: 10 })
+                menuPortal: (base) => ({ ...base, zIndex: 100 })
               }}
               chakraStyles={{
                 container: (provided) => ({
