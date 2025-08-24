@@ -23,8 +23,32 @@ to { transform: translateY( 0px); opacity: 1; }
 `;
 
 const PitStopScene: React.FC = () => {
+  // Custom glow colors for each sponsor
+  const getGlowFilter = (color: string) => {
+    return `drop-shadow(0 0 15px ${color}) drop-shadow(0 0 25px ${color}88) drop-shadow(0 0 35px ${color}44)`;
+  };
+
+  // Subtle glow for mobile/tablet (always visible)
+  const getSubtleGlowFilter = (color: string) => {
+    return `drop-shadow(0 0 8px ${color}66) drop-shadow(0 0 12px ${color}33)`;
+  };
+
+  const sponsorGlows = {
+    hrt: "#ff6600", // Orange for HRT
+    cat: "#ffdd00", // Yellow for Caterpillar
+    qual: "#0066cc", // Blue for Qualcomm
+    aech: "#808080"
+  };
+
   return (
-    <Box as="section" w="100%" minH="110vh" bgColor="#100E0E" pos="relative">
+    <Box
+      as="section"
+      w="100%"
+      minH={{ base: "60vh", md: "110vh" }}
+      bgColor="#100E0E"
+      pos="relative"
+    >
+      {" "}
       {/* Desktop View */}
       <Box
         display={{ base: "none", xl: "block" }}
@@ -65,7 +89,7 @@ const PitStopScene: React.FC = () => {
             zIndex={2}
           />
           <Image
-            src="/sponsors/car_new/hrt1.png"
+            src="/sponsors/car_new/hrt.png"
             pos="absolute"
             top="2%"
             left="48%"
@@ -77,7 +101,7 @@ const PitStopScene: React.FC = () => {
             transition="all 0.3s ease"
             _hover={{
               transform: "scale(1.5) translateX(-15px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.hrt),
               cursor: "pointer",
               outline: "none"
             }}
@@ -97,33 +121,13 @@ const PitStopScene: React.FC = () => {
             transition="all 0.3s ease"
             _hover={{
               transform: "scale(1.5) translate(15px, 10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.cat),
               cursor: "pointer",
               outline: "none"
             }}
             _focus={{ outline: "none" }}
             zIndex={3}
           />
-          {/* <Image
-            src="/sponsors/car/3.png"
-            pos="absolute"
-            bottom="8%"
-            right="10%"
-            display="block"
-            w="200px"
-            h="auto"
-            animation={`${slideInRight} 1.4s ease-out`}
-            css={{ animationDelay: "0.3s", animationFillMode: "both" }}
-            transition="all 0.3s ease"
-            _hover={{
-              transform: "scale(1.5) translate(-15px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
-              cursor: "pointer",
-              outline: "none"
-            }}
-            _focus={{ outline: "none" }}
-            zIndex={3}
-          /> */}
           <Image
             src="/sponsors/car_new/qual.png"
             pos="absolute"
@@ -137,7 +141,7 @@ const PitStopScene: React.FC = () => {
             transition="all 0.3s ease"
             _hover={{
               transform: "scale(1.5) translate(15px, -15px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.qual),
               cursor: "pointer",
               outline: "none"
             }}
@@ -158,7 +162,7 @@ const PitStopScene: React.FC = () => {
             transition="all 0.3s ease"
             _hover={{
               transform: "translateX(-50%) scale(1.5) translateY(-15px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.aech),
               cursor: "pointer",
               outline: "none"
             }}
@@ -167,17 +171,7 @@ const PitStopScene: React.FC = () => {
           />
         </Box>
         <AnimatedHeader>Sponsors</AnimatedHeader>
-        <Box
-          pos={"absolute"}
-          bottom={0}
-          left={0}
-          w="100%"
-          h="15px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
-
       {/* Tablet View */}
       <Box
         display={{ base: "none", md: "block", xl: "none" }}
@@ -227,9 +221,10 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.hrt)}
             _hover={{
               transform: "scale(1.4) translate(10px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.hrt),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -245,9 +240,10 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.aech)}
             _hover={{
               transform: "scale(1.4) translateX(-10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.aech),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -263,9 +259,10 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.qual)}
             _hover={{
               transform: "scale(1.4) translate(-10px, -8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.qual),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -281,38 +278,29 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInLeft} 1.6s ease-out`}
             css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.cat)}
             _hover={{
               transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.cat),
               cursor: "pointer"
             }}
             zIndex={3}
           />
         </Box>
         <AnimatedHeader>Sponsors</AnimatedHeader>
-        <Box
-          pos="absolute"
-          bottom={0}
-          left={0}
-          w="100%"
-          h="12px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
-
       {/* Mobile View */}
       <Box
         display={{ base: "block", md: "none" }}
         pos="relative"
         w="100%"
-        h="100vh"
+        h="70vh"
         overflow="hidden"
         bg="#100E0E"
       >
         <Box
           pos="absolute"
-          top="35%"
+          top="50%"
           left="50%"
           transform={{
             base: "translate(-50%, -50%) scale(0.35)",
@@ -350,9 +338,10 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInRight} 1.8s ease-out`}
             css={{ animationDelay: "0.5s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.hrt)}
             _hover={{
               transform: "scale(1.4) translate(10px, -10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.hrt),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -363,15 +352,16 @@ const PitStopScene: React.FC = () => {
             pos="absolute"
             display="block"
             bottom="-5%"
-            left="-50%"
+            left="-60%"
             w="400px"
             h="auto"
             animation={`${slideInRight} 1.4s ease-out`}
             css={{ animationDelay: "0.3s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.qual)}
             _hover={{
               transform: "scale(1.4) translate(-10px, -8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.qual),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -387,9 +377,10 @@ const PitStopScene: React.FC = () => {
             animation={`${slideInLeft} 1.6s ease-out`}
             css={{ animationDelay: "0.4s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.cat)}
             _hover={{
               transform: "scale(1.4) translate(10px, 8px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.cat),
               cursor: "pointer"
             }}
             zIndex={3}
@@ -399,31 +390,23 @@ const PitStopScene: React.FC = () => {
             src="/sponsors/car_new/aech_small.png"
             pos="absolute"
             bottom="-20%"
-            right="-50%"
+            right="-60%"
             display="block"
             w="350px"
             h="auto"
             animation={`${slideInLeft} 1.2s ease-out`}
             css={{ animationDelay: "0.2s", animationFillMode: "both" }}
             transition="all 0.3s ease"
+            filter={getSubtleGlowFilter(sponsorGlows.aech)}
             _hover={{
               transform: "scale(1.4) translateX(-10px)",
-              filter: "drop-shadow(0 0 20px rgba(255,0,0,0.8))",
+              filter: getGlowFilter(sponsorGlows.aech),
               cursor: "pointer"
             }}
             zIndex={3}
           />
         </Box>
         <AnimatedHeader>Sponsors</AnimatedHeader>
-        <Box
-          pos="absolute"
-          bottom={0}
-          left={0}
-          w="100%"
-          h="10px"
-          bg="linear-gradient(90deg, #ff0000 0%, #ffffff 50%, #ff0000 100%)"
-          zIndex={1}
-        />
       </Box>
     </Box>
   );
