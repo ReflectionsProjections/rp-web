@@ -3,7 +3,6 @@ import {
   FormCheckboxGroup,
   FormFileUpload,
   FormLinks,
-  FormMultiSelectMenu,
   FormRadioGroup,
   FormSelectMenu,
   FormTextField,
@@ -97,7 +96,7 @@ export const DietaryRestrictionsField = () => (
 );
 
 export const HowDidYouHearField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "howDidYouHear">
+  <FormSelectMenu<RegistrationValues, "howDidYouHear">
     name="howDidYouHear"
     label="How did you hear about us?"
     placeholder="Select where you heard about us"
@@ -113,11 +112,12 @@ export const HowDidYouHearField = () => (
       "Other"
     ].map((source) => ({ label: source, value: source }))}
     isRequired
+    isMulti
   />
 );
 
 export const TagsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "tags">
+  <FormSelectMenu<RegistrationValues, "tags">
     name="tags"
     label="What kinds of events are you interested in?"
     placeholder="Select your interests"
@@ -138,6 +138,7 @@ export const TagsField = () => (
       value: interest
     }))}
     isRequired
+    isMulti
   />
 );
 
@@ -176,21 +177,23 @@ export const EducationLevelField = () => (
 );
 
 export const MajorsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "majors">
+  <FormSelectMenu<RegistrationValues, "majors">
     name="majors"
     label="What is your current (or intended) major?"
     placeholder="Select your current (or intended) major(s)"
     options={majors.map((major) => ({ label: major, value: major }))}
     isRequired
+    isMulti
   />
 );
 
 export const MinorsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "minors">
+  <FormSelectMenu<RegistrationValues, "minors">
     name="minors"
     label="What is your current (or intended) minor?"
     placeholder="Select your current (or intended) minor(s)"
     options={minors.map((minor) => ({ label: minor, value: minor }))}
+    isMulti
   />
 );
 
