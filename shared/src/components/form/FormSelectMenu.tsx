@@ -111,10 +111,6 @@ const OptimizedSelect = <
       }
       loadingMessage={() => "Loading more options..."}
       chakraStyles={{
-        menu: (provided) => ({
-          ...provided,
-          zIndex: 10
-        }),
         container: (provided) => ({
           ...provided,
           backgroundColor: "#12131A"

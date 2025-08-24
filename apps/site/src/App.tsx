@@ -58,7 +58,7 @@ function Main() {
       w="100%"
       h="100dvh"
       position="relative"
-      zIndex={99}
+      zIndex={9}
       gap={0}
       backgroundColor="#100e0e"
       overflowY={isFlush ? undefined : "scroll"}
