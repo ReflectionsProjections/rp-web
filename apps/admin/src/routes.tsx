@@ -7,6 +7,7 @@ import Sponsors from "./routes/pages/Sponsors";
 import Merch from "./routes/pages/Merch";
 import EventCheckin from "./routes/pages/EventCheckin";
 import Attendance from "./routes/pages/Attendance";
+import EmailMaker from "./routes/pages/EmailMaker";
 
 const routes = [
   { path: "/", element: <Dashboard /> },
@@ -17,6 +18,7 @@ const routes = [
   { path: "/sponsors", element: <Sponsors /> },
   { path: "/merch", element: <Merch /> },
   { path: "/event-checkin", element: <EventCheckin /> },
+  { path: "/email-maker", element: <EmailMaker /> },
   { path: "/attendance-view", element: <Attendance /> }
 ];
 

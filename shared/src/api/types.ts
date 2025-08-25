@@ -282,6 +282,25 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/meetings": {
+    GET: {
+      response: Meeting[];
+    };
+    POST: {
+      request: { committeeType: CommitteeType; startTime: string };
+      response: Omit<Meeting, "meetingId">;
+    };
+  };
+  "/meetings/:meetingId": {
+    PUT: {
+      request: Partial<Omit<Meeting, "meetingId">>;
+      response: Meeting;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
   "/registration/draft": {
     POST: {
       request: Omit<RegistrationDraft, "userId" | "resume"> & {
@@ -337,55 +356,10 @@ export interface APIRoutes {
       response: never;
     };
   };
-  "/meetings": {
-    GET: {
-      response: Meeting[];
-    };
-    POST: {
-      request: { committeeType: CommitteeType; startTime: string };
-      response: Omit<Meeting, "meetingId">;
-    };
-  };
-  "/meetings/:meetingId": {
-    PUT: {
-      request: Partial<Omit<Meeting, "meetingId">>;
-      response: Meeting;
-    };
-    DELETE: {
-      request: never;
-      response: never;
-    };
-  };
-  "/s3/upload": {
-    GET: {
-      response: { url: string; fields: Record<string, unknown> };
-    };
-  };
-  "/s3/download": {
-    GET: {
-      response: { url: string };
-    };
-  };
-  "/s3/download/user/:userId": {
-    GET: {
-      response: { url: string };
-    };
-  };
-  "/s3/download/batch": {
-    POST: {
-      request: { userIds: string[] };
-      response: { data: (string | null)[]; errorCount: number };
-    };
-  };
   "/staff/:EMAIL/attendance": {
     POST: {
       request: { meetingId: string; attendanceType: AttendanceType };
       response: Staff;
-    };
-  };
-  "/status": {
-    GET: {
-      response: never;
     };
   };
   "/stats/attendance/:n": {
@@ -411,6 +385,43 @@ export interface APIRoutes {
   "/stats/merch-item/:price": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/status": {
+    GET: {
+      response: never;
+    };
+  };
+  "/subscription": {
+    GET: {
+      response: { mailingList: string; subscriptions: string[] }[];
+    };
+  };
+  "/subscription/send-email": {
+    POST: {
+      request: { mailingList: string; subject: string; htmlBody: string };
+      response: never;
+    };
+  };
+  "/s3/upload": {
+    GET: {
+      response: { url: string; fields: Record<string, unknown> };
+    };
+  };
+  "/s3/download": {
+    GET: {
+      response: { url: string };
+    };
+  };
+  "/s3/download/user/:userId": {
+    GET: {
+      response: { url: string };
+    };
+  };
+  "/s3/download/batch": {
+    POST: {
+      request: { userIds: string[] };
+      response: { data: (string | null)[]; errorCount: number };
     };
   };
 }
