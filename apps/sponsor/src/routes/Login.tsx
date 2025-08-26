@@ -9,7 +9,6 @@ import {
   useMediaQuery,
   useToast
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useState } from "react";
 
 import TwoFactor from "./TwoFactor";
