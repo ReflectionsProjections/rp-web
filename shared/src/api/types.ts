@@ -234,6 +234,7 @@ export interface APIRoutes {
   "/auth/sponsor/login": {
     POST: {
       request: { email: string };
+      response: never;
     };
   };
   "/auth/sponsor/verify": {
