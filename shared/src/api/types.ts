@@ -231,6 +231,12 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/auth/sponsor/login": {
+    POST: {
+      request: { email: string };
+      response: never;
+    };
+  };
   "/auth/sponsor/verify": {
     POST: {
       request: {
@@ -301,17 +307,15 @@ export interface APIRoutes {
   };
   "/registration/all": {
     GET: {
-      response: {
-        registrants: Array<{
-          userId: string;
-          name: string;
-          major: string;
-          graduationYear: string;
-          educationLevel: string;
-          opportunities?: string[];
-          personalLinks?: string[];
-        }>;
-      };
+      response: Array<{
+        userId: string;
+        name: string;
+        major: string;
+        graduationYear: string;
+        educationLevel: string;
+        opportunities?: string[];
+        personalLinks?: string[];
+      }>;
     };
   };
   "/staff/": {
