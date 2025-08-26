@@ -306,17 +306,15 @@ export interface APIRoutes {
   };
   "/registration/all": {
     GET: {
-      response: {
-        registrants: Array<{
-          userId: string;
-          name: string;
-          major: string;
-          graduationYear: string;
-          educationLevel: string;
-          opportunities?: string[];
-          personalLinks?: string[];
-        }>;
-      };
+      response: Array<{
+        userId: string;
+        name: string;
+        major: string;
+        graduationYear: string;
+        educationLevel: string;
+        opportunities?: string[];
+        personalLinks?: string[];
+      }>;
     };
   };
   "/staff/": {

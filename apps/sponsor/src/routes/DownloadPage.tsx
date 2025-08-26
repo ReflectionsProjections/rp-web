@@ -36,7 +36,7 @@ export function DownloadPage() {
     api
       .get("/registration/all")
       .then(function (response) {
-        return response.data.registrants.map(
+        return response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,

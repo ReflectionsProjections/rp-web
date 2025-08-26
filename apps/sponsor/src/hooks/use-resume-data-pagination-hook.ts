@@ -343,7 +343,7 @@ export function useResumeDataPaginationHook({
     api
       .get("/registration/all")
       .then(function (response) {
-        const resumes = response.data.registrants.map(
+        const resumes = response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,
