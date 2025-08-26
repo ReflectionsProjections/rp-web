@@ -21,12 +21,16 @@ import {
 } from "@chakra-ui/react";
 import { api } from "@rp/shared";
 import { Formik, FormikHelpers } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { marked } from "marked";
+import { rpMainTemplate } from "@/components/EmailMaker/EmailTemplate";
+import DOMPurify from "dompurify";
 
 function generateHtmlEmail(mdContent: string) {
   const markdownHtml = marked(mdContent, { async: false });
-  return markdownHtml;
+  const sanitizedHtml = DOMPurify.sanitize(markdownHtml);
+  const compiledHtmlEmail = rpMainTemplate(sanitizedHtml);
+  return compiledHtmlEmail;
 }
 
 function EmailMaker() {
@@ -59,7 +63,7 @@ function EmailMaker() {
     const emailData = {
       mailingList: values.recipients,
       subject: values.subject,
-      htmlBody: values.body
+      htmlBody: generateHtmlEmail(values.body)
     };
 
     const request = api
@@ -100,16 +104,13 @@ function EmailMaker() {
           // const { compiledHtmlEmail, compiledHtmlErrors } = generateHtmlEmail(values.body);
 
           return (
-            <Flex
-              w="100%"
-              p={4}
-              flexWrap="wrap"
-              justifyContent="space-evenly"
-              gap={6}
-            >
+            <Flex w="100%" p={4} justifyContent="space-evenly" gap={6}>
               <Card sx={mirrorStyle} overflowY="auto" height="80vh" flex={1}>
                 <CardBody>
-                  <form onSubmit={handleSubmit}>
+                  <form
+                    onSubmit={handleSubmit}
+                    style={{ height: "calc(100% - 40px)" }}
+                  >
                     {/* Email "to: " bar header */}
                     <FormControl
                       isRequired
@@ -132,7 +133,10 @@ function EmailMaker() {
                           flex={1}
                         >
                           {emailGroups?.map((mailingList) => (
-                            <option value={mailingList.mailingList}>
+                            <option
+                              key={mailingList.mailingList}
+                              value={mailingList.mailingList}
+                            >
                               {mailingList.mailingList}
                             </option>
                           ))}
@@ -142,12 +146,15 @@ function EmailMaker() {
                     </FormControl>
                     {/* Email maker and preview */}
                     <Flex
+                      id="container"
                       w="100%"
+                      h="100%"
                       pt={8}
                       flexWrap="wrap"
                       justifyContent="space-evenly"
                       gap={6}
                       direction={{ base: "column", xl: "row" }}
+                      flex={1}
                     >
                       {/* Left Side: Text Input */}
 
@@ -185,6 +192,7 @@ function EmailMaker() {
                             value={values.body}
                             onChange={handleChange}
                             flex={1}
+                            minH="300px"
                           />
                           <FormErrorMessage>{errors.body}</FormErrorMessage>
                         </FormControl>
@@ -205,21 +213,27 @@ function EmailMaker() {
                         direction="column"
                         gap={2}
                         alignItems="start"
+                        h="100%"
                       >
                         <Text as="b" ml={4} fontSize="xl">
                           Preview
                         </Text>
-                        <Section w="100%" h="100%" p={2}>
+                        <Section
+                          w="100%"
+                          h="100%"
+                          minH="300px"
+                          p={2}
+                          bg="gray.200"
+                        >
                           {/* todo() add theming in preview? */}
                           <iframe
                             srcDoc={markdownHtml}
                             style={{
                               width: "100%",
                               height: "100%",
-                              border: "1px solid white"
+                              overflowY: "scroll"
                             }}
                             title="Email Preview"
-                            sandbox=""
                           />
                         </Section>
                       </Flex>
