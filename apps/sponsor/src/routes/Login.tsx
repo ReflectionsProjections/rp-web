@@ -13,6 +13,7 @@ import axios from "axios";
 import { useState } from "react";
 
 import TwoFactor from "./TwoFactor";
+import { api } from "@rp/shared";
 
 export function Login() {
   const [isSmall] = useMediaQuery("(max-width: 600px)");
@@ -33,19 +34,10 @@ export function Login() {
   };
 
   const sponsorLogin = async (email: string) => {
-    const url = "https://api.reflectionsprojections.org/auth/sponsor/login";
-
     try {
-      const response = await axios.post(url, { email });
-      // console.log("Success:", response.data);
-
-      if (response.data === "Created") {
-        // navigate('/two-factor', { state: { email } });
-        setCodePage(1);
-        showToast();
-      } else {
-        console.log("Response status:", response.status);
-      }
+      await api.post("/auth/sponsor/login", { email });
+      setCodePage(1);
+      showToast();
     } catch (error) {
       setError("Invalid Email. Please try again.");
       console.error("Error:", error);

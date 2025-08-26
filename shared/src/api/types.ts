@@ -231,6 +231,11 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/auth/sponsor/login": {
+    POST: {
+      request: { email: string };
+    };
+  };
   "/auth/sponsor/verify": {
     POST: {
       request: {
