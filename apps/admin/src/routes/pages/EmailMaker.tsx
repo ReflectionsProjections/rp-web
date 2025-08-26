@@ -21,8 +21,13 @@ import {
 } from "@chakra-ui/react";
 import { api } from "@rp/shared";
 import { Formik, FormikHelpers } from "formik";
-import { useEffect, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import { useEffect, useMemo, useState } from "react";
+import { marked } from "marked";
+
+function generateHtmlEmail(mdContent: string) {
+  const markdownHtml = marked(mdContent, { async: false });
+  return markdownHtml;
+}
 
 function EmailMaker() {
   const toast = useToast();
@@ -69,6 +74,9 @@ function EmailMaker() {
     });
   };
 
+  // note -- the markdown rendering for the preview takes place inside
+  // the <Formik /> component to interact with its values
+
   return (
     <>
       <Flex justifyContent="center" alignItems="center">
@@ -87,142 +95,141 @@ function EmailMaker() {
           isSubmitting,
           errors,
           touched
-        }) => (
-          <Flex
-            w="100%"
-            p={4}
-            flexWrap="wrap"
-            justifyContent="space-evenly"
-            gap={6}
-          >
-            <Card sx={mirrorStyle} overflowY="auto" height="80vh" flex={1}>
-              <CardBody>
-                <form onSubmit={handleSubmit}>
-                  {/* Email "to: " bar header */}
-                  <FormControl
-                    isRequired
-                    isInvalid={!!errors.recipients && touched.recipients}
-                  >
-                    <Flex w="100%" flexWrap="wrap" gap={2}>
-                      <Text
-                        as="b"
-                        flexShrink={1}
-                        justifyContent="center"
-                        alignContent="center"
-                      >
-                        Sending to:
-                      </Text>
-                      <button
-                        onClick={() => {
-                          console.log(emailGroups);
-                        }}
-                      >
-                        log
-                      </button>
-                      <Select
-                        name="recipients"
-                        placeholder="Select recipient group"
-                        value={values.recipients}
-                        onChange={handleChange}
-                        flex={1}
-                      >
-                        {emailGroups?.map((mailingList) => (
-                          <option value={mailingList.mailingList}>
-                            {mailingList.mailingList}
-                          </option>
-                        ))}
-                      </Select>
-                    </Flex>
-                    <FormErrorMessage>{errors.recipients}</FormErrorMessage>
-                  </FormControl>
-                  {/* Email maker and preview */}
-                  <Flex
-                    w="100%"
-                    pt={8}
-                    flexWrap="wrap"
-                    justifyContent="space-evenly"
-                    gap={6}
-                    direction={{ base: "column", xl: "row" }}
-                  >
-                    {/* Left Side: Text Input */}
+        }) => {
+          const markdownHtml = generateHtmlEmail(values.body);
+          // const { compiledHtmlEmail, compiledHtmlErrors } = generateHtmlEmail(values.body);
 
-                    <Flex
-                      direction="column"
-                      w="100%"
-                      h="100%"
-                      gap={4}
-                      alignItems="center"
-                      flex={1}
+          return (
+            <Flex
+              w="100%"
+              p={4}
+              flexWrap="wrap"
+              justifyContent="space-evenly"
+              gap={6}
+            >
+              <Card sx={mirrorStyle} overflowY="auto" height="80vh" flex={1}>
+                <CardBody>
+                  <form onSubmit={handleSubmit}>
+                    {/* Email "to: " bar header */}
+                    <FormControl
+                      isRequired
+                      isInvalid={!!errors.recipients && touched.recipients}
                     >
-                      <FormControl
-                        isRequired
-                        isInvalid={!!errors.subject && touched.subject}
-                        flexShrink={0}
-                      >
-                        <Input
-                          name="subject"
-                          placeholder="Subject"
-                          value={values.subject}
-                          onChange={handleChange}
-                        />
-                        <FormErrorMessage>{errors.subject}</FormErrorMessage>
-                      </FormControl>
-                      <FormControl
-                        isRequired
-                        isInvalid={!!errors.body && touched.body}
-                        flex={1}
-                        display="flex"
-                        flexDirection="column"
-                      >
-                        <Textarea
-                          name="body"
-                          placeholder="Message body (markdown)"
-                          value={values.body}
+                      <Flex w="100%" flexWrap="wrap" gap={2}>
+                        <Text
+                          as="b"
+                          flexShrink={1}
+                          justifyContent="center"
+                          alignContent="center"
+                        >
+                          Sending to:
+                        </Text>
+                        <Select
+                          name="recipients"
+                          placeholder="Select recipient group"
+                          value={values.recipients}
                           onChange={handleChange}
                           flex={1}
-                        />
-                        <FormErrorMessage>{errors.body}</FormErrorMessage>
-                      </FormControl>
-                      <Button
-                        type="submit"
-                        colorScheme="blue"
-                        isLoading={isSubmitting}
-                        w="fit-content"
-                        flexShrink={0}
-                      >
-                        Send Email
-                      </Button>
-                    </Flex>
-
-                    {/* Right Side: Preview */}
-                    <Flex
-                      flex={1}
-                      direction="column"
-                      gap={2}
-                      alignItems="start"
-                    >
-                      <Text as="b" ml={4} fontSize="xl">
-                        Preview
-                      </Text>
-                      <Section w="100%" h="100%" p={2}>
-                        {/* todo() add theming in preview? */}
-                        <Section
-                          w="100%"
-                          h="100%"
-                          bg="white"
-                          p={4}
-                          textAlign="left"
                         >
-                          <ReactMarkdown>{values.body}</ReactMarkdown>
+                          {emailGroups?.map((mailingList) => (
+                            <option value={mailingList.mailingList}>
+                              {mailingList.mailingList}
+                            </option>
+                          ))}
+                        </Select>
+                      </Flex>
+                      <FormErrorMessage>{errors.recipients}</FormErrorMessage>
+                    </FormControl>
+                    {/* Email maker and preview */}
+                    <Flex
+                      w="100%"
+                      pt={8}
+                      flexWrap="wrap"
+                      justifyContent="space-evenly"
+                      gap={6}
+                      direction={{ base: "column", xl: "row" }}
+                    >
+                      {/* Left Side: Text Input */}
+
+                      <Flex
+                        direction="column"
+                        w="100%"
+                        h="100%"
+                        gap={4}
+                        alignItems="center"
+                        flex={1}
+                      >
+                        <FormControl
+                          isRequired
+                          isInvalid={!!errors.subject && touched.subject}
+                          flexShrink={0}
+                        >
+                          <Input
+                            name="subject"
+                            placeholder="Subject"
+                            value={values.subject}
+                            onChange={handleChange}
+                          />
+                          <FormErrorMessage>{errors.subject}</FormErrorMessage>
+                        </FormControl>
+                        <FormControl
+                          isRequired
+                          isInvalid={!!errors.body && touched.body}
+                          flex={1}
+                          display="flex"
+                          flexDirection="column"
+                        >
+                          <Textarea
+                            name="body"
+                            placeholder="Message body (markdown)"
+                            value={values.body}
+                            onChange={handleChange}
+                            flex={1}
+                          />
+                          <FormErrorMessage>{errors.body}</FormErrorMessage>
+                        </FormControl>
+                        <Button
+                          type="submit"
+                          colorScheme="blue"
+                          isLoading={isSubmitting}
+                          w="fit-content"
+                          flexShrink={0}
+                        >
+                          Send Email
+                        </Button>
+                      </Flex>
+
+                      {/* Right Side: Preview */}
+                      <Flex
+                        flex={1}
+                        direction="column"
+                        gap={2}
+                        alignItems="start"
+                      >
+                        <Text as="b" ml={4} fontSize="xl">
+                          Preview
+                        </Text>
+                        <Section w="100%" h="100%" p={2}>
+                          {/* todo() add theming in preview? */}
+                          <iframe
+                            srcDoc={markdownHtml}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              border: "1px solid white"
+                            }}
+                            title="Email Preview"
+                            sandbox=""
+                          />
                         </Section>
-                      </Section>
+                      </Flex>
                     </Flex>
-                  </Flex>
-                </form>
-              </CardBody>
-            </Card>
-          </Flex>
-        )}
+                  </form>
+                </CardBody>
+              </Card>
+            </Flex>
+          );
+        }}
       </Formik>
     </>
   );

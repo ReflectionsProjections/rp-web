@@ -41,7 +41,7 @@ const linkMap = {
   Sponsors: "/sponsors",
   "Event Check-in": "/event-checkin",
   Merch: "/merch",
-  Emailer: "/email-maker",
+  Massmailer: "/email-maker",
   Attendance: "/attendance-view"
 };
 
