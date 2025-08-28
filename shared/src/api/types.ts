@@ -164,6 +164,16 @@ export type Meeting = {
   startTime: string;
 };
 
+export type Speaker = {
+  speakerId: string;
+  name: string;
+  title: string;
+  bio: string;
+  eventTitle: string;
+  eventDescription: string;
+  imgUrl: string;
+};
+
 export interface APIRoutes {
   "/attendee/emails": {
     GET: {
@@ -354,6 +364,28 @@ export interface APIRoutes {
     PUT: {
       request: Partial<Omit<Meeting, "meetingId">>;
       response: Meeting;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/speakers": {
+    GET: {
+      response: Speaker[];
+    };
+    POST: {
+      request: Omit<Speaker, "speakerId">;
+      response: Speaker;
+    };
+  };
+  "/speakers/:speakerId": {
+    GET: {
+      response: Speaker;
+    };
+    PUT: {
+      request: Partial<Omit<Speaker, "speakerId">>;
+      response: Speaker;
     };
     DELETE: {
       request: never;
