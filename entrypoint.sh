@@ -36,6 +36,7 @@ declare -A WORKSPACES=(
     ["info"]="$BUILD_INFO"
     ["site"]="$BUILD_SITE"
     ["sponsor"]="$BUILD_SPONSOR"
+    ["dashboard"]="$BUILD_DASHBOARD"
 )
 
 # Function to check command success
