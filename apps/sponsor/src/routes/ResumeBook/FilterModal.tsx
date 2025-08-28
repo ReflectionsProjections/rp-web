@@ -6,8 +6,9 @@ import {
   PopoverTrigger,
   VStack
 } from "@chakra-ui/react";
+import { majors } from "@rp/shared";
 import { FaFilter } from "react-icons/fa";
-import { DEGREE_TYPES, JOB_INTERESTS, MAJORS, YEARS } from "./constants";
+import { DEGREE_TYPES, JOB_INTERESTS, YEARS } from "./constants";
 
 export type FilterModalProps = {
   isMediumScreen: boolean;
@@ -64,7 +65,7 @@ export function FilterModal(props: FilterModalProps) {
           <MultiSelectDropdown
             id="major-dropdown"
             width="100%"
-            options={MAJORS}
+            options={majors}
             selectedOptions={props.filtering.selectedMajors}
             displayedOptions={props.filtering.majorToMajorWithCount}
             onSelectionChange={props.filtering.setSelectedMajors}

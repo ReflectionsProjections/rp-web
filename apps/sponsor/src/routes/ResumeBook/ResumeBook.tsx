@@ -19,7 +19,8 @@ import { ResumeBookNavbar } from "./ResumeBookNavbar";
 export interface Resume {
   id: string;
   name: string;
-  major: string | null;
+  majors: string[];
+  minors: string[];
   degree?: string;
   graduationYear: string | null;
   jobInterest: Array<string>;

@@ -1,3 +1,4 @@
+import { formatMajorsMinors } from "@/util/natural-stringify-list";
 import {
   Box,
   Button,
@@ -136,9 +137,22 @@ const ResumePopupModal = ({
                     <Text fontSize="2xl" fontWeight="bold">
                       {resume.name}
                     </Text>
-                    <Text fontSize="md" color="gray.500">
-                      {resume.degree} | {resume.major} | {resume.graduationYear}
-                    </Text>
+                    {resume.minors.length > 0 ? (
+                      <>
+                        <Text fontSize="md" color="gray.500">
+                          {resume.degree} | {resume.graduationYear}
+                        </Text>
+                        <Text fontSize="md" color="gray.500">
+                          {formatMajorsMinors(resume.majors, resume.minors)}
+                        </Text>
+                      </>
+                    ) : (
+                      <Text fontSize="md" color="gray.500">
+                        {resume.degree} |{" "}
+                        {formatMajorsMinors(resume.majors, resume.minors)} |{" "}
+                        {resume.graduationYear}
+                      </Text>
+                    )}
                   </Flex>
                   <IconButton
                     display={{

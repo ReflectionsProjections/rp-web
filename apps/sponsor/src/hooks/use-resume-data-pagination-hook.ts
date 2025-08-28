@@ -1,7 +1,6 @@
 import {
   DEGREE_TYPES,
   JOB_INTERESTS,
-  MAJORS,
   RESUMES_PER_PAGE,
   YEARS
 } from "@/routes/ResumeBook/constants";
@@ -10,7 +9,7 @@ import { SingleCol } from "@/routes/ResumeBook/ResumeList";
 import { useEffect, useMemo, useState } from "react";
 import { useResumeSelectionAndDownloadHook } from "./use-resume-selection-and-download-hook";
 import moment from "moment";
-import { api } from "@rp/shared";
+import { api, majors } from "@rp/shared";
 
 export function useResumeDataPaginationHook({
   onToast
@@ -76,8 +75,10 @@ export function useResumeDataPaginationHook({
       .filter((resume) => {
         const matchesMajor =
           selectedMajors.length === 0 ||
-          (resume.major &&
-            lowerCasedSelectedMajors.has(resume.major.toLowerCase()));
+          (resume.majors &&
+            resume.majors.some((major) =>
+              lowerCasedSelectedMajors.has(major.toLowerCase())
+            ));
 
         const matchesDegree =
           selectedDegrees.length === 0 ||
@@ -182,15 +183,17 @@ export function useResumeDataPaginationHook({
 
     const majorCounts = filteredResumes.reduce(
       (acc, resume) => {
-        if (resume.major) {
-          acc[resume.major] = (acc[resume.major] || 0) + 1;
+        if (resume.majors) {
+          resume.majors.forEach((major) => {
+            acc[major] = (acc[major] || 0) + 1;
+          });
         }
         return acc;
       },
       {} as Record<string, number>
     );
 
-    return MAJORS.reduce(
+    return majors.reduce(
       (acc, major) => ({
         ...acc,
         [major]: `${major} (${majorCounts[major] || 0})`
@@ -348,7 +351,8 @@ export function useResumeDataPaginationHook({
             ({
               id: registrant.userId,
               name: registrant.name,
-              major: registrant.major,
+              majors: registrant.majors,
+              minors: registrant.minors,
               degree: registrant.educationLevel,
               graduationYear: registrant.graduationYear,
               jobInterest: registrant.opportunities,

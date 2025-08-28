@@ -1,3 +1,4 @@
+import { formatMajorsMinors } from "@/util/natural-stringify-list";
 import {
   Box,
   Flex,
@@ -9,8 +10,8 @@ import {
   VStack
 } from "@chakra-ui/react";
 import { FaFilePdf } from "react-icons/fa6";
-import { Config } from "../../config";
 import PortfolioLinks from "../../components/PortfolioLinks";
+import { Config } from "../../config";
 import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
@@ -68,7 +69,7 @@ const ResumeGridBox: React.FC<ResumeComponentProps> = ({
           </Text>
         </Flex>
         <Text color="gray.500" fontSize="sm" mr="20px">
-          {resume.degree} in {resume.major}
+          {resume.degree}, {formatMajorsMinors(resume.majors, resume.minors)}
         </Text>
         <Text color="gray.500" fontSize="sm">
           {resume.graduationYear}

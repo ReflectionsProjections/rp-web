@@ -39,7 +39,7 @@ export function useResumeSelectionAndDownloadHook({
 
   const downloadResumesCSV = (selected: boolean = false) => {
     const csvContent = [
-      "Name,Major,Degree,Graduation Year,Job Interest,Portfolios,Resume Link"
+      "Name,Major,Minor,Degree,Graduation Year,Job Interest,Portfolios,Resume Link"
     ]
       .concat(
         allFilteredResumes
@@ -55,7 +55,8 @@ export function useResumeSelectionAndDownloadHook({
               : "";
             return [
               resume.name,
-              resume.major || "",
+              resume.majors.join("; ") || "",
+              resume.minors.join("; ") || "",
               resume.degree || "",
               resume.graduationYear || "",
               resume.jobInterest.join("; "),
