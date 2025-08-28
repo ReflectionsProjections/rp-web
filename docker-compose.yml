@@ -1,0 +1,28 @@
+services:
+  web:
+    build: .
+    container_name: rp_web
+    volumes:
+      - .:/shared
+    ports:
+      - "3001:3001" # Site
+      - "3002:3002" # Admin
+      - "3003:3003" # Info
+      - "3004:3004" # Hype
+      - "3005:3005" # Sponsor
+      - "3006:3006" # Dashboard
+    stdin_open: true
+    tty: true
+    environment:
+      - BUILD_HYPE=${BUILD_HYPE:-true}
+      - BUILD_INFO=${BUILD_INFO:-true}
+      - BUILD_SITE=${BUILD_SITE:-true}
+      - BUILD_ADMIN=${BUILD_ADMIN:-true}
+      - BUILD_SPONSOR=${BUILD_SPONSOR:-true}
+      - BUILD_DASHBOARD=${BUILD_DASHBOARD:-true}
+    networks:
+      - rp-network
+
+networks:
+  rp-network:
+    driver: bridge

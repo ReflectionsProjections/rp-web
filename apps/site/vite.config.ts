@@ -13,6 +13,7 @@ export default defineConfig({
     alias: {
       "@": resolve(__dirname, "./src"),
       "@rp/shared": resolve(__dirname, "../../shared/src")
-    }
+    },
+    dedupe: ["react", "react-dom", "react-router-dom"]
   }
 });

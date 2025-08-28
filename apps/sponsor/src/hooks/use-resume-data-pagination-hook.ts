@@ -343,16 +343,16 @@ export function useResumeDataPaginationHook({
     api
       .get("/registration/all")
       .then(function (response) {
-        const resumes = response.data.registrants.map(
+        const resumes = response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,
               name: registrant.name,
               major: registrant.major,
-              degree: registrant.degree,
-              graduationYear: registrant.graduation,
-              jobInterest: registrant.jobInterest,
-              portfolios: registrant.portfolios
+              degree: registrant.educationLevel,
+              graduationYear: registrant.graduationYear,
+              jobInterest: registrant.opportunities,
+              portfolios: registrant.personalLinks
             }) as Resume
         );
         setResumes(resumes);
