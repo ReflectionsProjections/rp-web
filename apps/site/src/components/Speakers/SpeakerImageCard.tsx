@@ -55,7 +55,7 @@ export default function SpeakerImageCard({
       }
     >
       <Image
-        h={{ base: "150px", sm: "150px", md: "170px" }}
+        h={{ base: "130px", sm: "140px", md: "170px" }}
         w={{ base: "130px !important", sm: "140px", md: "170px !important" }}
         minW={{ base: "130px !important", sm: "140px", md: "170px !important" }}
         ml={-3}

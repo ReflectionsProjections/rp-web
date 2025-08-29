@@ -16,7 +16,7 @@ const LINKS = [
   { name: "Schedule", href: "/#schedule", hash: "schedule" },
   { name: "FAQ", href: "/#faq", hash: "faq" },
   { name: "Sponsors", href: "/#sponsors", hash: "sponsors" },
-  //   { name: "Speakers", href: "" },
+  { name: "Speakers", href: "/speakers" },
   { name: "Mechmania", href: "https://mechmania.org/", newTab: true },
   { name: "PuzzleBang", href: "https://puzzlebang.com/", newTab: true }
 ];
@@ -255,7 +255,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
             <Flex
               as="nav"
               mb={{ base: 16, xl: 0 }}
-              gap={{ base: 5, xl: 6 }}
+              gap={{ base: 5, xl: 0 }}
               mr={{ xl: 8 }}
               height="100%"
               flexDir={{ base: "column", xl: "row" }}

@@ -144,16 +144,16 @@ export default function Speakers() {
   }, [isMediumScreen, isSmallScreen, isMicroScreen, speakers]);
 
   return (
-    <VStack gap={0} bgColor="#1F1F1F" py={12} bgImage="/backdrop.svg">
+    <VStack gap={0} bgColor="#1F1F1F" pt={36} pb={48} bgImage="/backdrop.svg">
       <Text
-        fontSize={{ base: "3xl", sm: "5xl", md: "6xl" }}
+        fontSize={{ base: "5xl", sm: "5xl", md: "6xl" }}
         fontFamily="ProRacing"
         color="white"
       >
         Speakers
       </Text>
       <Text
-        fontSize={{ base: "5xl", sm: "6xl", md: "8xl" }}
+        fontSize={{ base: "7xl", sm: "6xl", md: "8xl" }}
         fontFamily="ProRacing"
         color="white"
         my={0}
