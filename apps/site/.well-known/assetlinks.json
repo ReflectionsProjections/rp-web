@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.reflectionsprojections",
+      "sha256_cert_fingerprints": [
+        "5B:A8:F2:69:A8:72:94:4C:5F:73:68:E4:A1:08:F1:BA:73:E7:EF:89:99:29:50:BC:70:34:AD:3F:D2:02:16:88"
+      ]
+    }
+  }
+]
