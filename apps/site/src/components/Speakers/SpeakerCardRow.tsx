@@ -1,11 +1,19 @@
 import { useElementHeight } from "@/hooks/use-element-height-hook";
 import { SpeakerRow } from "@/types/speaker-types";
 import { CloseIcon } from "@chakra-ui/icons";
-import { Box, HStack, IconButton, Text, VStack } from "@chakra-ui/react";
+import {
+  Box,
+  HStack,
+  IconButton,
+  Text,
+  useMediaQuery,
+  VStack
+} from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import SpeakerImageCard from "./SpeakerImageCard";
 
 export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
+  const [isSmallScreen] = useMediaQuery("(max-width: 768px)");
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
   const { ref: bioTextRef, height: bioTextHeight } =
     useElementHeight<HTMLParagraphElement>();
@@ -53,11 +61,11 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
       position="relative"
     >
       <HStack
-        gap={0}
+        gap={{ base: speakerSelected ? 0 : 3, md: 3 }}
         w="100%"
         maxW="1000px"
         ml={{
-          base: 7,
+          base: speakerSelected ? 0 : 7,
           md: 28
         }}
         transition={"all 0.3s"}
@@ -139,13 +147,16 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           top={0}
           left={0}
           right={0}
-          pl={16}
-          pr={16}
+          pl={{ base: "1rem", md: "5rem" }}
+          pr={{ base: 14, md: 16 }}
           h={`${bioTextDisplayedHeight}px`}
           textAlign="left"
           color="white"
           fontFamily="Magistral"
-          fontSize="xl"
+          fontSize={{
+            base: "md",
+            lg: "xl"
+          }}
           opacity={displayedSelectedIndex !== null ? 1 : 0.5}
           transition="all 0.3s"
           zIndex={3}
@@ -166,9 +177,9 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           <IconButton
             size="sm"
             aria-label="Exit"
-            icon={<CloseIcon transform={"skewX(20deg)"} />}
+            icon={<CloseIcon transform={{ md: "skewX(20deg)" }} />}
             onClick={handleLeave}
-            transform={"skewX(-20deg)"}
+            transform={{ base: "", md: "skewX(-20deg)" }}
             px={4}
           />
         </Box>
@@ -208,7 +219,10 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
               md: "xl"
             }}
             h={displayedSelectedIndex ? "30px" : "100px"}
-            isTruncated={displayedSelectedIndex !== null}
+            isTruncated={
+              isSmallScreen ? false : displayedSelectedIndex !== null
+            }
+            pl={speakerSelected ? (index === 0 ? 2 : 0) : 0}
             pr={
               displayedSelectedIndex !== null
                 ? displayedSelectedIndex === index
