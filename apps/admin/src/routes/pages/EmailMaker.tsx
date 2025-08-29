@@ -17,9 +17,14 @@ import {
   Card,
   CardBody,
   useToast,
-  Textarea
+  Textarea,
+  Switch,
+  FormLabel,
+  CardHeader,
+  Image,
+  Box
 } from "@chakra-ui/react";
-import { api } from "@rp/shared";
+import { api, path } from "@rp/shared";
 import { Formik, FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import { marked } from "marked";
@@ -33,6 +38,9 @@ function generateHtmlEmail(mdContent: string) {
   return compiledHtmlEmail;
 }
 
+const NOTIF_PREVIEW_CUTOFF_LENGTH: number = 110;
+const NOTIF_MAX_LENGTH: number = 220;
+
 function EmailMaker() {
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
@@ -40,6 +48,7 @@ function EmailMaker() {
   const [emailGroups, setEmailGroups] = useState<
     { mailingList: string; subscriptions: string[] }[]
   >([]);
+  const [notifGroups, setNotifGroups] = useState<string[]>([]);
 
   useEffect(() => {
     api
@@ -56,54 +65,90 @@ function EmailMaker() {
       });
   }, []);
 
-  const sendEmail = (
+  useEffect(() => {
+    api
+      .get("/notifications/topics")
+      .then((response) => setNotifGroups(response.data?.topics))
+      .catch(() => {
+        toast({
+          title: "Failed to load notification topics!",
+          description: "Try reloading, signing in again, or checking the api",
+          status: "error",
+          duration: 4000,
+          isClosable: true
+        });
+      });
+  }, []);
+
+  const sendMassmail = (
     values: EmailFormValues,
     helpers: FormikHelpers<EmailFormValues>
   ) => {
-    const emailData = {
-      mailingList: values.recipients,
-      subject: values.subject,
-      htmlBody: generateHtmlEmail(values.body)
-    };
+    if (values.isMobileNotification) {
+      const notifData = {
+        title: values.subject,
+        body: values.body
+      };
+      const topic = values.recipients;
 
-    const request = api
-      .post("/subscription/send-email", emailData)
-      .catch((error) => console.error("Failed to send email:", error))
-      .finally(() => helpers.setSubmitting(false));
+      const request = api
+        .post(path("/notifications/topics/:topic", { topic }), notifData)
+        .finally(() => helpers.setSubmitting(false));
 
-    toast.promise(request, {
-      success: { title: `Email sent to ${values.recipients}!` },
-      error: { title: "Failed to send email. Try again soon!" },
-      loading: { title: "Requesting email..." }
-    });
+      toast.promise(request, {
+        success: { title: `Notification sent to topic "${topic}"!` },
+        error: { title: "Failed to send notification. Try again soon!" },
+        loading: { title: "Requesting notification..." }
+      });
+    } else {
+      const emailData = {
+        mailingList: values.recipients,
+        subject: values.subject,
+        htmlBody: generateHtmlEmail(values.body)
+      };
+
+      const request = api
+        .post("/subscription/send-email", emailData)
+        .finally(() => helpers.setSubmitting(false));
+
+      toast.promise(request, {
+        success: { title: `Email sent to ${values.recipients}!` },
+        error: { title: "Failed to send email. Try again soon!" },
+        loading: { title: "Requesting email..." }
+      });
+    }
   };
 
   // note -- the markdown rendering for the preview takes place inside
   // the <Formik /> component to interact with its values
 
   return (
-    <>
-      <Flex justifyContent="center" alignItems="center">
-        <Heading size="lg">Send an Email</Heading>
-      </Flex>
-      <br />
-      <Formik<EmailFormValues>
-        initialValues={EmailFormInitialValues}
-        validationSchema={EmailFormSchema}
-        onSubmit={sendEmail}
-      >
-        {({
-          values,
-          handleChange,
-          handleSubmit,
-          isSubmitting,
-          errors,
-          touched
-        }) => {
-          const markdownHtml = generateHtmlEmail(values.body);
-          // const { compiledHtmlEmail, compiledHtmlErrors } = generateHtmlEmail(values.body);
+    <Formik<EmailFormValues>
+      initialValues={EmailFormInitialValues}
+      validationSchema={EmailFormSchema}
+      onSubmit={sendMassmail}
+    >
+      {({
+        values,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        errors,
+        touched
+      }) => {
+        const markdownHtml = generateHtmlEmail(values.body);
+        // const { compiledHtmlEmail, compiledHtmlErrors } = generateHtmlEmail(values.body);
 
-          return (
+        return (
+          <>
+            <Flex justifyContent="center" alignItems="center">
+              <Heading size="lg">
+                {values.isMobileNotification
+                  ? "Send a Notification"
+                  : "Send an Email"}
+              </Heading>
+            </Flex>
+            <br />
             <Flex w="100%" p={4} justifyContent="space-evenly" gap={6}>
               <Card sx={mirrorStyle} overflowY="auto" height="80vh" flex={1}>
                 <CardBody>
@@ -125,22 +170,38 @@ function EmailMaker() {
                         >
                           Sending to:
                         </Text>
-                        <Select
-                          name="recipients"
-                          placeholder="Select recipient group"
-                          value={values.recipients}
-                          onChange={handleChange}
-                          flex={1}
-                        >
-                          {emailGroups?.map((mailingList) => (
-                            <option
-                              key={mailingList.mailingList}
-                              value={mailingList.mailingList}
-                            >
-                              {mailingList.mailingList}
-                            </option>
-                          ))}
-                        </Select>
+                        {values.isMobileNotification ? (
+                          <Select
+                            name="recipients"
+                            placeholder="Select recipient topic"
+                            value={values.recipients}
+                            onChange={handleChange}
+                            flex={1}
+                          >
+                            {notifGroups?.map((topic) => (
+                              <option key={topic} value={topic}>
+                                {topic}
+                              </option>
+                            ))}
+                          </Select>
+                        ) : (
+                          <Select
+                            name="recipients"
+                            placeholder="Select recipient group"
+                            value={values.recipients}
+                            onChange={handleChange}
+                            flex={1}
+                          >
+                            {emailGroups?.map((mailingList) => (
+                              <option
+                                key={mailingList.mailingList}
+                                value={mailingList.mailingList}
+                              >
+                                {mailingList.mailingList}
+                              </option>
+                            ))}
+                          </Select>
+                        )}
                       </Flex>
                       <FormErrorMessage>{errors.recipients}</FormErrorMessage>
                     </FormControl>
@@ -167,13 +228,33 @@ function EmailMaker() {
                         flex={1}
                       >
                         <FormControl
+                          display="flex"
+                          alignItems="center"
+                          mb={-0.5}
+                          ml={4}
+                        >
+                          <FormLabel mb={0} marginInlineEnd={3}>
+                            Email
+                          </FormLabel>
+                          <Switch
+                            name="isMobileNotification"
+                            isChecked={values.isMobileNotification}
+                            onChange={handleChange}
+                          />
+                          <FormLabel mb={0} marginInlineStart={3}>
+                            Mobile Notification
+                          </FormLabel>
+                        </FormControl>
+                        <FormControl
                           isRequired
                           isInvalid={!!errors.subject && touched.subject}
                           flexShrink={0}
                         >
                           <Input
                             name="subject"
-                            placeholder="Subject"
+                            placeholder={
+                              values.isMobileNotification ? "Title" : "Subject"
+                            }
                             value={values.subject}
                             onChange={handleChange}
                           />
@@ -188,7 +269,11 @@ function EmailMaker() {
                         >
                           <Textarea
                             name="body"
-                            placeholder="Message body (markdown)"
+                            placeholder={
+                              values.isMobileNotification
+                                ? "Notification body"
+                                : "Message body (markdown)"
+                            }
                             value={values.body}
                             onChange={handleChange}
                             flex={1}
@@ -203,13 +288,17 @@ function EmailMaker() {
                           w="fit-content"
                           flexShrink={0}
                         >
-                          Send Email
+                          Send{" "}
+                          {values.isMobileNotification
+                            ? "Notification"
+                            : "Email"}
                         </Button>
                       </Flex>
 
                       {/* Right Side: Preview */}
                       <Flex
                         flex={1}
+                        flexShrink={0}
                         direction="column"
                         gap={2}
                         alignItems="start"
@@ -223,18 +312,81 @@ function EmailMaker() {
                           h="100%"
                           minH="300px"
                           p={2}
-                          bg="gray.200"
+                          bg="none" // bg={values.isMobileNotification ? "none" : "gray.200"}
                         >
-                          {/* todo() add theming in preview? */}
-                          <iframe
-                            srcDoc={markdownHtml}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              overflowY: "scroll"
-                            }}
-                            title="Email Preview"
-                          />
+                          {values.isMobileNotification ? (
+                            <Section w="100%" h="100%" sx={mirrorStyle}>
+                              <Card
+                                w="100%"
+                                maxH="200px"
+                                m="auto"
+                                title="Notification Preview"
+                                textAlign="left"
+                                sx={{ ...mirrorStyle, px: 3 }}
+                                wordBreak="break-word"
+                                minW={0}
+                              >
+                                <Flex flexDirection="row" alignItems="center">
+                                  <Box
+                                    minW="45px"
+                                    w="45px"
+                                    minH="45px"
+                                    h="45px"
+                                    mr={3}
+                                    borderRadius="lg"
+                                    bg="gray.100"
+                                    p="5px"
+                                  >
+                                    <Image
+                                      src="rp_logo.svg"
+                                      w="100%"
+                                      h="100%"
+                                    />
+                                  </Box>
+                                  <Flex flexDirection="column">
+                                    <Text as="b" textOverflow="ellipsis">
+                                      {values.subject.length
+                                        ? values.subject
+                                        : "Notification title"}
+                                    </Text>
+                                    <Text>
+                                      {values.body.length > 0
+                                        ? values.body.length >
+                                          NOTIF_PREVIEW_CUTOFF_LENGTH
+                                          ? values.body.slice(
+                                              0,
+                                              NOTIF_PREVIEW_CUTOFF_LENGTH
+                                            ) + "..."
+                                          : values.body
+                                        : "Share some info!"}
+                                    </Text>
+                                    {values.body.length >
+                                    NOTIF_PREVIEW_CUTOFF_LENGTH ? (
+                                      <Text fontStyle="oblique" opacity="0.6">
+                                        {values.body.slice(
+                                          NOTIF_PREVIEW_CUTOFF_LENGTH,
+                                          NOTIF_MAX_LENGTH
+                                        )}
+                                      </Text>
+                                    ) : (
+                                      <></>
+                                    )}
+                                  </Flex>
+                                </Flex>
+                              </Card>
+                            </Section>
+                          ) : (
+                            <iframe
+                              // todo() add theming in preview?
+                              srcDoc={markdownHtml}
+                              style={{
+                                width: "100%",
+                                height: "100%",
+                                overflowY: "scroll"
+                              }}
+                              title="Email Preview"
+                            />
+                          )}
                         </Section>
                       </Flex>
                     </Flex>
@@ -242,10 +394,10 @@ function EmailMaker() {
                 </CardBody>
               </Card>
             </Flex>
-          );
-        }}
-      </Formik>
-    </>
+          </>
+        );
+      }}
+    </Formik>
   );
 }
 

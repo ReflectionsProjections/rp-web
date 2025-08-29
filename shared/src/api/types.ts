@@ -301,6 +301,17 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/notifications/topics": {
+    GET: {
+      response: { topics: string[] };
+    };
+  };
+  "/notifications/topics/:topic": {
+    POST: {
+      request: { title: string; body: string };
+      response: never;
+    };
+  };
   "/registration/draft": {
     POST: {
       request: Omit<RegistrationDraft, "userId" | "resume"> & {
