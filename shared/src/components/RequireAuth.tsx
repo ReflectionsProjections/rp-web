@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { googleAuth } from "../api/auth";
 import { Role, RoleObject } from "../api/types";
 import { useState } from "react";
 import api from "../api/api";
+import { authRefresh } from "../api/auth";
 
 type RequireAuthProps = {
   requiredRoles?: Role[];
@@ -15,7 +15,7 @@ const RequireAuth: React.FC<RequireAuthProps> = ({ requiredRoles = [] }) => {
 
   useEffect(() => {
     if (!jwt) {
-      googleAuth(true);
+      authRefresh();
       return;
     }
 

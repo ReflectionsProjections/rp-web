@@ -1487,6 +1487,7 @@ __metadata:
     react-router-dom: "npm:^6.23.0"
     typescript: "npm:*"
     vite: "npm:^5.2.0"
+    yup: "npm:^1.7.0"
   languageName: unknown
   linkType: soft
 
@@ -5782,7 +5783,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yup@npm:^1.6.1":
+"yup@npm:^1.6.1, yup@npm:^1.7.0":
   version: 1.7.0
   resolution: "yup@npm:1.7.0"
   dependencies:

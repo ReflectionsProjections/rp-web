@@ -1,5 +1,11 @@
 import Config from "../config";
 
+export function authRefresh() {
+  const currentPath =
+    window.location.pathname + window.location.search + window.location.hash;
+  window.location.href = `/auth/refresh?redirect=${encodeURIComponent(currentPath)}`;
+}
+
 export function googleAuth(selectAccount?: boolean, state?: string) {
   const params = new URLSearchParams({
     client_id: Config.GOOGLE_OAUTH_CLIENT_ID,

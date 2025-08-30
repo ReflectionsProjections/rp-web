@@ -10,58 +10,32 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { useState } from "react";
-
-import TwoFactor from "./TwoFactor";
 import { api } from "@rp/shared";
+import { Form, Formik, FormikHelpers } from "formik";
+import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
+
+type EmailSubmitHandler = (
+  values: {
+    email: string;
+  },
+  formikHelpers: FormikHelpers<{
+    email: string;
+  }>
+) => void | Promise<void>;
+
+type TwoFactorSubmitHandler = (
+  values: {
+    twoFactor: string;
+  },
+  formikHelpers: FormikHelpers<{
+    twoFactor: string;
+  }>
+) => void | Promise<void>;
 
 export function Login() {
   const [isSmall] = useMediaQuery("(max-width: 600px)");
   const [isXSmall] = useMediaQuery("(max-width: 400px)");
-  const [email, setEmail] = useState(""); // State to store the email input
-  const [codePage, setCodePage] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const toast = useToast();
-
-  const showToast = () => {
-    toast({
-      title: "Login Code Sent!",
-      description: "Please check your email for the login code.",
-      status: "success",
-      duration: 5000,
-      isClosable: true
-    });
-  };
-
-  const sponsorLogin = async (email: string) => {
-    try {
-      await api.post("/auth/sponsor/login", { email });
-      setCodePage(1);
-      showToast();
-    } catch (error) {
-      setError("Invalid Email. Please try again.");
-      console.error("Error:", error);
-    }
-  };
-
-  const handleSubmit = () => {
-    // console.log("Button clicked, email:", email);
-    if (!email) {
-      setError("Please enter an email address.");
-      return;
-    }
-    if (!/\S+@\S+\.\S+/.test(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    setError(null);
-    void sponsorLogin(email);
-  };
-
-  // Log the input value whenever it's updated
-  const handleEmailChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    setEmail(e.target.value);
-    // console.log("Input value:", e.target.value);  // Log the input value
-  };
 
   return (
     <Box minHeight={"800px"}>
@@ -130,59 +104,195 @@ export function Login() {
             </HStack>
           </Box>
         </Center>
-        {codePage === 1 ? (
-          <TwoFactor
-            email={email}
-            sponsorLogin={(email) => {
-              void sponsorLogin(email);
-            }}
-          />
-        ) : (
-          <Box mt="5vh" zIndex="2">
-            <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>
-              Enter your Email
-            </Text>
-            <Input
-              type="email"
-              value={email}
-              onChange={handleEmailChange}
-              placeholder="name@example.com"
-              width="250px"
-              mt="20px"
-              // mx="auto"
-              // bg="white"
-              textColor="white"
-              // borderRadius="5px"
-              _placeholder={{ color: "gray.400" }}
-            />
-            <Button
-              bg="blue.500"
-              color="white"
-              borderRadius="5px"
-              onClick={() => handleSubmit()}
-              zIndex="3"
-              m={4}
-              mb={5}
-              _hover={{ bg: "blue.600" }}
-            >
-              Submit
-            </Button>
-            {error && (
-              <Box
-                mt={2}
-                p={2}
-                bg="red.500"
-                color="white"
-                borderRadius="md"
-                maxWidth="250px"
-                mx="auto"
-              >
-                {error}
-              </Box>
-            )}
-          </Box>
-        )}
+        <Box mt="5vh" zIndex="2">
+          <LoginForm />
+        </Box>
       </Flex>
     </Box>
+  );
+}
+
+function LoginForm() {
+  const toast = useToast();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState<string | null>(null);
+
+  const submitEmail: EmailSubmitHandler = ({ email }, { setSubmitting }) => {
+    toast.promise(
+      api
+        .post("/auth/sponsor/login", { email })
+        .then(() => setEmail(email))
+        .finally(() => setSubmitting(false)),
+      {
+        success: { title: "Please check your email for the code" },
+        error: { title: "Something went wrong. Please try again." },
+        loading: { title: "Loading..." }
+      }
+    );
+  };
+
+  const submitTwoFactor: TwoFactorSubmitHandler = (
+    { twoFactor },
+    { setSubmitting }
+  ) => {
+    toast.promise(
+      api
+        .post("/auth/sponsor/verify", {
+          email: email!,
+          sixDigitCode: twoFactor
+        })
+        .then((response) => {
+          localStorage.setItem("jwt", response.data.token);
+          navigate("/resume-book");
+        })
+        .finally(() => setSubmitting(false)),
+      {
+        success: { title: "Success" },
+        error: { title: "Invalid Code. Please try again." },
+        loading: { title: "Loading..." }
+      }
+    );
+  };
+
+  return email ? (
+    <TwoFactorPage onSubmit={submitTwoFactor} />
+  ) : (
+    <EmailPage onSubmit={submitEmail} />
+  );
+}
+
+function EmailPage({ onSubmit }: { onSubmit: EmailSubmitHandler }) {
+  return (
+    <Formik
+      initialValues={{ email: "" }}
+      validationSchema={yup.object({
+        email: yup
+          .string()
+          .email("Please enter a valid email address.")
+          .required("Please enter an email address.")
+      })}
+      onSubmit={onSubmit}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting
+      }) => (
+        <Form onSubmit={handleSubmit}>
+          <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>
+            Enter your Email
+          </Text>
+          <Input
+            type="email"
+            name="email"
+            placeholder="name@example.com"
+            width="250px"
+            mt="20px"
+            textColor="white"
+            _placeholder={{ color: "gray.400" }}
+            value={values.email}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          <Button
+            bg="blue.500"
+            color="white"
+            borderRadius="5px"
+            zIndex="3"
+            m={4}
+            mb={5}
+            _hover={{ bg: "blue.600" }}
+            type="submit"
+            isLoading={isSubmitting}
+          >
+            Submit
+          </Button>
+          {errors.email && touched.email && (
+            <Box
+              mt={2}
+              p={2}
+              bg="red.500"
+              color="white"
+              borderRadius="md"
+              maxWidth="250px"
+              mx="auto"
+            >
+              {errors.email}
+            </Box>
+          )}
+        </Form>
+      )}
+    </Formik>
+  );
+}
+
+function TwoFactorPage({ onSubmit }: { onSubmit: TwoFactorSubmitHandler }) {
+  return (
+    <Formik
+      initialValues={{ twoFactor: "" }}
+      validationSchema={yup.object({
+        twoFactor: yup
+          .string()
+          .min(6, "Please enter a longer code")
+          .required("Please enter a code")
+      })}
+      onSubmit={onSubmit}
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        isSubmitting
+      }) => (
+        <Form onSubmit={handleSubmit}>
+          <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>
+            Enter Code:
+          </Text>
+          <Input
+            name="twoFactor"
+            width="250px"
+            mt="20px"
+            textColor="white"
+            _placeholder={{ color: "gray.400" }}
+            value={values.twoFactor}
+            onChange={handleChange}
+            onBlur={handleBlur}
+          />
+          <Button
+            bg="blue.500"
+            color="white"
+            borderRadius="5px"
+            zIndex="3"
+            m={4}
+            mb={5}
+            _hover={{ bg: "blue.600" }}
+            type="submit"
+            isLoading={isSubmitting}
+          >
+            Submit
+          </Button>
+          {errors.twoFactor && touched.twoFactor && (
+            <Box
+              mt={2}
+              p={2}
+              bg="red.500"
+              color="white"
+              borderRadius="md"
+              maxWidth="250px"
+              mx="auto"
+            >
+              {errors.twoFactor}
+            </Box>
+          )}
+        </Form>
+      )}
+    </Formik>
   );
 }
