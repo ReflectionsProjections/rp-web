@@ -165,7 +165,7 @@ function MultiSelectDropdown({
           width={width}
           maxWidth="90vw"
           zIndex="999"
-          maxH="3xl"
+          maxH="xl"
           overflowY="auto"
           boxShadow={"md"}
         >

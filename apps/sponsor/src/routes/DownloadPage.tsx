@@ -41,7 +41,8 @@ export function DownloadPage() {
             ({
               id: registrant.userId,
               name: registrant.name,
-              major: registrant.major,
+              majors: registrant.majors,
+              minors: registrant.minors,
               degree: registrant.educationLevel,
               graduationYear: registrant.graduationYear,
               jobInterest: registrant.opportunities,

@@ -6,14 +6,17 @@ import {
   PopoverTrigger,
   VStack
 } from "@chakra-ui/react";
+import { majors, minors } from "@rp/shared";
 import { FaFilter } from "react-icons/fa";
-import { DEGREE_TYPES, JOB_INTERESTS, MAJORS, YEARS } from "./constants";
+import { DEGREE_TYPES, JOB_INTERESTS, YEARS } from "./constants";
 
 export type FilterModalProps = {
   isMediumScreen: boolean;
   filtering: {
     selectedMajors: string[];
     majorToMajorWithCount: Record<string, string>;
+    selectedMinors: string[];
+    minorToMinorWithCount: Record<string, string>;
     selectedDegrees: string[];
     degreesWithCounts: Record<string, string>;
     selectedYears: string[];
@@ -21,6 +24,7 @@ export type FilterModalProps = {
     selectedJobInterests: string[];
     jobInterestsWithCounts: Record<string, string>;
     setSelectedMajors: (majors: string[]) => void;
+    setSelectedMinors: (minors: string[]) => void;
     setSelectedDegrees: (degrees: string[]) => void;
     setSelectedYears: (years: string[]) => void;
     setSelectedJobInterests: (jobInterests: string[]) => void;
@@ -30,6 +34,7 @@ export type FilterModalProps = {
 export function FilterModal(props: FilterModalProps) {
   const handleClear = () => {
     props.filtering.setSelectedMajors([]);
+    props.filtering.setSelectedMinors([]);
     props.filtering.setSelectedDegrees([]);
     props.filtering.setSelectedYears([]);
     props.filtering.setSelectedJobInterests([]);
@@ -37,6 +42,7 @@ export function FilterModal(props: FilterModalProps) {
 
   const anySelectedFilters =
     props.filtering.selectedMajors.length > 0 ||
+    props.filtering.selectedMinors.length > 0 ||
     props.filtering.selectedDegrees.length > 0 ||
     props.filtering.selectedYears.length > 0 ||
     props.filtering.selectedJobInterests.length > 0;
@@ -64,11 +70,20 @@ export function FilterModal(props: FilterModalProps) {
           <MultiSelectDropdown
             id="major-dropdown"
             width="100%"
-            options={MAJORS}
+            options={majors}
             selectedOptions={props.filtering.selectedMajors}
             displayedOptions={props.filtering.majorToMajorWithCount}
             onSelectionChange={props.filtering.setSelectedMajors}
             placeholderText="Filter Major(s)"
+          />
+          <MultiSelectDropdown
+            id="minor-dropdown"
+            width="100%"
+            options={minors}
+            selectedOptions={props.filtering.selectedMinors}
+            displayedOptions={props.filtering.minorToMinorWithCount}
+            onSelectionChange={props.filtering.setSelectedMinors}
+            placeholderText="Filter Minor(s)"
           />
           <MultiSelectDropdown
             id="degree-dropdown"
