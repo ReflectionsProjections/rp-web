@@ -14,6 +14,7 @@ import { Event } from "@rp/shared";
 import moment from "moment";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
+import FoodMenu from "./FoodMenu";
 
 export default function EventModal({
   event,
@@ -22,6 +23,12 @@ export default function EventModal({
   event: Event | null;
   onClose: () => void;
 }) {
+  const hasFoodMenu = event?.description?.includes(":food:") || false;
+  const displayDescription =
+    event && hasFoodMenu
+      ? event.description.split(":food:")[0].trim()
+      : event?.description;
+
   return (
     <Modal isOpen={event !== null} onClose={onClose} size="xl" isCentered>
       <ModalOverlay />
@@ -67,19 +74,25 @@ export default function EventModal({
 
           <EventCard event={event} />
 
-          <Text
-            fontSize="xl"
-            fontWeight="bold"
-            lineHeight="1.5"
-            whiteSpace="pre-wrap"
-            fontFamily="Magistral"
-            letterSpacing="0.5px"
-            mt={4}
-            transformOrigin={"top left"}
-          >
-            {event.description}
-          </Text>
-          <br />
+          {displayDescription && (
+            <>
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                lineHeight="1.5"
+                whiteSpace="pre-wrap"
+                fontFamily="Magistral"
+                letterSpacing="0.5px"
+                mt={4}
+                transformOrigin={"top left"}
+              >
+                {displayDescription}
+              </Text>
+              <br />
+            </>
+          )}
+
+          <FoodMenu description={event.description} />
 
           <CheckerBoardPattern />
         </ModalContent>
