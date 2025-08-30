@@ -1,96 +1,580 @@
 import { Box, SimpleGrid, Image, Link } from "@chakra-ui/react";
+import { keyframes } from "@emotion/react";
 import { AnimatedHeader } from "../shared/AnimatedHeader";
-import PitStopScene from "./PitStop";
 
-type Sponsor = {
-  filename: string;
-  url: string;
-  heights?: {
-    base?: string;
-    sm?: string;
-    md?: string;
-    lg?: string;
-    xl?: string;
-  };
-};
+const slideInLeft = keyframes`
+from { transform: translateX(-100px); opacity: 0; }
+to { transform: translateX( 0px); opacity: 1; }
+`;
+
+const slideInRight = keyframes`
+from { transform: translateX( 100px); opacity: 0; }
+to { transform: translateX( 0px); opacity: 1; }
+`;
+
+const slideInUp = keyframes`
+from { transform: translateY( 50px); opacity: 0; }
+to { transform: translateY( 0px); opacity: 1; }
+`;
+
+const slideInDown = keyframes`
+from { transform: translateY(-50px); opacity: 0; }
+to { transform: translateY( 0px); opacity: 1; }
+`;
 
 const PitStopSceneWrapper: React.FC = () => {
-  const SPONSOR_IMAGES: Sponsor[] = [
-    {
-      filename: "caterpillar.svg",
-      url: "https://www.caterpillar.com",
-      heights: { base: "50px", md: "70px", lg: "80px" }
-    },
-    {
-      filename: "hrt.svg",
-      url: "https://www.hudsonrivertrading.com/",
-      heights: { base: "90px", md: "125px", lg: "150px" }
-    },
-    {
-      filename: "qualcomm.png",
-      url: "https://www.qualcomm.com/",
-      heights: { base: "50px", md: "70px", lg: "80px" }
-    },
-    {
-      filename: "aechelon.png",
-      url: "https://www.aechelon.com",
-      heights: { base: "150px", md: "150px", lg: "200px" }
-    }
-  ];
+  const getGlowFilter = (color: string) => {
+    return `drop-shadow(0 0 15px ${color}) drop-shadow(0 0 25px ${color}88) drop-shadow(0 0 35px ${color}44)`;
+  };
+
+  const getSubtleGlowFilter = (color: string) => {
+    return `drop-shadow(0 0 8px ${color}AA) drop-shadow(0 0 25px ${color}88) drop-shadow(0 0 35px ${color}66)`;
+  };
+
+  const sponsorGlows = {
+    hrt: "#ff6600", // Orange for HRT
+    cat: "#ffdd00", // Yellow for Caterpillar
+    qual: "#0066cc", // Blue for Qualcomm
+    aech: "#808080" // Gray for Aechelon
+  };
 
   return (
     <Box
       as="section"
       w="100%"
-      maxW="1500px"
-      // bgColor="#191919ff"
       pos="relative"
       mx="auto"
       minH="fit-content"
       overflow="hidden"
     >
-      {/* overlay grid */}
-      <Box pos="relative" w="100%" pt={20} zIndex={3} py={32}>
-        <AnimatedHeader>Sponsors</AnimatedHeader>
-        <SimpleGrid
-          columns={{ base: 1, lg: 2 }}
-          spacing={12}
-          columnGap={0}
-          rowGap={20}
-          justifyItems="center"
-          alignItems="center"
-          pt={32}
-          px={20}
-          maxW="1500px"
-          pb={20}
-          bgColor={"rgba(0,0,0,0)"}
-          zIndex={2}
+      {/* Large Screen Version - Animated PitStop Scene */}
+      <Box
+        display={{ base: "none", xl: "block" }}
+        w="100%"
+        minH="110vh"
+        bgColor="#100E0E"
+        pos="relative"
+      >
+        <Box
+          pos="relative"
+          w="100%"
+          h="110vh"
+          overflow="hidden"
+          bgColor="#100E0E"
         >
-          {SPONSOR_IMAGES.map((img, idx) => (
-            <Link
-              key={idx}
-              href={img.url}
-              opacity={0.9}
-              isExternal
+          <Box
+            pos="absolute"
+            top="55%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            w="100%"
+            h="100%"
+            transition="transform 0.5s ease"
+          >
+            <Image
+              src="/sponsors/car/7.png"
+              pos="absolute"
+              top="10%"
+              left="10%"
+              transform="translate(-50%, -50%)"
+              display="block"
+              w="1100px"
+              h="auto"
+              animation={`${slideInUp} 1s ease-out`}
+              css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+              transition="all 0.3s ease"
               _hover={{
-                transform: "scale(1.05)",
-                opacity: 1,
-                transition: "all 0.2s ease-in-out"
+                transform: "translate(-50%, -50%) scale(1.05)",
+                filter:
+                  "brightness(1.2) drop-shadow(0 0 30px rgba(255,0,0,0.5))",
+                cursor: "pointer",
+                outline: "none"
               }}
-            >
-              <Image
-                src={`/main/sponsors/${img.filename}`}
-                alt={img.filename.replace(".png", "")}
-                h={img.heights}
-                maxW="500px"
-                objectFit="contain"
-              />
-            </Link>
-          ))}
-        </SimpleGrid>
+              _focus={{ outline: "none" }}
+              zIndex={2}
+            />
+            <Image
+              src="/sponsors/car_new/hrt.png"
+              pos="absolute"
+              top="2%"
+              left="48%"
+              display="block"
+              w="300px"
+              h="auto"
+              animation={`${slideInLeft} 1.2s ease-out`}
+              css={{ animationDelay: "0.2s", animationFillMode: "both" }}
+              transition="all 0.3s ease"
+              _hover={{
+                transform: "scale(1.5) translateX(-15px)",
+                filter: getGlowFilter(sponsorGlows.hrt),
+                cursor: "pointer",
+                outline: "none"
+              }}
+              _focus={{ outline: "none" }}
+              zIndex={3}
+            />
+            <Image
+              src="/sponsors/car_new/cat.png"
+              pos="absolute"
+              top="10%"
+              left="20%"
+              display="block"
+              w="300px"
+              h="auto"
+              animation={`${slideInLeft} 1.6s ease-out`}
+              css={{ animationDelay: "0.4s", animationFillMode: "both" }}
+              transition="all 0.3s ease"
+              _hover={{
+                transform: "scale(1.5) translate(15px, 10px)",
+                filter: getGlowFilter(sponsorGlows.cat),
+                cursor: "pointer",
+                outline: "none"
+              }}
+              _focus={{ outline: "none" }}
+              zIndex={3}
+            />
+            <Image
+              src="/sponsors/car_new/qual.png"
+              pos="absolute"
+              top="60%"
+              left="18%"
+              display="block"
+              w="330px"
+              h="auto"
+              animation={`${slideInRight} 1.8s ease-out`}
+              css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+              transition="all 0.3s ease"
+              _hover={{
+                transform: "scale(1.5) translate(15px, -15px)",
+                filter: getGlowFilter(sponsorGlows.qual),
+                cursor: "pointer",
+                outline: "none"
+              }}
+              _focus={{ outline: "none" }}
+              zIndex={3}
+            />
+            <Image
+              src="/sponsors/car_new/aech.png"
+              pos="absolute"
+              bottom="10%"
+              left="49%"
+              transform="translateX(-50%)"
+              display="block"
+              w="300px"
+              h="auto"
+              animation={`${slideInDown} 2s ease-out`}
+              css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+              transition="all 0.3s ease"
+              _hover={{
+                transform: "translateX(-50%) scale(1.5) translateY(-15px)",
+                filter: getGlowFilter(sponsorGlows.aech),
+                cursor: "pointer",
+                outline: "none"
+              }}
+              _focus={{ outline: "none" }}
+              zIndex={3}
+            />
+          </Box>
+          <AnimatedHeader>Sponsors</AnimatedHeader>
+        </Box>
       </Box>
-      <Box pos="absolute" top={0} left={0} zIndex={1} h="100%" w="100%">
-        <PitStopScene />
+
+      {/* Tablet Version */}
+      <Box
+        display={{ base: "none", md: "block", xl: "none" }}
+        pos="relative"
+        w="100%"
+        maxW="1000px"
+        mx="auto"
+        minH="100vh"
+        overflow="hidden"
+        bg="#100E0E"
+      >
+        {/* Background Car Scene with Low Opacity */}
+        <Box
+          pos="absolute"
+          top="46%"
+          left="20%"
+          transform={{
+            base: "translate(-50%, -50%) scale(0.65)"
+          }}
+          w="100%"
+          h="100%"
+          transition="transform 0.5s ease"
+          opacity={0.2}
+          zIndex={1}
+        >
+          <Image
+            src="/sponsors/car/8.png"
+            pos="absolute"
+            left="50%"
+            display="block"
+            w="900px"
+            h="auto"
+            animation={`${slideInUp} 1s ease-out`}
+            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/5.png"
+            pos="absolute"
+            top="13%"
+            right="-65%"
+            display="block"
+            w="450px"
+            h="auto"
+            animation={`${slideInRight} 1.8s ease-out`}
+            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/2.png"
+            pos="absolute"
+            bottom="-20%"
+            left="20%"
+            display="block"
+            w="400px"
+            h="auto"
+            animation={`${slideInLeft} 1.2s ease-out`}
+            css={{ animationDelay: "0.2s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/4.png"
+            pos="absolute"
+            top="15%"
+            left="25%"
+            display="block"
+            w="350px"
+            h="auto"
+            animation={`${slideInLeft} 1.6s ease-out`}
+            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/3.png"
+            pos="absolute"
+            bottom="-15%"
+            right="-65%"
+            display="block"
+            w="350px"
+            h="auto"
+            animation={`${slideInRight} 1.4s ease-out`}
+            css={{ animationDelay: "0.3s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/assets/car/6.png"
+            pos="absolute"
+            top="40%"
+            right="10%"
+            transform="translateX(-50%)"
+            display="block"
+            w="200px"
+            h="auto"
+            animation={`${slideInDown} 2s ease-out`}
+            css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+          />
+        </Box>
+
+        {/* Sponsor Overlay Grid */}
+        <Box
+          pos="absolute"
+          top="50%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          w="100%"
+          maxW="700px"
+          zIndex={5}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          minH="100vh"
+        >
+          <SimpleGrid columns={2} spacing={{ base: 8, md: 12 }} p={8}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInLeft} 1.2s ease-out`}
+              css={{ animationDelay: "1s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.caterpillar.com" isExternal>
+                <Image
+                  src="/sponsors/car_images/caterpillar.svg"
+                  h={{ md: "120px" }}
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.cat)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.cat),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInRight} 1.2s ease-out`}
+              css={{ animationDelay: "1.2s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.hudsonrivertrading.com/" isExternal>
+                <Image
+                  src="/sponsors/car_images/hrt.svg"
+                  h={{ md: "100px" }}
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.hrt)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.hrt),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInLeft} 1.2s ease-out`}
+              css={{ animationDelay: "1.4s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.qualcomm.com/" isExternal>
+                <Image
+                  src="/sponsors/car_images/qualcomm.png"
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.qual)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.qual),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInRight} 1.2s ease-out`}
+              css={{ animationDelay: "1.6s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.aechelon.com" isExternal>
+                <Image
+                  src="/sponsors/car_images/aechelon.png"
+                  h={{ md: "150px" }}
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.aech)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.aech),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+          </SimpleGrid>
+        </Box>
+
+        <AnimatedHeader>Sponsors</AnimatedHeader>
+      </Box>
+
+      {/* Mobile Version */}
+      <Box
+        display={{ base: "block", md: "none" }}
+        pos="relative"
+        w="100%"
+        minW="390px"
+        minH="100vh"
+        maxH={{ base: "1000px", md: "1300px" }}
+        overflow="hidden"
+        bg="#100E0E"
+      >
+        {/* Background Car Scene with Low Opacity */}
+        <Box
+          pos="absolute"
+          top="46%"
+          left="50%"
+          transform={{
+            base: "translate(-50%, -50%) scale(0.7)"
+          }}
+          w="100%"
+          h="100%"
+          transition="transform 0.5s ease"
+          opacity={0.15}
+          zIndex={1}
+        >
+          <Image
+            src="/sponsors/car/8.png"
+            pos="absolute"
+            top="0%"
+            left="0%"
+            transform="translate(-50%, -50%)"
+            display="block"
+            minW="400px"
+            h="auto"
+            animation={`${slideInUp} 1s ease-out`}
+            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/5.png"
+            pos="absolute"
+            top="15%"
+            right="-25%"
+            display="block"
+            w="250px"
+            h="auto"
+            animation={`${slideInRight} 1.8s ease-out`}
+            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/2.png"
+            pos="absolute"
+            bottom="20%"
+            left="-20%"
+            display="block"
+            w="250px"
+            h="auto"
+            animation={`${slideInLeft} 1.2s ease-out`}
+            css={{ animationDelay: "0.2s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/4.png"
+            pos="absolute"
+            top="8%"
+            left="-15%"
+            display="block"
+            w="200px"
+            h="auto"
+            animation={`${slideInLeft} 1.6s ease-out`}
+            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/sponsors/car/3.png"
+            pos="absolute"
+            bottom="20%"
+            right="-15%"
+            display="block"
+            w="200px"
+            h="auto"
+            animation={`${slideInRight} 1.4s ease-out`}
+            css={{ animationDelay: "0.3s", animationFillMode: "both" }}
+          />
+          <Image
+            src="/assets/car/6.png"
+            pos="absolute"
+            top="40%"
+            right="-20%"
+            transform="translateX(-50%)"
+            display="block"
+            w="200px"
+            h="auto"
+            animation={`${slideInDown} 2s ease-out`}
+            css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+          />
+        </Box>
+
+        {/* Sponsor Overlay Grid */}
+        <Box
+          pos="absolute"
+          top="55%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          w="100%"
+          maxW="350px"
+          zIndex={5}
+          px={4}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          minH="100vh"
+        >
+          <SimpleGrid columns={1} spacing={12}>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInUp} 1.2s ease-out`}
+              css={{ animationDelay: "1s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.caterpillar.com" isExternal>
+                <Image
+                  src="/sponsors/car_images/caterpillar.svg"
+                  h="100px"
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.cat)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.cat),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInUp} 1.2s ease-out`}
+              css={{ animationDelay: "1.2s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.hudsonrivertrading.com/" isExternal>
+                <Image
+                  src="/sponsors/car_images/hrt.svg"
+                  h="100px"
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.hrt)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.hrt),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInUp} 1.2s ease-out`}
+              css={{ animationDelay: "1.4s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.qualcomm.com/" isExternal>
+                <Image
+                  src="/sponsors/car_images/qualcomm.png"
+                  h="60px"
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.qual)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.qual),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              animation={`${slideInUp} 1.2s ease-out`}
+              css={{ animationDelay: "1.6s", animationFillMode: "both" }}
+            >
+              <Link href="https://www.aechelon.com" isExternal>
+                <Image
+                  src="/sponsors/car_images/aechelon.png"
+                  h="130px"
+                  w="auto"
+                  filter={getSubtleGlowFilter(sponsorGlows.aech)}
+                  transition="all 0.3s ease"
+                  _hover={{
+                    filter: getGlowFilter(sponsorGlows.aech),
+                    transform: "scale(1.1)"
+                  }}
+                />
+              </Link>
+            </Box>
+          </SimpleGrid>
+        </Box>
+
+        <AnimatedHeader>Sponsors</AnimatedHeader>
       </Box>
     </Box>
   );
