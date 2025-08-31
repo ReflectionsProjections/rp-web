@@ -107,7 +107,7 @@ function ScheduleDayButton({
           md: "block"
         }}
         fontFamily="ProRacing"
-        fontSize="2xl"
+        fontSize={"xl"}
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
         transformOrigin="center left"
