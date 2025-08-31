@@ -292,7 +292,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box h={{ lg: "600px" }} maxH={{ lg: "600px" }} pt={3}>
+        <Box h={{ lg: "500px" }} maxH={{ lg: "500px" }} pt={3}>
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
