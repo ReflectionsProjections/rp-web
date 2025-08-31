@@ -74,7 +74,9 @@ const OptimizedSelect = <
   const isSearchable = options.length > 20;
 
   const handleChange = useCallback(
-    (selectedValue: MultiValue<SelectOption> | SingleValue<SelectOption>) => {
+    async (
+      selectedValue: MultiValue<SelectOption> | SingleValue<SelectOption>
+    ) => {
       if (isMulti) {
         const values = Array.isArray(selectedValue)
           ? (selectedValue as readonly SelectOption[]).map(
@@ -82,18 +84,18 @@ const OptimizedSelect = <
             )
           : [];
 
-        if (maxSelections && values.length > maxSelections) {
-          return;
+        if (!maxSelections || values.length <= maxSelections) {
+          await form.setFieldValue(name, values);
         }
-
-        void form.setFieldValue(name, values);
       } else {
         const value =
           selectedValue && !Array.isArray(selectedValue)
             ? (selectedValue as SelectOption).value
             : "";
-        void form.setFieldValue(name, value);
+        await form.setFieldValue(name, value);
       }
+
+      await form.setFieldTouched(name, true);
     },
     [form, name, isMulti, maxSelections]
   );
@@ -116,7 +118,7 @@ const OptimizedSelect = <
     <Select<SelectOption, typeof isMulti>
       name={name}
       value={selectedOption}
-      onChange={handleChange}
+      onChange={(selectedValue) => void handleChange(selectedValue)}
       onBlur={() => void form.setFieldTouched(name, true)}
       onInputChange={(inputValue) => setSearchTerm(inputValue)}
       maxMenuHeight={300}
