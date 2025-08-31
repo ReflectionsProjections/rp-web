@@ -31,7 +31,7 @@ export const EmailField = () => (
     label="Email"
     placeholder="Email"
     type="email"
-    maxLength={50}
+    maxLength={256}
     isRequired
   />
 );
