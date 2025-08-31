@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="20%" src="static/2024_rp_logo.svg" alt="Reflections | Projections Logo" />
+  <img width="20%" src="static/rp_logo.svg" alt="Reflections | Projections Logo" />
 </p>
 
 # Reflections | Projections Sponsor Site

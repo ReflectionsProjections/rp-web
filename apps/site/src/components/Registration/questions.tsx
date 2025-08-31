@@ -9,9 +9,11 @@ import {
   majors,
   minors,
   schools,
-  graduationDates
+  graduationDates,
+  educationLevels
 } from "@rp/shared";
 import { RegistrationValues } from "./schema";
+import { employmentOpportunities } from "@rp/shared";
 
 export const NameField = () => (
   <FormTextField<RegistrationValues, "name">
@@ -164,13 +166,7 @@ export const EducationLevelField = () => (
   <FormRadioGroup<RegistrationValues, "educationLevel", "educationOther">
     name="educationLevel"
     label="What is your highest level of education (currently pursuing or completed)?"
-    options={[
-      "High School",
-      "Associate Degree",
-      "Bachelor's Degree",
-      "Master's Degree",
-      "PhD or Doctorate"
-    ]}
+    options={educationLevels}
     isRequired
     custom={{ name: "educationOther", label: "Other" }}
   />
@@ -211,16 +207,7 @@ export const OpportunitiesField = () => (
   <FormCheckboxGroup<RegistrationValues, "opportunities">
     name="opportunities"
     label="What opportunities are you open to?"
-    options={[
-      "Full-Time",
-      "Summer Internship",
-      "Fall Internship",
-      "Spring Internship",
-      "Fall Co-op",
-      "Spring Co-op",
-      "Graduate/Postdoc Research",
-      "Graduate/Postdoc Internship"
-    ]}
+    options={employmentOpportunities}
   />
 );
 

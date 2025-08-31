@@ -1,10 +1,11 @@
-import { formatMajorsMinors } from "@/util/natural-stringify-list";
+import { Config } from "@/config";
 import {
   Box,
   Button,
   Flex,
   HStack,
   IconButton,
+  Image,
   Modal,
   ModalBody,
   ModalContent,
@@ -15,6 +16,7 @@ import {
   Spacer,
   Spinner,
   Text,
+  Tooltip,
   useSafeLayoutEffect,
   useToast
 } from "@chakra-ui/react";
@@ -26,6 +28,84 @@ import { FaTimes } from "react-icons/fa";
 import { FaDownload } from "react-icons/fa6";
 import PortfolioLinks from "../../components/PortfolioLinks";
 import { Resume } from "./ResumeBook";
+
+import React from "react";
+
+interface StudyInfoProps {
+  degree?: string;
+  graduationYear?: string | null;
+  majors: string[];
+  minors: string[];
+}
+
+const Separator = () => (
+  <Text as="span" fontSize="md" color="gray.400">
+    {" | "}
+  </Text>
+);
+
+export const StudyInfo: React.FC<StudyInfoProps> = ({
+  degree,
+  graduationYear,
+  majors,
+  minors
+}) => {
+  const hasBoth = majors.length > 0 && minors.length > 0;
+
+  const nodes: React.ReactNode[] = [];
+  majors.forEach((m, i) => {
+    nodes.push(
+      <Text as="span" key={`maj-${i}`} fontSize="md" color="gray.600">
+        {m}
+        <Text as="span" fontSize="sm" color="gray.500">
+          {" (Major)"}
+        </Text>
+      </Text>
+    );
+    if (i < majors.length - 1) nodes.push(", ");
+  });
+  minors.forEach((m, i) => {
+    if ((majors.length > 0 && i === 0) || i > 0) {
+      nodes.push(", ");
+    }
+    nodes.push(
+      <Text as="span" key={`min-${i}`} fontSize="md" color="gray.600">
+        {m}
+        <Text as="span" fontSize="sm" color="gray.500">
+          {" (Minor)"}
+        </Text>
+      </Text>
+    );
+  });
+
+  const firstLine: React.ReactNode[] = [];
+  if (degree) firstLine.push(degree);
+  if (graduationYear) firstLine.push(graduationYear.toString());
+  if (!hasBoth && nodes.length > 0) {
+    firstLine.push(nodes);
+  }
+
+  return (
+    <Box>
+      {firstLine.length > 0 && (
+        <Text fontSize="md" color="gray.600">
+          {firstLine.map((part, i) => (
+            <React.Fragment key={i}>
+              {i > 0 && <Separator />}
+              {part}
+            </React.Fragment>
+          ))}
+        </Text>
+      )}
+
+      {hasBoth && nodes.length > 0 && (
+        <Text fontSize="md" color="gray.600">
+          {nodes}
+        </Text>
+      )}
+    </Box>
+  );
+};
 
 type ResumePopupModalProps = {
   isMediumScreen: boolean;
@@ -134,25 +214,27 @@ const ResumePopupModal = ({
               >
                 <Flex w="100%">
                   <Flex flexDirection={"column"} w="100%">
-                    <Text fontSize="2xl" fontWeight="bold">
-                      {resume.name}
-                    </Text>
-                    {resume.minors.length > 0 ? (
-                      <>
-                        <Text fontSize="md" color="gray.500">
-                          {resume.degree} | {resume.graduationYear}
-                        </Text>
-                        <Text fontSize="md" color="gray.500">
-                          {formatMajorsMinors(resume.majors, resume.minors)}
-                        </Text>
-                      </>
-                    ) : (
-                      <Text fontSize="md" color="gray.500">
-                        {resume.degree} |{" "}
-                        {formatMajorsMinors(resume.majors, resume.minors)} |{" "}
-                        {resume.graduationYear}
+                    <HStack alignItems={"center"} gap={2}>
+                      <Text fontSize="2xl" fontWeight="bold">
+                        {resume.name}
                       </Text>
-                    )}
+                      {Config.STAFF_UIDs.includes(resume.id) && (
+                        <Tooltip label="Staff Member" fontSize="md">
+                          <Image
+                            src="/rp_logo.svg"
+                            width="20px"
+                            height="20px"
+                            opacity={0.8}
+                          />
+                        </Tooltip>
+                      )}
+                    </HStack>
+                    <StudyInfo
+                      degree={resume.degree}
+                      graduationYear={resume.graduationYear}
+                      majors={resume.majors}
+                      minors={resume.minors}
+                    />
                   </Flex>
                   <IconButton
                     display={{
@@ -170,7 +252,7 @@ const ResumePopupModal = ({
                   />
                 </Flex>
                 <Flex
-                  w="100%"
+                  w="fit-content"
                   mt={1}
                   justifyContent={{
                     base: "flex-start",
@@ -204,7 +286,7 @@ const ResumePopupModal = ({
                           colorScheme="blue"
                           aria-label="Download Resume"
                           leftIcon={hasLinks ? undefined : <FaDownload />}
-                          ml={hasLinks ? "auto" : undefined}
+                          ml={hasLinks ? 1 : undefined}
                           px={hasLinks ? 2 : 4}
                           display={{
                             base: "flex",

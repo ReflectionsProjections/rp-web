@@ -44,7 +44,7 @@ export function ResumeBookNavbar({
     >
       <HStack spacing={8} alignItems={"center"}>
         <Flex align="center" mr={2}>
-          <Image src="/2024_rp_logo.svg" minHeight={30} maxH="100%" />
+          <Image src="/rp_logo.svg" minHeight={30} maxH="100%" />
         </Flex>
       </HStack>
       <Text

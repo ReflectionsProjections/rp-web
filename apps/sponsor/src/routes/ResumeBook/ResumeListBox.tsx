@@ -69,7 +69,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         overflow="hidden"
       >
         <GridItem>
-          <HStack gap={4}>
+          <HStack gap={4} justifyContent={"space-between"} pr={1}>
             <Checkbox
               size="lg"
               isChecked={isSelected}
@@ -78,7 +78,12 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             />
             {Config.STAFF_UIDs.includes(resume.id) && (
               <Tooltip label="Staff Member" fontSize="md">
-                <Image src="/2024_rp_logo.svg" width="20px" height="20px" />
+                <Image
+                  src="/rp_logo.svg"
+                  width="20px"
+                  height="20px"
+                  opacity={0.8}
+                />
               </Tooltip>
             )}
           </HStack>
@@ -115,7 +120,12 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                     color="gray.700"
                     fontSize={{ base: "sm", lg: "md" }}
                   >
-                    {`${major} ${resume.minors.length > 0 ? "(Major)" : ""}`}
+                    {major}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Major)`}</Text>
                   </Text>
                 ))}
                 {resume.minors.map((minor) => (
@@ -124,7 +134,12 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
                     color="gray.700"
                     fontSize={{ base: "sm", lg: "md" }}
                   >
-                    {`${minor} (Minor)`}
+                    {minor}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Minor)`}</Text>
                   </Text>
                 ))}
               </VStack>

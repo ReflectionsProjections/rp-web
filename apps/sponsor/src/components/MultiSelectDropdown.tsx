@@ -26,6 +26,7 @@ interface MultiSelectDropdownProps {
   selectedOptions: string[];
   onSelectionChange: (selected: string[]) => void;
   placeholderText?: string | null;
+  hideOptionIfNoDisplayedOptionAvailable?: boolean;
 }
 
 type TagListProps = {
@@ -53,7 +54,8 @@ function MultiSelectDropdown({
   selectedOptions,
   displayedOptions,
   onSelectionChange,
-  placeholderText = "Select"
+  placeholderText = "Select",
+  hideOptionIfNoDisplayedOptionAvailable = false
 }: MultiSelectDropdownProps) {
   const [query, setQuery] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
@@ -175,18 +177,25 @@ function MultiSelectDropdown({
                 event.preventDefault();
               }}
             >
-              {filteredOptions.map((option) => (
-                <ListItem
-                  key={option}
-                  onClick={() => handleSelect(option)}
-                  cursor="pointer"
-                  _hover={{ backgroundColor: `gray.400` }}
-                  borderRadius="4px"
-                  padding="8px"
-                >
-                  {displayedOptions ? displayedOptions[option] : option}
-                </ListItem>
-              ))}
+              {filteredOptions
+                .filter(
+                  (option) =>
+                    !hideOptionIfNoDisplayedOptionAvailable ||
+                    !displayedOptions ||
+                    (displayedOptions && displayedOptions[option])
+                )
+                .map((option) => (
+                  <ListItem
+                    key={option}
+                    onClick={() => handleSelect(option)}
+                    cursor="pointer"
+                    _hover={{ backgroundColor: `gray.400` }}
+                    borderRadius="4px"
+                    padding="8px"
+                  >
+                    {displayedOptions ? displayedOptions[option] : option}
+                  </ListItem>
+                ))}
             </List>
           </PopoverBody>
         </PopoverContent>

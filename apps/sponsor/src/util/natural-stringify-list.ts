@@ -19,12 +19,6 @@ export function naturalStringifyList(items: string[]): string {
 }
 
 export function formatMajorsMinors(majors: string[], minors: string[]): string {
-  // If no minors, just list majors on separate lines, no "(Major)"
-  if (minors.length === 0) {
-    return majors.join("\n");
-  }
-
-  // Otherwise, label each major and minor, one per line
   const majorLines = majors.map((m) => `${m} (Major)`);
   const minorLines = minors.map((m) => `${m} (Minor)`);
   return [...majorLines, ...minorLines].join(", ");

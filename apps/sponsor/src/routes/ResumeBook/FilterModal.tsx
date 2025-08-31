@@ -6,9 +6,14 @@ import {
   PopoverTrigger,
   VStack
 } from "@chakra-ui/react";
-import { majors, minors } from "@rp/shared";
+import {
+  educationLevels,
+  graduationDates,
+  majors,
+  minors,
+  employmentOpportunities
+} from "@rp/shared";
 import { FaFilter } from "react-icons/fa";
-import { DEGREE_TYPES, JOB_INTERESTS, YEARS } from "./constants";
 
 export type FilterModalProps = {
   isMediumScreen: boolean;
@@ -75,6 +80,7 @@ export function FilterModal(props: FilterModalProps) {
             displayedOptions={props.filtering.majorToMajorWithCount}
             onSelectionChange={props.filtering.setSelectedMajors}
             placeholderText="Filter Major(s)"
+            hideOptionIfNoDisplayedOptionAvailable
           />
           <MultiSelectDropdown
             id="minor-dropdown"
@@ -84,33 +90,37 @@ export function FilterModal(props: FilterModalProps) {
             displayedOptions={props.filtering.minorToMinorWithCount}
             onSelectionChange={props.filtering.setSelectedMinors}
             placeholderText="Filter Minor(s)"
+            hideOptionIfNoDisplayedOptionAvailable
           />
           <MultiSelectDropdown
             id="degree-dropdown"
             width="100%"
-            options={DEGREE_TYPES}
+            options={educationLevels}
             selectedOptions={props.filtering.selectedDegrees}
             displayedOptions={props.filtering.degreesWithCounts}
             onSelectionChange={props.filtering.setSelectedDegrees}
             placeholderText="Filter Degree(s)"
+            hideOptionIfNoDisplayedOptionAvailable
           />
           <MultiSelectDropdown
             id="year-dropdown"
             width="100%"
-            options={YEARS}
+            options={graduationDates}
             selectedOptions={props.filtering.selectedYears}
             displayedOptions={props.filtering.yearsWithCounts}
             onSelectionChange={props.filtering.setSelectedYears}
             placeholderText="Filter Year(s)"
+            hideOptionIfNoDisplayedOptionAvailable
           />
           <MultiSelectDropdown
             id="job-dropdown"
             width="100%"
-            options={JOB_INTERESTS}
+            options={employmentOpportunities}
             selectedOptions={props.filtering.selectedJobInterests}
             displayedOptions={props.filtering.jobInterestsWithCounts}
             onSelectionChange={props.filtering.setSelectedJobInterests}
             placeholderText="Filter Role Interest(s)"
+            hideOptionIfNoDisplayedOptionAvailable
           />
           <Button
             colorScheme="red"
