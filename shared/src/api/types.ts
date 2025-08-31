@@ -180,6 +180,20 @@ export interface APIRoutes {
       response: Array<{ email: string; userId: string }>;
     };
   };
+  "/attendee/foodwave": {
+    GET: {
+      response: {
+        foodwave: number;
+      };
+    };
+  };
+  "/attendee/qr": {
+    GET: {
+      response: {
+        qrCode: string;
+      };
+    };
+  };
   "/attendee/id/:userId": {
     GET: {
       response: Attendee;

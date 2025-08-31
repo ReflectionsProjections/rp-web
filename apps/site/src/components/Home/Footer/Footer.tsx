@@ -8,6 +8,9 @@ import {
   useMediaQuery
 } from "@chakra-ui/react";
 
+import { Link as ChakraLink } from "@chakra-ui/react";
+import { Link as RouterLink } from "react-router-dom";
+
 const footerLinkIcons: { src: string; to: string }[] = [
   {
     src: "linkedin_red.svg",
@@ -88,9 +91,29 @@ export const Footer = () => {
               </Link>
             ))}
           </Grid>
+
+          <ChakraLink
+            as={RouterLink}
+            to="/qr-code"
+            _hover={{ textDecoration: "none" }}
+          >
+            <Text
+              mt={{ base: 6, lg: 12 }}
+              color="blue.400"
+              w="100%"
+              fontFamily="Magistral"
+              fontSize={{ base: "md", md: "lg", lg: "xl" }}
+              textAlign={{ base: "center", md: "right" }}
+              _hover={{
+                color: "blue.200",
+                cursor: "pointer"
+              }}
+            >
+              Go to profile and QR code
+            </Text>
+          </ChakraLink>
           <Text
             color="white"
-            mt={{ base: 6, lg: 12 }}
             w="100%"
             fontFamily="Magistral"
             fontSize={{ base: "md", md: "lg", lg: "xl" }}

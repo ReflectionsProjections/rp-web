@@ -1443,8 +1443,10 @@ __metadata:
     formik: "npm:^2.4.6"
     framer-motion: "npm:11.3.23"
     lottie-react: "npm:^2.4.1"
+    qrcode.react: "npm:^4.2.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    react-qr-scanner: "npm:^1.0.0-alpha.11"
     react-router-dom: "npm:^7.8.1"
     typescript: "npm:^5.2.2"
     vite: "npm:^5.2.0"
@@ -1985,6 +1987,53 @@ __metadata:
   dependencies:
     "@zag-js/dom-query": "npm:0.31.1"
   checksum: 10c0/7c6e0db4cf8ca4bba1814bf56ca6367fda10f6223078181db6bf8629bd3059485df0ad7a53665e2fb77d4dfa99ae6d1b5dc987bd3f88b5fca5134c6fa874d37a
+  languageName: node
+  linkType: hard
+
+"@zxing/browser@npm:0.0.7":
+  version: 0.0.7
+  resolution: "@zxing/browser@npm:0.0.7"
+  dependencies:
+    "@zxing/text-encoding": "npm:^0.9.0"
+  peerDependencies:
+    "@zxing/library": ^0.18.3
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 10c0/184b3b518392949d1c28e0b7a7f5d3a73a56c0aee0fa818003830ced44e8e20a62f5bccfbdd513aea11ab69b3717179bb38bd034087f718b16241acdada7c6ea
+  languageName: node
+  linkType: hard
+
+"@zxing/library@npm:^0.18.3":
+  version: 0.18.6
+  resolution: "@zxing/library@npm:0.18.6"
+  dependencies:
+    "@zxing/text-encoding": "npm:~0.9.0"
+    ts-custom-error: "npm:^3.0.0"
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 10c0/0194a9f45bb0980ff859c1ef92b8722cc54ad46a59335a080ac9e592a32f8645e848f47db796724ea875fa0da71b0998dcf8ea1f3eae434c5ea6f0fae4d8d7c7
+  languageName: node
+  linkType: hard
+
+"@zxing/library@npm:^0.19.1":
+  version: 0.19.3
+  resolution: "@zxing/library@npm:0.19.3"
+  dependencies:
+    "@zxing/text-encoding": "npm:~0.9.0"
+    ts-custom-error: "npm:^3.2.1"
+  dependenciesMeta:
+    "@zxing/text-encoding":
+      optional: true
+  checksum: 10c0/2dde8374e8d7dd8976275b83381558495c4f3c94c72279db93eef8600231194f66faea4c99924899f59e76cfe96d8bd8e4e1366bcb73249eb2614fb4f21cc31f
+  languageName: node
+  linkType: hard
+
+"@zxing/text-encoding@npm:^0.9.0, @zxing/text-encoding@npm:~0.9.0":
+  version: 0.9.0
+  resolution: "@zxing/text-encoding@npm:0.9.0"
+  checksum: 10c0/d15bff181d46c2ab709e7242801a8d40408aa8c19b44462e5f60e766bf59105b44957914ab6baab60d10d466a5e965f21fe890c67dfdb7d5c7f940df457b4d0d
   languageName: node
   linkType: hard
 
@@ -4479,7 +4528,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -4515,6 +4564,15 @@ __metadata:
   version: 1.5.2
   resolution: "qrcode-generator@npm:1.5.2"
   checksum: 10c0/4e0a43ba1c0212cf8ec39654cc7a5bebda96ee00453dc5732e98af4cf681c6786d2c189d4657d8d4fa6486f07573c1edb85fbb7af5e78972f843b7db8457a9b7
+  languageName: node
+  linkType: hard
+
+"qrcode.react@npm:^4.2.0":
+  version: 4.2.0
+  resolution: "qrcode.react@npm:4.2.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/68c691d130e5fda2f57cee505ed7aea840e7d02033100687b764601f9595e1116e34c13876628a93e1a5c2b85e4efc27d30b2fda72e2050c02f3e1c4e998d248
   languageName: node
   linkType: hard
 
@@ -4605,6 +4663,33 @@ __metadata:
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 10c0/33977da7a5f1a287936a0c85639fec6ca74f4f15ef1e59a6bc20338fc73dc69555381e211f7a3529b8150a1f71e4225525b41b60b52965bda53ce7d47377ada1
+  languageName: node
+  linkType: hard
+
+"react-qr-reader@npm:^3.0.0-beta-1":
+  version: 3.0.0-beta-1
+  resolution: "react-qr-reader@npm:3.0.0-beta-1"
+  dependencies:
+    "@zxing/browser": "npm:0.0.7"
+    "@zxing/library": "npm:^0.18.3"
+    rollup: "npm:^2.67.2"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0
+    react-dom: ^16.8.0 || ^17.0.0
+  checksum: 10c0/526773294319cd82eb4de857acc4ba752419bf8f9665dadad4f374129a9b71ec15d262cd0f4197ff7d0559d4b4673b6354302cd6da601e9f113830531141285a
+  languageName: node
+  linkType: hard
+
+"react-qr-scanner@npm:^1.0.0-alpha.11":
+  version: 1.0.0-alpha.11
+  resolution: "react-qr-scanner@npm:1.0.0-alpha.11"
+  dependencies:
+    "@zxing/library": "npm:^0.19.1"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    react: ^17.0.0 || ^18.0.0
+    react-dom: ^17.0.0 || ^18.0.0
+  checksum: 10c0/487eb19b992d6311964e6643bb065c056688a94c0f08f00a6bbd399c4c690b8d0843ed05889343e8cb08f2547199aa0ce67aa9b0c9b7efe3d60f25cbdcffd761
   languageName: node
   linkType: hard
 
@@ -4868,6 +4953,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"rollup@npm:^2.67.2":
+  version: 2.79.2
+  resolution: "rollup@npm:2.79.2"
+  dependencies:
+    fsevents: "npm:~2.3.2"
+  dependenciesMeta:
+    fsevents:
+      optional: true
+  bin:
+    rollup: dist/bin/rollup
+  checksum: 10c0/bc3746c988d903c2211266ddc539379d53d92689b9cc5c2b4e3ae161689de9af491957a567c629b6cc81f48d0928a7591fc4c383fba68a48d2966c9fb8a2bce9
+  languageName: node
+  linkType: hard
+
 "rollup@npm:^4.20.0, rollup@npm:^4.34.8":
   version: 4.47.1
   resolution: "rollup@npm:4.47.1"
@@ -4958,6 +5057,7 @@ __metadata:
     prettier: "npm:^3.5.3"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
+    react-qr-reader: "npm:^3.0.0-beta-1"
     react-router-dom: "npm:7.8.1"
     typescript: "npm:^5.2.2"
     typescript-eslint: "npm:^8.27.0"
@@ -5377,6 +5477,13 @@ __metadata:
   peerDependencies:
     typescript: ">=4.8.4"
   checksum: 10c0/9806a38adea2db0f6aa217ccc6bc9c391ddba338a9fe3080676d0d50ed806d305bb90e8cef0276e793d28c8a929f400abb184ddd7ff83a416959c0f4d2ce754f
+  languageName: node
+  linkType: hard
+
+"ts-custom-error@npm:^3.0.0, ts-custom-error@npm:^3.2.1":
+  version: 3.3.1
+  resolution: "ts-custom-error@npm:3.3.1"
+  checksum: 10c0/67cc807d03406d7eeb2b908408d455d253cc43b480d669e2e3ea028b9aaa2c78ad1b392425b86368bbbc3c43a15e4abe304312d87ed845091646ec1937bab982
   languageName: node
   linkType: hard
 

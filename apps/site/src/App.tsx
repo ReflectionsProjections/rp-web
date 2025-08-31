@@ -13,6 +13,8 @@ import Resume from "./routes/Resume";
 import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
 import theme from "./theme";
 import Navbar from "./components/Navbar";
+import { QRCode } from "./routes/QRCode";
+import { Profile } from "./routes/Profile";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -37,6 +39,8 @@ function App() {
           </Route>
           <Route element={<RequireAuth />}>
             <Route key="/resume" path="/resume" element={<Resume />} />
+            <Route key="/qr-code" path="/qr-code" element={<QRCode />} />
+            <Route key="/profile" path="/profile" element={<Profile />} />
           </Route>
           <Route path="/auth/refresh" element={<RefreshHandler />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
