@@ -104,7 +104,7 @@ export function Login() {
             </HStack>
           </Box>
         </Center>
-        <Box mt="5vh" zIndex="2">
+        <Box mt="5vh" zIndex="2" display="flex" justifyContent="center">
           <LoginForm />
         </Box>
       </Flex>
@@ -230,6 +230,8 @@ function EmailPage({ onSubmit }: { onSubmit: EmailSubmitHandler }) {
   );
 }
 
+const MAX_DIGITS = 6;
+
 function TwoFactorPage({ onSubmit }: { onSubmit: TwoFactorSubmitHandler }) {
   return (
     <Formik
@@ -246,8 +248,7 @@ function TwoFactorPage({ onSubmit }: { onSubmit: TwoFactorSubmitHandler }) {
         values,
         errors,
         touched,
-        handleChange,
-        handleBlur,
+        setFieldValue,
         handleSubmit,
         isSubmitting
       }) => (
@@ -255,16 +256,17 @@ function TwoFactorPage({ onSubmit }: { onSubmit: TwoFactorSubmitHandler }) {
           <Text fontSize="24" fontFamily={"Nunito"} fontWeight={"400"}>
             Enter Code:
           </Text>
-          <Input
-            name="twoFactor"
-            width="250px"
-            mt="20px"
-            textColor="white"
-            _placeholder={{ color: "gray.400" }}
-            value={values.twoFactor}
-            onChange={handleChange}
-            onBlur={handleBlur}
-          />
+
+          <Box mt="20px" w="fit-content">
+            <CodeBoxes
+              name="twoFactor"
+              value={values.twoFactor}
+              setValue={(v) => void setFieldValue("twoFactor", v)}
+              onComplete={() => handleSubmit()}
+              isInvalid={!!errors["twoFactor"] && !!touched["twoFactor"]}
+            />
+          </Box>
+
           <Button
             bg="blue.500"
             color="white"
@@ -294,5 +296,114 @@ function TwoFactorPage({ onSubmit }: { onSubmit: TwoFactorSubmitHandler }) {
         </Form>
       )}
     </Formik>
+  );
+}
+
+function CodeBoxes({
+  value,
+  name,
+  setValue,
+  onComplete,
+  isInvalid
+}: {
+  value: string;
+  name: string;
+  setValue: (v: string) => void;
+  onComplete: () => void;
+  isInvalid: boolean;
+}) {
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const digits = e.target.value.slice(0, MAX_DIGITS);
+    setValue(digits);
+
+    if (digits.length === MAX_DIGITS) {
+      setTimeout(onComplete, 100);
+    }
+  };
+
+  const focusInput = (id: string) => {
+    const el = document.getElementById(id) as HTMLInputElement | null;
+    el?.focus();
+  };
+
+  const inputId = `${name}-hidden`;
+
+  return (
+    <Box position="relative" width="fit-content">
+      <HStack
+        spacing="10px"
+        w="fit-content"
+        onClick={() => focusInput(inputId)}
+        cursor="text"
+        userSelect="none"
+      >
+        {Array.from({ length: MAX_DIGITS }).map((_, i) => {
+          const char = value[i] ?? "";
+          const isCursorHere =
+            isFocused && i === value.length && value.length < MAX_DIGITS;
+          return (
+            <Box
+              key={i}
+              w="44px"
+              h="56px"
+              borderRadius="md"
+              borderWidth={isCursorHere ? "3px" : "1.5px"}
+              borderColor={
+                isInvalid
+                  ? "red.400"
+                  : isCursorHere
+                    ? "blue.500"
+                    : "whiteAlpha.400"
+              }
+              bg="blackAlpha.300"
+              display="flex"
+              alignItems="center"
+              justifyContent="center"
+              fontSize="2xl"
+              color="white"
+              position="relative"
+              transition="all 0.2s ease-in-out"
+              boxShadow={
+                isCursorHere ? "0 0 0 2px rgba(66, 153, 225, 0.3)" : "none"
+              }
+            >
+              <Box
+                as="span"
+                lineHeight="1"
+                mt="2px"
+                letterSpacing="0"
+                animation={isCursorHere ? "blink 1.5s infinite" : "none"}
+                sx={{
+                  "@keyframes blink": {
+                    "0%, 50%": { opacity: 1 },
+                    "51%, 100%": { opacity: 0 }
+                  }
+                }}
+              >
+                {char || (isCursorHere ? "|" : "")}
+              </Box>
+            </Box>
+          );
+        })}
+      </HStack>
+
+      <Input
+        id={inputId}
+        name={name}
+        value={value}
+        onChange={handleChange}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        position="absolute"
+        inset="0"
+        opacity={0}
+        _focusVisible={{ outline: "none", boxShadow: "none" }}
+        autoComplete="one-time-code"
+        maxLength={MAX_DIGITS}
+        aria-label="6-digit verification code"
+      />
+    </Box>
   );
 }
