@@ -320,7 +320,8 @@ export interface APIRoutes {
       response: Array<{
         userId: string;
         name: string;
-        major: string;
+        majors: string[];
+        minors: string[];
         graduationYear: string;
         educationLevel: string;
         opportunities?: string[];
