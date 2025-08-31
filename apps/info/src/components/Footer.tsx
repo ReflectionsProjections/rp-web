@@ -2,38 +2,38 @@ import { Box, Flex, Heading, Text, Container } from "@chakra-ui/react";
 import { HoverIconLink } from "@/components/HoverIconLink";
 
 export const Footer = () => {
-  const logoCircles: { title: string; link: string; src: string }[] = [
-    {
-      title: "Instagram",
-      link: "https://reflectionsprojections.org",
-      src: "rp2024shine_logo.png"
-    },
-    {
-      title: "Instagram",
-      link: "https://example.com",
-      src: "rp2024shine_logo.png"
-    },
-    {
-      title: "Instagram",
-      link: "reflectionsprojections.org",
-      src: "rp2024shine_logo.png"
-    },
-    {
-      title: "Instagram",
-      link: "reflectionsprojections.org",
-      src: "rp2024shine_logo.png"
-    },
-    {
-      title: "Instagram",
-      link: "reflectionsprojections.org",
-      src: "rp2024shine_logo.png"
-    },
-    {
-      title: "Instagram",
-      link: "reflectionsprojections.org",
-      src: "rp2024shine_logo.png"
-    }
-  ];
+  // const logoCircles: { title: string; link: string; src: string }[] = [
+  //   {
+  //     title: "Instagram",
+  //     link: "https://reflectionsprojections.org",
+  //     src: "rp2024shine_logo.png"
+  //   },
+  //   {
+  //     title: "Instagram",
+  //     link: "https://example.com",
+  //     src: "rp2024shine_logo.png"
+  //   },
+  //   {
+  //     title: "Instagram",
+  //     link: "reflectionsprojections.org",
+  //     src: "rp2024shine_logo.png"
+  //   },
+  //   {
+  //     title: "Instagram",
+  //     link: "reflectionsprojections.org",
+  //     src: "rp2024shine_logo.png"
+  //   },
+  //   {
+  //     title: "Instagram",
+  //     link: "reflectionsprojections.org",
+  //     src: "rp2024shine_logo.png"
+  //   },
+  //   {
+  //     title: "Instagram",
+  //     link: "reflectionsprojections.org",
+  //     src: "rp2024shine_logo.png"
+  //   }
+  // ];
 
   return (
     <Box data-label="footer" minH="40vh" py={10} mb="5vh">

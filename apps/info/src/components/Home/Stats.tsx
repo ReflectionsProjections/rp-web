@@ -1,6 +1,5 @@
 import { Box, Flex, Heading, Text, Container, VStack } from "@chakra-ui/react";
 import AnimatedCounter from "@/components/AnimatedCounter";
-import AnimatedPillar from "@/components/AnimatedPillar";
 import { AnimatedPillarsSection } from "@/components/AnimatedPillarsSection";
 
 export const Stats = () => {

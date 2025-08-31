@@ -1,8 +1,8 @@
 // src/components/Navbar.tsx
-import { Box, chakra, HStack, Link } from "@chakra-ui/react";
+import { Box, HStack, Link } from "@chakra-ui/react";
 import { NavLink, useLocation } from "react-router-dom";
-import { AnimatedLogoConstant, AnimatedLogoHover } from "./AnimatedLogo";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { AnimatedLogoHover } from "./AnimatedLogo";
+// import { motion, useScroll, useTransform } from "framer-motion";
 
 export const Navbar = () => {
   const location = useLocation();
