@@ -57,9 +57,42 @@ export const Navbar = () => {
           to="/"
           textStyle="menu"
           fontSize="inherit"
-          textDecoration={location.pathname == "/" ? "underline" : ""}
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById("stats")?.scrollIntoView({
+              behavior: "smooth"
+            });
+          }}
         >
           ABOUT
+        </Link>
+        <Link
+          as={NavLink}
+          to="/"
+          textStyle="menu"
+          fontSize="inherit"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById("team")?.scrollIntoView({
+              behavior: "smooth"
+            });
+          }}
+        >
+          TEAM
+        </Link>
+        <Link
+          as={NavLink}
+          to="/"
+          textStyle="menu"
+          fontSize="inherit"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById("team")?.scrollIntoView({
+              behavior: "smooth"
+            });
+          }}
+        >
+          SPONSORING
         </Link>
         <Link
           as={NavLink}
@@ -70,15 +103,7 @@ export const Navbar = () => {
         >
           ARCHIVE
         </Link>
-        <Link
-          as={NavLink}
-          to="/"
-          textStyle="menu"
-          fontSize="inherit"
-          textDecoration={location.pathname == "/x" ? "underline" : ""}
-        >
-          TEAM
-        </Link>
+
         <Link
           as={NavLink}
           to="/faq"
@@ -87,15 +112,6 @@ export const Navbar = () => {
           textDecoration={location.pathname == "/faq" ? "underline" : ""}
         >
           FAQ
-        </Link>
-        <Link
-          as={NavLink}
-          to="/"
-          textStyle="menu"
-          fontSize="inherit"
-          textDecoration={location.pathname == "/x" ? "underline" : ""}
-        >
-          SPONSORS
         </Link>
         <Link
           as={NavLink}

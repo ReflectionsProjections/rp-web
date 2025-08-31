@@ -34,69 +34,69 @@ export const Stats = () => {
             </Text>
           </VStack>
         </Flex>
-
-        <Box textAlign="center" pt={16} mb={16}>
-          <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
-            The Midwest's Largest Student-Run
-            <br />
-            Tech Conference
-          </Heading>
-        </Box>
-
-        <Flex // numbers
-          direction={{ base: "column", md: "row" }}
-          gap={{ base: 8, md: 0 }}
-          justify="space-between"
-          textAlign="center"
-          pos="relative"
-          zIndex={5}
-        >
-          <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
-            <Heading as="h3" size="xl" fontWeight="bold">
-              <AnimatedCounter value="2000" after="+" />
+        <div id="stats">
+          <Box textAlign="center" pt={16} mb={16}>
+            <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
+              The Midwest's Largest Student-Run
+              <br />
+              Tech Conference
             </Heading>
-            <Text>attendees</Text>
-          </VStack>
+          </Box>
+          <Flex // numbers
+            direction={{ base: "column", md: "row" }}
+            gap={{ base: 8, md: 0 }}
+            justify="space-between"
+            textAlign="center"
+            pos="relative"
+            zIndex={5}
+          >
+            <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
+              <Heading as="h3" size="xl" fontWeight="bold">
+                <AnimatedCounter value="2000" after="+" />
+              </Heading>
+              <Text>attendees</Text>
+            </VStack>
 
-          <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
-            <Heading as="h3" size="xl" fontWeight="bold">
-              <AnimatedCounter value="30" after="+" />
-            </Heading>
-            <Text>years</Text>
-          </VStack>
+            <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
+              <Heading as="h3" size="xl" fontWeight="bold">
+                <AnimatedCounter value="30" after="+" />
+              </Heading>
+              <Text>years</Text>
+            </VStack>
 
-          <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
-            <Heading as="h3" size="xl" fontWeight="bold">
-              <AnimatedCounter value="50" after="+" />
-            </Heading>
-            <Text>companies</Text>
-          </VStack>
+            <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
+              <Heading as="h3" size="xl" fontWeight="bold">
+                <AnimatedCounter value="50" after="+" />
+              </Heading>
+              <Text>companies</Text>
+            </VStack>
 
-          <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
-            <Heading as="h3" size="xl" fontWeight="bold">
-              <AnimatedCounter value="20" after="+" />
-            </Heading>
-            <Text>speakers</Text>
-          </VStack>
+            <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
+              <Heading as="h3" size="xl" fontWeight="bold">
+                <AnimatedCounter value="20" after="+" />
+              </Heading>
+              <Text>speakers</Text>
+            </VStack>
 
-          <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
-            <Heading as="h3" size="xl" fontWeight="bold">
-              <AnimatedCounter value="20" after="+" />
-            </Heading>
-            <Text>events</Text>
-          </VStack>
-        </Flex>
+            <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
+              <Heading as="h3" size="xl" fontWeight="bold">
+                <AnimatedCounter value="20" after="+" />
+              </Heading>
+              <Text>events</Text>
+            </VStack>
+          </Flex>
 
-        <AnimatedPillarsSection
-          icons={[
-            // pillars
-            "icon_person.svg",
-            "icon_calendar.svg",
-            "icon_building.svg",
-            "icon_speaker.svg",
-            "icon_location.svg"
-          ]}
-        />
+          <AnimatedPillarsSection
+            icons={[
+              // pillars
+              "icon_person.svg",
+              "icon_calendar.svg",
+              "icon_building.svg",
+              "icon_speaker.svg",
+              "icon_location.svg"
+            ]}
+          />
+        </div>
       </Container>
     </Box>
   );

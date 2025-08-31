@@ -1,4 +1,4 @@
-import { Box, Image, Text, useBreakpointValue } from "@chakra-ui/react";
+import { Box, Image, Link, Text, useBreakpointValue } from "@chakra-ui/react";
 
 export const ExhibitSection = () => {
   //const titleFontSize = useBreakpointValue({ base: "2xl", md: "3xl", lg: "4xl" });
@@ -37,37 +37,52 @@ export const ExhibitSection = () => {
             //fontSize={titleFontSize}
             textStyle={"textBlock"}
           >
-            EXHIBIT&ensp;A
+            {/* EXHIBIT&ensp;A */}
+            RP 2025
           </Text>
           <Text
             fontSize={subtitleFontSize}
             fontFamily={"body"}
             fontWeight="500"
           >
-            RP 2025 Site
+            Check out our website!
           </Text>
         </Box>
 
         <Box width={{ base: "100%", md: "auto" }}>
           <Box
-            bgColor="gray.300"
-            px={{ base: 20, md: 40 }}
-            py={{ base: 16, md: 20 }}
+            bgColor="black"
+            px={{ base: 5 }}
+            py={{ base: 5 }}
             borderRadius={20}
             mx="auto"
-            maxWidth={{ base: "400px", md: "none" }}
+            maxWidth={{ base: "400px", md: "400px" }}
           >
-            <Text
+            {/* <Text
               fontFamily="mono"
               fontSize={subtitleFontSize}
               textAlign="center"
             >
               RP 2025
-            </Text>
+            </Text> */}
+            {/* <Image src="/site.png" fit="cover" /> */}
+            <Link href="https://www.reflectionsprojections.org/" isExternal>
+              <Box
+                as="video"
+                src="/site.mov"
+                autoPlay
+                loop
+                muted
+                playsInline
+                objectFit="cover"
+                width="100%"
+                height="100%"
+              />
+            </Link>
           </Box>
 
           <Box
-            bgColor="gray.300"
+            bgColor="black"
             px={{ base: 20, md: 40 }}
             h={{ base: 5, md: 8 }}
             borderRadius={5}
@@ -89,8 +104,8 @@ export const ExhibitSection = () => {
             maxWidth={{ base: "400px", md: "none" }}
             mx="auto"
           >
-            <Box bgColor="gray.300" w={{ base: 5, md: 8 }} h={6} />
-            <Box bgColor="gray.300" w={{ base: 5, md: 8 }} h={6} />
+            <Box bgColor="black" w={{ base: 5, md: 8 }} h={6} />
+            <Box bgColor="black" w={{ base: 5, md: 8 }} h={6} />
           </Box>
         </Box>
       </Box>

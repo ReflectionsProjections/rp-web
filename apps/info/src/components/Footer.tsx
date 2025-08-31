@@ -2,38 +2,20 @@ import { Box, Flex, Heading, Text, Container } from "@chakra-ui/react";
 import { HoverIconLink } from "@/components/HoverIconLink";
 
 export const Footer = () => {
-  // const logoCircles: { title: string; link: string; src: string }[] = [
-  //   {
-  //     title: "Instagram",
-  //     link: "https://reflectionsprojections.org",
-  //     src: "rp2024shine_logo.png"
-  //   },
-  //   {
-  //     title: "Instagram",
-  //     link: "https://example.com",
-  //     src: "rp2024shine_logo.png"
-  //   },
-  //   {
-  //     title: "Instagram",
-  //     link: "reflectionsprojections.org",
-  //     src: "rp2024shine_logo.png"
-  //   },
-  //   {
-  //     title: "Instagram",
-  //     link: "reflectionsprojections.org",
-  //     src: "rp2024shine_logo.png"
-  //   },
-  //   {
-  //     title: "Instagram",
-  //     link: "reflectionsprojections.org",
-  //     src: "rp2024shine_logo.png"
-  //   },
-  //   {
-  //     title: "Instagram",
-  //     link: "reflectionsprojections.org",
-  //     src: "rp2024shine_logo.png"
-  //   }
-  // ];
+  const footerLinkIcons: { src: string; to: string }[] = [
+    {
+      src: "linkedin_red.svg",
+      to: "https://linkedin.com/company/reflections-projections-uiuc"
+    },
+    { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
+    { src: "tiktok_red.svg", to: "https://www.tiktok.com/@uiuc_rp" }
+  ];
+
+  const footerLinkIcons2: { src: string; to: string }[] = [
+    { src: "facebook_red.svg", to: "https://facebook.com/acmrp/" },
+    { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
+    { src: "email_red.svg", to: "mailto:contact@reflectionsprojections.org" }
+  ];
 
   return (
     <Box data-label="footer" minH="40vh" py={10} mb="5vh">
@@ -54,9 +36,10 @@ export const Footer = () => {
         >
           <Box w="100%" px="20px">
             <Text>
-              RP is a week-long ipsum dolor sit amet, consectetur adipiscing
-              elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-              aliqua.
+              R|P is the largest student-run technology conference in the
+              Midwest! Held at UIUC, we bring together students, professionals,
+              and companies for talks, networking, competitions, and career
+              opportunities!
             </Text>
           </Box>
           <Flex
@@ -70,35 +53,25 @@ export const Footer = () => {
               direction={{ base: "column", md: "row" }}
               gap={{ base: "10", md: "10" }}
             >
-              <HoverIconLink
-                link={"https://reflectionsprojections.org"}
-                src="instagram_logo.png"
-              />
-              <HoverIconLink
-                link={"https://reflectionsprojections.org"}
-                src="instagram_logo.png"
-              />
-              <HoverIconLink
-                link={"https://reflectionsprojections.org"}
-                src="instagram_logo.png"
-              />
+              {footerLinkIcons.map((item) => (
+                <HoverIconLink
+                  key={item.src}
+                  link={item.to}
+                  src={`/socials/${item.src}`}
+                />
+              ))}
             </Flex>
             <Flex
               direction={{ base: "column", md: "row" }}
               gap={{ base: "10", md: "10" }}
             >
-              <HoverIconLink
-                link={"https://reflectionsprojections.org"}
-                src="instagram_logo.png"
-              />
-              <HoverIconLink
-                link={"https://reflectionsprojections.org"}
-                src="instagram_logo.png"
-              />
-              <HoverIconLink
-                link={"https://2024.reflectionsprojections.org"}
-                src="rp2024shine_logo.png"
-              />
+              {footerLinkIcons2.map((item) => (
+                <HoverIconLink
+                  key={item.src}
+                  link={item.to}
+                  src={`/socials/${item.src}`}
+                />
+              ))}
             </Flex>
           </Flex>
         </Flex>

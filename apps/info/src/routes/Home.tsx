@@ -6,15 +6,27 @@ import { SponsorSection } from "@/components/Home/SponsorSection";
 import { Stats } from "@/components/Home/Stats";
 import { TeamSection } from "@/components/Home/TeamSection";
 
+import { Box } from "@chakra-ui/react";
+
 export const Home = () => {
   return (
     <>
-      <Header />
+      <Box id="home">
+        <Header />
+      </Box>
       <Stats />
-      <ExhibitSection />
-      <TeamSection />
-      <SponsorSection />
-      <Footer />
+      <Box id="exhibits">
+        <ExhibitSection />
+      </Box>
+      <Box id="team">
+        <TeamSection />
+      </Box>
+      <Box id="sponsors">
+        <SponsorSection />
+      </Box>
+      <Box id="footer">
+        <Footer />
+      </Box>
     </>
   );
 };
