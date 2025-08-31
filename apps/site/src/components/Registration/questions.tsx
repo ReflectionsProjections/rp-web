@@ -20,6 +20,7 @@ export const NameField = () => (
     name="name"
     label="Name"
     placeholder="Preferred Name"
+    maxLength={50}
     isRequired
   />
 );
@@ -30,6 +31,7 @@ export const EmailField = () => (
     label="Email"
     placeholder="Email"
     type="email"
+    maxLength={50}
     isRequired
   />
 );
@@ -39,7 +41,11 @@ export const GenderField = () => (
     name="gender"
     label="Gender"
     options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
-    custom={{ name: "genderOther", label: "Prefer to self-describe" }}
+    custom={{
+      name: "genderOther",
+      label: "Prefer to self-describe",
+      maxLength: 50
+    }}
   />
 );
 
@@ -57,7 +63,7 @@ export const EthnicityField = () => (
       "White",
       "Prefer not to answer"
     ]}
-    custom={{ name: "ethnicityOther", label: "Other" }}
+    custom={{ name: "ethnicityOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -75,7 +81,7 @@ export const AllergiesField = () => (
       "Fish",
       "Sesame"
     ]}
-    custom={{ name: "allergiesOther", label: "Other" }}
+    custom={{ name: "allergiesOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -93,7 +99,7 @@ export const DietaryRestrictionsField = () => (
       "Dairy-Free",
       "No Beef"
     ]}
-    custom={{ name: "dietaryOther", label: "Other" }}
+    custom={{ name: "dietaryOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -168,7 +174,7 @@ export const EducationLevelField = () => (
     label="What is your highest level of education (currently pursuing or completed)?"
     options={educationLevels}
     isRequired
-    custom={{ name: "educationOther", label: "Other" }}
+    custom={{ name: "educationOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -180,6 +186,7 @@ export const MajorsField = () => (
     options={majors.map((major) => ({ label: major, value: major }))}
     isRequired
     isMulti
+    maxSelections={5}
   />
 );
 
@@ -190,6 +197,7 @@ export const MinorsField = () => (
     placeholder="Select your current (or intended) minor(s)"
     options={minors.map((minor) => ({ label: minor, value: minor }))}
     isMulti
+    maxSelections={5}
   />
 );
 
@@ -217,7 +225,7 @@ export const ResumeField = () => (
     label="Resume"
     helperText="Your resume will be shared with our corporate sponsors. You may return to this page at any time to update it."
     accept=".pdf,.docx"
-    maxFileSize={10 * 1024 * 1024}
+    maxFileSize={6 * 1024 * 1024}
   />
 );
 
