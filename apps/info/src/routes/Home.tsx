@@ -1,7 +1,10 @@
 // src/routes/Home.tsx
-import { ExhibitSection } from "../pages/Home/ExhibitSection";
-import { Header } from "../pages/Home/Header";
-import Stats from "../pages/Home/Stats";
+import { ExhibitSection } from "@/components/Home/ExhibitSection";
+import { Footer } from "@/components/Footer";
+import { Header } from "@/components/Home/Header";
+import { SponsorSection } from "@/components/Home/SponsorSection";
+import { Stats } from "@/components/Home/Stats";
+import { TeamSection } from "@/components/Home/TeamSection";
 
 export const Home = () => {
   return (
@@ -9,6 +12,9 @@ export const Home = () => {
       <Header />
       <Stats />
       <ExhibitSection />
+      <TeamSection />
+      <SponsorSection />
+      <Footer />
     </>
   );
 };

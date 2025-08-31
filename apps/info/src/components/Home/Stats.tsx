@@ -1,27 +1,11 @@
-import {
-  Box,
-  Flex,
-  Heading,
-  Text,
-  Container,
-  VStack,
-  Icon,
-  Divider
-} from "@chakra-ui/react";
-import {
-  FaUser,
-  FaCalendar,
-  FaBuilding,
-  FaMicrophone,
-  FaMapMarkerAlt
-} from "react-icons/fa";
-import AnimatedCounter from "../../components/AnimatedCounter";
+import { Box, Flex, Heading, Text, Container, VStack } from "@chakra-ui/react";
+import AnimatedCounter from "@/components/AnimatedCounter";
+import AnimatedPillar from "@/components/AnimatedPillar";
+import { AnimatedPillarsSection } from "@/components/AnimatedPillarsSection";
 
-const Stats = () => {
-  const iconColor = "#d84949";
-
+export const Stats = () => {
   return (
-    <Box minH="100vh" py={10}>
+    <Box data-label="stats" id="stats-section" minH="110vh" py={10}>
       <Container maxW="container.xl">
         <Flex direction={{ base: "column", md: "row" }} mb={16} align="center">
           <Box flex={1} p={4} w="100%">
@@ -52,19 +36,21 @@ const Stats = () => {
           </VStack>
         </Flex>
 
-        <Box textAlign="center" mb={16}>
+        <Box textAlign="center" pt={16} mb={16}>
           <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
-            Midwest's Largest Student-Run
+            The Midwest's Largest Student-Run
             <br />
             Tech Conference
           </Heading>
         </Box>
 
-        <Flex
+        <Flex // numbers
           direction={{ base: "column", md: "row" }}
           gap={{ base: 8, md: 0 }}
           justify="space-between"
           textAlign="center"
+          pos="relative"
+          zIndex={5}
         >
           <VStack spacing={1} width={{ base: "auto", md: "20%" }}>
             <Heading as="h3" size="xl" fontWeight="bold">
@@ -102,27 +88,17 @@ const Stats = () => {
           </VStack>
         </Flex>
 
-        <Flex
-          direction="row"
-          align="center"
-          justify="space-between"
-          px={28}
-          mt={10}
-          display={{ base: "none", md: "flex" }}
-        >
-          <Icon as={FaUser} w={8} h={8} color={iconColor} />
-          <Divider flex="1" borderColor="gray.400" mx={2} />
-          <Icon as={FaCalendar} w={8} h={8} color={iconColor} />
-          <Divider flex="1" borderColor="gray.400" mx={2} />
-          <Icon as={FaBuilding} w={8} h={8} color={iconColor} />
-          <Divider flex="1" borderColor="gray.400" mx={2} />
-          <Icon as={FaMicrophone} w={8} h={8} color={iconColor} />
-          <Divider flex="1" borderColor="gray.400" mx={2} />
-          <Icon as={FaMapMarkerAlt} w={8} h={8} color={iconColor} />
-        </Flex>
+        <AnimatedPillarsSection
+          icons={[
+            // pillars
+            "icon_person.svg",
+            "icon_calendar.svg",
+            "icon_building.svg",
+            "icon_speaker.svg",
+            "icon_location.svg"
+          ]}
+        />
       </Container>
     </Box>
   );
 };
-
-export default Stats;

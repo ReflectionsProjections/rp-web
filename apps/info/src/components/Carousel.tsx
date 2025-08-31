@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, Button } from "@chakra-ui/react";
 
 interface CarouselItem {
   title: string;
@@ -102,9 +102,9 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
       h="700px"
       pt={8}
     >
-      <Heading fontSize="5xl" mb={10}>
+      {/* <Heading fontSize="5xl" mb={10}>
         Meet the Team
-      </Heading>
+      </Heading> */}
       <Box position="relative" w="100%" h="500px" mx="auto">
         <Box
           position="absolute"
@@ -173,7 +173,7 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
       <Flex justifyContent="center" mt={12}>
         <Button
           onClick={() => handleNavClick("prev")}
-          colorScheme="blue"
+          colorScheme="teal"
           size="lg"
           mr={6}
           px={8}
@@ -185,7 +185,7 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
         </Button>
         <Button
           onClick={() => handleNavClick("next")}
-          colorScheme="blue"
+          colorScheme="teal"
           size="lg"
           px={8}
           isDisabled={isAnimating}
