@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { api, Event, path } from "@rp/shared";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
@@ -32,6 +32,9 @@ export default function Schedule() {
   const [hoveredEventIndex, setHoveredEventIndex] = useState<number | null>(
     null
   );
+
+  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [nextEvent, setNextEvent] = useState<Event | null>(null);
 
   const selectedDayIndex = Math.max(
     Object.keys(eventsByDay).indexOf(selectedDay || "") + 1,
@@ -73,6 +76,48 @@ export default function Schedule() {
     setSelectedDay(date);
   };
   const handleSelectEvent = (evt: Event) => setSelectedEvent(evt);
+
+  const updateCurrentAndNext = useCallback(() => {
+    // flatten & sort all events by startTime
+    const all = Object.values(eventsByDay).flat();
+    const sorted = all.sort((a, b) =>
+      moment(a.startTime).diff(moment(b.startTime))
+    );
+
+    const now = moment();
+    let curr: Event | null = null;
+    let nxt: Event | null = null;
+
+    for (const evt of sorted) {
+      const start = moment(evt.startTime);
+      const end = moment(evt.endTime);
+
+      // if we're in the middle of evt, that's current
+      if (start.isSameOrBefore(now) && end.isAfter(now)) {
+        curr = evt;
+        continue; // but keep looking to fill `nxt`
+      }
+      // otherwise, the first one whose start is after now is next
+      if (!nxt && start.isAfter(now)) {
+        nxt = evt;
+        break; // can stop once we’ve found the next one
+      }
+    }
+
+    setCurrentEvent(curr);
+    setNextEvent(nxt);
+  }, [eventsByDay]);
+
+  useEffect(() => {
+    if (Object.keys(eventsByDay).length > 0) {
+      updateCurrentAndNext();
+    }
+  }, [eventsByDay, updateCurrentAndNext]);
+
+  useEffect(() => {
+    const timer = setInterval(updateCurrentAndNext, 60000);
+    return () => clearInterval(timer);
+  }, [updateCurrentAndNext]);
 
   return (
     <>
@@ -129,6 +174,8 @@ export default function Schedule() {
             dayEvents={dayEvents}
             hoveredEventIndex={hoveredEventIndex}
             selectedDayIndex={selectedDayIndex}
+            currentEvent={currentEvent}
+            nextEvent={nextEvent}
             handleHover={handleHover}
             handleSelectEvent={handleSelectEvent}
           />
@@ -177,7 +224,7 @@ function DayEventsSection({
         <Text
           fontSize={{
             base: "3xl",
-            lg: "5xl"
+            lg: "4xl"
           }}
           color="#8A8A8A"
           fontFamily="ProRacingSlant"
@@ -189,7 +236,7 @@ function DayEventsSection({
           <Text
             fontSize={{
               base: "3xl",
-              lg: "5xl"
+              lg: "4xl"
             }}
             fontWeight="bold"
             color="white"
@@ -201,7 +248,7 @@ function DayEventsSection({
           <Text
             fontSize={{
               base: "3xl",
-              lg: "5xl"
+              lg: "4xl"
             }}
             color="#8A8A8A"
             fontFamily="Magistral"
@@ -223,7 +270,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box overflowY="auto" h={{ lg: "60dvh" }} maxH={{ lg: "60dvh" }}>
+        <Box h={{ lg: "600px" }} maxH={{ lg: "600px" }} pt={3}>
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
@@ -256,11 +303,15 @@ function RaceTrackSection({
   dayEvents,
   hoveredEventIndex,
   handleHover,
-  handleSelectEvent
+  handleSelectEvent,
+  currentEvent,
+  nextEvent
 }: {
   selectedDayIndex: number;
   dayEvents: Event[];
   hoveredEventIndex: number | null;
+  currentEvent: Event | null;
+  nextEvent: Event | null;
   handleHover: (index: number) => void;
   handleSelectEvent: (event: Event) => void;
 }) {
@@ -331,7 +382,7 @@ function RaceTrackSection({
             borderBottomColor="orange.300"
           >
             <Text
-              fontSize="3xl"
+              fontSize="2xl"
               color="white"
               fontFamily="ProRacingSlant"
               my={0}
@@ -339,6 +390,37 @@ function RaceTrackSection({
               R|P Radio
             </Text>
             <AudioVisualizer />
+          </Flex>
+          <Flex
+            w="100%"
+            gap={3}
+            flexDir={{
+              base: "column",
+              md: "row"
+            }}
+          >
+            {currentEvent && (
+              <Box flex={1}>
+                <PreviewEvent
+                  label="Current"
+                  event={currentEvent}
+                  onClick={() => {
+                    handleSelectEvent(currentEvent);
+                  }}
+                />
+              </Box>
+            )}
+            {nextEvent && (
+              <Box flex={1}>
+                <PreviewEvent
+                  label="Next Up"
+                  event={nextEvent}
+                  onClick={() => {
+                    handleSelectEvent(nextEvent);
+                  }}
+                />
+              </Box>
+            )}
           </Flex>
         </Box>
       </Box>
@@ -368,7 +450,7 @@ function DayEvent({
         base: 3,
         md: 5
       }}
-      py={3}
+      py={2}
       templateColumns={{
         base: "12px 8px 1fr 40px",
         md: "20px 10px 1fr 40px"
@@ -444,7 +526,7 @@ function DayEvent({
 
       <Flex flexDirection={"column"} gap={0}>
         <Text
-          fontSize={{ base: "xl", md: "2xl" }}
+          fontSize={{ base: "xl", md: "lg" }}
           color="white"
           fontFamily={"ProRacing"}
           transformOrigin={"top left"}
@@ -461,7 +543,7 @@ function DayEvent({
           gap={0}
         >
           <Text
-            fontSize={{ base: "md", md: "xl" }}
+            fontSize={{ base: "md", md: "md" }}
             color="gray.100"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -475,7 +557,7 @@ function DayEvent({
           </Text>
 
           <Text
-            fontSize={{ base: "md", md: "xl" }}
+            fontSize={{ base: "md", md: "md" }}
             color="gray.400"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -510,5 +592,89 @@ function DayEvent({
         </Flex>
       </Tooltip>
     </Grid>
+  );
+}
+
+function PreviewEvent({
+  label,
+  event,
+  onClick
+}: {
+  label: string;
+  event: Event;
+  onClick: (event: Event) => void;
+}) {
+  return (
+    <Box w="100%">
+      <Text
+        w="100%"
+        fontSize="sm"
+        fontFamily="Magistral"
+        color="orange.300"
+        fontWeight="bold"
+        mb={1}
+      >
+        {label}
+      </Text>
+      <Flex
+        alignItems={"center"}
+        bgColor={"#1e1e1eff"}
+        borderRadius={"lg"}
+        p={2}
+        onClick={() => {
+          onClick(event);
+        }}
+        transition="all 0.2s ease-in-out"
+        _hover={{
+          bgColor: "rgba(72, 72, 72, 1)",
+          cursor: "pointer"
+        }}
+      >
+        <Box
+          w="10px"
+          h="10px"
+          bg={label === "Current" ? "green.500" : "red.500"}
+          borderRadius="full"
+          mr={3}
+        />
+
+        <Flex direction="column" flex={1} w="100%" gap={0}>
+          <Text fontSize="lg" color="white" fontFamily="ProRacing">
+            {event.name}
+          </Text>
+
+          <Flex flexWrap={"wrap"} gap={0}>
+            <Text
+              fontSize={{ base: "md", md: "md" }}
+              color="gray.100"
+              fontWeight="bold"
+              fontFamily="Magistral"
+              letterSpacing="0.5px"
+              transformOrigin={"top left"}
+              wordBreak="break-all"
+              whiteSpace="normal"
+              mr={3}
+            >
+              {event.location || "Siebel CS"}
+            </Text>
+
+            <Text
+              fontSize={{ base: "md", md: "md" }}
+              color="gray.400"
+              fontWeight="bold"
+              fontFamily="Magistral"
+              letterSpacing="0.5px"
+              transformOrigin={"top left"}
+              whiteSpace={{
+                md: "nowrap"
+              }}
+            >
+              {moment(event.startTime).format("h:mma")} –{" "}
+              {moment(event.endTime).format("h:mma")}
+            </Text>
+          </Flex>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
