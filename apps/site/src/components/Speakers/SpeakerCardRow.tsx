@@ -66,7 +66,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
     >
       <HStack
         gap={{ base: speakerSelected ? 0 : 3, md: 3 }}
-        w="100%"
+        w={row.speakers.length === 1 ? "50%" : "100%"}
         maxW="1000px"
         ml={{
           base: speakerSelected ? 0 : 7,
@@ -120,7 +120,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         display="flex"
         position="relative"
         h={speakerSelected ? `${bioTextDisplayedHeight}px` : "150px"}
-        w="100%"
+        w={row.speakers.length === 1 ? "50%" : "100%"}
         maxW="1000px"
         alignItems={"center"}
         gap={displayedSelectedIndex !== null ? 0 : 5}
@@ -208,7 +208,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           base: 2,
           md: 0
         }}
-        w="100%"
+        w={row.speakers.length === 1 ? "50%" : "100%"}
         maxW="1000px"
         transition={"all 0.3s"}
         mt={{
