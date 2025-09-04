@@ -151,7 +151,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           top={0}
           left={0}
           right={0}
-          pl={{ base: "1rem", md: "5rem", lg: "7rem" }}
+          pl={{ base: "1rem", md: "5rem", lg: "6rem" }}
           pr={{ base: 14, md: 16 }}
           h={`${bioTextDisplayedHeight}px`}
           textAlign="left"
