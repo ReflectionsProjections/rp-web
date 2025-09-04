@@ -12,6 +12,7 @@ type Props<TValues, TFieldName extends keyof TValues> = {
   placeholder?: string;
   isRequired?: boolean;
   type?: React.HTMLInputTypeAttribute;
+  maxLength?: number;
 };
 
 const FormTextField = <
@@ -22,7 +23,8 @@ const FormTextField = <
   label,
   placeholder,
   isRequired,
-  type
+  type,
+  maxLength
 }: Props<TValues, TFieldName>) => {
   return (
     <FastField name={name}>
@@ -42,7 +44,7 @@ const FormTextField = <
             placeholder={placeholder}
             _placeholder={{ color: "#CCCCCC" }}
             backgroundColor="#12131A"
-            maxLength={100}
+            maxLength={maxLength}
           />
 
           <FormErrorMessage>{form.errors[name] as string}</FormErrorMessage>

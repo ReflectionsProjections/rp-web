@@ -21,7 +21,7 @@ type Props<
   isRequired?: boolean;
 } & (TOtherName extends undefined
   ? { custom?: undefined }
-  : { custom: { name: TOtherName; label: string } });
+  : { custom: { name: TOtherName; label: string; maxLength?: number } });
 
 const FormRadioGroup = <
   TValues extends Record<string, unknown> & Record<TFieldName, string>,
@@ -102,7 +102,7 @@ const FormRadioGroup = <
                           showCustomInput ? "#12131A" : "transparent"
                         }
                         py={0.5}
-                        maxLength={100}
+                        maxLength={custom.maxLength}
                       />
                     );
                   }}

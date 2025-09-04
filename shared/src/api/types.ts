@@ -320,7 +320,8 @@ export interface APIRoutes {
       response: Array<{
         userId: string;
         name: string;
-        major: string;
+        majors: string[];
+        minors: string[];
         graduationYear: string;
         educationLevel: string;
         opportunities?: string[];
@@ -370,6 +371,28 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/speakers": {
+    GET: {
+      response: Speaker[];
+    };
+    POST: {
+      request: Omit<Speaker, "speakerId">;
+      response: Speaker;
+    };
+  };
+  "/speakers/:speakerId": {
+    GET: {
+      response: Speaker;
+    };
+    PUT: {
+      request: Partial<Omit<Speaker, "speakerId">>;
+      response: Speaker;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
   "/s3/upload": {
     GET: {
       response: { url: string; fields: Record<string, unknown> };
@@ -389,11 +412,6 @@ export interface APIRoutes {
     POST: {
       request: { userIds: string[] };
       response: { data: (string | null)[]; errorCount: number };
-    };
-  };
-  "/speakers": {
-    GET: {
-      response: Speaker[];
     };
   };
   "/staff/:EMAIL/attendance": {

@@ -14,6 +14,7 @@ interface OptimizedSelectProps<TValues, TFieldName extends keyof TValues> {
   placeholder?: string;
   pageSize: number;
   isMulti?: boolean;
+  maxSelections?: number;
   field: FieldProps<TValues[TFieldName], TValues>["field"];
   form: FieldProps<TValues[TFieldName], TValues>["form"];
 }
@@ -27,6 +28,7 @@ const OptimizedSelect = <
   placeholder,
   pageSize,
   isMulti = false,
+  maxSelections,
   field,
   form
 }: OptimizedSelectProps<TValues, TFieldName>) => {
@@ -72,30 +74,51 @@ const OptimizedSelect = <
   const isSearchable = options.length > 20;
 
   const handleChange = useCallback(
-    (selectedValue: MultiValue<SelectOption> | SingleValue<SelectOption>) => {
+    async (
+      selectedValue: MultiValue<SelectOption> | SingleValue<SelectOption>
+    ) => {
       if (isMulti) {
         const values = Array.isArray(selectedValue)
           ? (selectedValue as readonly SelectOption[]).map(
               (option) => option.value
             )
           : [];
-        void form.setFieldValue(name, values);
+
+        if (!maxSelections || values.length <= maxSelections) {
+          await form.setFieldValue(name, values);
+        }
       } else {
         const value =
           selectedValue && !Array.isArray(selectedValue)
             ? (selectedValue as SelectOption).value
             : "";
-        void form.setFieldValue(name, value);
+        await form.setFieldValue(name, value);
       }
+
+      await form.setFieldTouched(name, true);
     },
-    [form, name, isMulti]
+    [form, name, isMulti, maxSelections]
+  );
+
+  const isOptionDisabled = useCallback(
+    (option: SelectOption) => {
+      if (!isMulti || !maxSelections) return false;
+
+      const currentValues = Array.isArray(field.value)
+        ? (field.value as string[])
+        : [];
+      const isCurrentlySelected = currentValues.includes(option.value);
+
+      return !isCurrentlySelected && currentValues.length >= maxSelections;
+    },
+    [isMulti, maxSelections, field.value]
   );
 
   return (
     <Select<SelectOption, typeof isMulti>
       name={name}
       value={selectedOption}
-      onChange={handleChange}
+      onChange={(selectedValue) => void handleChange(selectedValue)}
       onBlur={() => void form.setFieldTouched(name, true)}
       onInputChange={(inputValue) => setSearchTerm(inputValue)}
       maxMenuHeight={300}
@@ -103,6 +126,7 @@ const OptimizedSelect = <
       placeholder={placeholder}
       isSearchable={isSearchable}
       isMulti={isMulti}
+      isOptionDisabled={isOptionDisabled}
       filterOption={() => true}
       captureMenuScroll={true}
       onMenuScrollToBottom={handleMenuScrollToBottom}
@@ -163,6 +187,7 @@ type FormSelectMenuProps<TValues, TFieldName extends keyof TValues> = {
   isRequired?: boolean;
   pageSize?: number;
   isMulti?: boolean;
+  maxSelections?: number;
 };
 
 const FormSelectMenu = <
@@ -175,7 +200,8 @@ const FormSelectMenu = <
   placeholder,
   isRequired,
   pageSize = 100,
-  isMulti = false
+  isMulti = false,
+  maxSelections
 }: FormSelectMenuProps<TValues, TFieldName>) => (
   <FastField name={name}>
     {({ field, form }: FieldProps<TValues[TFieldName], TValues>) => (
@@ -192,6 +218,7 @@ const FormSelectMenu = <
           placeholder={placeholder}
           pageSize={pageSize}
           isMulti={isMulti}
+          maxSelections={maxSelections}
           field={field}
           form={form}
         />

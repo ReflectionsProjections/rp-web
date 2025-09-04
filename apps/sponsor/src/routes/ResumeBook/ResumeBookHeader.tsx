@@ -19,7 +19,9 @@ export type ResumeBookHeaderProps = {
   filtering: {
     queryName: string;
     selectedMajors: string[];
+    selectedMinors: string[];
     majorToMajorWithCount: Record<string, string>;
+    minorToMinorWithCount: Record<string, string>;
     selectedDegrees: string[];
     degreesWithCounts: Record<string, string>;
     yearsWithCounts: Record<string, string>;
@@ -28,6 +30,7 @@ export type ResumeBookHeaderProps = {
     selectedJobInterests: string[];
     setQueryName: (name: string) => void;
     setSelectedMajors: (majors: string[]) => void;
+    setSelectedMinors: (minors: string[]) => void;
     setSelectedDegrees: (degrees: string[]) => void;
     setSelectedYears: (years: string[]) => void;
     setSelectedJobInterests: (jobs: string[]) => void;
