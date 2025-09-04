@@ -1,11 +1,13 @@
 import { Box, Image } from "@chakra-ui/react";
+import { Speaker } from "@rp/shared";
+import { useEffect, useMemo } from "react";
 
 type SpeakerImageCardProps = {
   row: { color: string; speakers: { imgUrl: string }[] };
   index: number;
   displayedSelectedIndex: number | null;
   speakerSelected: boolean;
-  speaker: { imgUrl: string };
+  speaker: Speaker;
   customHeight?: string;
   handleSetSelectedIndex: (index: number) => void;
 };
@@ -21,6 +23,25 @@ export default function SpeakerImageCard({
 }: SpeakerImageCardProps) {
   const isAnySelected = displayedSelectedIndex !== null;
   const isClickable = !speakerSelected;
+
+  const imgUrl = useMemo(() => {
+    if (
+      speaker.imgUrl &&
+      speaker.imgUrl !== "http://reflectionsprojections.org"
+    ) {
+      return speaker.imgUrl;
+    }
+    return `/speakers/${speaker.name
+      .split(" ")
+      .join("_")
+      .split(".")
+      .join("")
+      .toLowerCase()}.png`;
+  }, [speaker.imgUrl, speaker.name]);
+
+  useEffect(() => {
+    console.log("imgUrl", imgUrl);
+  }, [imgUrl]);
 
   return (
     <Box
@@ -71,7 +92,7 @@ export default function SpeakerImageCard({
         overflow="visible"
         opacity={isAnySelected ? 0 : 1}
         transition="transform 0.5s ease, opacity 0.1s"
-        src={speaker.imgUrl}
+        src={imgUrl}
         _groupHover={
           isClickable
             ? {
