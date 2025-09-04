@@ -151,7 +151,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           top={0}
           left={0}
           right={0}
-          pl={{ base: "1rem", md: "5rem" }}
+          pl={{ base: "1rem", md: "5rem", lg: "7rem" }}
           pr={{ base: 14, md: 16 }}
           h={`${bioTextDisplayedHeight}px`}
           textAlign="left"
@@ -188,7 +188,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           position="absolute"
           top={2}
           right={1}
-          zIndex={99}
+          zIndex={4}
           opacity={displayedSelectedIndex !== null ? "1" : "0"}
           display={displayedSelectedIndex !== null ? "flex" : "none"}
         >

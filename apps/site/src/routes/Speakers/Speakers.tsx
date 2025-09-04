@@ -63,7 +63,15 @@ export default function Speakers() {
   }, [isMediumScreen, isSmallScreen, isMicroScreen, speakers]);
 
   return (
-    <VStack gap={0} bgColor="#1F1F1F" pt={36} pb={48} bgImage="/backdrop.svg">
+    <VStack
+      gap={0}
+      bgColor="#1F1F1F"
+      pt={36}
+      pb={48}
+      bgImage="/backdrop.svg"
+      minH="100dvh"
+      bgSize="cover"
+    >
       <Text
         fontSize={{ base: "5xl", sm: "5xl", md: "6xl" }}
         fontFamily="ProRacing"
