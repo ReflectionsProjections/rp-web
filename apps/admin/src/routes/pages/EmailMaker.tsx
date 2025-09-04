@@ -20,26 +20,72 @@ import {
   Textarea,
   Switch,
   FormLabel,
-  CardHeader,
   Image,
-  Box
+  Box,
+  Tooltip
 } from "@chakra-ui/react";
 import { api, path } from "@rp/shared";
 import { Formik, FormikHelpers } from "formik";
 import { useEffect, useState } from "react";
 import { marked } from "marked";
-import { rpMainTemplate } from "@/components/EmailMaker/EmailTemplate";
+import {
+  rpMainTemplate,
+  rpEmptyTemplate,
+  rpNoneTemplate
+} from "@/components/EmailMaker/EmailTemplate";
 import DOMPurify from "dompurify";
 
-function generateHtmlEmail(mdContent: string) {
+marked.use({
+  renderer: {
+    heading({ tokens, depth }) {
+      const text = this.parser.parseInline(tokens);
+
+      if (depth == 2) {
+        return `
+            <h2 class="section-title">
+              ${text}
+            </h2>`;
+      }
+
+      return `
+            <h${depth}>
+              ${text}
+            </h${depth}>`;
+      // default
+    }
+  }
+});
+
+function generateHtmlEmail(mdContent: string, templateName: string) {
+  const emailTemplate = rpEmailTemplates.find(
+    (template) => template.key === templateName
+  );
+  const generateTemplate = emailTemplate
+    ? emailTemplate.templateFn
+    : rpNoneTemplate;
   const markdownHtml = marked(mdContent, { async: false });
   const sanitizedHtml = DOMPurify.sanitize(markdownHtml);
-  const compiledHtmlEmail = rpMainTemplate(sanitizedHtml);
+  const compiledHtmlEmail = generateTemplate(sanitizedHtml);
   return compiledHtmlEmail;
 }
 
+const NOTIF_TITLE_PREVIEW_LENGTH: number = 50;
 const NOTIF_PREVIEW_CUTOFF_LENGTH: number = 110;
 const NOTIF_MAX_LENGTH: number = 220;
+
+const rpEmailTemplates = [
+  {
+    key: "main",
+    displayName: "R|P 2025 Main Template",
+    templateFn: rpMainTemplate
+  },
+  {
+    key: "empty",
+    displayName: "R|P 2025 Empty Template",
+    templateFn: rpEmptyTemplate
+  },
+  { key: "none", displayName: "Unformatted", templateFn: rpNoneTemplate }
+];
 
 function EmailMaker() {
   const toast = useToast();
@@ -49,6 +95,8 @@ function EmailMaker() {
     { mailingList: string; subscriptions: string[] }[]
   >([]);
   const [notifGroups, setNotifGroups] = useState<string[]>([]);
+  const [showExtendedNotifPreview, setShowExtendedEmailPreview] =
+    useState<boolean>(false);
 
   useEffect(() => {
     api
@@ -104,7 +152,7 @@ function EmailMaker() {
       const emailData = {
         mailingList: values.recipients,
         subject: values.subject,
-        htmlBody: generateHtmlEmail(values.body)
+        htmlBody: generateHtmlEmail(values.body, values.template)
       };
 
       const request = api
@@ -136,7 +184,7 @@ function EmailMaker() {
         errors,
         touched
       }) => {
-        const markdownHtml = generateHtmlEmail(values.body);
+        const markdownHtml = generateHtmlEmail(values.body, values.template);
         // const { compiledHtmlEmail, compiledHtmlErrors } = generateHtmlEmail(values.body);
 
         return (
@@ -150,7 +198,7 @@ function EmailMaker() {
             </Flex>
             <br />
             <Flex w="100%" p={4} justifyContent="space-evenly" gap={6}>
-              <Card sx={mirrorStyle} overflowY="auto" height="80vh" flex={1}>
+              <Card sx={mirrorStyle} overflowY="auto" minH="80vh" flex={1}>
                 <CardBody>
                   <form
                     onSubmit={handleSubmit}
@@ -277,10 +325,32 @@ function EmailMaker() {
                             value={values.body}
                             onChange={handleChange}
                             flex={1}
-                            minH="300px"
+                            minH="200px"
                           />
                           <FormErrorMessage>{errors.body}</FormErrorMessage>
                         </FormControl>
+                        {!values.isMobileNotification && (
+                          <FormControl
+                            isInvalid={!!errors.template && touched.template}
+                            flexShrink={0}
+                          >
+                            <Select
+                              name="template"
+                              value={values.template}
+                              onChange={handleChange}
+                              flex={1}
+                            >
+                              {rpEmailTemplates?.map((template) => (
+                                <option key={template.key} value={template.key}>
+                                  {template.displayName}
+                                </option>
+                              ))}
+                            </Select>
+                            <FormErrorMessage>
+                              {errors.template}
+                            </FormErrorMessage>
+                          </FormControl>
+                        )}
                         <Button
                           type="submit"
                           colorScheme="blue"
@@ -318,7 +388,7 @@ function EmailMaker() {
                             <Section w="100%" h="100%" sx={mirrorStyle}>
                               <Card
                                 w="100%"
-                                maxH="200px"
+                                // maxH="200px"
                                 m="auto"
                                 title="Notification Preview"
                                 textAlign="left"
@@ -343,10 +413,26 @@ function EmailMaker() {
                                       h="100%"
                                     />
                                   </Box>
-                                  <Flex flexDirection="column">
-                                    <Text as="b" textOverflow="ellipsis">
-                                      {values.subject.length
-                                        ? values.subject
+                                  <Flex
+                                    flexDirection="column"
+                                    overflow="hidden"
+                                  >
+                                    <Text
+                                      as="b"
+                                      w="100%"
+                                      maxH="3rem"
+                                      overflow="hidden"
+                                      textOverflow="ellipsis"
+                                      wordBreak="break-word"
+                                    >
+                                      {values.subject.length > 0
+                                        ? values.subject.length >
+                                          NOTIF_TITLE_PREVIEW_LENGTH
+                                          ? values.subject.slice(
+                                              0,
+                                              NOTIF_TITLE_PREVIEW_LENGTH
+                                            ) + "..."
+                                          : values.subject
                                         : "Notification title"}
                                     </Text>
                                     <Text>
@@ -362,12 +448,32 @@ function EmailMaker() {
                                     </Text>
                                     {values.body.length >
                                     NOTIF_PREVIEW_CUTOFF_LENGTH ? (
-                                      <Text fontStyle="oblique" opacity="0.6">
-                                        {values.body.slice(
-                                          NOTIF_PREVIEW_CUTOFF_LENGTH,
-                                          NOTIF_MAX_LENGTH
+                                      <Tooltip label="The user can press and hold to view roughly this much extra, but we can't guarantee the exact amount, so be cautious of using it!">
+                                        {showExtendedNotifPreview ? (
+                                          <Text
+                                            fontStyle="oblique"
+                                            opacity="0.6"
+                                          >
+                                            {values.body.slice(
+                                              NOTIF_PREVIEW_CUTOFF_LENGTH,
+                                              NOTIF_MAX_LENGTH
+                                            )}
+                                          </Text>
+                                        ) : (
+                                          <Text
+                                            fontStyle="oblique"
+                                            opacity="0.6"
+                                            onClick={() =>
+                                              setShowExtendedEmailPreview(
+                                                (current) => !current
+                                              )
+                                            }
+                                            textDecoration="underline"
+                                          >
+                                            show extended notification preview
+                                          </Text>
                                         )}
-                                      </Text>
+                                      </Tooltip>
                                     ) : (
                                       <></>
                                     )}
