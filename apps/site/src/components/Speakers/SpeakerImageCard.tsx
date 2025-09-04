@@ -57,7 +57,7 @@ export default function SpeakerImageCard({
       overflowX="visible"
       transform={{
         base: isAnySelected ? "" : "skewX(-10deg)",
-        md: "skewX(-20deg)"
+        md: "skewX(-10deg)"
       }}
       borderLeftRadius={index === 0 || !isAnySelected ? "md" : "none"}
       borderRightRadius={
@@ -84,7 +84,7 @@ export default function SpeakerImageCard({
         cursor={isClickable ? "pointer" : "default"}
         transform={{
           base: isAnySelected ? "" : "skewX(10deg)",
-          md: "skewX(20deg)"
+          md: "skewX(10deg)"
         }}
         transformOrigin="bottom" // keep bottom fixed
         objectFit="cover"
@@ -98,7 +98,7 @@ export default function SpeakerImageCard({
             ? {
                 transform: {
                   base: isAnySelected ? "" : "skewX(10deg) scale(1.03)",
-                  md: "skewX(20deg) scale(1.03)"
+                  md: "skewX(10deg) scale(1.03)"
                 }
               }
             : {}

@@ -151,7 +151,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           top={0}
           left={0}
           right={0}
-          pl={{ base: "1rem", md: "5rem", lg: "6rem" }}
+          pl={{ base: "1rem", md: "3rem" }}
           pr={{ base: 14, md: 16 }}
           h={`${bioTextDisplayedHeight}px`}
           textAlign="left"
@@ -196,9 +196,9 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           <IconButton
             size="sm"
             aria-label="Exit"
-            icon={<CloseIcon transform={{ md: "skewX(20deg)" }} />}
+            icon={<CloseIcon transform={{ md: "skewX(10deg)" }} />}
             onClick={handleLeave}
-            transform={{ base: "", md: "skewX(-20deg)" }}
+            transform={{ base: "", md: "skewX(-10deg)" }}
             px={4}
           />
         </Box>
