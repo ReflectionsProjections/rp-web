@@ -51,6 +51,10 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
       ? row.speakers[displayedSelectedIndex].bio
       : null;
 
+  useEffect(() => {
+    console.log("displayedContent", displayedContent?.split("\n"));
+  }, [displayedContent]);
+
   return (
     <VStack
       w={{
@@ -163,7 +167,22 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           pointerEvents={displayedSelectedIndex !== null ? undefined : "none"}
           fontWeight={"semibold"}
         >
-          <Text ref={bioTextRef}>{displayedContent}</Text>
+          <Text ref={bioTextRef} whiteSpace={"pre-wrap"}>
+            {displayedContent ? (
+              displayedContent.split("\\n").map((line, i) => (
+                <>
+                  {line}
+                  {i < displayedContent.split("\\n").length - 1 && (
+                    <>
+                      <br />
+                    </>
+                  )}
+                </>
+              ))
+            ) : (
+              <></>
+            )}
+          </Text>
         </Box>
         <Box
           position="absolute"

@@ -24,7 +24,13 @@ export default function Speakers() {
   const handleLoadSpeakers = async () => {
     try {
       const response = await api.get("/speakers");
-      setSpeakers(response.data);
+      setSpeakers(
+        response.data.map((speakerData) => {
+          return {
+            ...speakerData
+          };
+        })
+      );
     } catch {
       console.error("Failed to load speakers");
     }
