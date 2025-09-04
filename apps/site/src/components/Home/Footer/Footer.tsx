@@ -94,7 +94,7 @@ export const Footer = () => {
 
           <ChakraLink
             as={RouterLink}
-            to="/qr-code"
+            to="/profile"
             _hover={{ textDecoration: "none" }}
           >
             <Text
