@@ -63,7 +63,7 @@ export default function Schedule() {
         dates.sort((a, b) => a.date.valueOf() - b.date.valueOf());
 
         const today = moment();
-        let selectedKey: string | null = null;
+        let selectedKey: string;
 
         if (today.isBefore(dates[0].date)) {
           selectedKey = dates[0].key;
