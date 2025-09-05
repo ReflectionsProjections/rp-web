@@ -26,8 +26,8 @@ export default function ScheduleDaySelector({
       gap={{ base: 2, md: 5 }}
       maxWidth={{ md: "700px", lg: "1000px" }}
       mx="auto"
-      mb={{ md: 0, lg: 10 }}
       px={{ base: 3, md: undefined }}
+      pb={{ base: 4, lg: 0 }}
       justifyContent={{ base: "flex-start", sm: "center" }}
       overflowX="auto"
       zIndex={10}
@@ -92,7 +92,7 @@ function ScheduleDayButton({
       borderLeftWidth={"8px"}
       borderLeftColor={color}
       px={{ base: 2, md: 3 }}
-      py={{ base: 2, md: 3 }}
+      py={{ base: 2, md: 1 }}
       pr={{ base: 4, sm: 6 }}
       onClick={() => onSelectDay(date)}
       transition="all 0.2s"
@@ -107,7 +107,7 @@ function ScheduleDayButton({
           md: "block"
         }}
         fontFamily="ProRacing"
-        fontSize="2xl"
+        fontSize={"xl"}
         textColor={selected ? "black" : "white"}
         transition="all 0.2s, transform 0.2s"
         transformOrigin="center left"
