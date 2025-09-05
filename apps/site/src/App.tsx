@@ -14,6 +14,8 @@ import { Profile } from "./routes/Profile";
 import Register from "./routes/Register";
 import Resume from "./routes/Resume";
 import theme from "./theme";
+import Navbar from "./components/Navbar";
+import Speakers from "./routes/Speakers/Speakers";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -32,6 +34,7 @@ function App() {
         <Routes>
           <Route element={<Main />}>
             <Route path="/" element={<Home />} />
+            <Route path="/speakers" element={<Speakers />} />
             <Route element={<RequireAuth />}>
               <Route key="/register" path="/register" element={<Register />} />
             </Route>
