@@ -144,6 +144,16 @@ export type CommitteeType =
 
 export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 
+export type Speaker = {
+  speakerId: string;
+  name: string;
+  title: string;
+  bio: string;
+  eventTitle: string;
+  eventDescription: string;
+  imgUrl: string;
+};
+
 export type Staff = {
   email: string;
   name: string;
@@ -162,16 +172,6 @@ export type Meeting = {
     | "MARKETING"
     | "OPERATIONS";
   startTime: string;
-};
-
-export type Speaker = {
-  speakerId: string;
-  name: string;
-  title: string;
-  bio: string;
-  eventTitle: string;
-  eventDescription: string;
-  imgUrl: string;
 };
 
 export interface APIRoutes {
@@ -320,7 +320,8 @@ export interface APIRoutes {
       response: Array<{
         userId: string;
         name: string;
-        major: string;
+        majors: string[];
+        minors: string[];
         graduationYear: string;
         educationLevel: string;
         opportunities?: string[];

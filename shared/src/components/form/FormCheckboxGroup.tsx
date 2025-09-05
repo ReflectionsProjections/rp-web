@@ -20,7 +20,7 @@ type Props<
   options: string[];
 } & (TOtherName extends undefined
   ? { custom?: undefined }
-  : { custom: { name: TOtherName; label: string } });
+  : { custom: { name: TOtherName; label: string; maxLength?: number } });
 
 const FormCheckboxGroup = <
   TValues extends Record<string, unknown> & Record<TFieldName, string[]>,
@@ -124,7 +124,7 @@ const FormCheckboxGroup = <
                           py={0.5}
                           h="fit-content"
                           disabled={!showCustomInput}
-                          maxLength={100}
+                          maxLength={custom.maxLength}
                         />
                       );
                     }}
