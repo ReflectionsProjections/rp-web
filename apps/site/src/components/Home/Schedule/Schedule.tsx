@@ -33,7 +33,7 @@ export default function Schedule() {
     null
   );
 
-  const [currentEvent, setCurrentEvent] = useState<Event | null>(null);
+  const [currentEvents, setCurrentEvents] = useState<Event[]>([]);
   const [nextEvent, setNextEvent] = useState<Event | null>(null);
 
   const selectedDayIndex = Math.max(
@@ -85,7 +85,7 @@ export default function Schedule() {
     );
 
     const now = moment();
-    let curr: Event | null = null;
+    const currentEvents: Event[] = [];
     let nxt: Event | null = null;
 
     for (const evt of sorted) {
@@ -94,7 +94,7 @@ export default function Schedule() {
 
       // if we're in the middle of evt, that's current
       if (start.isSameOrBefore(now) && end.isAfter(now)) {
-        curr = evt;
+        currentEvents.push(evt);
         continue; // but keep looking to fill `nxt`
       }
       // otherwise, the first one whose start is after now is next
@@ -104,20 +104,17 @@ export default function Schedule() {
       }
     }
 
-    setCurrentEvent(curr);
+    setCurrentEvents(currentEvents);
     setNextEvent(nxt);
   }, [eventsByDay]);
 
   useEffect(() => {
-    if (Object.keys(eventsByDay).length > 0) {
+    updateCurrentAndNext();
+    const timer = setInterval(() => {
       updateCurrentAndNext();
-    }
-  }, [eventsByDay, updateCurrentAndNext]);
-
-  useEffect(() => {
-    const timer = setInterval(updateCurrentAndNext, 60000);
+    }, 5000);
     return () => clearInterval(timer);
-  }, [updateCurrentAndNext]);
+  }, [updateCurrentAndNext, eventsByDay]);
 
   return (
     <>
@@ -174,7 +171,7 @@ export default function Schedule() {
             dayEvents={dayEvents}
             hoveredEventIndex={hoveredEventIndex}
             selectedDayIndex={selectedDayIndex}
-            currentEvent={currentEvent}
+            currentEvents={currentEvents}
             nextEvent={nextEvent}
             handleHover={handleHover}
             handleSelectEvent={handleSelectEvent}
@@ -188,6 +185,44 @@ export default function Schedule() {
       />
     </>
   );
+}
+
+function formatEventTime(iso: string): string {
+  const m = moment(iso);
+  const now = moment();
+
+  if (m.isSame(now, "day")) {
+    return m.format("h:mma");
+  }
+  // within one week past/future
+  if (Math.abs(m.diff(now, "days")) <= 7) {
+    // “Yesterday”, “Tomorrow”, or day‐of‐week
+    return m.calendar(null, {
+      sameDay: "[Today] h:mma",
+      nextDay: "[Tomorrow] h:mma",
+      nextWeek: "dddd h:mma",
+      lastDay: "[Yesterday] h:mma",
+      lastWeek: "[Last] dddd h:mma",
+      sameElse: "MMM D, h:mma"
+    });
+  }
+  // older/newer than a week
+  return m.format("MMM D, h:mma");
+}
+
+function formatEventRange(startIso: string, endIso: string): string {
+  const start = moment(startIso);
+  const end = moment(endIso);
+
+  // full label for start
+  const startLabel = formatEventTime(startIso);
+
+  // same day? just time; else full label
+  const endLabel = start.isSame(end, "day")
+    ? end.format("h:mma")
+    : formatEventTime(endIso);
+
+  return `${startLabel} – ${endLabel}`;
 }
 
 function DayEventsSection({
@@ -222,10 +257,7 @@ function DayEventsSection({
         boxShadow="md"
       >
         <Text
-          fontSize={{
-            base: "3xl",
-            lg: "4xl"
-          }}
+          fontSize={"3xl"}
           color="#8A8A8A"
           fontFamily="ProRacingSlant"
           my={0}
@@ -234,10 +266,7 @@ function DayEventsSection({
         </Text>
         <HStack gap={0}>
           <Text
-            fontSize={{
-              base: "3xl",
-              lg: "4xl"
-            }}
+            fontSize={"3xl"}
             fontWeight="bold"
             color="white"
             fontFamily="Magistral"
@@ -245,15 +274,7 @@ function DayEventsSection({
           >
             {selectedDayIndex}
           </Text>
-          <Text
-            fontSize={{
-              base: "3xl",
-              lg: "4xl"
-            }}
-            color="#8A8A8A"
-            fontFamily="Magistral"
-            my={0}
-          >
+          <Text fontSize={"3xl"} color="#8A8A8A" fontFamily="Magistral" my={0}>
             /{numDays}
           </Text>
         </HStack>
@@ -270,7 +291,7 @@ function DayEventsSection({
         shadow={"md"}
         boxShadow="md"
       >
-        <Box h={{ lg: "500px" }} maxH={{ lg: "500px" }} pt={3}>
+        <Box h={{ lg: "500px" }} maxH={{ lg: "500px" }} pt={3} overflowY="auto">
           {dayEvents.length === 0 && (
             <Text
               fontSize="xl"
@@ -304,13 +325,13 @@ function RaceTrackSection({
   hoveredEventIndex,
   handleHover,
   handleSelectEvent,
-  currentEvent,
+  currentEvents,
   nextEvent
 }: {
   selectedDayIndex: number;
   dayEvents: Event[];
   hoveredEventIndex: number | null;
-  currentEvent: Event | null;
+  currentEvents: Event[];
   nextEvent: Event | null;
   handleHover: (index: number) => void;
   handleSelectEvent: (event: Event) => void;
@@ -393,26 +414,44 @@ function RaceTrackSection({
           </Flex>
           <Flex
             w="100%"
-            gap={3}
+            gap={2}
             flexDir={{
               base: "column",
               md: "row"
             }}
           >
-            {currentEvent && (
-              <Box flex={1}>
-                <PreviewEvent
-                  label="Current"
-                  event={currentEvent}
-                  onClick={() => {
-                    handleSelectEvent(currentEvent);
-                  }}
-                />
-              </Box>
+            {currentEvents.length === 0 && !nextEvent && (
+              <Text color="white" fontFamily="Magistral">
+                No ongoing events.
+              </Text>
+            )}
+            {currentEvents.length > 0 && (
+              <>
+                {currentEvents.length > 0 &&
+                  currentEvents.map((event, index) => (
+                    <Box flex={1}>
+                      <PreviewEvent
+                        label="Current"
+                        event={event}
+                        showLabel={index === 0}
+                        onClick={() => {
+                          handleSelectEvent(event);
+                        }}
+                      />
+                    </Box>
+                  ))}
+              </>
             )}
             {nextEvent && (
-              <Box flex={1}>
+              <Box
+                flex={1}
+                gap={2}
+                display="flex"
+                flexDir={"column"}
+                justifyContent={"space-between"}
+              >
                 <PreviewEvent
+                  showLabel
                   label="Next Up"
                   event={nextEvent}
                   onClick={() => {
@@ -567,8 +606,7 @@ function DayEvent({
               md: "nowrap"
             }}
           >
-            {moment(event.startTime).format("h:mma")} –{" "}
-            {moment(event.endTime).format("h:mma")}
+            {formatEventRange(event.startTime, event.endTime)}
           </Text>
         </Flex>
       </Flex>
@@ -598,24 +636,25 @@ function DayEvent({
 function PreviewEvent({
   label,
   event,
+  showLabel,
+  compact,
   onClick
 }: {
   label: string;
   event: Event;
+  showLabel?: boolean;
+  compact?: boolean;
   onClick: (event: Event) => void;
 }) {
   return (
-    <Box w="100%">
-      <Text
-        w="100%"
-        fontSize="sm"
-        fontFamily="Magistral"
-        color="orange.300"
-        fontWeight="bold"
-        mb={1}
-      >
-        {label}
-      </Text>
+    <Box w="100%" display="flex" flexDirection={"column"} gap={1}>
+      <Box h={5} pb={2}>
+        {showLabel && (
+          <Text color="white" fontFamily="Magistral" fontSize={"md"}>
+            {label}
+          </Text>
+        )}
+      </Box>
       <Flex
         alignItems={"center"}
         bgColor={"#1e1e1eff"}
@@ -630,49 +669,57 @@ function PreviewEvent({
           cursor: "pointer"
         }}
       >
-        <Box
-          w="10px"
-          h="10px"
-          bg={label === "Current" ? "green.500" : "red.500"}
-          borderRadius="full"
-          mr={3}
-        />
-
         <Flex direction="column" flex={1} w="100%" gap={0}>
-          <Text fontSize="lg" color="white" fontFamily="ProRacing">
-            {event.name}
-          </Text>
-
-          <Flex flexWrap={"wrap"} gap={0}>
+          <Flex alignItems={"center"} gap={2}>
+            <Box
+              w={compact ? "10px" : "10px"}
+              h={compact ? "10px" : "10px"}
+              minW="10px"
+              minH="10px"
+              bg={label === "Current" ? "green.500" : "red.500"}
+              borderRadius="full"
+            />
             <Text
-              fontSize={{ base: "md", md: "md" }}
-              color="gray.100"
-              fontWeight="bold"
-              fontFamily="Magistral"
-              letterSpacing="0.5px"
-              transformOrigin={"top left"}
-              wordBreak="break-all"
-              whiteSpace="normal"
-              mr={3}
+              fontSize={compact ? "md" : "sm"}
+              color="white"
+              fontFamily="ProRacing"
             >
-              {event.location || "Siebel CS"}
-            </Text>
-
-            <Text
-              fontSize={{ base: "md", md: "md" }}
-              color="gray.400"
-              fontWeight="bold"
-              fontFamily="Magistral"
-              letterSpacing="0.5px"
-              transformOrigin={"top left"}
-              whiteSpace={{
-                md: "nowrap"
-              }}
-            >
-              {moment(event.startTime).format("h:mma")} –{" "}
-              {moment(event.endTime).format("h:mma")}
+              {event.name}
             </Text>
           </Flex>
+          {!compact ? (
+            <Flex direction="column" gap={0}>
+              <Text
+                fontSize={{ base: "md", md: "sm" }}
+                color="gray.100"
+                fontWeight="bold"
+                fontFamily="Magistral"
+                letterSpacing="0.5px"
+                transformOrigin={"top left"}
+                wordBreak="break-all"
+                whiteSpace="normal"
+                mr={3}
+              >
+                {event.location || "Siebel CS"}
+              </Text>
+
+              <Text
+                fontSize={{ base: "md", md: "sm" }}
+                color="gray.400"
+                fontWeight="bold"
+                fontFamily="Magistral"
+                letterSpacing="0.5px"
+                transformOrigin={"top left"}
+                whiteSpace={{
+                  md: "nowrap"
+                }}
+              >
+                {formatEventRange(event.startTime, event.endTime)}
+              </Text>
+            </Flex>
+          ) : (
+            <></>
+          )}
         </Flex>
       </Flex>
     </Box>
