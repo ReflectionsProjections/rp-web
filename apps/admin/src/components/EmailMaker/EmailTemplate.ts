@@ -281,6 +281,7 @@ export function rpMainTemplate(htmlContent: string) {
                 padding: 40px 30px !important;
                 background-color: #1a1a1a !important;
                 color: #e0e0e0 !important;
+                word-break: break-word !important;
             }
 
             .welcome-text {
@@ -434,6 +435,7 @@ export function rpMainTemplate(htmlContent: string) {
                 .content-area {
                     padding: 20px 15px !important;
                     color: #e0e0e0 !important;
+                    word-break: break-word !important;
                 }
             
                 .info-label,
@@ -983,6 +985,7 @@ export function rpEmptyTemplate(htmlContent: string) {
                 padding: 40px 30px !important;
                 background-color: #1a1a1a !important;
                 color: #e0e0e0 !important;
+                word-break: break-word !important;
             }
 
             .welcome-text {
@@ -1136,6 +1139,7 @@ export function rpEmptyTemplate(htmlContent: string) {
                 .content-area {
                     padding: 20px 15px !important;
                     color: #e0e0e0 !important;
+                    word-break: break-word !important;
                 }
             
                 .info-label,

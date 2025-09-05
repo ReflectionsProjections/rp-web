@@ -26,7 +26,7 @@ import {
 } from "@chakra-ui/react";
 import { api, path } from "@rp/shared";
 import { Formik, FormikHelpers } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { marked } from "marked";
 import {
   rpMainTemplate,
@@ -86,6 +86,29 @@ const rpEmailTemplates = [
   },
   { key: "none", displayName: "Unformatted", templateFn: rpNoneTemplate }
 ];
+
+function HtmlPreviewIframe({ markdownHtml }: { markdownHtml: string }) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  useEffect(() => {
+    const iframeDoc = iframeRef?.current?.contentDocument;
+    if (!iframeDoc) return;
+
+    iframeDoc.body.innerHTML = markdownHtml;
+  }, [markdownHtml]);
+
+  return (
+    <iframe
+      ref={iframeRef}
+      style={{
+        width: "100%",
+        height: "100%",
+        overflowY: "visible"
+      }}
+      title="Email Preview"
+    />
+  );
+}
 
 function EmailMaker() {
   const toast = useToast();
@@ -260,20 +283,18 @@ function EmailMaker() {
                       h="100%"
                       pt={8}
                       flexWrap="wrap"
-                      justifyContent="space-evenly"
-                      gap={6}
+                      justifyContent="space-between"
                       direction={{ base: "column", xl: "row" }}
+                      gap={4}
                       flex={1}
                     >
                       {/* Left Side: Text Input */}
-
                       <Flex
                         direction="column"
-                        w="100%"
-                        h="100%"
+                        w={{ base: "100%", xl: "49%" }}
+                        h={{ base: "fit-content", xl: "100%" }}
                         gap={4}
                         alignItems="center"
-                        flex={1}
                       >
                         <FormControl
                           display="flex"
@@ -367,12 +388,11 @@ function EmailMaker() {
 
                       {/* Right Side: Preview */}
                       <Flex
-                        flex={1}
-                        flexShrink={0}
+                        w={{ base: "100%", xl: "49%" }}
+                        h={{ base: "fit-content", xl: "100%" }}
                         direction="column"
                         gap={2}
                         alignItems="start"
-                        h="100%"
                       >
                         <Text as="b" ml={4} fontSize="xl">
                           Preview
@@ -420,10 +440,11 @@ function EmailMaker() {
                                     <Text
                                       as="b"
                                       w="100%"
-                                      maxH="3rem"
+                                      // maxH="3rem"
                                       overflow="hidden"
                                       textOverflow="ellipsis"
-                                      wordBreak="break-word"
+                                      // wordBreak="break-word"
+                                      whiteSpace="nowrap"
                                     >
                                       {values.subject.length > 0
                                         ? values.subject.length >
@@ -482,16 +503,7 @@ function EmailMaker() {
                               </Card>
                             </Section>
                           ) : (
-                            <iframe
-                              // todo() add theming in preview?
-                              srcDoc={markdownHtml}
-                              style={{
-                                width: "100%",
-                                height: "100%",
-                                overflowY: "scroll"
-                              }}
-                              title="Email Preview"
-                            />
+                            <HtmlPreviewIframe markdownHtml={markdownHtml} />
                           )}
                         </Section>
                       </Flex>
