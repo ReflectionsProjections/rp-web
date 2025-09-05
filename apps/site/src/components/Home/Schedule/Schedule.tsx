@@ -78,7 +78,6 @@ export default function Schedule() {
   const handleSelectEvent = (evt: Event) => setSelectedEvent(evt);
 
   const updateCurrentAndNext = useCallback(() => {
-    // flatten & sort all events by startTime
     const all = Object.values(eventsByDay).flat();
     const sorted = all.sort((a, b) =>
       moment(a.startTime).diff(moment(b.startTime))
@@ -92,15 +91,13 @@ export default function Schedule() {
       const start = moment(evt.startTime);
       const end = moment(evt.endTime);
 
-      // if we're in the middle of evt, that's current
       if (start.isSameOrBefore(now) && end.isAfter(now)) {
         currentEvents.push(evt);
-        continue; // but keep looking to fill `nxt`
+        continue;
       }
-      // otherwise, the first one whose start is after now is next
       if (!nxt && start.isAfter(now)) {
         nxt = evt;
-        break; // can stop once we’ve found the next one
+        break;
       }
     }
 
@@ -128,11 +125,10 @@ export default function Schedule() {
         py={{ base: 5, md: 10 }}
         id="schedule"
       >
-        {/* Accent SVG behind content */}
         <Image
           src="/schedule/schedule-accent.svg"
           position="absolute"
-          top={{ base: "-15%", lg: "-50%" }} /* tweak as needed */
+          top={{ base: "-15%", lg: "-50%" }}
           left={{ base: "-25%", lg: "-10%" }}
           opacity={0.5}
           pointerEvents="none"
@@ -156,7 +152,7 @@ export default function Schedule() {
           mx="auto"
           gap={0}
           px={{ base: 3, md: 10 }}
-          position="relative" /* ensure content sits above accent */
+          position="relative"
           zIndex={1}
         >
           <DayEventsSection
@@ -194,9 +190,7 @@ function formatEventTime(iso: string): string {
   if (m.isSame(now, "day")) {
     return m.format("h:mma");
   }
-  // within one week past/future
   if (Math.abs(m.diff(now, "days")) <= 7) {
-    // “Yesterday”, “Tomorrow”, or day‐of‐week
     return m.calendar(null, {
       sameDay: "[Today] h:mma",
       nextDay: "[Tomorrow] h:mma",
@@ -206,7 +200,6 @@ function formatEventTime(iso: string): string {
       sameElse: "MMM D, h:mma"
     });
   }
-  // older/newer than a week
   return m.format("MMM D, h:mma");
 }
 
@@ -214,10 +207,8 @@ function formatEventRange(startIso: string, endIso: string): string {
   const start = moment(startIso);
   const end = moment(endIso);
 
-  // full label for start
   const startLabel = formatEventTime(startIso);
 
-  // same day? just time; else full label
   const endLabel = start.isSame(end, "day")
     ? end.format("h:mma")
     : formatEventTime(endIso);
