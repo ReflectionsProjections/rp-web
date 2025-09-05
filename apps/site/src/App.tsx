@@ -13,9 +13,8 @@ import Home from "./routes/Home";
 import { Profile } from "./routes/Profile";
 import Register from "./routes/Register";
 import Resume from "./routes/Resume";
-import theme from "./theme";
-import Navbar from "./components/Navbar";
 import Speakers from "./routes/Speakers/Speakers";
+import theme from "./theme";
 
 function RefreshHandler() {
   useEffect(() => {
