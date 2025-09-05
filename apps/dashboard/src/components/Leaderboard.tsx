@@ -1,6 +1,7 @@
 import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
 import { LeaderboardEntry } from "@rp/shared";
+import { ReactComponent as ProfileIcon } from "@/assets/icon.svg";
 // import { usePolling } from "@rp/shared";
 
 export default function Leaderboard() {
@@ -86,7 +87,7 @@ export default function Leaderboard() {
       icon: "BLACK",
       points: 2,
       rank: 10,
-      userId: "123523987"
+      userId: "1235235239845"
     }
   ];
   const { data, isLoading } = {
@@ -136,7 +137,7 @@ function LeaderboardRow({
 }) {
   return (
     <Flex flexDirection={"row"} key={userId} backgroundColor={iconColor}>
-      <Text>{iconColor}</Text>
+      <ProfileIcon style={{ color: iconColor }} />
       <Text>{rank}</Text>
       <Text>{displayName}</Text>
       <Text>{points}</Text>
