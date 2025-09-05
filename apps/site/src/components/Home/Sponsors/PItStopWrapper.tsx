@@ -47,9 +47,9 @@ const PitStopSceneWrapper: React.FC = () => {
       minH="fit-content"
       overflow="hidden"
     >
-      {/* Large Screen Version - Animated PitStop Scene */}
+      {/* Desktop + Tablet Version - Animated PitStop Scene */}
       <Box
-        display={{ base: "none", xl: "block" }}
+        display={{ base: "none", md: "block" }}
         w="100%"
         minH="110vh"
         bgColor="#100E0E"
@@ -179,7 +179,8 @@ const PitStopSceneWrapper: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Tablet Version */}
+      {/* Tablet Version - COMMENTED OUT */}
+      {/* 
       <Box
         display={{ base: "none", md: "block", xl: "none" }}
         pos="relative"
@@ -190,7 +191,6 @@ const PitStopSceneWrapper: React.FC = () => {
         overflow="hidden"
         bg="#100E0E"
       >
-        {/* Background Car Scene with Low Opacity */}
         <Box
           pos="absolute"
           top="46%"
@@ -272,7 +272,6 @@ const PitStopSceneWrapper: React.FC = () => {
           />
         </Box>
 
-        {/* Sponsor Overlay Grid */}
         <Box
           pos="absolute"
           top="50%"
@@ -375,6 +374,7 @@ const PitStopSceneWrapper: React.FC = () => {
 
         <AnimatedHeader>Sponsors</AnimatedHeader>
       </Box>
+      */}
 
       {/* Mobile Version */}
       <Box
