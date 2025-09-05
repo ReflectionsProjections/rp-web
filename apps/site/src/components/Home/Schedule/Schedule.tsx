@@ -49,8 +49,30 @@ export default function Schedule() {
           if (!grouped[date]) grouped[date] = [];
           grouped[date].push(evt);
         });
-        setSelectedDay(Object.keys(grouped)[0]);
+
         setEventsByDay(grouped);
+
+        const dates = Object.keys(grouped).map((key) => {
+          const date = moment(
+            key + " " + moment().year(),
+            "ddd M/D YYYY"
+          ).startOf("day");
+          return { key, date };
+        });
+
+        dates.sort((a, b) => a.date.valueOf() - b.date.valueOf());
+
+        const today = moment();
+        let selectedKey: string | null = null;
+
+        if (today.isBefore(dates[0].date)) {
+          selectedKey = dates[0].key;
+        } else {
+          const past = dates.filter((d) => today.isSameOrAfter(d.date));
+          selectedKey = past.length ? past[past.length - 1].key : dates[0].key;
+        }
+
+        setSelectedDay(selectedKey);
       })
       .catch((err) => {
         console.error(err);
