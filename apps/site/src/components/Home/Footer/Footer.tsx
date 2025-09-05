@@ -47,6 +47,7 @@ export const Footer = () => {
           src="main/footer/footer_car.svg"
           zIndex={2}
           maxH={{ md: "150px", lg: "200px" }}
+          transform="scaleX(-1)"
         />
         <Flex
           flexDirection="column"
