@@ -62,6 +62,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         lg: "80%"
       }}
       mb={10}
+      maxW="1000px"
       position="relative"
     >
       <HStack
