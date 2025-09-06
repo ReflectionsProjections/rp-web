@@ -199,7 +199,7 @@ const Shifts: React.FC = () => {
     }
   };
 
-  // Generate time slots from 6 AM to 11 PM (half-hour intervals)
+  // Generate time slots from 8 AM to 11 PM (half-hour intervals)
   const timeSlots = useMemo(() => {
     const slots = [];
     for (let hour = 8; hour <= 23; hour++) {
@@ -260,17 +260,14 @@ const Shifts: React.FC = () => {
         const startMoment = moment.tz(shift.startTime, "America/Chicago");
         const endMoment = moment.tz(shift.endTime, "America/Chicago");
 
-        // Calculate time slots with half-hour precision
-        // Each hour has 2 slots (00 and 30 minutes)
-        // 6:00 = slot 0, 6:30 = slot 1, 7:00 = slot 2, etc.
         let startSlot =
-          (startMoment.hour() - 6) * 2 + Math.floor(startMoment.minute() / 30);
+          (startMoment.hour() - 8) * 2 + Math.floor(startMoment.minute() / 30);
         let endSlot =
-          (endMoment.hour() - 6) * 2 + Math.floor(endMoment.minute() / 30);
+          (endMoment.hour() - 8) * 2 + Math.floor(endMoment.minute() / 30);
 
-        // Handle shifts that start before 6 AM or end after 11 PM
+        // Handle shifts that start before 8 AM or end after 11 PM
         if (startSlot < 0) startSlot = 0;
-        if (endSlot > 34) endSlot = 34; // 18 hours * 2 slots per hour = 36 slots
+        if (endSlot > 30) endSlot = 30; // 15 hours * 2 slots per hour = 30 slots
 
         // Calculate row span based on actual duration
         const rowSpan = Math.max(1, endSlot - startSlot);
@@ -357,13 +354,13 @@ const Shifts: React.FC = () => {
 
         // Calculate time slots with half-hour precision
         let startSlot =
-          (startMoment.hour() - 6) * 2 + Math.floor(startMoment.minute() / 30);
+          (startMoment.hour() - 8) * 2 + Math.floor(startMoment.minute() / 30);
         let endSlot =
-          (endMoment.hour() - 6) * 2 + Math.floor(endMoment.minute() / 30);
+          (endMoment.hour() - 8) * 2 + Math.floor(endMoment.minute() / 30);
 
-        // Handle events that start before 6 AM or end after 11 PM
+        // Handle events that start before 8 AM or end after 11 PM
         if (startSlot < 0) startSlot = 0;
-        if (endSlot > 34) endSlot = 34;
+        if (endSlot > 30) endSlot = 30;
 
         // Calculate row span based on actual duration
         const rowSpan = Math.max(1, endSlot - startSlot);
