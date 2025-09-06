@@ -12,6 +12,7 @@ import { motion } from "framer-motion";
 import { usePolling } from "@rp/shared";
 import EventCard from "@/components/EventCard";
 import Section from "@/components/Section";
+import MyShifts from "@/components/MyShifts";
 import { useOutletContext } from "react-router-dom";
 import { MainContext } from "../Main";
 
@@ -70,6 +71,15 @@ function Dashboard() {
                       transformer={(data) => data.count}
                     />
                   </StatGroup>
+                </CardBody>
+              </Section>
+
+              <Section>
+                <CardHeader>
+                  <Heading size="lg">My Shifts</Heading>
+                </CardHeader>
+                <CardBody>
+                  <MyShifts authorized={authorized} />
                 </CardBody>
               </Section>
             </VStack>
