@@ -154,11 +154,35 @@ export type Speaker = {
   imgUrl: string;
 };
 
+export type ShiftRoleType =
+  | "CLEAN_UP"
+  | "DINNER"
+  | "CHECK_IN"
+  | "SPEAKER_BUDDY"
+  | "DEV_ON_CALL"
+  | "CHAIR_ON_CALL";
+
 export type Staff = {
   email: string;
   name: string;
   team: CommitteeType;
   attendances: Record<string, AttendanceType>;
+};
+
+export type Shift = {
+  shiftId: string;
+  name: string;
+  role: ShiftRoleType;
+  startTime: string;
+  endTime: string;
+  location: string;
+};
+
+export type ShiftAssignment = {
+  shiftId: string;
+  staffEmail: string;
+  staff?: Staff;
+  shifts?: Shift;
 };
 
 export type Meeting = {
@@ -448,6 +472,43 @@ export interface APIRoutes {
   "/stats/merch-item/:price": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/shifts": {
+    GET: {
+      response: Shift[];
+    };
+    POST: {
+      request: Omit<Shift, "shiftId">;
+      response: Shift;
+    };
+  };
+  "/shifts/:shiftId": {
+    PATCH: {
+      request: Partial<Omit<Shift, "shiftId">>;
+      response: Shift;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/shifts/:shiftId/assignments": {
+    GET: {
+      response: ShiftAssignment[];
+    };
+    POST: {
+      request: { staffEmail: string };
+      response: ShiftAssignment;
+    };
+    DELETE: {
+      request: { staffEmail: string };
+      response: never;
+    };
+  };
+  "/shifts/my-shifts": {
+    GET: {
+      response: ShiftAssignment[];
     };
   };
 }
