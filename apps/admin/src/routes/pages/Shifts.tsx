@@ -153,6 +153,11 @@ const Shifts: React.FC = () => {
       border: useColorModeValue("purple.200", "purple.700"),
       color: "purple"
     },
+    SPONSOR_BUDDY: {
+      bg: useColorModeValue("pink.50", "pink.900"),
+      border: useColorModeValue("pink.200", "pink.700"),
+      color: "pink"
+    },
     DEV_ON_CALL: {
       bg: useColorModeValue("green.50", "green.900"),
       border: useColorModeValue("green.200", "green.700"),
@@ -765,6 +770,7 @@ const Shifts: React.FC = () => {
           <ModalBody pb={6} color="white">
             <ShiftForm
               shift={selectedShift}
+              events={events || []}
               onSuccess={handleShiftUpdate}
               onCancel={onFormClose}
             />

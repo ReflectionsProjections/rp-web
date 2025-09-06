@@ -159,6 +159,7 @@ export type ShiftRoleType =
   | "DINNER"
   | "CHECK_IN"
   | "SPEAKER_BUDDY"
+  | "SPONSOR_BUDDY"
   | "DEV_ON_CALL"
   | "CHAIR_ON_CALL";
 

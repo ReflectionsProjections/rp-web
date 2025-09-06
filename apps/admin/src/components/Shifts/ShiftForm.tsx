@@ -13,13 +13,14 @@ import {
 import { Formik, Form, Field, FieldProps, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import moment from "moment-timezone";
-import { api, Shift, ShiftRoleType } from "@rp/shared";
+import { api, Shift, ShiftRoleType, Event } from "@rp/shared";
 
 // Set timezone to Chicago (Central Time)
 moment.tz.setDefault("America/Chicago");
 
 type ShiftFormProps = {
   shift?: Shift | null;
+  events?: Event[];
   onSuccess: () => void;
   onCancel: () => void;
 };
@@ -30,6 +31,7 @@ type ShiftFormValues = {
   startTime: string;
   endTime: string;
   location: string;
+  selectedEventId: string;
 };
 
 const shiftRoleOptions: { value: ShiftRoleType; label: string }[] = [
@@ -37,6 +39,7 @@ const shiftRoleOptions: { value: ShiftRoleType; label: string }[] = [
   { value: "DINNER", label: "Dinner" },
   { value: "CHECK_IN", label: "Check In" },
   { value: "SPEAKER_BUDDY", label: "Speaker Buddy" },
+  { value: "SPONSOR_BUDDY", label: "Sponsor Buddy" },
   { value: "DEV_ON_CALL", label: "Dev On Call" },
   { value: "CHAIR_ON_CALL", label: "Chair On Call" }
 ];
@@ -74,6 +77,7 @@ const validationSchema = Yup.object({
 
 const ShiftForm: React.FC<ShiftFormProps> = ({
   shift,
+  events = [],
   onSuccess,
   onCancel
 }) => {
@@ -88,7 +92,8 @@ const ShiftForm: React.FC<ShiftFormProps> = ({
     endTime: shift?.endTime
       ? moment.tz(shift.endTime, "America/Chicago").format("YYYY-MM-DDTHH:mm")
       : moment().add(1, "hour").format("YYYY-MM-DDTHH:mm"),
-    location: shift?.location || ""
+    location: shift?.location || "",
+    selectedEventId: ""
   };
 
   const handleSubmit = async (
@@ -183,6 +188,62 @@ const ShiftForm: React.FC<ShiftFormProps> = ({
                 )}
               </Field>
               <FormErrorMessage>{errors.role}</FormErrorMessage>
+            </FormControl>
+
+            <FormControl>
+              <FormLabel>Match with Event (Optional)</FormLabel>
+              <Field name="selectedEventId">
+                {({ field, form }: FieldProps) => (
+                  <Select
+                    {...field}
+                    placeholder="Select an event to auto-populate times"
+                    onChange={(e) => {
+                      const eventId = e.target.value;
+                      field.onChange(e);
+
+                      if (eventId) {
+                        const selectedEvent = events.find(
+                          (event) => event.eventId === eventId
+                        );
+                        if (selectedEvent) {
+                          // Auto-populate start and end times
+                          const startTime = moment
+                            .tz(selectedEvent.startTime, "America/Chicago")
+                            .format("YYYY-MM-DDTHH:mm");
+                          const endTime = moment
+                            .tz(selectedEvent.endTime, "America/Chicago")
+                            .format("YYYY-MM-DDTHH:mm");
+
+                          void form.setFieldValue("startTime", startTime);
+                          void form.setFieldValue("endTime", endTime);
+
+                          // Also auto-populate name if it's empty
+                          const formValues = form.values as ShiftFormValues;
+                          if (!formValues.name) {
+                            const roleLabel =
+                              shiftRoleOptions.find(
+                                (opt) => opt.value === formValues.role
+                              )?.label || "Shift";
+                            void form.setFieldValue(
+                              "name",
+                              `${selectedEvent.name} - ${roleLabel}`
+                            );
+                          }
+                        }
+                      }
+                    }}
+                  >
+                    {events.map((event) => (
+                      <option key={event.eventId} value={event.eventId}>
+                        {event.name} -{" "}
+                        {moment
+                          .tz(event.startTime, "America/Chicago")
+                          .format("MMM D, h:mm A")}
+                      </option>
+                    ))}
+                  </Select>
+                )}
+              </Field>
             </FormControl>
 
             <VStack spacing={4}>

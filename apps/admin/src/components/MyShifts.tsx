@@ -8,7 +8,8 @@ import {
   CardBody,
   Heading,
   Spinner,
-  Center
+  Center,
+  useColorMode
 } from "@chakra-ui/react";
 import { api, ShiftAssignment } from "@rp/shared";
 import moment from "moment-timezone";
@@ -23,6 +24,7 @@ interface MyShiftsProps {
 type MyShiftData = ShiftAssignment;
 
 const MyShifts: React.FC<MyShiftsProps> = ({ authorized }) => {
+  const { colorMode } = useColorMode();
   const [myShifts, setMyShifts] = useState<MyShiftData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const mirrorStyles = useMirrorStyles(true);
@@ -97,7 +99,12 @@ const MyShifts: React.FC<MyShiftsProps> = ({ authorized }) => {
     <VStack spacing={4} align="stretch">
       {Object.entries(shiftsByDate).map(([date, shifts]) => (
         <Box key={date}>
-          <Text fontSize="md" fontWeight="bold" mb={2} color="gray.600">
+          <Text
+            fontSize="md"
+            fontWeight="bold"
+            mb={2}
+            color={colorMode === "dark" ? "gray.400" : "gray.600"}
+          >
             {moment(date).format("dddd, MMMM Do")}
           </Text>
           <VStack spacing={2} align="stretch">
@@ -116,7 +123,11 @@ const MyShifts: React.FC<MyShiftsProps> = ({ authorized }) => {
                         {shift.shifts!.role}
                       </Badge>
                     </HStack>
-                    <HStack spacing={4} fontSize="sm" color="gray.600">
+                    <HStack
+                      spacing={4}
+                      fontSize="sm"
+                      color={colorMode === "dark" ? "gray.400" : "gray.600"}
+                    >
                       <Text>
                         {moment(shift.shifts!.startTime).format("h:mm A")} -{" "}
                         {moment(shift.shifts!.endTime).format("h:mm A")}
