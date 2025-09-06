@@ -62,17 +62,29 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         lg: "80%"
       }}
       mb={10}
+      maxW="1000px"
       position="relative"
     >
       <HStack
         gap={{ base: speakerSelected ? 0 : 3, md: 3 }}
-        w={row.speakers.length === 1 && !speakerSelected ? "50%" : "100%"}
+        w={
+          row.speakers.length === 1 && !speakerSelected
+            ? {
+                base: "50%",
+                md: "33%"
+              }
+            : "100%"
+        }
         maxW="1000px"
         ml={{
           base: speakerSelected ? 0 : 7,
           md: 28
         }}
-        transition={"all 0.3s"}
+        transition={
+          row.speakers.length === 1 && !speakerSelected
+            ? "all 0.5s"
+            : "all 0.3s"
+        }
         mb={{
           base: 1,
           md: 3
@@ -93,7 +105,11 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
             fontSize={{ base: "lg", md: "2xl" }}
             letterSpacing={"1px"}
             fontWeight={"bold"}
-            transition={"all 0.3s"}
+            transition={
+              row.speakers.length === 1 && !speakerSelected
+                ? "all 0.5s"
+                : "all 0.3s"
+            }
             w={
               displayedSelectedIndex !== null
                 ? displayedSelectedIndex === index
@@ -120,11 +136,22 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         display="flex"
         position="relative"
         h={speakerSelected ? `${bioTextDisplayedHeight}px` : "150px"}
-        w={row.speakers.length === 1 && !speakerSelected ? "50%" : "100%"}
+        w={
+          row.speakers.length === 1 && !speakerSelected
+            ? {
+                base: "50%",
+                md: "33%"
+              }
+            : "100%"
+        }
         maxW="1000px"
         alignItems={"center"}
         gap={displayedSelectedIndex !== null ? 0 : 5}
-        transition={"all 0.3s"}
+        transition={
+          row.speakers.length === 1 && !speakerSelected
+            ? "all 0.5s"
+            : "all 0.3s"
+        }
         ml={{
           base: 0,
           md: 0
@@ -146,9 +173,9 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         ))}
         <Box
           display={"flex"}
-          alignItems={"center"}
+          alignItems={"flex-start"}
           position="absolute"
-          top={0}
+          top={2}
           left={0}
           right={0}
           pl={{ base: "1rem", md: "3rem" }}
@@ -162,10 +189,15 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
             lg: "xl"
           }}
           opacity={displayedSelectedIndex !== null ? 1 : 0.5}
-          transition="all 0.3s"
+          transition={
+            row.speakers.length === 1 && !speakerSelected
+              ? "all 0.5s"
+              : "all 0.3s"
+          }
           zIndex={3}
           pointerEvents={displayedSelectedIndex !== null ? undefined : "none"}
           fontWeight={"semibold"}
+          overflow={"hidden"}
         >
           <Text ref={bioTextRef} whiteSpace={"pre-wrap"}>
             {displayedContent ? (
@@ -208,9 +240,20 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           base: 2,
           md: 0
         }}
-        w={row.speakers.length === 1 && !speakerSelected ? "50%" : "100%"}
+        w={
+          row.speakers.length === 1 && !speakerSelected
+            ? {
+                base: "50%",
+                md: "33%"
+              }
+            : "100%"
+        }
         maxW="1000px"
-        transition={"all 0.3s"}
+        transition={
+          row.speakers.length === 1 && !speakerSelected
+            ? "all 0.5s"
+            : "all 0.3s"
+        }
         mt={{
           base: 0,
           md: 2
@@ -250,7 +293,11 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
                 : 3
             }
             minWidth="0"
-            transition={"all 0.3s"}
+            transition={
+              row.speakers.length === 1 && !speakerSelected
+                ? "all 0.5s"
+                : "all 0.3s"
+            }
             w={
               displayedSelectedIndex !== null
                 ? displayedSelectedIndex === index
