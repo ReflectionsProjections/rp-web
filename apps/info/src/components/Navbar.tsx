@@ -1,33 +1,27 @@
-// src/components/Navbar.tsx
 import { Box, HStack, Link } from "@chakra-ui/react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { AnimatedLogoHover } from "./AnimatedLogo";
-// import { motion, useScroll, useTransform } from "framer-motion";
 
 export const Navbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
 
-  //const MotionBox = motion(Box);
-
-  // const { scrollY } = useScroll();
-  // const width = useTransform(scrollY, [0, 500], ['100%', '50%']);
-  // const height = useTransform(scrollY, [0, 500], ['85px', '75px']);
-  // const top = useTransform(scrollY, [0, 500], [0, 10]);
-  // const fontSize = useTransform(scrollY, [0, 500], ['1.75rem', '1.15rem']);
-  // const borderRadius = useTransform(scrollY, [0, 500], ['0px', '16px']);
+  const scrollToSection = (sectionId: string) => {
+    if (location.pathname !== "/") {
+      navigate("/");
+      setTimeout(() => {
+        document.getElementById(sectionId)?.scrollIntoView({
+          behavior: "smooth"
+        });
+      }, 100);
+    } else {
+      document.getElementById(sectionId)?.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  };
 
   return (
-    // <MotionBox
-    //   data-label="navbar" minH="75px" minW="600px" transformOrigin="bottom center"
-    //   margin="0px auto 0px" px="5px" position="sticky" zIndex={500}
-    //   display="flex" justifyContent="center" alignItems="center"
-    //   bg="gray.400" boxShadow="lg" style={{
-    //     width,
-    //     height,
-    //     top,
-    //     fontSize,
-    //     borderRadius
-    //   }}>
     <Box
       data-label="navbar"
       h="60px"
@@ -46,12 +40,11 @@ export const Navbar = () => {
       pos="sticky"
       top="10px"
     >
-      {/* todo(): add a small-web version */}
-
       <HStack justify="space-around" align="center" w="100%">
         <Box h="50px" w="50px" pos="relative">
           <AnimatedLogoHover />
         </Box>
+
         <Link
           as={NavLink}
           to="/"
@@ -59,13 +52,12 @@ export const Navbar = () => {
           fontSize="inherit"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById("stats")?.scrollIntoView({
-              behavior: "smooth"
-            });
+            scrollToSection("stats");
           }}
         >
           ABOUT
         </Link>
+
         <Link
           as={NavLink}
           to="/"
@@ -73,13 +65,12 @@ export const Navbar = () => {
           fontSize="inherit"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById("team")?.scrollIntoView({
-              behavior: "smooth"
-            });
+            scrollToSection("team");
           }}
         >
           TEAM
         </Link>
+
         <Link
           as={NavLink}
           to="/"
@@ -87,19 +78,18 @@ export const Navbar = () => {
           fontSize="inherit"
           onClick={(e) => {
             e.preventDefault();
-            document.getElementById("team")?.scrollIntoView({
-              behavior: "smooth"
-            });
+            scrollToSection("sponsors");
           }}
         >
           SPONSORING
         </Link>
+
         <Link
           as={NavLink}
           to="/archive"
           textStyle="menu"
           fontSize="inherit"
-          textDecoration={location.pathname == "/archive" ? "underline" : ""}
+          textDecoration={location.pathname === "/archive" ? "underline" : ""}
         >
           ARCHIVE
         </Link>
@@ -109,10 +99,11 @@ export const Navbar = () => {
           to="/faq"
           textStyle="menu"
           fontSize="inherit"
-          textDecoration={location.pathname == "/faq" ? "underline" : ""}
+          textDecoration={location.pathname === "/faq" ? "underline" : ""}
         >
           FAQ
         </Link>
+
         <Link
           as={NavLink}
           to="/"
@@ -123,11 +114,14 @@ export const Navbar = () => {
           color="white"
           p="2px 25px"
           borderRadius="lg"
+          onClick={(e) => {
+            e.preventDefault();
+            scrollToSection("home");
+          }}
         >
           join us!
         </Link>
       </HStack>
     </Box>
-    // </MotionBox>
   );
 };
