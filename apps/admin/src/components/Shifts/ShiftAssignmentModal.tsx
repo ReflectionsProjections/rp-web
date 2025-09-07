@@ -72,14 +72,21 @@ const ShiftAssignmentModal: React.FC<ShiftAssignmentModalProps> = ({
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const cancelRef = useRef<HTMLButtonElement>(null);
 
-  // Get current assignments for this shift
+  // Get current assignments for this shift with acknowledgment status
   const currentAssignments = useMemo(() => {
     if (!assignments || assignments.length === 0) return [];
 
     return assignments
       .filter((assignment) => assignment.shiftId === shift.shiftId)
-      .map((assignment) => staff.find((s) => s.email === assignment.staffEmail))
-      .filter(Boolean) as Staff[];
+      .map((assignment) => {
+        const staffMember = staff.find(
+          (s) => s.email === assignment.staffEmail
+        );
+        return staffMember
+          ? { ...staffMember, acknowledged: assignment.acknowledged }
+          : null;
+      })
+      .filter(Boolean) as (Staff & { acknowledged: boolean })[];
   }, [assignments, staff, shift.shiftId]);
 
   // Get available staff (not assigned to this shift)
@@ -242,9 +249,23 @@ const ShiftAssignmentModal: React.FC<ShiftAssignmentModalProps> = ({
 
       {/* Current Assignments */}
       <Box>
-        <Text fontSize="lg" fontWeight="semibold" mb={3}>
-          Assigned Staff ({currentAssignments.length})
-        </Text>
+        <Flex justify="space-between" align="center" mb={3}>
+          <Text fontSize="lg" fontWeight="semibold">
+            Assigned Staff ({currentAssignments.length})
+          </Text>
+          {currentAssignments.length > 0 && (
+            <HStack spacing={2}>
+              <Badge colorScheme="green" variant="subtle">
+                {currentAssignments.filter((m) => m.acknowledged).length}{" "}
+                Acknowledged
+              </Badge>
+              <Badge colorScheme="orange" variant="subtle">
+                {currentAssignments.filter((m) => !m.acknowledged).length}{" "}
+                Pending
+              </Badge>
+            </HStack>
+          )}
+        </Flex>
 
         {currentAssignments.length === 0 ? (
           <Box
@@ -262,7 +283,7 @@ const ShiftAssignmentModal: React.FC<ShiftAssignmentModalProps> = ({
             {currentAssignments.map((member) => (
               <Tooltip
                 key={member.email}
-                label={`${member.name} (${member.team})`}
+                label={`${member.name} (${member.team}) - ${member.acknowledged ? "Acknowledged" : "Pending"}`}
                 placement="top"
                 hasArrow
               >
@@ -273,7 +294,26 @@ const ShiftAssignmentModal: React.FC<ShiftAssignmentModalProps> = ({
                     bg={`${teamColors[member.team]}.100`}
                     color={`${teamColors[member.team]}.800`}
                     cursor="pointer"
+                    opacity={member.acknowledged ? 1 : 0.7}
                   />
+                  {/* Acknowledgment status indicator */}
+                  <Badge
+                    position="absolute"
+                    bottom="-1"
+                    right="-1"
+                    size="sm"
+                    colorScheme={member.acknowledged ? "green" : "orange"}
+                    bg={member.acknowledged ? "green.500" : "orange.500"}
+                    borderRadius="full"
+                    minW="16px"
+                    h="16px"
+                    fontSize="sm"
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="center"
+                  >
+                    {member.acknowledged ? "✓" : "!"}
+                  </Badge>
                   <IconButton
                     aria-label="Remove assignment"
                     icon={<CloseIcon />}

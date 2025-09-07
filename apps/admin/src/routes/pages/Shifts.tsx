@@ -60,7 +60,7 @@ type CalendarShift = Shift & {
   endSlot: number;
   rowSpan: number;
   column: number;
-  assignments: Staff[];
+  assignments: (Staff & { acknowledged: boolean })[];
 };
 
 type CalendarEvent = Event & {
@@ -277,16 +277,21 @@ const Shifts: React.FC = () => {
         // Calculate row span based on actual duration
         const rowSpan = Math.max(1, endSlot - startSlot);
 
-        // Get assignments for this shift
+        // Get assignments for this shift with acknowledgment status
         const shiftAssignments = assignments
           .filter(
             (assignment: ShiftAssignment) =>
               assignment.shiftId === shift.shiftId
           )
-          .map((assignment: ShiftAssignment) =>
-            staff.find((s: Staff) => s.email === assignment.staffEmail)
-          )
-          .filter(Boolean) as Staff[];
+          .map((assignment: ShiftAssignment) => {
+            const staffMember = staff.find(
+              (s: Staff) => s.email === assignment.staffEmail
+            );
+            return staffMember
+              ? { ...staffMember, acknowledged: assignment.acknowledged }
+              : null;
+          })
+          .filter(Boolean) as (Staff & { acknowledged: boolean })[];
 
         return {
           ...shift,
@@ -691,15 +696,39 @@ const Shifts: React.FC = () => {
                                   {shift.assignments.map((staff) => (
                                     <Tooltip
                                       key={staff.email}
-                                      label={`${staff.name} (${staff.team})`}
+                                      label={`${staff.name} (${staff.team}) - ${staff.acknowledged ? "Acknowledged" : "Pending"}`}
                                       placement="top"
                                     >
-                                      <Avatar
-                                        name={staff.name}
-                                        size="xs"
-                                        bg={`${getShiftColor(shift.role)}.100`}
-                                        color={`${getShiftColor(shift.role)}.800`}
-                                      />
+                                      <Box position="relative">
+                                        <Avatar
+                                          name={staff.name}
+                                          size="xs"
+                                          bg={`${getShiftColor(shift.role)}.100`}
+                                          color={`${getShiftColor(shift.role)}.800`}
+                                          opacity={staff.acknowledged ? 1 : 0.7}
+                                        />
+                                        {/* Acknowledgment status indicator */}
+                                        <Badge
+                                          position="absolute"
+                                          top="-1"
+                                          right="-1"
+                                          size="xs"
+                                          colorScheme={
+                                            staff.acknowledged
+                                              ? "green"
+                                              : "orange"
+                                          }
+                                          borderRadius="full"
+                                          minW="12px"
+                                          h="12px"
+                                          fontSize="8px"
+                                          display="flex"
+                                          alignItems="center"
+                                          justifyContent="center"
+                                        >
+                                          {staff.acknowledged ? "✓" : "!"}
+                                        </Badge>
+                                      </Box>
                                     </Tooltip>
                                   ))}
                                 </AvatarGroup>

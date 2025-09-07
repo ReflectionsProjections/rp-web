@@ -182,6 +182,7 @@ export type Shift = {
 export type ShiftAssignment = {
   shiftId: string;
   staffEmail: string;
+  acknowledged: boolean;
   staff?: Staff;
   shifts?: Shift;
 };
@@ -510,6 +511,12 @@ export interface APIRoutes {
   "/shifts/my-shifts": {
     GET: {
       response: ShiftAssignment[];
+    };
+  };
+  "/shifts/:shiftId/acknowledge": {
+    POST: {
+      request: never;
+      response: ShiftAssignment;
     };
   };
 }
