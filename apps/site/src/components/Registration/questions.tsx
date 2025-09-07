@@ -136,7 +136,7 @@ export const TagsField = () => (
       "Interactive Events",
       "HCI",
       "Ethics",
-      "Fine Arts",
+      "Art/Media",
       "Autonomous Vehicles",
       "Networking",
       "Company Talk",
