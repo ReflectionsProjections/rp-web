@@ -1,7 +1,7 @@
 import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
-import { Box, Flex, Heading, Image, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { LeaderboardEntry } from "@rp/shared";
-import { ReactComponent as ProfileIcon } from "@/assets/icon.svg";
+import ProfileIcon from "@/assets/icon.svg?react";
 // import { usePolling } from "@rp/shared";
 
 export default function Leaderboard() {
