@@ -21,7 +21,7 @@ const routes = [
   { path: "/merch", element: <Merch /> },
   { path: "/event-checkin", element: <EventCheckin /> },
   { path: "/email-maker", element: <EmailMaker /> },
-  { path: "/attendance-view", element: <Attendance /> }
+  { path: "/attendance-view", element: <Attendance /> },
   { path: "/speakers", element: <Speakers /> },
   { path: "/shifts", element: <Shifts /> }
 ];
