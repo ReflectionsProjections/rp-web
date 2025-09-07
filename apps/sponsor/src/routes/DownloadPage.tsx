@@ -36,12 +36,13 @@ export function DownloadPage() {
     api
       .get("/registration/all")
       .then(function (response) {
-        return response.data.registrants.map(
+        return response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,
               name: registrant.name,
-              major: registrant.major,
+              majors: registrant.majors,
+              minors: registrant.minors,
               degree: registrant.educationLevel,
               graduationYear: registrant.graduationYear,
               jobInterest: registrant.opportunities,

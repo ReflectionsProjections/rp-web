@@ -10,6 +10,7 @@ services:
       - "3003:3003" # Info
       - "3004:3004" # Hype
       - "3005:3005" # Sponsor
+      - "3006:3006" # Dashboard
     stdin_open: true
     tty: true
     environment:
@@ -18,6 +19,7 @@ services:
       - BUILD_SITE=${BUILD_SITE:-true}
       - BUILD_ADMIN=${BUILD_ADMIN:-true}
       - BUILD_SPONSOR=${BUILD_SPONSOR:-true}
+      - BUILD_DASHBOARD=${BUILD_DASHBOARD:-true}
     networks:
       - rp-network
 

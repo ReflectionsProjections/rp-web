@@ -1,6 +1,7 @@
 import axios from "axios";
 import { ApiError, TypedAxiosInstance } from "./type-wrapper";
 import Config from "../config";
+import { authRefresh } from "./auth";
 
 const axiosObject = axios.create({ baseURL: Config.API_BASE_URL });
 
@@ -20,17 +21,15 @@ axiosObject.interceptors.response.use(
   (error: ApiError) => {
     const errorType = error.response?.data?.error;
 
-    if (
-      errorType === "NoJWT" ||
-      errorType === "ExpiredJWT" ||
-      errorType === "InvalidJWT"
-    ) {
+    if (errorType === "NoJWT") {
       localStorage.removeItem("jwt");
-      const currentPath =
-        window.location.pathname +
-        window.location.search +
-        window.location.hash;
-      window.location.href = `/auth/refresh?redirect=${encodeURIComponent(currentPath)}`;
+      authRefresh();
+      return;
+    }
+
+    if (errorType === "ExpiredJWT" || errorType === "InvalidJWT") {
+      localStorage.removeItem("jwt");
+      window.location.reload();
       return;
     }
 

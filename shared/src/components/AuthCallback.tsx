@@ -9,7 +9,7 @@ const AuthCallback = () => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const returnTo = decodeURIComponent(params.get("state") || "/");
-    const redirect_uri = `${window.location.origin}/auth/callback`;
+    const redirectUrl = new URL("/auth/callback", window.location.origin);
 
     if (!code) {
       void navigate("/unauthorized");
@@ -17,7 +17,7 @@ const AuthCallback = () => {
     }
 
     api
-      .post("/auth/login/web", { code, redirectUri: redirect_uri })
+      .post("/auth/login/web", { code, redirectUri: redirectUrl.toString() })
       .then((response) => {
         localStorage.setItem("jwt", response.data.token);
         void navigate(returnTo);

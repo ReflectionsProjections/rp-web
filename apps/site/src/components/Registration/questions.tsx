@@ -3,22 +3,24 @@ import {
   FormCheckboxGroup,
   FormFileUpload,
   FormLinks,
-  FormMultiSelectMenu,
   FormRadioGroup,
   FormSelectMenu,
   FormTextField,
   majors,
   minors,
   schools,
-  graduationDates
+  graduationDates,
+  educationLevels
 } from "@rp/shared";
 import { RegistrationValues } from "./schema";
+import { employmentOpportunities } from "@rp/shared";
 
 export const NameField = () => (
   <FormTextField<RegistrationValues, "name">
     name="name"
     label="Name"
     placeholder="Preferred Name"
+    maxLength={50}
     isRequired
   />
 );
@@ -29,6 +31,7 @@ export const EmailField = () => (
     label="Email"
     placeholder="Email"
     type="email"
+    maxLength={256}
     isRequired
   />
 );
@@ -38,7 +41,11 @@ export const GenderField = () => (
     name="gender"
     label="Gender"
     options={["Man", "Woman", "Non-binary", "Prefer not to say"]}
-    custom={{ name: "genderOther", label: "Prefer to self-describe" }}
+    custom={{
+      name: "genderOther",
+      label: "Prefer to self-describe",
+      maxLength: 50
+    }}
   />
 );
 
@@ -56,7 +63,7 @@ export const EthnicityField = () => (
       "White",
       "Prefer not to answer"
     ]}
-    custom={{ name: "ethnicityOther", label: "Other" }}
+    custom={{ name: "ethnicityOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -74,7 +81,7 @@ export const AllergiesField = () => (
       "Fish",
       "Sesame"
     ]}
-    custom={{ name: "allergiesOther", label: "Other" }}
+    custom={{ name: "allergiesOther", label: "Other", maxLength: 50 }}
   />
 );
 
@@ -92,12 +99,12 @@ export const DietaryRestrictionsField = () => (
       "Dairy-Free",
       "No Beef"
     ]}
-    custom={{ name: "dietaryOther", label: "Other" }}
+    custom={{ name: "dietaryOther", label: "Other", maxLength: 50 }}
   />
 );
 
 export const HowDidYouHearField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "howDidYouHear">
+  <FormSelectMenu<RegistrationValues, "howDidYouHear">
     name="howDidYouHear"
     label="How did you hear about us?"
     placeholder="Select where you heard about us"
@@ -113,11 +120,12 @@ export const HowDidYouHearField = () => (
       "Other"
     ].map((source) => ({ label: source, value: source }))}
     isRequired
+    isMulti
   />
 );
 
 export const TagsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "tags">
+  <FormSelectMenu<RegistrationValues, "tags">
     name="tags"
     label="What kinds of events are you interested in?"
     placeholder="Select your interests"
@@ -128,7 +136,7 @@ export const TagsField = () => (
       "Interactive Events",
       "HCI",
       "Ethics",
-      "Fine Arts",
+      "Art/Media",
       "Autonomous Vehicles",
       "Networking",
       "Company Talk",
@@ -138,6 +146,7 @@ export const TagsField = () => (
       value: interest
     }))}
     isRequired
+    isMulti
   />
 );
 
@@ -163,34 +172,32 @@ export const EducationLevelField = () => (
   <FormRadioGroup<RegistrationValues, "educationLevel", "educationOther">
     name="educationLevel"
     label="What is your highest level of education (currently pursuing or completed)?"
-    options={[
-      "High School",
-      "Associate Degree",
-      "Bachelor's Degree",
-      "Master's Degree",
-      "PhD or Doctorate"
-    ]}
+    options={educationLevels}
     isRequired
-    custom={{ name: "educationOther", label: "Other" }}
+    custom={{ name: "educationOther", label: "Other", maxLength: 50 }}
   />
 );
 
 export const MajorsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "majors">
+  <FormSelectMenu<RegistrationValues, "majors">
     name="majors"
     label="What is your current (or intended) major?"
     placeholder="Select your current (or intended) major(s)"
     options={majors.map((major) => ({ label: major, value: major }))}
     isRequired
+    isMulti
+    maxSelections={5}
   />
 );
 
 export const MinorsField = () => (
-  <FormMultiSelectMenu<RegistrationValues, "minors">
+  <FormSelectMenu<RegistrationValues, "minors">
     name="minors"
     label="What is your current (or intended) minor?"
     placeholder="Select your current (or intended) minor(s)"
     options={minors.map((minor) => ({ label: minor, value: minor }))}
+    isMulti
+    maxSelections={5}
   />
 );
 
@@ -208,16 +215,7 @@ export const OpportunitiesField = () => (
   <FormCheckboxGroup<RegistrationValues, "opportunities">
     name="opportunities"
     label="What opportunities are you open to?"
-    options={[
-      "Full-Time",
-      "Summer Internship",
-      "Fall Internship",
-      "Spring Internship",
-      "Fall Co-op",
-      "Spring Co-op",
-      "Graduate/Postdoc Research",
-      "Graduate/Postdoc Internship"
-    ]}
+    options={employmentOpportunities}
   />
 );
 
@@ -227,7 +225,7 @@ export const ResumeField = () => (
     label="Resume"
     helperText="Your resume will be shared with our corporate sponsors. You may return to this page at any time to update it."
     accept=".pdf,.docx"
-    maxFileSize={10 * 1024 * 1024}
+    maxFileSize={6 * 1024 * 1024}
   />
 );
 

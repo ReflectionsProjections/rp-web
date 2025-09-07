@@ -8,6 +8,8 @@ import Merch from "./routes/pages/Merch";
 import EventCheckin from "./routes/pages/EventCheckin";
 import Attendance from "./routes/pages/Attendance";
 import EmailMaker from "./routes/pages/EmailMaker";
+import Speakers from "./routes/pages/Speakers";
+import Shifts from "./routes/pages/Shifts";
 
 const routes = [
   { path: "/", element: <Dashboard /> },
@@ -20,6 +22,8 @@ const routes = [
   { path: "/event-checkin", element: <EventCheckin /> },
   { path: "/email-maker", element: <EmailMaker /> },
   { path: "/attendance-view", element: <Attendance /> }
+  { path: "/speakers", element: <Speakers /> },
+  { path: "/shifts", element: <Shifts /> }
 ];
 
 export default routes;

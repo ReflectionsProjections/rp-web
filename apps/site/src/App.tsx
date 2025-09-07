@@ -13,6 +13,7 @@ import Resume from "./routes/Resume";
 import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
 import theme from "./theme";
 import Navbar from "./components/Navbar";
+import Speakers from "./routes/Speakers/Speakers";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -31,6 +32,7 @@ function App() {
         <Routes>
           <Route element={<Main />}>
             <Route path="/" element={<Home />} />
+            <Route path="/speakers" element={<Speakers />} />
             <Route element={<RequireAuth />}>
               <Route key="/register" path="/register" element={<Register />} />
             </Route>
@@ -58,7 +60,7 @@ function Main() {
       w="100%"
       h="100dvh"
       position="relative"
-      zIndex={99}
+      zIndex={9}
       gap={0}
       backgroundColor="#100e0e"
       overflowY={isFlush ? undefined : "scroll"}
