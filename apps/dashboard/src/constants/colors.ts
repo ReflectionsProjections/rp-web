@@ -22,12 +22,10 @@ export const CIRCLE_COLORS = [
 ];
 
 export const ICON_COLOR_TO_COLOR: Record<IconColor, string> = {
-  BLACK: "#000000",
   BLUE: "#0059ff",
   GREEN: "#218d00",
   ORANGE: "#ff6f00",
   PINK: "#ff00dd",
-  PURPLE: "#890089",
-  RED: "#ff0000",
-  YELLOW: "#ffff00"
+  PURPLE: "#ad00adff",
+  RED: "#ff0000"
 };

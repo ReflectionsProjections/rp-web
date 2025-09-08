@@ -12,7 +12,7 @@ export default function Leaderboard() {
     {
       displayName: "Bob",
       currentTier: "TIER2",
-      icon: "BLACK",
+      icon: "ORANGE",
       points: 32,
       rank: 1,
       userId: "1234"
@@ -42,7 +42,8 @@ export default function Leaderboard() {
       userId: "1234567"
     },
     {
-      displayName: "LongestNameInTheFreakingWorld",
+      displayName:
+        "LongestNameInTheFreakingWorldLikeOhMyGodWhyIsThisNameSoFreakingLongSurelyGoogleWontAllowThis",
       currentTier: "TIER1",
       icon: "PURPLE",
       points: 16,
@@ -52,7 +53,7 @@ export default function Leaderboard() {
     {
       displayName: "OnlyOne",
       currentTier: "TIER1",
-      icon: "YELLOW",
+      icon: "GREEN",
       points: 13,
       rank: 6,
       userId: "1234569"
@@ -84,7 +85,7 @@ export default function Leaderboard() {
     {
       displayName: "Duck",
       currentTier: "TIER1",
-      icon: "BLACK",
+      icon: "PURPLE",
       points: 2,
       rank: 10,
       userId: "1235235239845"
@@ -104,15 +105,17 @@ export default function Leaderboard() {
       {isLoading ? (
         <Text>Loading...</Text>
       ) : (
-        <Box>
+        <Box marginTop={"0.5rem"}>
           {data?.leaderboard.map(
-            ({ rank, displayName, userId, icon, points }) => (
+            ({ rank, displayName, userId, icon, points }, i) => (
               <LeaderboardRow
+                backgroundColor={i % 2 === 0 ? "#464646ff" : "#6b6b6bff"}
                 rank={rank}
                 displayName={displayName}
                 userId={userId}
                 iconColor={ICON_COLOR_TO_COLOR[icon]}
                 points={points}
+                key={userId}
               />
             )
           )}
@@ -123,12 +126,14 @@ export default function Leaderboard() {
 }
 
 function LeaderboardRow({
+  backgroundColor,
   iconColor,
   rank,
   displayName,
   userId,
   points
 }: {
+  backgroundColor: string;
   iconColor: string;
   rank: number;
   displayName: string;
@@ -136,11 +141,37 @@ function LeaderboardRow({
   points: number;
 }) {
   return (
-    <Flex flexDirection={"row"} key={userId} backgroundColor={iconColor}>
-      <ProfileIcon style={{ color: iconColor }} />
-      <Text>{rank}</Text>
-      <Text>{displayName}</Text>
-      <Text>{points}</Text>
+    <Flex
+      flexDirection={"row"}
+      alignItems={"center"}
+      key={userId}
+      backgroundColor={backgroundColor}
+      paddingX={"1rem"}
+      fontSize={"2rem"}
+      _first={{
+        paddingTop: "0.5rem",
+        borderTopRadius: "0.5rem"
+      }}
+      _last={{
+        paddingBottom: "0.5rem",
+        borderBottomRadius: "0.5rem"
+      }}
+    >
+      <Text
+        width={"2ch"}
+        marginRight={"0.25rem"}
+        textAlign={"right"}
+        fontSize={"1.5rem"}
+      >
+        {rank}
+      </Text>
+      <Box width={"3rem"} height={"3rem"} marginRight={"0.25rem"}>
+        <ProfileIcon width={"100%"} height={"100%"} color={iconColor} />
+      </Box>
+      <Text marginRight={"0.25rem"} wordBreak={"break-all"} maxWidth={"75%"}>
+        {displayName}
+      </Text>
+      <Text marginLeft={"auto"}>{points} PTS</Text>
     </Flex>
   );
 }

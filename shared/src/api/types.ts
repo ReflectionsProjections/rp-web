@@ -201,15 +201,7 @@ export type Meeting = {
 };
 
 export type Tier = "TIER1" | "TIER2" | "TIER3";
-export type IconColor =
-  | "BLUE"
-  | "RED"
-  | "GREEN"
-  | "YELLOW"
-  | "PINK"
-  | "BLACK"
-  | "PURPLE"
-  | "ORANGE";
+export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
 export type LeaderboardEntry = {
   rank: number;
   userId: string;
