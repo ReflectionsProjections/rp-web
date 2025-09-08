@@ -12,7 +12,7 @@ import { useState } from "react";
 
 function Events() {
   const { authorized } = useOutletContext<MainContext>();
-  const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [viewMode, setViewMode] = useState<ViewMode>("calendar");
   const {
     data: events,
     update: updateEvents,
