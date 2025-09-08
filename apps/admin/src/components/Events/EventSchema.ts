@@ -20,7 +20,8 @@ export const EventFormSchema: yup.Schema<EventFormValues> = yup.object({
     .mixed<EventType>()
     .oneOf(["SPEAKER", "CORPORATE", "SPECIAL", "PARTNERS", "MEALS", "CHECKIN"])
     .required(),
-  isVisible: yup.boolean().required()
+  isVisible: yup.boolean().required(),
+  tags: yup.array().of(yup.string().required()).default([])
 });
 
 export const EventFormInitialValues: EventFormValues = {
@@ -36,5 +37,6 @@ export const EventFormInitialValues: EventFormValues = {
   imageUrl: "",
   location: "",
   eventType: "SPEAKER",
-  isVisible: true
+  isVisible: true,
+  tags: []
 };

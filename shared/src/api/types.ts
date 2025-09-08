@@ -67,6 +67,7 @@ export type Event = {
   isVisible: boolean;
   attendanceCount: number;
   eventType: EventType;
+  tags: string[];
 };
 
 export type RegistrationDraft = {
