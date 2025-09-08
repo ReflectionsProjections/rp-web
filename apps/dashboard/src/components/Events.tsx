@@ -54,9 +54,9 @@ export default function Events() {
     <Box float={"right"} width={"fit-content"}>
       <Heading textAlign={"center"}>Events</Heading>
       <Flex
+        marginTop={"0.5rem"}
         justifyContent="center"
         flexDirection={{ md: "column-reverse", lg: "row" }}
-        mt={{ base: 5, md: 5 }}
         mx="auto"
         gap={0}
         position="relative" /* ensure content sits above accent */
@@ -76,7 +76,12 @@ export default function Events() {
                 </Text>
               )}
               {events.map((event, index) => (
-                <DayEvent key={index} number={index + 1} event={event} />
+                <DayEvent
+                  key={index}
+                  backgroundColor={index % 2 === 0 ? "#2c2c2cff" : "#3f3f3fff"}
+                  number={index + 1}
+                  event={event}
+                />
               ))}
             </Box>
           </Box>
@@ -86,7 +91,15 @@ export default function Events() {
   );
 }
 
-function DayEvent({ number, event }: { number: number; event: Event }) {
+function DayEvent({
+  backgroundColor,
+  number,
+  event
+}: {
+  backgroundColor: string;
+  number: number;
+  event: Event;
+}) {
   return (
     <Grid
       px={{
@@ -102,6 +115,15 @@ function DayEvent({ number, event }: { number: number; event: Event }) {
       gap={{
         base: 2,
         md: 3
+      }}
+      backgroundColor={backgroundColor}
+      _first={{
+        paddingTop: "calc(3px + 0.5rem)",
+        borderTopRadius: "0.5rem"
+      }}
+      _last={{
+        paddingBottom: "calc(3px + 0.5rem)",
+        borderBottomRadius: "0.5rem"
       }}
       _hover={{
         bgColor: "#4D4C4C",
@@ -143,7 +165,7 @@ function DayEvent({ number, event }: { number: number; event: Event }) {
           base: "5px",
           md: "7px"
         }}
-        h="50px"
+        h="100%"
         bg={CIRCLE_COLORS[(number - 1) % CIRCLE_COLORS.length]}
         boxShadow="md"
         borderRadius="sm"
