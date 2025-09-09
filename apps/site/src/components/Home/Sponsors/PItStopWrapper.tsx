@@ -36,7 +36,7 @@ const PitStopSceneWrapper: React.FC = () => {
     cat: "#E4D00A", // Yellow for Caterpillar
     qual: "#0066cc", // Blue for Qualcomm
     aech: "#808080", // Gray for Aechelon
-    deere: "#06402B"
+    deere: "#3B8927"
   };
 
   return (
