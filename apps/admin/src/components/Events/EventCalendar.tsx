@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   Box,
   Text,
@@ -19,7 +19,11 @@ import {
   Tr,
   Th,
   Td,
-  Tooltip
+  Tooltip,
+  Tag,
+  TagLabel,
+  Wrap,
+  WrapItem
 } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
 import moment from "moment-timezone";
@@ -48,6 +52,18 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
 }) => {
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  // Update selectedEvent when events data changes
+  useEffect(() => {
+    if (selectedEvent) {
+      const updatedEvent = events.find(
+        (event) => event.eventId === selectedEvent.eventId
+      );
+      if (updatedEvent) {
+        setSelectedEvent(updatedEvent);
+      }
+    }
+  }, [events, selectedEvent]);
   const mirrorStyles = useMirrorStyles();
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const hoverBg = useColorModeValue("gray.50", "gray.700");
@@ -210,7 +226,8 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
       isVirtual: event.isVirtual,
       imageUrl: event.imageUrl,
       isVisible: event.isVisible,
-      attendanceCount: event.attendanceCount
+      attendanceCount: event.attendanceCount,
+      tags: event.tags
     };
 
     setSelectedEvent(originalEvent);
@@ -449,6 +466,21 @@ const EventCalendar: React.FC<EventCalendarProps> = ({
                   <Box>
                     <Text fontWeight="bold">Location:</Text>
                     <Text>{selectedEvent.location}</Text>
+                  </Box>
+                )}
+
+                {selectedEvent.tags && selectedEvent.tags.length > 0 && (
+                  <Box>
+                    <Text fontWeight="bold">Tags:</Text>
+                    <Wrap mt={2}>
+                      {selectedEvent.tags.map((tag, index) => (
+                        <WrapItem key={index}>
+                          <Tag size="md" colorScheme="blue" borderRadius="full">
+                            <TagLabel>{tag}</TagLabel>
+                          </Tag>
+                        </WrapItem>
+                      ))}
+                    </Wrap>
                   </Box>
                 )}
 
