@@ -205,9 +205,9 @@ const PitStopSceneWrapper: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Tablet Version - lg to xl breakpoints only */}
+      {/* Tablet Version - md to xl breakpoints only (changed from lg to md) */}
       <Box
-        display={{ base: "none", lg: "flex", xl: "none" }}
+        display={{ base: "none", md: "flex", xl: "none" }}
         w="100%"
         minH="90vh"
         maxH="110vh"
@@ -362,14 +362,14 @@ const PitStopSceneWrapper: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Mobile Version - base to lg breakpoints */}
+      {/* Mobile Version - base to md breakpoints (changed from lg to md) */}
       <Box
-        display={{ base: "block", lg: "none" }}
+        display={{ base: "block", md: "none" }}
         pos="relative"
         w="100%"
         minW="390px"
         minH="110vh"
-        maxH={{ base: "120vh", md: "130vh" }}
+        maxH={{ base: "1000px", sm: "1200px" }}
         overflow="hidden"
         bg="#100E0E"
       >
