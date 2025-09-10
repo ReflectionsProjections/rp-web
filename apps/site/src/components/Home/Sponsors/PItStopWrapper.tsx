@@ -50,16 +50,21 @@ const PitStopSceneWrapper: React.FC = () => {
     >
       {/* Desktop Version - xl and above */}
       <Box
-        display={{ base: "none", xl: "block" }}
+        display={{ base: "none", xl: "flex" }}
         w="100%"
         minH="105vh"
+        maxH="120vh"
         bgColor="#100E0E"
         pos="relative"
+        alignItems="center"
+        justifyContent="center"
       >
         <Box
           pos="relative"
           w="100%"
           h="110vh"
+          maxH="900px"
+          maxW="1400px"
           overflow="hidden"
           bgColor="#100E0E"
         >
@@ -75,7 +80,7 @@ const PitStopSceneWrapper: React.FC = () => {
             <Image
               src="/sponsors/car/7.png"
               pos="absolute"
-              top="10%"
+              top="15%"
               left="15%"
               transform="translate(-50%, -50%)"
               display="block"
@@ -202,16 +207,21 @@ const PitStopSceneWrapper: React.FC = () => {
 
       {/* Tablet Version - lg to xl breakpoints only */}
       <Box
-        display={{ base: "none", lg: "block", xl: "none" }}
+        display={{ base: "none", lg: "flex", xl: "none" }}
         w="100%"
         minH="90vh"
+        maxH="110vh"
         bgColor="#100E0E"
         pos="relative"
+        alignItems="center"
+        justifyContent="center"
       >
         <Box
           pos="relative"
           w="100%"
           h="90vh"
+          maxH="800px"
+          maxW="1200px"
           overflow="hidden"
           bgColor="#100E0E"
         >
@@ -227,7 +237,7 @@ const PitStopSceneWrapper: React.FC = () => {
             <Image
               src="/sponsors/car/7.png"
               pos="absolute"
-              top="10%"
+              top="15%"
               left="15%"
               transform="translate(-50%, -50%)"
               display="block"
@@ -351,6 +361,7 @@ const PitStopSceneWrapper: React.FC = () => {
           <AnimatedHeader>Sponsors</AnimatedHeader>
         </Box>
       </Box>
+
       {/* Mobile Version - base to lg breakpoints */}
       <Box
         display={{ base: "block", lg: "none" }}
@@ -358,7 +369,7 @@ const PitStopSceneWrapper: React.FC = () => {
         w="100%"
         minW="390px"
         minH="110vh"
-        maxH={{ base: "1000px", md: "1300px" }}
+        maxH={{ base: "120vh", md: "130vh" }}
         overflow="hidden"
         bg="#100E0E"
       >
