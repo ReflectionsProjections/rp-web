@@ -131,9 +131,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
               minWidth="0"
               overflow={"hidden"}
               // Keynote speaker emphasis - keep name glow and star always
-              textShadow={
-                isKeynote ? "0 0 10px rgba(255, 215, 0, 0.8)" : "none"
-              }
+              textShadow={isKeynote ? "0 0 1px rgba(255, 215, 0, 0.3)" : "none"}
               _before={
                 isKeynote
                   ? {
@@ -190,6 +188,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
         <Box
           display={"flex"}
           alignItems={"flex-start"}
+          justifyContent={"center"}
           position="absolute"
           top={2}
           left={0}
@@ -215,7 +214,7 @@ export default function SpeakerCardRow({ row }: { row: SpeakerRow }) {
           fontWeight={"semibold"}
           overflow={"hidden"}
         >
-          <Text ref={bioTextRef} whiteSpace={"pre-wrap"} m="5px">
+          <Text ref={bioTextRef} whiteSpace={"pre-wrap"} m="5px" maxW="80%">
             {displayedContent ? (
               displayedContent.split("\\n").map((line, i) => (
                 <>
