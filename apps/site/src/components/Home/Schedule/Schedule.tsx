@@ -361,6 +361,10 @@ function DayEvent({
   onHover: (index: number) => void;
   onClick: (event: Event) => void;
 }) {
+  // Check if this is Sue's keynote event
+  const isSueKeynote =
+    event.name.toLowerCase().includes("sue") &&
+    event.eventType.toLowerCase() === "speaker";
   return (
     <Grid
       w="100%"
@@ -449,8 +453,10 @@ function DayEvent({
           fontFamily={"ProRacing"}
           transformOrigin={"top left"}
           w="100%"
+          // Keynote speaker text glow
+          textShadow={isSueKeynote ? "0 0 10px rgba(255, 215, 0, 0.8)" : "none"}
         >
-          {event.name}
+          {isSueKeynote ? `★ ${event.name}` : event.name}
         </Text>
 
         <Flex
@@ -504,8 +510,13 @@ function DayEvent({
         <Flex w="30px" h="30px" justifyContent={"center"} alignItems={"center"}>
           <Icon
             as={EVENT_ICONS[event.eventType]}
-            color="yellow.500"
+            color={isSueKeynote ? "gold" : "yellow.500"}
             boxSize={6}
+            filter={
+              isSueKeynote
+                ? "drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))"
+                : "none"
+            }
           />
         </Flex>
       </Tooltip>
