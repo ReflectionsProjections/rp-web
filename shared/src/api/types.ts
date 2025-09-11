@@ -201,6 +201,17 @@ export type Meeting = {
   startTime: string;
 };
 
+export type Tier = "TIER1" | "TIER2" | "TIER3";
+export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
+export type LeaderboardEntry = {
+  rank: number;
+  userId: string;
+  displayName: string;
+  points: number;
+  currentTier: Tier;
+  icon: IconColor;
+};
+
 export interface APIRoutes {
   "/attendee/emails": {
     GET: {
@@ -323,6 +334,19 @@ export interface APIRoutes {
   "/events/currentOrNext": {
     GET: {
       response: Event;
+    };
+  };
+  "/leaderboard/daily": {
+    GET: {
+      request: {
+        day: string;
+        count: number;
+      };
+      response: {
+        day: string;
+        count: number;
+        leaderboard: LeaderboardEntry[];
+      };
     };
   };
   "/registration/draft": {
