@@ -43,6 +43,7 @@ const linkMap = {
   Shifts: "/shifts",
   "Event Check-in": "/event-checkin",
   Merch: "/merch",
+  Massmailer: "/email-maker",
   Attendance: "/attendance-view"
 };
 
