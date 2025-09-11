@@ -10,7 +10,7 @@ export const Header = () => {
   });
 
   return (
-    <section>
+    <section data-label="header">
       <Box py={{ base: 5, md: 10 }} w="100%" justifyContent="center">
         <Box
           width={{ base: "90%", md: "80%", lg: 600 }}
