@@ -558,22 +558,6 @@ export interface APIRoutes {
       response: ShiftAssignment;
     };
   };
-  "/leaderboard/daily": {
-    GET: {
-      response: {
-        leaderboard: Array<{
-          rank: number;
-          userId: string;
-          displayName: string;
-          points: number;
-          currentTier: number;
-          icon: string;
-        }>;
-        day: string;
-        count: number;
-      };
-    };
-  };
   "/leaderboard/global": {
     GET: {
       response: {

@@ -93,7 +93,7 @@ const Leaderboard: React.FC = () => {
             userId: string;
             displayName: string;
             points: number;
-            currentTier: number;
+            currentTier: string;
             icon: string;
           }>;
         };

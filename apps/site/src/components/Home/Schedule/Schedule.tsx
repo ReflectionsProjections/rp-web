@@ -14,7 +14,6 @@ import { api, Event, path } from "@rp/shared";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
-
 import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
 import EventModal from "./EventModal";
