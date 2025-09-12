@@ -243,7 +243,7 @@ function draw(
     { angle: -45, radius: 50 * scale },
     { angle: -45 - 90, radius: 50 * scale },
     { angle: 180, radius: 100 * scale },
-    { distance: 100 },
+    { distance: 100 * scale },
     { angle: 90, radius: 79 * scale }
   ];
 
