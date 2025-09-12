@@ -3,6 +3,7 @@ export { default as AnimatedCounter } from "./components/AnimatedCounter";
 export * from "./api/types";
 export { default as usePolling } from "./hooks/polling";
 export { default as useFormAutosave } from "./hooks/form-autosave";
+export { default as useTime } from "./hooks/time";
 export { default as Config } from "./config";
 export { default as RequireAuth } from "./components/RequireAuth";
 export { default as AuthCallback } from "./components/AuthCallback";
