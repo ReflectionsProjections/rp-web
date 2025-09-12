@@ -12,7 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { api, Event, path } from "@rp/shared";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
@@ -39,7 +39,7 @@ export default function Schedule() {
   );
   const dayEvents = selectedDay ? eventsByDay[selectedDay] : [];
 
-  const handleLoadEvents = () => {
+  const handleLoadEvents = useCallback(() => {
     api
       .get(path("/events", {}))
       .then((events) => {
@@ -61,11 +61,11 @@ export default function Schedule() {
           isClosable: true
         });
       });
-  };
+  }, [toast]);
 
   useEffect(() => {
     handleLoadEvents();
-  }, []);
+  }, [handleLoadEvents]);
 
   const handleHover = (index: number) => setHoveredEventIndex(index);
   const handleSelectDay = (date: string) => {
