@@ -35,6 +35,8 @@ type Metadata =
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 50;
 const SIDE_DISTANCE = 100;
+const FINISH_LINE_WIDTH = TRACK_WIDTH / 4;
+const FINISH_LINE_SQUARE_SIZE = 25;
 const TRACK_COLOR = "#686868ff";
 const SIDE_COLOR1 = "#f00";
 const SIDE_COLOR2 = "#fff";
@@ -351,6 +353,9 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
     trackMetadata.push(metadata);
   }
 
+  // Draw the finish line
+  drawFinishLine(ctx, x, y, angle);
+
   return { trackMetadata, totalDistance };
 }
 
@@ -496,6 +501,35 @@ function drawArcTrack(
     metadata,
     distance
   };
+}
+
+function drawFinishLine(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  angle: number
+) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rad(angle));
+  const width = FINISH_LINE_WIDTH;
+  const height = TRACK_WIDTH + SIDE_WIDTH;
+
+  for (let i = 0; i < width / FINISH_LINE_SQUARE_SIZE; i++) {
+    for (let j = 0; j < height / FINISH_LINE_SQUARE_SIZE; j++) {
+      ctx.beginPath();
+      ctx.fillStyle = (i + j) % 2 == 0 ? "#fff" : "#000";
+      ctx.rect(
+        i * FINISH_LINE_SQUARE_SIZE - width / 2,
+        j * FINISH_LINE_SQUARE_SIZE - height / 2,
+        FINISH_LINE_SQUARE_SIZE,
+        FINISH_LINE_SQUARE_SIZE
+      );
+      ctx.fill();
+    }
+  }
+
+  ctx.restore();
 }
 
 // Draw a car using the metadata
