@@ -22,3 +22,4 @@ export { graduationDates } from "./assets/graduation-dates";
 export { educationLevels } from "./assets/education-levels";
 export { employmentOpportunities } from "./assets/employment-opportunities";
 export { default as api } from "./api/api";
+export * from "./util";

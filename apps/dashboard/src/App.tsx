@@ -28,7 +28,7 @@ const theme = extendTheme({
 
 function App() {
   useEffect(() => {
-    setTimeout(() => location.reload(), 5 * 60 * 1000);
+    // setTimeout(() => location.reload(), 5 * 60 * 1000);
   }, []);
   return (
     <ChakraProvider theme={theme}>
@@ -40,8 +40,13 @@ function App() {
         padding={"1rem"}
       >
         <Title />
-        <Flex width={"100%"}>
-          <Box width={"50%"} marginRight={"5rem"} alignItems={"left"}>
+        <Flex width={"100%"} minHeight={"0"} flexGrow={"1"}>
+          <Box
+            width={"50%"}
+            height={"100%"}
+            marginRight={"5rem"}
+            alignItems={"left"}
+          >
             <Leaderboard />
           </Box>
           <Box width={"50%"} marginLeft={"5rem"} alignItems={"right"}>

@@ -202,6 +202,14 @@ export type Meeting = {
 
 export type Tier = "TIER1" | "TIER2" | "TIER3";
 export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
+export const IconColors: Record<IconColor, IconColor> = {
+  BLUE: "BLUE",
+  GREEN: "GREEN",
+  ORANGE: "ORANGE",
+  PINK: "PINK",
+  PURPLE: "PURPLE",
+  RED: "RED"
+};
 export type LeaderboardEntry = {
   rank: number;
   userId: string;
