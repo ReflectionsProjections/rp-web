@@ -141,7 +141,7 @@ export default function Leaderboard() {
       Object.values(IconColors).map(async (color: IconColor) => {
         return new Promise<[IconColor, HTMLImageElement]>((resolve, reject) => {
           const img = new Image();
-          const coloredSvg = (CarSvg as string).replace(
+          const coloredSvg = CarSvg.replace(
             /currentColor/g,
             ICON_COLOR_TO_COLOR[color]
           );
