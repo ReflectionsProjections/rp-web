@@ -283,7 +283,7 @@ function draw(
   const { trackMetadata, totalDistance } = drawTrack(ctx, track);
 
   // Increment the position the leading car is at
-  position = (position + 0.000125) % 1;
+  position = (position + 0.0005) % 1;
 
   if (!leaderboard || !carImages) {
     return;
@@ -313,6 +313,7 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
   let x = 125;
   let y = 125;
   let angle = 0;
+  let sideI = 0;
 
   const trackMetadata: Metadata[] = [];
   let totalDistance = 0;
@@ -320,12 +321,13 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
   for (const segment of track) {
     // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
 
-    const { fX, fY, fAngle, distance, metadata } = drawTrackSegment(
+    const { fX, fY, fAngle, fSideI, distance, metadata } = drawTrackSegment(
       ctx,
       segment,
       x,
       y,
-      angle
+      angle,
+      sideI
     );
 
     // Segment to reduce sub-pixel errors
@@ -342,6 +344,7 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
     x = fX;
     y = fY;
     angle = fAngle;
+    sideI = fSideI;
     totalDistance += distance;
 
     // Save metadata
@@ -355,6 +358,7 @@ type SegmentDrawResult = {
   fX: number;
   fY: number;
   fAngle: number;
+  fSideI: number;
   metadata: Metadata;
   distance: number;
 };
@@ -364,15 +368,16 @@ function drawTrackSegment(
   segment: Segment,
   x: number,
   y: number,
-  angle: number
+  angle: number,
+  sideI: number
 ): SegmentDrawResult {
   if ("distance" in segment) {
     // Straight segment
     const distance = segment.distance;
-    return drawStraightTrack(ctx, x, y, angle, distance);
+    return drawStraightTrack(ctx, x, y, angle, sideI, distance);
   } else {
     // Arc segment
-    return drawArcTrack(ctx, x, y, angle, segment.angle, segment.radius);
+    return drawArcTrack(ctx, x, y, angle, sideI, segment.angle, segment.radius);
   }
 }
 
@@ -381,6 +386,7 @@ function drawStraightTrack(
   x: number,
   y: number,
   angle: number,
+  sideI: number,
   distance: number
 ): SegmentDrawResult {
   const fX = x + distance * Math.cos(rad(angle));
@@ -389,12 +395,13 @@ function drawStraightTrack(
 
   // Draw the red-white side of the track
   const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const fSideI = sideI + maxI;
   const dx = fX - x;
   const dy = fY - y;
   for (let i = 0; i < maxI; i++) {
     ctx.beginPath();
     ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-    ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+    ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
     ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
     ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
     ctx.stroke();
@@ -419,7 +426,7 @@ function drawStraightTrack(
     distance
   };
 
-  return { fX, fY, fAngle, distance, metadata };
+  return { fX, fY, fAngle, fSideI, distance, metadata };
 }
 
 function drawArcTrack(
@@ -427,6 +434,7 @@ function drawArcTrack(
   x: number,
   y: number,
   angle: number,
+  sideI: number,
   arcAngle: number,
   radius: number
 ): SegmentDrawResult {
@@ -445,10 +453,11 @@ function drawArcTrack(
 
   // Draw sides of the track
   const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const fSideI = sideI + maxI;
   const dAngle = endAngle - startAngle;
   for (let i = 0; i < maxI; i++) {
     ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-    ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+    ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
     ctx.beginPath();
     ctx.arc(
       cx,
@@ -483,6 +492,7 @@ function drawArcTrack(
     fX,
     fY,
     fAngle,
+    fSideI,
     metadata,
     distance
   };
