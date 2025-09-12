@@ -2,7 +2,7 @@ import SpeakerCardRow from "@/components/Speakers/SpeakerCardRow";
 import { SpeakerRow } from "@/types/speaker-types";
 import { Text, useMediaQuery, VStack } from "@chakra-ui/react";
 import { api, Speaker } from "@rp/shared";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const COLORS = [
   "#007bff", // blue
@@ -21,20 +21,55 @@ export default function Speakers() {
   const [isMicroScreen] = useMediaQuery("(min-width: 360px)");
   const [speakers, setSpeakers] = useState<Speaker[]>([]);
 
-  const handleLoadSpeakers = async () => {
+  // Define the desired speaker order by first name
+  const speakerOrder = useMemo(
+    () => [
+      "Sue",
+      "Abdu",
+      "Eva",
+      "Josh",
+      "Michael",
+      "Mehdi",
+      "Ben",
+      "Claire",
+      "Eliot",
+      "Lionel",
+      "Shubha",
+      "Karlyn",
+      "Juan",
+      "Joana"
+    ],
+    []
+  );
+
+  const handleLoadSpeakers = useCallback(async () => {
     try {
       const response = await api.get("/speakers");
-      setSpeakers(
-        response.data.map((speakerData) => {
-          return {
-            ...speakerData
-          };
-        })
+      const speakersData = response.data.map((speakerData) => {
+        return {
+          ...speakerData
+        };
+      });
+
+      // Sort speakers according to the specified order by first name
+      const sortedSpeakers = speakerOrder
+        .map((firstName) =>
+          speakersData.find(
+            (speaker) => speaker.name.split(" ")[0] === firstName
+          )
+        )
+        .filter(Boolean) as Speaker[];
+
+      // Add any speakers not in the order list at the end
+      const remainingSpeakers = speakersData.filter(
+        (speaker) => !speakerOrder.includes(speaker.name.split(" ")[0])
       );
+
+      setSpeakers([...sortedSpeakers, ...remainingSpeakers]);
     } catch {
       console.error("Failed to load speakers");
     }
-  };
+  }, [speakerOrder]);
 
   useEffect(() => {
     void handleLoadSpeakers();

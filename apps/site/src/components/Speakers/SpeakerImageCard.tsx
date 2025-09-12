@@ -1,6 +1,6 @@
 import { Box, Image } from "@chakra-ui/react";
 import { Speaker } from "@rp/shared";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 type SpeakerImageCardProps = {
   row: { color: string; speakers: { imgUrl: string }[] };
@@ -23,6 +23,7 @@ export default function SpeakerImageCard({
 }: SpeakerImageCardProps) {
   const isAnySelected = displayedSelectedIndex !== null;
   const isClickable = !speakerSelected;
+  const isKeynote = speaker.name.split(" ")[0] === "Sue";
 
   const imgUrl = useMemo(() => {
     if (
@@ -38,10 +39,6 @@ export default function SpeakerImageCard({
       .join("")
       .toLowerCase()}.png`;
   }, [speaker.imgUrl, speaker.name]);
-
-  useEffect(() => {
-    console.log("imgUrl", imgUrl);
-  }, [imgUrl]);
 
   return (
     <Box
@@ -65,15 +62,24 @@ export default function SpeakerImageCard({
       }
       zIndex={isAnySelected ? 1 : 0}
       transition="all 0.3s"
-      onClick={isClickable ? () => handleSetSelectedIndex(index) : undefined}
-      cursor={isClickable ? "pointer" : "default"}
+      // Keynote speaker emphasis - only show when not selected
+      border={isKeynote && !isAnySelected ? "3px solid gold" : "none"}
+      boxShadow={
+        isKeynote && !isAnySelected ? "0 0 20px rgba(255, 215, 0, 0.5)" : "none"
+      }
       _hover={
         isClickable
           ? {
-              bg: `${row.color}ff` // fully solid on hover
+              bg: `${row.color}ff`, // fully solid on hover
+              boxShadow:
+                isKeynote && !isAnySelected
+                  ? "0 0 30px rgba(255, 215, 0, 0.8)"
+                  : undefined
             }
           : {}
       }
+      onClick={isClickable ? () => handleSetSelectedIndex(index) : undefined}
+      cursor={isClickable ? "pointer" : "default"}
     >
       <Image
         h={{ base: "130px", sm: "140px", md: "170px" }}
@@ -93,6 +99,7 @@ export default function SpeakerImageCard({
         opacity={isAnySelected ? 0 : 1}
         transition="transform 0.5s ease, opacity 0.1s"
         src={imgUrl}
+        fallbackSrc="/speakers/fallback.svg"
         _groupHover={
           isClickable
             ? {
