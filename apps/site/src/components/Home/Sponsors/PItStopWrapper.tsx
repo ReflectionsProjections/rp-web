@@ -22,7 +22,7 @@ from { transform: translateY(-50px); opacity: 0; }
 to { transform: translateY( 0px); opacity: 1; }
 `;
 
-const PitStopSceneWrapper: React.FC = () => {
+const PitStopSceneWrapper = () => {
   const getGlowFilter = (color: string) => {
     return `drop-shadow(0 0 15px ${color}) drop-shadow(0 0 25px ${color}88) drop-shadow(0 0 35px ${color}44)`;
   };
@@ -52,12 +52,19 @@ const PitStopSceneWrapper: React.FC = () => {
       <Box
         display={{ base: "none", xl: "flex" }}
         w="100%"
-        minH="120vh"
-        maxH="140vh"
         bgColor="#100E0E"
         pos="relative"
         alignItems="center"
         justifyContent="center"
+        sx={{
+          minHeight: "100vh", // Base height
+          "@media screen and (max-height: 800px)": {
+            minHeight: "120vh" // Shorter desktop screens need more height
+          },
+          "@media screen and (min-height: 801px)": {
+            minHeight: "100vh" // Taller desktop screens are fine with 100vh
+          }
+        }}
       >
         <Box
           pos="relative"
@@ -210,12 +217,16 @@ const PitStopSceneWrapper: React.FC = () => {
       <Box
         display={{ base: "none", lg: "flex", xl: "none" }}
         w="100%"
-        minH="100vh"
-        maxH="120vh"
         bgColor="#100E0E"
         pos="relative"
         alignItems="center"
         justifyContent="center"
+        sx={{
+          minHeight: "110vh", // Ensure all sponsors are visible
+          "@media screen and (max-height: 700px)": {
+            minHeight: "130vh" // Shorter tablet screens need more height
+          }
+        }}
       >
         <Box
           pos="relative"
@@ -368,12 +379,16 @@ const PitStopSceneWrapper: React.FC = () => {
       <Box
         display={{ base: "none", md: "flex", lg: "none" }}
         w="100%"
-        minH="95vh"
-        maxH="110vh"
         bgColor="#100E0E"
         pos="relative"
         alignItems="center"
         justifyContent="center"
+        sx={{
+          minHeight: "120vh", // Ensure all sponsors are visible
+          "@media screen and (max-height: 600px)": {
+            minHeight: "140vh" // Very short tablet screens need more height
+          }
+        }}
       >
         <Box
           pos="relative"
@@ -522,29 +537,28 @@ const PitStopSceneWrapper: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Mobile Version */}
       <Box
         display={{ base: "block", md: "none" }}
         pos="relative"
         w="100%"
-        minW="390px"
-        minH="120vh"
-        maxH={{ base: "1200px", sm: "1400px" }}
         overflow="hidden"
         bg="#100E0E"
+        color="white"
+        minH="100dvh" // content can grow; page scrolls if needed
       >
+        {/* Background art layer (behind content) */}
         <Box
           pos="absolute"
+          inset="0"
           top="46%"
           left="50%"
-          transform={{
-            base: "translate(-50%, -50%) scale(0.7)"
-          }}
+          transform={{ base: "translate(-50%, -50%) scale(0.7)" }}
           w="100%"
           h="100%"
           transition="transform 0.5s ease"
           opacity={0.15}
           zIndex={1}
+          pointerEvents="none"
         >
           <Image
             src="/sponsors/car/8.png"
@@ -555,8 +569,8 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             minW="400px"
             h="auto"
-            animation={`${slideInUp} 1s ease-out`}
-            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+            animation={`${slideInUp} 1s ease-out both`}
+            style={{ animationDelay: "0.5s" }}
           />
           <Image
             src="/sponsors/car/5.png"
@@ -566,8 +580,8 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             w="250px"
             h="auto"
-            animation={`${slideInRight} 1.8s ease-out`}
-            css={{ animationDelay: "0.5s", animationFillMode: "both" }}
+            animation={`${slideInRight} 1.8s ease-out both`}
+            style={{ animationDelay: "0.5s" }}
           />
           <Image
             src="/sponsors/car/2.png"
@@ -577,8 +591,8 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             w="250px"
             h="auto"
-            animation={`${slideInLeft} 1.2s ease-out`}
-            css={{ animationDelay: "0.2s", animationFillMode: "both" }}
+            animation={`${slideInLeft} 1.2s ease-out both`}
+            style={{ animationDelay: "0.2s" }}
           />
           <Image
             src="/sponsors/car/4.png"
@@ -588,8 +602,8 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             w="200px"
             h="auto"
-            animation={`${slideInLeft} 1.6s ease-out`}
-            css={{ animationDelay: "0.4s", animationFillMode: "both" }}
+            animation={`${slideInLeft} 1.6s ease-out both`}
+            style={{ animationDelay: "0.4s" }}
           />
           <Image
             src="/sponsors/car/3.png"
@@ -599,8 +613,8 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             w="200px"
             h="auto"
-            animation={`${slideInRight} 1.4s ease-out`}
-            css={{ animationDelay: "0.3s", animationFillMode: "both" }}
+            animation={`${slideInRight} 1.4s ease-out both`}
+            style={{ animationDelay: "0.3s" }}
           />
           <Image
             src="/assets/car/6.png"
@@ -611,37 +625,41 @@ const PitStopSceneWrapper: React.FC = () => {
             display="block"
             w="200px"
             h="auto"
-            animation={`${slideInDown} 2s ease-out`}
-            css={{ animationDelay: "0.6s", animationFillMode: "both" }}
+            animation={`${slideInDown} 2s ease-out both`}
+            style={{ animationDelay: "0.6s" }}
           />
         </Box>
 
+        {/* Title */}
+        <AnimatedHeader>Sponsors</AnimatedHeader>
+
+        {/* Logo grid IN FLOW (no absolute positioning) */}
         <Box
-          pos="absolute"
-          top="55%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          w="100%"
-          maxW="350px"
+          pos="relative"
           zIndex={5}
           px={4}
+          mx="auto"
+          w="100%"
+          maxW="350px"
           display="flex"
+          flexDir="column"
           alignItems="center"
-          justifyContent="center"
-          minH="100vh"
+          // this is the only vertical spacer under the header; it scales sanely
+          pt={{ base: "clamp(48px, 12vh, 96px)" }}
+          pb={{ base: 8 }}
         >
-          <SimpleGrid columns={1} spacing={12}>
+          <SimpleGrid columns={1} spacing={6} w="100%">
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              animation={`${slideInUp} 1.2s ease-out`}
-              css={{ animationDelay: "1s", animationFillMode: "both" }}
+              animation={`${slideInUp} 1.2s ease-out both`}
+              style={{ animationDelay: "1s" }}
             >
               <Link href="https://www.caterpillar.com" isExternal>
                 <Image
                   src="/sponsors/car_images/caterpillar.svg"
-                  h="100px"
+                  h="80px"
                   w="auto"
                   filter={getSubtleGlowFilter(sponsorGlows.cat)}
                   transition="all 0.3s ease"
@@ -652,12 +670,13 @@ const PitStopSceneWrapper: React.FC = () => {
                 />
               </Link>
             </Box>
+
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              animation={`${slideInUp} 1.2s ease-out`}
-              css={{ animationDelay: "1s", animationFillMode: "both" }}
+              animation={`${slideInUp} 1.2s ease-out both`}
+              style={{ animationDelay: "1s" }}
             >
               <Link
                 href="https://about.deere.com/en-us/our-company-and-purpose"
@@ -665,7 +684,7 @@ const PitStopSceneWrapper: React.FC = () => {
               >
                 <Image
                   src="/sponsors/car_images/deere.png"
-                  h="120px"
+                  h="100px"
                   w="auto"
                   filter={getSubtleGlowFilter(sponsorGlows.deere)}
                   transition="all 0.3s ease"
@@ -676,17 +695,18 @@ const PitStopSceneWrapper: React.FC = () => {
                 />
               </Link>
             </Box>
+
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              animation={`${slideInUp} 1.2s ease-out`}
-              css={{ animationDelay: "1.2s", animationFillMode: "both" }}
+              animation={`${slideInUp} 1.2s ease-out both`}
+              style={{ animationDelay: "1.2s" }}
             >
               <Link href="https://www.hudsonrivertrading.com/" isExternal>
                 <Image
                   src="/sponsors/car_images/hrt.svg"
-                  h="100px"
+                  h="80px"
                   w="auto"
                   filter={getSubtleGlowFilter(sponsorGlows.hrt)}
                   transition="all 0.3s ease"
@@ -697,17 +717,18 @@ const PitStopSceneWrapper: React.FC = () => {
                 />
               </Link>
             </Box>
+
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              animation={`${slideInUp} 1.2s ease-out`}
-              css={{ animationDelay: "1.4s", animationFillMode: "both" }}
+              animation={`${slideInUp} 1.2s ease-out both`}
+              style={{ animationDelay: "1.4s" }}
             >
               <Link href="https://www.qualcomm.com/" isExternal>
                 <Image
                   src="/sponsors/car_images/qualcomm.png"
-                  h="60px"
+                  h="50px"
                   w="auto"
                   filter={getSubtleGlowFilter(sponsorGlows.qual)}
                   transition="all 0.3s ease"
@@ -718,17 +739,18 @@ const PitStopSceneWrapper: React.FC = () => {
                 />
               </Link>
             </Box>
+
             <Box
               display="flex"
               alignItems="center"
               justifyContent="center"
-              animation={`${slideInUp} 1.2s ease-out`}
-              css={{ animationDelay: "1.6s", animationFillMode: "both" }}
+              animation={`${slideInUp} 1.2s ease-out both`}
+              style={{ animationDelay: "1.6s" }}
             >
               <Link href="https://www.aechelon.com" isExternal>
                 <Image
                   src="/sponsors/car_images/aechelon.png"
-                  h="130px"
+                  h="110px"
                   w="auto"
                   filter={getSubtleGlowFilter(sponsorGlows.aech)}
                   transition="all 0.3s ease"
@@ -741,8 +763,6 @@ const PitStopSceneWrapper: React.FC = () => {
             </Box>
           </SimpleGrid>
         </Box>
-
-        <AnimatedHeader>Sponsors</AnimatedHeader>
       </Box>
     </Box>
   );
