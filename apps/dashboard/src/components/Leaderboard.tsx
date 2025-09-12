@@ -19,8 +19,8 @@ type Metadata =
       distance: number;
       x: number;
       y: number;
-      fx: number;
-      fy: number;
+      fX: number;
+      fY: number;
       angle: number;
     }
   | {
@@ -320,7 +320,7 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
   for (const segment of track) {
     // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
 
-    const { fx, fy, fangle, distance, metadata } = drawTrackSegment(
+    const { fX, fY, fAngle, distance, metadata } = drawTrackSegment(
       ctx,
       segment,
       x,
@@ -339,9 +339,9 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
     ctx.restore();
 
     // Update next segment start
-    x = fx;
-    y = fy;
-    angle = fangle;
+    x = fX;
+    y = fY;
+    angle = fAngle;
     totalDistance += distance;
 
     // Save metadata
@@ -352,9 +352,9 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
 }
 
 type SegmentDrawResult = {
-  fx: number;
-  fy: number;
-  fangle: number;
+  fX: number;
+  fY: number;
+  fAngle: number;
   metadata: Metadata;
   distance: number;
 };
@@ -369,20 +369,7 @@ function drawTrackSegment(
   if ("distance" in segment) {
     // Straight segment
     const distance = segment.distance;
-    const { fx, fy, fangle, metadata } = drawStraightTrack(
-      ctx,
-      x,
-      y,
-      angle,
-      distance
-    );
-    return {
-      fx,
-      fy,
-      fangle,
-      metadata,
-      distance
-    };
+    return drawStraightTrack(ctx, x, y, angle, distance);
   } else {
     // Arc segment
     return drawArcTrack(ctx, x, y, angle, segment.angle, segment.radius);
@@ -396,14 +383,14 @@ function drawStraightTrack(
   angle: number,
   distance: number
 ): SegmentDrawResult {
-  const fx = x + distance * Math.cos(rad(angle));
-  const fy = y + distance * Math.sin(rad(angle));
-  const fangle = angle;
+  const fX = x + distance * Math.cos(rad(angle));
+  const fY = y + distance * Math.sin(rad(angle));
+  const fAngle = angle;
 
   // Draw the red-white side of the track
   const maxI = Math.floor(distance / SIDE_DISTANCE);
-  const dx = fx - x;
-  const dy = fy - y;
+  const dx = fX - x;
+  const dy = fY - y;
   for (let i = 0; i < maxI; i++) {
     ctx.beginPath();
     ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
@@ -418,7 +405,7 @@ function drawStraightTrack(
   ctx.lineWidth = TRACK_WIDTH;
   ctx.strokeStyle = TRACK_COLOR;
   ctx.moveTo(x, y);
-  ctx.lineTo(fx, fy);
+  ctx.lineTo(fX, fY);
   ctx.stroke();
 
   // Create the metadata
@@ -426,13 +413,13 @@ function drawStraightTrack(
     type: "straight",
     x,
     y,
-    fx,
-    fy,
+    fX,
+    fY,
     angle,
     distance
   };
 
-  return { fx, fy, fangle, distance, metadata };
+  return { fX, fY, fAngle, distance, metadata };
 }
 
 function drawArcTrack(
@@ -443,16 +430,16 @@ function drawArcTrack(
   arcAngle: number,
   radius: number
 ): SegmentDrawResult {
-  const fangle = angle + arcAngle;
+  const fAngle = angle + arcAngle;
   const right = arcAngle > 0;
   const sign = right ? 1 : -1;
   const cx = x + radius * Math.cos(rad(angle) + (sign * Math.PI) / 2);
   const cy = y + radius * Math.sin(rad(angle) + (sign * Math.PI) / 2);
   const startAngle = rad(angle) - (sign * Math.PI) / 2;
-  const endAngle = rad(fangle) - (sign * Math.PI) / 2;
+  const endAngle = rad(fAngle) - (sign * Math.PI) / 2;
 
-  const fx = cx + radius * Math.cos(endAngle);
-  const fy = cy + radius * Math.sin(endAngle);
+  const fX = cx + radius * Math.cos(endAngle);
+  const fY = cy + radius * Math.sin(endAngle);
   const angleDiff = right ? endAngle - startAngle : startAngle - endAngle;
   const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
 
@@ -489,13 +476,13 @@ function drawArcTrack(
     cx,
     cy,
     startAngle: angle,
-    endAngle: fangle
+    endAngle: fAngle
   };
 
   return {
-    fx,
-    fy,
-    fangle,
+    fX,
+    fY,
+    fAngle,
     metadata,
     distance
   };
@@ -519,8 +506,8 @@ function drawCar(
       const alpha = distance / metadata.distance;
       if (metadata.type == "straight") {
         // Straight, linearly interpolate
-        x = metadata.x * (1 - alpha) + metadata.fx * alpha;
-        y = metadata.y * (1 - alpha) + metadata.fy * alpha;
+        x = metadata.x * (1 - alpha) + metadata.fX * alpha;
+        y = metadata.y * (1 - alpha) + metadata.fY * alpha;
         angle = rad(metadata.angle) - Math.PI / 2;
       } else if (metadata.type == "arc") {
         // Arc, interpolate the arc
