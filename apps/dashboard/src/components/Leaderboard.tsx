@@ -168,10 +168,17 @@ function LeaderboardRow({
       <Box width={"3rem"} height={"3rem"} marginRight={"0.25rem"}>
         <ProfileIcon width={"100%"} height={"100%"} color={iconColor} />
       </Box>
-      <Text marginRight={"0.25rem"} wordBreak={"break-all"} maxWidth={"75%"}>
+      <Text
+        marginRight={"0.25rem"}
+        wordBreak={"break-all"}
+        maxWidth={"75%"}
+        fontSize="xl"
+      >
         {displayName}
       </Text>
-      <Text marginLeft={"auto"}>{points} PTS</Text>
+      <Text marginLeft={"auto"} fontSize={"xl"}>
+        {points} PTS
+      </Text>
     </Flex>
   );
 }
