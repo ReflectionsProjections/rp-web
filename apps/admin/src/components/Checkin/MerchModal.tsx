@@ -39,7 +39,9 @@ const MerchModal: React.FC<MerchModalProps> = ({
       userId: selectedAttendee?.userId ?? ""
     })
   );
-  const [merchToRedeem, setMerchToRedeem] = useState({});
+  const [merchToRedeem, setMerchToRedeem] = useState<
+    Partial<Record<Tier, boolean>>
+  >({});
   const toast = useToast();
 
   // Handle merch redemption
@@ -111,9 +113,7 @@ const MerchModal: React.FC<MerchModalProps> = ({
                 {data.redeemableTiers.map((tier) => (
                   <Checkbox
                     key={tier}
-                    isChecked={
-                      merchToRedeem[tier as keyof typeof merchToRedeem]
-                    }
+                    isChecked={merchToRedeem[tier]}
                     onChange={(e) =>
                       setMerchToRedeem((prev) => ({
                         ...prev,

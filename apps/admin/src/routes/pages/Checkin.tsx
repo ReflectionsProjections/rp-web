@@ -115,7 +115,6 @@ const Checkin = () => {
           userId: selectedAttendee.userId
         })
         .finally(() => {
-          console.log(selectedEvent);
           if (selectedEvent.eventType === "CHECKIN") {
             onOpen();
           }
