@@ -2,7 +2,14 @@ import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
 import { Flex, Heading } from "@chakra-ui/react";
 import { IconColor, IconColors, LeaderboardEntry, rad } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 // import { usePolling } from "@rp/shared";
 
 type Segment = { angle: number; radius: number } | { distance: number };
@@ -40,89 +47,92 @@ export default function Leaderboard() {
   // const { data, isLoading } = usePolling("/leaderboard/daily");
 
   // Testing data until leaderboard is done
-  const leaderboard: LeaderboardEntry[] = [
-    {
-      displayName: "Bob",
-      currentTier: "TIER2",
-      icon: "ORANGE",
-      points: 32,
-      rank: 1,
-      userId: "1234"
-    },
-    {
-      displayName: "Alice",
-      currentTier: "TIER1",
-      icon: "RED",
-      points: 28,
-      rank: 2,
-      userId: "12345"
-    },
-    {
-      displayName: "Alex",
-      currentTier: "TIER1",
-      icon: "BLUE",
-      points: 25,
-      rank: 3,
-      userId: "123456"
-    },
-    {
-      displayName: "Tree",
-      currentTier: "TIER1",
-      icon: "GREEN",
-      points: 18,
-      rank: 4,
-      userId: "1234567"
-    },
-    {
-      displayName:
-        "LongestNameInTheFreakingWorldLikeOhMyGodWhyIsThisNameSoFreakingLongSurelyGoogleWontAllowThis",
-      currentTier: "TIER1",
-      icon: "PURPLE",
-      points: 16,
-      rank: 5,
-      userId: "1234568"
-    },
-    {
-      displayName: "OnlyOne",
-      currentTier: "TIER1",
-      icon: "GREEN",
-      points: 13,
-      rank: 6,
-      userId: "1234569"
-    },
-    {
-      displayName: "TesterTheGuy",
-      currentTier: "TIER1",
-      icon: "RED",
-      points: 11,
-      rank: 7,
-      userId: "12532"
-    },
-    {
-      displayName: "Bazinga",
-      currentTier: "TIER1",
-      icon: "ORANGE",
-      points: 5,
-      rank: 8,
-      userId: "13454315"
-    },
-    {
-      displayName: "Sheldon",
-      currentTier: "TIER1",
-      icon: "PINK",
-      points: 3,
-      rank: 9,
-      userId: "12352353"
-    },
-    {
-      displayName: "Duck",
-      currentTier: "TIER1",
-      icon: "PURPLE",
-      points: 2,
-      rank: 10,
-      userId: "1235235239845"
-    }
-  ];
+  const leaderboard: LeaderboardEntry[] = useMemo(
+    () => [
+      {
+        displayName: "Bob",
+        currentTier: "TIER2",
+        icon: "ORANGE",
+        points: 32,
+        rank: 1,
+        userId: "1234"
+      },
+      {
+        displayName: "Alice",
+        currentTier: "TIER1",
+        icon: "RED",
+        points: 28,
+        rank: 2,
+        userId: "12345"
+      },
+      {
+        displayName: "Alex",
+        currentTier: "TIER1",
+        icon: "BLUE",
+        points: 25,
+        rank: 3,
+        userId: "123456"
+      },
+      {
+        displayName: "Tree",
+        currentTier: "TIER1",
+        icon: "GREEN",
+        points: 18,
+        rank: 4,
+        userId: "1234567"
+      },
+      {
+        displayName:
+          "LongestNameInTheFreakingWorldLikeOhMyGodWhyIsThisNameSoFreakingLongSurelyGoogleWontAllowThis",
+        currentTier: "TIER1",
+        icon: "PURPLE",
+        points: 16,
+        rank: 5,
+        userId: "1234568"
+      },
+      {
+        displayName: "OnlyOne",
+        currentTier: "TIER1",
+        icon: "GREEN",
+        points: 13,
+        rank: 6,
+        userId: "1234569"
+      },
+      {
+        displayName: "TesterTheGuy",
+        currentTier: "TIER1",
+        icon: "RED",
+        points: 11,
+        rank: 7,
+        userId: "12532"
+      },
+      {
+        displayName: "Bazinga",
+        currentTier: "TIER1",
+        icon: "ORANGE",
+        points: 5,
+        rank: 8,
+        userId: "13454315"
+      },
+      {
+        displayName: "Sheldon",
+        currentTier: "TIER1",
+        icon: "PINK",
+        points: 3,
+        rank: 9,
+        userId: "12352353"
+      },
+      {
+        displayName: "Duck",
+        currentTier: "TIER1",
+        icon: "PURPLE",
+        points: 2,
+        rank: 10,
+        userId: "1235235239845"
+      }
+    ],
+    []
+  );
   const { data, isLoading } = {
     data: {
       leaderboard
@@ -166,6 +176,9 @@ export default function Leaderboard() {
     loadImages().catch(console.error);
   }, []);
 
+  // This is called every frame to update the canvas
+  const [updateLoopInitialized, setUpdateLoopInitialized] = useState(false);
+
   // We need to resize the canvas to match the space it takes up
   function resizeCanvas(canvas: HTMLCanvasElement) {
     const realSize = canvas.getBoundingClientRect();
@@ -173,23 +186,40 @@ export default function Leaderboard() {
     canvas.height = realSize.height;
   }
 
-  // This is called every frame to update the canvas
-  function update() {
+  // Begins update loop to resize canvas and draw
+  const initializeUpdateLoop = useCallback(() => {
+    function update() {
+      // Resize the canvas so it matches the actual css space it takes up
+      if (canvasRef.current) {
+        resizeCanvas(canvasRef.current);
+        const ctx = canvasRef.current.getContext("2d");
+        if (ctx) {
+          draw(ctx, leaderboard, carImages);
+        }
+      }
+
+      requestAnimationFrame(update);
+    }
+
+    update();
+  }, [carImages, leaderboard]);
+
+  useLayoutEffect(() => {
+    if (updateLoopInitialized) return;
+
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!carImages || !canvas) return;
 
-    // Resize the canvas so it matches the actual css space it takes up
-    resizeCanvas(canvas);
+    setUpdateLoopInitialized(true);
 
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    draw(ctx, leaderboard, carImages);
-
-    requestAnimationFrame(update);
-  }
-
-  useLayoutEffect(update, [canvasRef, update]);
+    initializeUpdateLoop();
+  }, [
+    initializeUpdateLoop,
+    canvasRef,
+    carImages,
+    leaderboard,
+    updateLoopInitialized
+  ]);
 
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
