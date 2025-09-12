@@ -47,7 +47,7 @@ export default function Leaderboard() {
   // const { data, isLoading } = usePolling("/leaderboard/daily");
 
   // Testing data until leaderboard is done
-  const leaderboard: LeaderboardEntry[] = useMemo(
+  const leaderboardMockData: LeaderboardEntry[] | undefined = useMemo(
     () => [
       {
         displayName: "Bob",
@@ -133,14 +133,18 @@ export default function Leaderboard() {
     ],
     []
   );
-  const { data, isLoading } = {
+  const { data } = {
     data: {
-      leaderboard
-    },
-    isLoading: false
+      leaderboard: leaderboardMockData
+    }
+  } as {
+    data:
+      | {
+          leaderboard: LeaderboardEntry[];
+        }
+      | undefined;
   };
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  console.log(data, isLoading);
 
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
@@ -194,7 +198,7 @@ export default function Leaderboard() {
         resizeCanvas(canvasRef.current);
         const ctx = canvasRef.current.getContext("2d");
         if (ctx) {
-          draw(ctx, leaderboard, carImages);
+          draw(ctx, data?.leaderboard, carImages);
         }
       }
 
@@ -202,7 +206,7 @@ export default function Leaderboard() {
     }
 
     update();
-  }, [carImages, leaderboard]);
+  }, [carImages, data]);
 
   useLayoutEffect(() => {
     if (updateLoopInitialized) return;
@@ -213,13 +217,7 @@ export default function Leaderboard() {
     setUpdateLoopInitialized(true);
 
     initializeUpdateLoop();
-  }, [
-    initializeUpdateLoop,
-    canvasRef,
-    carImages,
-    leaderboard,
-    updateLoopInitialized
-  ]);
+  }, [initializeUpdateLoop, canvasRef, carImages, updateLoopInitialized]);
 
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
@@ -282,7 +280,7 @@ function draw(
     { angle: 90, radius: 79.3125 * scale }
   ];
 
-  const [trackMetadata, totalDistance] = drawTrack(ctx, track);
+  const { trackMetadata, totalDistance } = drawTrack(ctx, track);
 
   // Increment the position the leading car is at
   position = (position + 0.000125) % 1;
@@ -302,16 +300,15 @@ function draw(
     );
 
     if (i == 0 && res) {
-      [cameraX, cameraY, cameraAngle] = res;
+      cameraX = res.x;
+      cameraY = res.y;
+      cameraAngle = res.angle;
     }
   }
 }
 
 // Draw the track cars drive on
-function drawTrack(
-  ctx: CanvasRenderingContext2D,
-  track: Segment[]
-): [Metadata[], number] {
+function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
   // The starting position and angle
   let x = 125;
   let y = 125;
@@ -323,98 +320,13 @@ function drawTrack(
   for (const segment of track) {
     // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
 
-    let fx, fy, fangle, distance;
-
-    if ("distance" in segment) {
-      // Straight segment
-      distance = segment.distance;
-      fx = x + distance * Math.cos(rad(angle));
-      fy = y + distance * Math.sin(rad(angle));
-      fangle = angle;
-
-      // Draw the red-white side of the track
-      const maxI = Math.floor(distance / SIDE_DISTANCE);
-      const dx = fx - x;
-      const dy = fy - y;
-      for (let i = 0; i < maxI; i++) {
-        ctx.beginPath();
-        ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-        ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
-        ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
-        ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
-        ctx.stroke();
-      }
-
-      // Draw the main track
-      ctx.beginPath();
-      ctx.lineWidth = TRACK_WIDTH;
-      ctx.strokeStyle = TRACK_COLOR;
-      ctx.moveTo(x, y);
-      ctx.lineTo(fx, fy);
-      ctx.stroke();
-
-      // Push the metadata
-      trackMetadata.push({
-        type: "straight",
-        distance,
-        x,
-        y,
-        fx,
-        fy,
-        angle
-      });
-    } else {
-      // Arc segment
-      fangle = angle + segment.angle;
-      const right = segment.angle > 0;
-      const sign = right ? 1 : -1;
-      const radius = segment.radius;
-      const cx = x + radius * Math.cos(rad(angle) + (sign * Math.PI) / 2);
-      const cy = y + radius * Math.sin(rad(angle) + (sign * Math.PI) / 2);
-      const startAngle = rad(angle) - (sign * Math.PI) / 2;
-      const endAngle = rad(fangle) - (sign * Math.PI) / 2;
-
-      fx = cx + radius * Math.cos(endAngle);
-      fy = cy + radius * Math.sin(endAngle);
-      const angleDiff = right ? endAngle - startAngle : startAngle - endAngle;
-      distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
-
-      // Draw sides of the track
-      const maxI = Math.floor(distance / SIDE_DISTANCE);
-      const dAngle = endAngle - startAngle;
-      for (let i = 0; i < maxI; i++) {
-        ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-        ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
-        ctx.beginPath();
-        ctx.arc(
-          cx,
-          cy,
-          radius,
-          startAngle + dAngle * (i / maxI),
-          startAngle + dAngle * ((i + 1) / maxI),
-          !right
-        );
-        ctx.stroke();
-      }
-
-      // Draw the track
-      ctx.lineWidth = TRACK_WIDTH;
-      ctx.strokeStyle = TRACK_COLOR;
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, startAngle, endAngle, !right);
-      ctx.stroke();
-
-      // Push the metadata
-      trackMetadata.push({
-        type: "arc",
-        distance,
-        startAngle: angle,
-        endAngle: fangle,
-        cx,
-        cy,
-        radius
-      });
-    }
+    const { fx, fy, fangle, distance, metadata } = drawTrackSegment(
+      ctx,
+      segment,
+      x,
+      y,
+      angle
+    );
 
     // Segment to reduce sub-pixel errors
     ctx.save();
@@ -431,9 +343,162 @@ function drawTrack(
     y = fy;
     angle = fangle;
     totalDistance += distance;
+
+    // Save metadata
+    trackMetadata.push(metadata);
   }
 
-  return [trackMetadata, totalDistance];
+  return { trackMetadata, totalDistance };
+}
+
+type SegmentDrawResult = {
+  fx: number;
+  fy: number;
+  fangle: number;
+  metadata: Metadata;
+  distance: number;
+};
+
+function drawTrackSegment(
+  ctx: CanvasRenderingContext2D,
+  segment: Segment,
+  x: number,
+  y: number,
+  angle: number
+): SegmentDrawResult {
+  if ("distance" in segment) {
+    // Straight segment
+    const distance = segment.distance;
+    const { fx, fy, fangle, metadata } = drawStraightTrack(
+      ctx,
+      x,
+      y,
+      angle,
+      distance
+    );
+    return {
+      fx,
+      fy,
+      fangle,
+      metadata,
+      distance
+    };
+  } else {
+    // Arc segment
+    return drawArcTrack(ctx, x, y, angle, segment.angle, segment.radius);
+  }
+}
+
+function drawStraightTrack(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  angle: number,
+  distance: number
+): SegmentDrawResult {
+  const fx = x + distance * Math.cos(rad(angle));
+  const fy = y + distance * Math.sin(rad(angle));
+  const fangle = angle;
+
+  // Draw the red-white side of the track
+  const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const dx = fx - x;
+  const dy = fy - y;
+  for (let i = 0; i < maxI; i++) {
+    ctx.beginPath();
+    ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
+    ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+    ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
+    ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
+    ctx.stroke();
+  }
+
+  // Draw the main track
+  ctx.beginPath();
+  ctx.lineWidth = TRACK_WIDTH;
+  ctx.strokeStyle = TRACK_COLOR;
+  ctx.moveTo(x, y);
+  ctx.lineTo(fx, fy);
+  ctx.stroke();
+
+  // Create the metadata
+  const metadata: Metadata = {
+    type: "straight",
+    x,
+    y,
+    fx,
+    fy,
+    angle,
+    distance
+  };
+
+  return { fx, fy, fangle, distance, metadata };
+}
+
+function drawArcTrack(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  angle: number,
+  arcAngle: number,
+  radius: number
+): SegmentDrawResult {
+  const fangle = angle + arcAngle;
+  const right = arcAngle > 0;
+  const sign = right ? 1 : -1;
+  const cx = x + radius * Math.cos(rad(angle) + (sign * Math.PI) / 2);
+  const cy = y + radius * Math.sin(rad(angle) + (sign * Math.PI) / 2);
+  const startAngle = rad(angle) - (sign * Math.PI) / 2;
+  const endAngle = rad(fangle) - (sign * Math.PI) / 2;
+
+  const fx = cx + radius * Math.cos(endAngle);
+  const fy = cy + radius * Math.sin(endAngle);
+  const angleDiff = right ? endAngle - startAngle : startAngle - endAngle;
+  const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
+
+  // Draw sides of the track
+  const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const dAngle = endAngle - startAngle;
+  for (let i = 0; i < maxI; i++) {
+    ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
+    ctx.strokeStyle = i % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+    ctx.beginPath();
+    ctx.arc(
+      cx,
+      cy,
+      radius,
+      startAngle + dAngle * (i / maxI),
+      startAngle + dAngle * ((i + 1) / maxI),
+      !right
+    );
+    ctx.stroke();
+  }
+
+  // Draw the track
+  ctx.lineWidth = TRACK_WIDTH;
+  ctx.strokeStyle = TRACK_COLOR;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, startAngle, endAngle, !right);
+  ctx.stroke();
+
+  // Create the metadata
+  const metadata: Metadata = {
+    type: "arc",
+    distance,
+    radius,
+    cx,
+    cy,
+    startAngle: angle,
+    endAngle: fangle
+  };
+
+  return {
+    fx,
+    fy,
+    fangle,
+    metadata,
+    distance
+  };
 }
 
 // Draw a car using the metadata
@@ -443,7 +508,7 @@ function drawCar(
   image: HTMLImageElement,
   trackMetadata: Metadata[],
   totalDistance: number
-): [number, number, number] | undefined {
+) {
   let distance = totalDistance * position;
   let x, y, angle;
 
@@ -492,6 +557,10 @@ function drawCar(
     ctx.fill();
     ctx.restore();
 
-    return [x, y, angle];
+    return {
+      x,
+      y,
+      angle
+    };
   }
 }
