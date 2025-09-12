@@ -249,7 +249,7 @@ function draw(
     { angle: -45 - 90, radius: 50 * scale },
     { angle: 180, radius: 100 * scale },
     { distance: 100 * scale },
-    { angle: 90, radius: 79 * scale }
+    { angle: 90, radius: 79.3125 * scale }
   ];
 
   const [trackMetadata, totalDistance] = drawTrack(ctx, track);
