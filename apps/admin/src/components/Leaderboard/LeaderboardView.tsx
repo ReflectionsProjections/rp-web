@@ -1,5 +1,6 @@
 import { Box, Flex, Stack, StackDivider, Text } from "@chakra-ui/react";
 import { LeaderboardUser } from "@rp/shared";
+import { useMemo } from "react";
 
 const LeaderboardCard: React.FC<{
   user: LeaderboardUser;
@@ -130,7 +131,36 @@ const LeaderboardView: React.FC<{
   numberAwards: number;
   isLoading: boolean;
 }> = ({ leaderboardUsers, numberAwards, isLoading }) => {
-  const breakpoint = leaderboardUsers[numberAwards - 1]?.points ?? 0;
+  const breakpoint = useMemo(
+    () => leaderboardUsers[numberAwards - 1]?.points ?? 0,
+    [leaderboardUsers, numberAwards]
+  );
+
+  const allCards = useMemo(
+    () =>
+      leaderboardUsers.map((user, index) => (
+        <LeaderboardCard user={user} key={user.userId} ranking={index} />
+      )),
+    [leaderboardUsers]
+  );
+
+  const awardWinners = useMemo(
+    () => allCards?.slice(0, numberAwards),
+    [allCards, numberAwards]
+  );
+
+  const otherUsers = useMemo(
+    () => allCards?.slice(numberAwards),
+    [allCards, numberAwards]
+  );
+
+  const loadingSkeletons = useMemo(
+    () =>
+      Array.from({ length: 10 }, (_, index) => (
+        <LeaderboardCardSkeleton key={`skeleton-${index}`} />
+      )),
+    []
+  );
 
   return (
     <Box>
@@ -139,19 +169,7 @@ const LeaderboardView: React.FC<{
         spacing={3}
         mt={8}
       >
-        {isLoading
-          ? Array.from({ length: 10 }).map((_, index) => (
-              <LeaderboardCardSkeleton key={index} />
-            ))
-          : leaderboardUsers
-              ?.slice(0, numberAwards)
-              .map((user, index) => (
-                <LeaderboardCard
-                  user={user}
-                  key={user.userId}
-                  ranking={index}
-                />
-              ))}
+        {isLoading ? loadingSkeletons : awardWinners}
         {breakpoint > 0 && (
           <Text as="b" color="yellow.500">
             Minimum point threshold: {breakpoint}
@@ -160,19 +178,7 @@ const LeaderboardView: React.FC<{
       </Stack>
 
       <Stack divider={<StackDivider />} spacing={3} mt={8}>
-        {isLoading
-          ? Array.from({ length: 10 }).map((_, index) => (
-              <LeaderboardCardSkeleton key={index} />
-            ))
-          : leaderboardUsers
-              ?.slice(numberAwards)
-              .map((user, index) => (
-                <LeaderboardCard
-                  user={user}
-                  key={user.userId}
-                  ranking={index + numberAwards}
-                />
-              ))}
+        {isLoading ? loadingSkeletons : otherUsers}
       </Stack>
     </Box>
   );
