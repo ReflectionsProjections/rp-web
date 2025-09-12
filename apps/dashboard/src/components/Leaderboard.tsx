@@ -3,14 +3,7 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { IconColor, IconColors, LeaderboardEntry, rad } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
 import Icon from "@/assets/icon.svg?react";
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState
-} from "react";
+import { useEffect, useRef, useState } from "react";
 // import { usePolling } from "@rp/shared";
 
 type Segment = { angle: number; radius: number } | { distance: number };
@@ -53,113 +46,110 @@ const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
 const ZOOM_OUT = false;
 
+function useMockData() {
+  const [data, setData] = useState<
+    { leaderboard: LeaderboardEntry[] } | undefined
+  >(undefined);
+  useEffect(() => {
+    setData({
+      leaderboard: [
+        {
+          displayName: "Bob",
+          currentTier: "TIER2",
+          icon: "ORANGE",
+          points: 32,
+          rank: 1,
+          userId: "1234"
+        },
+        {
+          displayName: "Alice",
+          currentTier: "TIER1",
+          icon: "RED",
+          points: 28,
+          rank: 2,
+          userId: "12345"
+        },
+        {
+          displayName: "Alex",
+          currentTier: "TIER1",
+          icon: "BLUE",
+          points: 25,
+          rank: 3,
+          userId: "123456"
+        },
+        {
+          displayName: "Tree",
+          currentTier: "TIER1",
+          icon: "GREEN",
+          points: 18,
+          rank: 4,
+          userId: "1234567"
+        },
+        {
+          displayName: "OnlyTwentyCharacters", // Crazy this is exactly 20
+          currentTier: "TIER1",
+          icon: "PURPLE",
+          points: 16,
+          rank: 5,
+          userId: "1234568"
+        },
+        {
+          displayName: "OnlyOne",
+          currentTier: "TIER1",
+          icon: "GREEN",
+          points: 13,
+          rank: 6,
+          userId: "1234569"
+        },
+        {
+          displayName: "TesterTheGuy",
+          currentTier: "TIER1",
+          icon: "RED",
+          points: 11,
+          rank: 7,
+          userId: "12532"
+        },
+        {
+          displayName: "Bazinga",
+          currentTier: "TIER1",
+          icon: "ORANGE",
+          points: 5,
+          rank: 8,
+          userId: "13454315"
+        },
+        {
+          displayName: "Sheldon",
+          currentTier: "TIER1",
+          icon: "PINK",
+          points: 3,
+          rank: 9,
+          userId: "12352353"
+        },
+        {
+          displayName: "Duck",
+          currentTier: "TIER1",
+          icon: "PURPLE",
+          points: 2,
+          rank: 10,
+          userId: "1235235239845"
+        }
+      ]
+    });
+  }, []);
+
+  return { data, isLoading: false };
+}
+
 export default function Leaderboard() {
   // const { data, isLoading } = usePolling("/leaderboard/daily");
 
   // Testing data until leaderboard is done
-  const leaderboardMockData: LeaderboardEntry[] | undefined = useMemo(
-    () => [
-      {
-        displayName: "Bob",
-        currentTier: "TIER2",
-        icon: "ORANGE",
-        points: 32,
-        rank: 1,
-        userId: "1234"
-      },
-      {
-        displayName: "Alice",
-        currentTier: "TIER1",
-        icon: "RED",
-        points: 28,
-        rank: 2,
-        userId: "12345"
-      },
-      {
-        displayName: "Alex",
-        currentTier: "TIER1",
-        icon: "BLUE",
-        points: 25,
-        rank: 3,
-        userId: "123456"
-      },
-      {
-        displayName: "Tree",
-        currentTier: "TIER1",
-        icon: "GREEN",
-        points: 18,
-        rank: 4,
-        userId: "1234567"
-      },
-      {
-        displayName: "OnlyTwentyCharacters", // Crazy this is exactly 20
-        currentTier: "TIER1",
-        icon: "PURPLE",
-        points: 16,
-        rank: 5,
-        userId: "1234568"
-      },
-      {
-        displayName: "OnlyOne",
-        currentTier: "TIER1",
-        icon: "GREEN",
-        points: 13,
-        rank: 6,
-        userId: "1234569"
-      },
-      {
-        displayName: "TesterTheGuy",
-        currentTier: "TIER1",
-        icon: "RED",
-        points: 11,
-        rank: 7,
-        userId: "12532"
-      },
-      {
-        displayName: "Bazinga",
-        currentTier: "TIER1",
-        icon: "ORANGE",
-        points: 5,
-        rank: 8,
-        userId: "13454315"
-      },
-      {
-        displayName: "Sheldon",
-        currentTier: "TIER1",
-        icon: "PINK",
-        points: 3,
-        rank: 9,
-        userId: "12352353"
-      },
-      {
-        displayName: "Duck",
-        currentTier: "TIER1",
-        icon: "PURPLE",
-        points: 2,
-        rank: 10,
-        userId: "1235235239845"
-      }
-    ],
-    []
-  );
-  const { data } = {
-    data: {
-      leaderboard: leaderboardMockData
-    }
-  } as {
-    data:
-      | {
-          leaderboard: LeaderboardEntry[];
-        }
-      | undefined;
-  };
+  const { data } = useMockData();
   const canvasRef = useRef<HTMLCanvasElement>(null);
-
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
-
-  const [positions, setPositions] = useState<(CarPosition | undefined)[]>([]);
+  const { positions } = useUpdateAnimationLoop({ canvasRef, carImages, data });
 
   // Preload images for each color
   async function loadImages() {
@@ -190,69 +180,6 @@ export default function Leaderboard() {
   useEffect(() => {
     loadImages().catch(console.error);
   }, []);
-
-  // This is called every frame to update the canvas
-  const [updateLoopInitialized, setUpdateLoopInitialized] = useState(false);
-
-  // We need to resize the canvas to match the space it takes up
-  function resizeCanvas(canvas: HTMLCanvasElement) {
-    const realSize = canvas.getBoundingClientRect();
-    canvas.width = realSize.width;
-    canvas.height = realSize.height;
-  }
-
-  // Begins update loop to resize canvas and draw
-  const initializeUpdateLoop = useCallback(() => {
-    function update() {
-      // Resize the canvas so it matches the actual css space it takes up
-      if (canvasRef.current) {
-        resizeCanvas(canvasRef.current);
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) {
-          const result = draw(ctx, data?.leaderboard, carImages);
-          if (result) {
-            const { positions, transform } = result;
-            setPositions(
-              positions.map((pos) => {
-                const canvas = canvasRef.current;
-                if (!canvas || !pos) return;
-
-                const transformed = transform.transformPoint(
-                  new DOMPoint(pos.x, pos.y)
-                );
-
-                const drawTransformed = transform.transformPoint(
-                  new DOMPoint(pos.drawX, pos.drawY)
-                );
-                return {
-                  x: transformed.x,
-                  y: transformed.y,
-                  drawX: drawTransformed.x,
-                  drawY: drawTransformed.y,
-                  angle: pos.angle
-                };
-              })
-            );
-          }
-        }
-      }
-
-      requestAnimationFrame(update);
-    }
-
-    update();
-  }, [carImages, data]);
-
-  useLayoutEffect(() => {
-    if (updateLoopInitialized) return;
-
-    const canvas = canvasRef.current;
-    if (!carImages || !canvas) return;
-
-    setUpdateLoopInitialized(true);
-
-    initializeUpdateLoop();
-  }, [initializeUpdateLoop, canvasRef, carImages, updateLoopInitialized]);
 
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
@@ -345,7 +272,75 @@ function LeaderboardEntryDisplay({
   );
 }
 
-let position = 0;
+// We need to resize the canvas to match the space it takes up
+function resizeCanvas(canvas: HTMLCanvasElement) {
+  const realSize = canvas.getBoundingClientRect();
+  canvas.width = realSize.width;
+  canvas.height = realSize.height;
+}
+
+// A hook which connects to the update animation loop
+// On cancel, the animation loop is canceled and restarted with the next invocation
+// Positions is returned to be used by dom elements
+function useUpdateAnimationLoop({
+  canvasRef,
+  carImages,
+  data
+}: {
+  canvasRef: React.RefObject<HTMLCanvasElement>;
+  carImages: Record<IconColor, HTMLImageElement> | undefined;
+  data: ReturnType<typeof useMockData>["data"];
+}) {
+  const [positions, setPositions] = useState<(CarPosition | undefined)[]>([]);
+
+  useEffect(() => {
+    let frame: number;
+    function update() {
+      // Resize the canvas so it matches the actual css space it takes up
+      if (canvasRef.current) {
+        resizeCanvas(canvasRef.current);
+        const ctx = canvasRef.current.getContext("2d");
+        if (ctx) {
+          const result = draw(ctx, data?.leaderboard, carImages);
+          if (result) {
+            const { positions, transform } = result;
+            setPositions(
+              positions.map((pos) => {
+                const canvas = canvasRef.current;
+                if (!canvas || !pos) return;
+
+                const transformed = transform.transformPoint(
+                  new DOMPoint(pos.x, pos.y)
+                );
+
+                const drawTransformed = transform.transformPoint(
+                  new DOMPoint(pos.drawX, pos.drawY)
+                );
+                return {
+                  x: transformed.x,
+                  y: transformed.y,
+                  drawX: drawTransformed.x,
+                  drawY: drawTransformed.y,
+                  angle: pos.angle
+                };
+              })
+            );
+          }
+        }
+      }
+
+      frame = requestAnimationFrame(update);
+    }
+
+    frame = requestAnimationFrame(update);
+
+    // On cancel, make sure to cancel the previous frame loop
+    return () => cancelAnimationFrame(frame);
+  }, [canvasRef, carImages, data]);
+
+  return { positions };
+}
+
 let cameraX: number | undefined;
 let cameraY: number | undefined;
 let cameraAngle: number | undefined;
@@ -355,6 +350,7 @@ const carCycles: {
   offsetY: number;
   cycleY: number;
 }[] = [];
+let position = 0;
 
 // The main draw function - called every frame to draw the track & cars
 function draw(
