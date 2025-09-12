@@ -19,7 +19,7 @@ const theme = extendTheme({
   styles: {
     global: {
       "html, body": {
-        "background-color": "black",
+        "background-color": "darkred",
         color: "white"
       }
     }
@@ -41,15 +41,10 @@ function App() {
       >
         <Title />
         <Flex width={"100%"} minHeight={"0"} flexGrow={"1"}>
-          <Box
-            width={"50%"}
-            height={"100%"}
-            marginRight={"5rem"}
-            alignItems={"left"}
-          >
+          <Box width={"50%"} height={"100%"} alignItems={"left"}>
             <Leaderboard />
           </Box>
-          <Box width={"50%"} marginLeft={"5rem"} alignItems={"right"}>
+          <Box width={"50%"} alignItems={"right"}>
             <Events />
           </Box>
         </Flex>

@@ -1,7 +1,8 @@
 import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
-import { Flex, Heading } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { IconColor, IconColors, LeaderboardEntry, rad } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
+import Icon from "@/assets/icon.svg?react";
 import {
   useCallback,
   useEffect,
@@ -32,6 +33,13 @@ type Metadata =
       startAngle: number;
       endAngle: number;
     };
+type CarPosition = {
+  x: number;
+  y: number;
+  drawX: number;
+  drawY: number;
+  angle: number;
+};
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 50;
 const SIDE_DISTANCE = 100;
@@ -84,8 +92,7 @@ export default function Leaderboard() {
         userId: "1234567"
       },
       {
-        displayName:
-          "LongestNameInTheFreakingWorldLikeOhMyGodWhyIsThisNameSoFreakingLongSurelyGoogleWontAllowThis",
+        displayName: "OnlyTwentyCharacters", // Crazy this is exactly 20
         currentTier: "TIER1",
         icon: "PURPLE",
         points: 16,
@@ -152,6 +159,8 @@ export default function Leaderboard() {
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
 
+  const [positions, setPositions] = useState<(CarPosition | undefined)[]>([]);
+
   // Preload images for each color
   async function loadImages() {
     const loadedEntries = await Promise.all(
@@ -200,7 +209,31 @@ export default function Leaderboard() {
         resizeCanvas(canvasRef.current);
         const ctx = canvasRef.current.getContext("2d");
         if (ctx) {
-          draw(ctx, data?.leaderboard, carImages);
+          const result = draw(ctx, data?.leaderboard, carImages);
+          if (result) {
+            const { positions, transform } = result;
+            setPositions(
+              positions.map((pos) => {
+                const canvas = canvasRef.current;
+                if (!canvas || !pos) return;
+
+                const transformed = transform.transformPoint(
+                  new DOMPoint(pos.x, pos.y)
+                );
+
+                const drawTransformed = transform.transformPoint(
+                  new DOMPoint(pos.drawX, pos.drawY)
+                );
+                return {
+                  x: transformed.x,
+                  y: transformed.y,
+                  drawX: drawTransformed.x,
+                  drawY: drawTransformed.y,
+                  angle: pos.angle
+                };
+              })
+            );
+          }
         }
       }
 
@@ -224,10 +257,91 @@ export default function Leaderboard() {
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
       <Heading textAlign={"center"}>Leaderboard</Heading>
-      <Flex minHeight={"0"} flexGrow={"1"}>
+      <Flex
+        position={"relative"}
+        minHeight={"0"}
+        flexGrow={"1"}
+        overflow={"hidden"}
+      >
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
+        <Box position="absolute" top={0} left={0} right={0} bottom={0}>
+          {data?.leaderboard &&
+            positions.map((pos, i) => {
+              const entry = data?.leaderboard[i];
+              return (
+                pos && (
+                  <LeaderboardEntryDisplay
+                    key={i}
+                    i={i}
+                    pos={pos}
+                    entry={entry}
+                  />
+                )
+              );
+            })}
+        </Box>
       </Flex>
     </Flex>
+  );
+}
+
+function LeaderboardEntryDisplay({
+  i,
+  pos,
+  entry: { rank, displayName, points, icon }
+}: {
+  i: number;
+  pos: CarPosition;
+  entry: LeaderboardEntry;
+}) {
+  let placePostfix = "th";
+  if (rank % 10 == 1 && (rank < 10 || rank > 20)) {
+    placePostfix = "st";
+  }
+  if (rank % 10 == 2 && (rank < 10 || rank > 20)) {
+    placePostfix = "nd";
+  }
+  if (rank % 10 == 3 && (rank < 10 || rank > 20)) {
+    placePostfix = "rd";
+  }
+
+  return (
+    <Box
+      position={"absolute"}
+      transform={"translate(0,-50%)"}
+      backgroundColor={"#0000008c"}
+      width={"max-content"}
+      padding={"0.25rem"}
+      borderRadius={"0.5rem"}
+      // Style inlined here to prevent chakra generating a new class every frame
+      style={{
+        top: pos.y,
+        left: `calc(${pos.x}px + ${i % 2 == 0 ? "15%" : "7.5%"}`
+      }}
+    >
+      <Flex
+        border={`2px solid ${ICON_COLOR_TO_COLOR[icon]}`}
+        borderRadius={"0.5rem"}
+        padding={"0.75rem"}
+        alignItems={"center"}
+      >
+        <Text marginRight={"0.5rem"}>
+          {rank}
+          <small>{placePostfix}</small>
+        </Text>
+        <Box marginRight={"0.5rem"}>
+          <Icon
+            width={"3rem"}
+            height={"3rem"}
+            color={ICON_COLOR_TO_COLOR[icon]}
+          />
+        </Box>
+        <Flex flexDirection={"column"}>
+          <Text fontWeight={"bold"}>{displayName}</Text>
+          <Text>{points} PTS</Text>
+        </Flex>
+      </Flex>
+    </Box>
   );
 }
 
@@ -298,6 +412,7 @@ function draw(
   }
 
   // Draw each car slightly farther back from the last
+  const positions: (CarPosition | undefined)[] = [];
   const time = Date.now() / 1000;
   for (const [i, entry] of leaderboard.entries()) {
     // Create cycles for x and y drift to add realism
@@ -329,13 +444,22 @@ function draw(
       totalDistance
     );
 
-    // If it's the first car, use it for the camera
-    if (i == 0 && res) {
-      cameraX = res.x;
-      cameraY = res.y;
-      cameraAngle = res.angle;
-    }
+    positions.push(res);
   }
+
+  // Use the first car for camera
+  if (positions.length > 0 && positions[0]) {
+    const { x, y, angle } = positions[0];
+    cameraX = x;
+    cameraY = y;
+    cameraAngle = angle;
+  }
+
+  // Return positions of cars
+  return {
+    positions,
+    transform: ctx.getTransform()
+  };
 }
 
 // Draw the track cars drive on
@@ -633,6 +757,8 @@ function drawCar(
     return {
       x,
       y,
+      drawX,
+      drawY,
       angle
     };
   }
