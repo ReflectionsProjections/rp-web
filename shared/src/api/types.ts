@@ -481,12 +481,12 @@ export interface APIRoutes {
       response: { attendanceCounts: number[] };
     };
   };
-  "/stats/check-in": {
+  "/stats/attended-at-least/:N": {
     GET: {
       response: { count: number };
     };
   };
-  "/stats/priority-attendee": {
+  "/stats/check-in": {
     GET: {
       response: { count: number };
     };
@@ -496,9 +496,39 @@ export interface APIRoutes {
       response: DietaryRestrictionStats;
     };
   };
+  "/stats/event/:EVENT_ID/attendance": {
+    GET: {
+      response: { attendanceCount: number };
+    };
+  };
   "/stats/merch-item/:price": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/stats/priority-attendee": {
+    GET: {
+      response: { count: number };
+    };
+  };
+  "/stats/merch-redemption-counts": {
+    GET: {
+      response: Record<string, number>;
+    };
+  };
+  "/stats/registrations": {
+    GET: {
+      response: { count: number };
+    };
+  };
+  "/stats/tag-counts": {
+    GET: {
+      response: Record<string, number>;
+    };
+  };
+  "/stats/tier-counts": {
+    GET: {
+      response: Record<string, number>;
     };
   };
   "/shifts": {
