@@ -8,7 +8,7 @@ export const Navbar = () => {
 
   const scrollToSection = (sectionId: string) => {
     if (location.pathname !== "/") {
-      navigate("/");
+      void navigate("/");
       setTimeout(() => {
         document.getElementById(sectionId)?.scrollIntoView({
           behavior: "smooth"

@@ -6,38 +6,98 @@ import {
   Heading,
   SimpleGrid,
   Divider,
-  useBreakpointValue
+  useBreakpointValue,
+  Image
 } from "@chakra-ui/react";
+
+// Reusable team sidebar component
+const TeamSidebar = ({ teamName }: { teamName: string }) => {
+  const sidebarWidth = useBreakpointValue({
+    base: "60px",
+    md: "70px",
+    lg: "80px"
+  });
+  const sidebarLeft = useBreakpointValue({
+    base: "10px",
+    md: "20px",
+    lg: "50px"
+  });
+  const sidebarHeight = useBreakpointValue({
+    base: "160px",
+    md: "200px",
+    lg: "250px"
+  });
+
+  return (
+    <Box
+      position="absolute"
+      bg="black"
+      color="white"
+      left={sidebarLeft}
+      top="0"
+      w={sidebarWidth}
+      h={sidebarHeight}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      zIndex={1}
+    >
+      <Text
+        transform="rotate(-90deg)"
+        fontSize={{ base: "xs", md: "sm", lg: "md" }}
+        fontWeight="semibold"
+        textAlign="center"
+        whiteSpace="nowrap"
+      >
+        {teamName}
+      </Text>
+    </Box>
+  );
+};
 
 // Profile box component with responsive sizing
 const ProfileBox = ({
   name,
+  imagePath,
   top,
   left,
   mobileTop,
   mobileLeft,
   tabletTop,
-  tabletLeft
+  tabletLeft,
+  isLead = false
 }: {
   name: string;
+  imagePath: string;
   top: string;
   left: string;
   mobileTop?: string;
   mobileLeft?: string;
   tabletTop?: string;
   tabletLeft?: string;
+  isLead?: boolean;
 }) => {
   const boxSize = useBreakpointValue({
-    base: "140px",
-    md: "150px",
+    base: "120px",
+    md: "140px",
     lg: "160px"
   });
+
+  // Bigger images for leads (chairs)
   const imageSize = useBreakpointValue({
-    base: "80px",
-    md: "85px",
-    lg: "90px"
+    base: isLead ? "140px" : "100px",
+    md: isLead ? "160px" : "110px",
+    lg: isLead ? "180px" : "120px"
   });
-  const fontSize = useBreakpointValue({ base: "xs", md: "sm", lg: "sm" });
+
+  // Bigger boxes for leads
+  const leadBoxSize = useBreakpointValue({
+    base: "160px",
+    md: "180px",
+    lg: "200px"
+  });
+
+  const fontSize = useBreakpointValue({ base: "xs", md: "xs", lg: "sm" });
 
   const responsiveTop = useBreakpointValue({
     base: mobileTop || top,
@@ -56,21 +116,33 @@ const ProfileBox = ({
       position="absolute"
       top={responsiveTop}
       left={responsiveLeft}
-      w={boxSize}
-      h={boxSize}
+      w={isLead ? leadBoxSize : boxSize}
+      h={isLead ? leadBoxSize : boxSize}
       bg="white"
-      border="3px solid black"
+      border={isLead ? "10px double black" : "3px solid black"}
       borderRadius="lg"
       display="flex"
       flexDirection="column"
       alignItems="center"
       justifyContent="space-between"
-      p={3}
+      p={2}
       zIndex={2}
-      boxShadow="lg"
+      boxShadow={isLead ? "xl" : "lg"}
     >
-      <Box w={imageSize} h={imageSize} bg="gray.300" borderRadius="lg" />
-      <Text fontSize={fontSize} fontWeight="medium" textAlign="center">
+      <Image
+        src={imagePath}
+        alt={name}
+        w={imageSize}
+        h={imageSize}
+        borderRadius="lg"
+        objectFit="cover"
+      />
+      <Text
+        fontSize={fontSize}
+        fontWeight={isLead ? "bold" : "medium"}
+        textAlign="center"
+        lineHeight="1.2"
+      >
         {name}
       </Text>
     </Box>
@@ -78,17 +150,6 @@ const ProfileBox = ({
 };
 
 const TeamPage = () => {
-  const sidebarWidth = useBreakpointValue({
-    base: "80px",
-    md: "90px",
-    lg: "100px"
-  });
-  const sidebarLeft = useBreakpointValue({
-    base: "20px",
-    md: "30px",
-    lg: "50px"
-  });
-
   return (
     <Box w="100vw" py={8}>
       <VStack spacing={8} align="stretch" maxW="none">
@@ -113,20 +174,24 @@ const TeamPage = () => {
 
             <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
               <VStack>
-                <Box
+                <Image
+                  src="/Directors/Shreenija.JPG"
+                  alt="Shreenija"
                   w={{ base: "120px", md: "150px" }}
                   h={{ base: "120px", md: "150px" }}
                   border="3px solid black"
-                  bg="gray.300"
+                  objectFit="cover"
                 />
                 <Text fontSize="md">Shreenija</Text>
               </VStack>
               <VStack>
-                <Box
+                <Image
+                  src="/Directors/Cole.JPG"
+                  alt="Cole"
                   w={{ base: "120px", md: "150px" }}
                   h={{ base: "120px", md: "150px" }}
                   border="3px solid black"
-                  bg="gray.300"
+                  objectFit="cover"
                 />
                 <Text fontSize="md">Cole</Text>
               </VStack>
@@ -137,593 +202,545 @@ const TeamPage = () => {
         {/* Team Sections - Gray Background with Hanging Titles */}
         <Box bg="gray.300" w="100%" position="relative">
           <VStack spacing={0} align="stretch" w="100%">
-            {/* Development Team - 12 people */}
+            {/* Development Team - 12 people (2 leads + 10 members in 5-5 layout) */}
             <Box
-              minH={{ base: "1200px", md: "800px", lg: "600px" }}
+              minH={{ base: "1200px", md: "800px", lg: "650px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "300px", lg: "450px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Development Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Development Team" />
 
-              {/* Responsive gallery-style scattered layout */}
+              {/* Row 1 - Committee Leads (2 people) - adjusted for bigger boxes */}
               <ProfileBox
                 name="Ronit Anandani"
-                top="40px"
-                left="220px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="40px"
-                tabletLeft="180px"
+                imagePath="/Dev/Ronit.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Aryan Bahl"
-                top="80px"
-                left="400px"
-                mobileTop="410px"
-                mobileLeft="30px"
-                tabletTop="80px"
-                tabletLeft="340px"
+                imagePath="/Dev/Aryan.JPG"
+                top="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
+                tabletTop="30px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 5 people */}
               <ProfileBox
                 name="Aditya Kshirsagar"
-                top="20px"
-                left="580px"
-                mobileTop="570px"
-                mobileLeft="30px"
-                tabletTop="20px"
-                tabletLeft="500px"
+                imagePath="/Dev/Aditya.JPG"
+                top="250px"
+                left="15%"
+                mobileTop="200px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="15%"
               />
               <ProfileBox
                 name="Dev Patel"
-                top="120px"
-                left="750px"
-                mobileTop="730px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="180px"
+                imagePath="/Dev/Dev.jpeg"
+                top="250px"
+                left="30%"
+                mobileTop="200px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="30%"
               />
               <ProfileBox
                 name="Jacob Edley"
-                top="220px"
-                left="180px"
-                mobileTop="890px"
-                mobileLeft="30px"
-                tabletTop="240px"
-                tabletLeft="340px"
+                imagePath="/Dev/Jacob.JPG"
+                top="250px"
+                left="45%"
+                mobileTop="340px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="45%"
               />
               <ProfileBox
                 name="Miguel Aenlle"
-                top="180px"
-                left="360px"
-                mobileTop="1050px"
-                mobileLeft="30px"
-                tabletTop="180px"
-                tabletLeft="500px"
+                imagePath="/Dev/Miguel.JPG"
+                top="250px"
+                left="60%"
+                mobileTop="340px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="60%"
               />
               <ProfileBox
                 name="Nathan Wang"
-                top="240px"
-                left="520px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="360px"
-                tabletLeft="180px"
+                imagePath="/Dev/Nathan.JPG"
+                top="250px"
+                left="75%"
+                mobileTop="480px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="75%"
               />
+
+              {/* Row 3 - 5 people */}
               <ProfileBox
                 name="Quinten Schafer"
-                top="280px"
-                left="700px"
-                mobileTop="410px"
-                mobileLeft="200px"
+                imagePath="/Dev/Quinten 2.JPG"
+                top="420px"
+                left="15%"
+                mobileTop="480px"
+                mobileLeft="55%"
                 tabletTop="400px"
-                tabletLeft="340px"
+                tabletLeft="15%"
               />
               <ProfileBox
                 name="Ritam Nandi"
-                top="380px"
-                left="240px"
-                mobileTop="570px"
-                mobileLeft="200px"
-                tabletTop="360px"
-                tabletLeft="500px"
+                imagePath="/Dev/Ritam.JPG"
+                top="420px"
+                left="30%"
+                mobileTop="620px"
+                mobileLeft="5%"
+                tabletTop="400px"
+                tabletLeft="30%"
               />
               <ProfileBox
                 name="Siri Nallamothu"
+                imagePath="/team/siri.jpg"
                 top="420px"
-                left="420px"
-                mobileTop="730px"
-                mobileLeft="200px"
-                tabletTop="520px"
-                tabletLeft="180px"
+                left="45%"
+                mobileTop="620px"
+                mobileLeft="55%"
+                tabletTop="400px"
+                tabletLeft="45%"
               />
               <ProfileBox
                 name="Timothy Gonzalez"
-                top="360px"
-                left="600px"
-                mobileTop="890px"
-                mobileLeft="200px"
-                tabletTop="560px"
-                tabletLeft="340px"
+                imagePath="/Dev/Timothy.JPG"
+                top="420px"
+                left="60%"
+                mobileTop="760px"
+                mobileLeft="5%"
+                tabletTop="400px"
+                tabletLeft="60%"
               />
               <ProfileBox
                 name="Vani Ramesh"
-                top="400px"
-                left="780px"
-                mobileTop="1050px"
-                mobileLeft="200px"
-                tabletTop="520px"
-                tabletLeft="500px"
+                imagePath="/Dev/Vani.JPG"
+                top="420px"
+                left="75%"
+                mobileTop="760px"
+                mobileLeft="55%"
+                tabletTop="400px"
+                tabletLeft="75%"
               />
             </Box>
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Design Team - 7 people */}
+            {/* Design Team - 7 people (2 leads + 5 members in 3-2 layout) */}
             <Box
-              minH={{ base: "900px", md: "600px", lg: "450px" }}
+              minH={{ base: "900px", md: "700px", lg: "600px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "300px", lg: "400px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Design Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Design Team" />
 
+              {/* Row 1 - Committee Leads (2 people) */}
               <ProfileBox
                 name="Aashna Mauskar"
-                top="60px"
-                left="280px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="60px"
-                tabletLeft="200px"
+                imagePath="/Design/Aashna.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Lily Ge"
+                imagePath="/Design/Lily.JPG"
                 top="30px"
-                left="480px"
-                mobileTop="410px"
-                mobileLeft="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
                 tabletTop="30px"
-                tabletLeft="380px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 3 people */}
               <ProfileBox
                 name="Hua Tong"
-                top="90px"
-                left="650px"
-                mobileTop="570px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="200px"
+                imagePath="/Design/Hua.JPG"
+                top="250px"
+                left="25%"
+                mobileTop="200px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="25%"
               />
               <ProfileBox
                 name="Leqi Huang"
-                top="220px"
-                left="200px"
-                mobileTop="730px"
-                mobileLeft="30px"
-                tabletTop="240px"
-                tabletLeft="380px"
+                imagePath="/Design/Leqi.JPG"
+                top="250px"
+                left="45%"
+                mobileTop="200px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="45%"
               />
               <ProfileBox
                 name="Pari Shah"
-                top="260px"
-                left="420px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="360px"
-                tabletLeft="200px"
+                imagePath="/Design/Pari.JPG"
+                top="250px"
+                left="65%"
+                mobileTop="340px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="65%"
               />
+
+              {/* Row 3 - 2 people (centered) */}
               <ProfileBox
                 name="Ritsika Medury"
-                top="180px"
-                left="600px"
-                mobileTop="410px"
-                mobileLeft="200px"
+                imagePath="/Design/Ritsika.JPG"
+                top="420px"
+                left="35%"
+                mobileTop="340px"
+                mobileLeft="55%"
                 tabletTop="400px"
-                tabletLeft="380px"
+                tabletLeft="35%"
               />
               <ProfileBox
                 name="Sada Challa"
-                top="320px"
-                left="760px"
-                mobileTop="570px"
-                mobileLeft="200px"
-                tabletTop="180px"
-                tabletLeft="560px"
+                imagePath="/Design/Sada.JPG"
+                top="420px"
+                left="55%"
+                mobileTop="480px"
+                mobileLeft="30%"
+                tabletTop="400px"
+                tabletLeft="55%"
               />
             </Box>
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Content Team - 9 people */}
+            {/* Content Team - 9 people (2 leads + 7 members in 4-3 layout) */}
             <Box
-              minH={{ base: "1050px", md: "700px", lg: "500px" }}
+              minH={{ base: "900px", md: "650px", lg: "630px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "350px", lg: "450px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Content Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Content Team" />
 
+              {/* Row 1 - Committee Leads (2 people) */}
               <ProfileBox
                 name="Rohan Nunugonda"
-                top="40px"
-                left="320px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="40px"
-                tabletLeft="200px"
+                imagePath="/Content/Rohan N.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Lucy Wu"
-                top="80px"
-                left="520px"
-                mobileTop="410px"
-                mobileLeft="30px"
-                tabletTop="80px"
-                tabletLeft="380px"
+                imagePath="/Content/Lucy.JPG"
+                top="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
+                tabletTop="30px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 4 people */}
               <ProfileBox
                 name="Amey Gupta"
-                top="20px"
-                left="720px"
-                mobileTop="570px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="200px"
+                imagePath="/Content/Amey.JPG"
+                top="250px"
+                left="20%"
+                mobileTop="200px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="20%"
               />
               <ProfileBox
                 name="Anushree Atmakuri"
-                top="200px"
-                left="240px"
-                mobileTop="730px"
-                mobileLeft="30px"
-                tabletTop="240px"
-                tabletLeft="380px"
+                imagePath="/Content/Anushree.JPG"
+                top="250px"
+                left="36%"
+                mobileTop="200px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="36%"
               />
               <ProfileBox
                 name="Apoorva Sannasi"
-                top="240px"
-                left="460px"
-                mobileTop="890px"
-                mobileLeft="30px"
-                tabletTop="360px"
-                tabletLeft="200px"
+                imagePath="/Content/Apoorva.JPG"
+                top="250px"
+                left="52%"
+                mobileTop="340px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="52%"
               />
               <ProfileBox
                 name="Carol Yin"
-                top="180px"
-                left="680px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="400px"
-                tabletLeft="380px"
+                imagePath="/Content/Carol.JPG"
+                top="250px"
+                left="68%"
+                mobileTop="340px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="68%"
               />
+
+              {/* Row 3 - 3 people (centered) */}
               <ProfileBox
                 name="Maya Ajit"
-                top="360px"
-                left="300px"
-                mobileTop="410px"
-                mobileLeft="200px"
-                tabletTop="180px"
-                tabletLeft="560px"
+                imagePath="/Content/Maya.JPG"
+                top="420px"
+                left="30%"
+                mobileTop="480px"
+                mobileLeft="5%"
+                tabletTop="400px"
+                tabletLeft="30%"
               />
               <ProfileBox
                 name="Rini Khandelwal"
-                top="380px"
-                left="500px"
-                mobileTop="570px"
-                mobileLeft="200px"
-                tabletTop="520px"
-                tabletLeft="200px"
+                imagePath="/Content/Rini.JPG"
+                top="420px"
+                left="45%"
+                mobileTop="480px"
+                mobileLeft="55%"
+                tabletTop="400px"
+                tabletLeft="45%"
               />
               <ProfileBox
                 name="Rohan Kumar"
-                top="340px"
-                left="700px"
-                mobileTop="730px"
-                mobileLeft="200px"
-                tabletTop="560px"
-                tabletLeft="380px"
+                imagePath="/Content/Rohan K.JPG"
+                top="420px"
+                left="60%"
+                mobileTop="620px"
+                mobileLeft="30%"
+                tabletTop="400px"
+                tabletLeft="60%"
               />
             </Box>
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Corporate Team - 4 people */}
+            {/* Corporate Team - 4 people (2 leads + 2 members) */}
             <Box
-              minH={{ base: "600px", md: "400px", lg: "350px" }}
+              minH={{ base: "550px", md: "500px", lg: "450px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "250px", lg: "300px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Corporate Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Corporate Team" />
 
+              {/* Row 1 - Committee Leads (2 people) */}
               <ProfileBox
                 name="Kaavya Mahajan"
-                top="50px"
-                left="380px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="50px"
-                tabletLeft="280px"
+                imagePath="/Corporate/Kaavya.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Shreya Jangada"
-                top="120px"
-                left="260px"
-                mobileTop="410px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="180px"
+                imagePath="/Corporate/Shreya J.JPG"
+                top="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
+                tabletTop="30px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 2 members */}
               <ProfileBox
                 name="Shahanaasree Sivakumar"
-                top="140px"
-                left="580px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="240px"
-                tabletLeft="380px"
+                imagePath="/Corporate/Shahanaa.JPG"
+                top="250px"
+                left="35%"
+                mobileTop="200px"
+                mobileLeft="15%"
+                tabletTop="230px"
+                tabletLeft="35%"
               />
               <ProfileBox
                 name="Shreya Gosavi"
-                top="220px"
-                left="440px"
-                mobileTop="410px"
-                mobileLeft="200px"
-                tabletTop="120px"
-                tabletLeft="480px"
+                imagePath="/Corporate/Shreya G.JPG"
+                top="250px"
+                left="55%"
+                mobileTop="200px"
+                mobileLeft="65%"
+                tabletTop="230px"
+                tabletLeft="55%"
               />
             </Box>
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Marketing Team - 6 people */}
+            {/* Marketing Team - 6 people (2 leads + 4 members in single row) */}
             <Box
-              minH={{ base: "750px", md: "500px", lg: "420px" }}
+              minH={{ base: "620px", md: "500px", lg: "450px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "300px", lg: "370px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Marketing Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Marketing Team" />
 
+              {/* Row 1 - Committee Leads (2 people) */}
               <ProfileBox
                 name="Savannah Lau"
-                top="60px"
-                left="300px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="60px"
-                tabletLeft="200px"
+                imagePath="/Marketing/Savannah.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Atharva Sindwani"
-                top="40px"
-                left="540px"
-                mobileTop="410px"
-                mobileLeft="30px"
-                tabletTop="40px"
-                tabletLeft="380px"
+                imagePath="/Marketing/Atharva.JPG"
+                top="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
+                tabletTop="30px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 4 people in one row */}
               <ProfileBox
                 name="Angelina Deol"
-                top="200px"
-                left="220px"
-                mobileTop="570px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="180px"
+                imagePath="/Marketing/Angelina.JPG"
+                top="250px"
+                left="20%"
+                mobileTop="200px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="20%"
               />
               <ProfileBox
                 name="Jenica Jeevan"
-                top="180px"
-                left="480px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="240px"
-                tabletLeft="400px"
+                imagePath="/Marketing/Jenica.JPG"
+                top="250px"
+                left="36%"
+                mobileTop="200px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="36%"
               />
               <ProfileBox
                 name="Mahnoor Aetzaz"
-                top="260px"
-                left="360px"
-                mobileTop="410px"
-                mobileLeft="200px"
-                tabletTop="360px"
-                tabletLeft="200px"
+                imagePath="/Marketing/Mahnoor.JPG"
+                top="250px"
+                left="52%"
+                mobileTop="340px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="52%"
               />
               <ProfileBox
                 name="Yash Jagtap"
-                top="320px"
-                left="620px"
-                mobileTop="570px"
-                mobileLeft="200px"
-                tabletTop="180px"
-                tabletLeft="560px"
+                imagePath="/team/yash.jpg"
+                top="250px"
+                left="68%"
+                mobileTop="340px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="68%"
               />
             </Box>
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Operations Team - 5 people */}
+            {/* Operations Team - 5 people (2 leads + 3 members in single row) */}
             <Box
-              minH={{ base: "650px", md: "450px", lg: "380px" }}
+              minH={{ base: "620px", md: "500px", lg: "450px" }}
               w="100%"
               position="relative"
+              overflow="hidden"
             >
-              <Box
-                position="absolute"
-                bg="black"
-                color="white"
-                left={sidebarLeft}
-                top="0"
-                w={sidebarWidth}
-                h={{ base: "200px", md: "280px", lg: "330px" }}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                zIndex={1}
-              >
-                <Text
-                  transform="rotate(-90deg)"
-                  fontSize={{ base: "md", md: "lg" }}
-                  fontWeight="semibold"
-                  textAlign="center"
-                  whiteSpace="nowrap"
-                >
-                  Operations Team
-                </Text>
-              </Box>
+              <TeamSidebar teamName="Operations Team" />
 
+              {/* Row 1 - Committee Leads (2 people) */}
               <ProfileBox
                 name="Rishit Chatterjee"
-                top="80px"
-                left="420px"
-                mobileTop="250px"
-                mobileLeft="30px"
-                tabletTop="80px"
-                tabletLeft="320px"
+                imagePath="/Ops/Rishit 1.JPG"
+                top="30px"
+                left="32%"
+                mobileTop="20px"
+                mobileLeft="10%"
+                tabletTop="30px"
+                tabletLeft="32%"
+                isLead={true}
               />
               <ProfileBox
                 name="Ranjana Rajagopalan"
-                top="40px"
-                left="280px"
-                mobileTop="410px"
-                mobileLeft="30px"
-                tabletTop="40px"
-                tabletLeft="180px"
+                imagePath="/Ops/Ranjana.JPG"
+                top="30px"
+                left="58%"
+                mobileTop="20px"
+                mobileLeft="60%"
+                tabletTop="30px"
+                tabletLeft="58%"
+                isLead={true}
               />
+
+              {/* Row 2 - 3 members (centered) */}
               <ProfileBox
                 name="Hazel Lu"
-                top="120px"
-                left="600px"
-                mobileTop="570px"
-                mobileLeft="30px"
-                tabletTop="200px"
-                tabletLeft="180px"
+                imagePath="/Ops/Hazel.JPG"
+                top="250px"
+                left="28%"
+                mobileTop="200px"
+                mobileLeft="5%"
+                tabletTop="230px"
+                tabletLeft="28%"
               />
               <ProfileBox
                 name="Madhav Agrawal"
-                top="240px"
-                left="340px"
-                mobileTop="250px"
-                mobileLeft="200px"
-                tabletTop="240px"
-                tabletLeft="380px"
+                imagePath="/Ops/Madhav.JPG"
+                top="250px"
+                left="45%"
+                mobileTop="200px"
+                mobileLeft="55%"
+                tabletTop="230px"
+                tabletLeft="45%"
               />
               <ProfileBox
                 name="Vidipta Roy"
-                top="200px"
-                left="560px"
-                mobileTop="410px"
-                mobileLeft="200px"
-                tabletTop="120px"
-                tabletLeft="500px"
+                imagePath="/Ops/Vidipta.JPG"
+                top="250px"
+                left="62%"
+                mobileTop="340px"
+                mobileLeft="30%"
+                tabletTop="230px"
+                tabletLeft="62%"
               />
             </Box>
           </VStack>
