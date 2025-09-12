@@ -34,6 +34,7 @@ const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
+const ZOOM_OUT = false;
 
 export default function Leaderboard() {
   // const { data, isLoading } = usePolling("/leaderboard/daily");
@@ -217,6 +218,10 @@ function draw(
   ctx.clearRect(0, 0, width, height);
 
   if (cameraX && cameraY && cameraAngle) {
+    // If zoom out debug flag, zoom the whole screen out
+    if (ZOOM_OUT) {
+      ctx.scale(0.1, 0.1);
+    }
     // Move origin to screen center
     ctx.translate(
       width * FIRST_CAR_CAMERA_X_SCALE,
