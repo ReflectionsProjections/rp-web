@@ -235,6 +235,12 @@ let position = 0;
 let cameraX: number | undefined;
 let cameraY: number | undefined;
 let cameraAngle: number | undefined;
+const carCycles: {
+  offsetX: number;
+  cycleX: number;
+  offsetY: number;
+  cycleY: number;
+}[] = [];
 
 // The main draw function - called every frame to draw the track & cars
 function draw(
@@ -292,15 +298,38 @@ function draw(
   }
 
   // Draw each car slightly farther back from the last
+  const time = Date.now() / 1000;
   for (const [i, entry] of leaderboard.entries()) {
+    // Create cycles for x and y drift to add realism
+    if (carCycles.length <= i) {
+      carCycles.push({
+        offsetX: 3 * Math.random(),
+        cycleX: 0.5 * Math.random() + 1,
+        offsetY: 3 * Math.random(),
+        cycleY: 0.5 * Math.random() + 1
+      });
+    }
+
+    // Stagger cars left-right-left-right
+    const stagerX = i % 2 == 0 ? 0.25 : -0.25;
+    const driftX =
+      stagerX +
+      0.1 * Math.sin(time / carCycles[i].cycleX + carCycles[i].offsetX);
+    const driftY =
+      0.025 * Math.sin(time / carCycles[i].cycleY + carCycles[i].offsetY);
+
+    // Draw the car
     const res = drawCar(
       ctx,
       (position + 10 - 0.0035 * i) % 1,
+      driftX,
+      driftY,
       carImages[entry.icon],
       trackMetadata,
       totalDistance
     );
 
+    // If it's the first car, use it for the camera
     if (i == 0 && res) {
       cameraX = res.x;
       cameraY = res.y;
@@ -536,6 +565,8 @@ function drawFinishLine(
 function drawCar(
   ctx: CanvasRenderingContext2D,
   position: number,
+  driftX: number,
+  driftY: number,
   image: HTMLImageElement,
   trackMetadata: Metadata[],
   totalDistance: number
@@ -572,18 +603,29 @@ function drawCar(
   }
 
   if (x && y && angle) {
-    // Draw the car by translating & rotating then drawing the image
-    // We need to save and restore to not change the root transform
-    ctx.save();
-    ctx.fillStyle = "#000";
-    ctx.translate(x, y);
-    ctx.rotate(angle + Math.PI / 2);
-    ctx.beginPath();
     // viewBox = 49 55 236 109
     const svgWidth = 236;
     const svgHeight = 109;
     const width = TRACK_WIDTH * 2 * CAR_PERCENT;
     const height = TRACK_WIDTH * (svgWidth / svgHeight);
+
+    // Draw the car by translating & rotating then drawing the image
+    // We need to save and restore to not change the root transform
+    ctx.save();
+    ctx.fillStyle = "#000";
+
+    // Apply drift
+    const drawX =
+      x +
+      width * driftX * Math.cos(angle + Math.PI) +
+      height * driftY * Math.cos(angle + Math.PI / 2);
+    const drawY =
+      y +
+      width * driftX * Math.sin(angle + Math.PI) +
+      height * driftY * Math.sin(angle + Math.PI / 2);
+    ctx.translate(drawX, drawY);
+    ctx.rotate(angle + Math.PI / 2);
+    ctx.beginPath();
     ctx.drawImage(image, -width / 2, -height / 2, width, height);
     ctx.fill();
     ctx.restore();
