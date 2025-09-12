@@ -8,6 +8,8 @@ import Merch from "./routes/pages/Merch";
 import EventCheckin from "./routes/pages/EventCheckin";
 import Leaderboard from "./routes/pages/Leaderboard";
 import Attendance from "./routes/pages/Attendance";
+import Speakers from "./routes/pages/Speakers";
+import Shifts from "./routes/pages/Shifts";
 
 const routes = [
   { path: "/", element: <Dashboard /> },
@@ -19,7 +21,9 @@ const routes = [
   { path: "/merch", element: <Merch /> },
   { path: "/event-checkin", element: <EventCheckin /> },
   { path: "/leaderboard-view", element: <Leaderboard /> },
-  { path: "/attendance-view", element: <Attendance /> }
+  { path: "/attendance-view", element: <Attendance /> },
+  { path: "/speakers", element: <Speakers /> },
+  { path: "/shifts", element: <Shifts /> }
 ];
 
 export default routes;

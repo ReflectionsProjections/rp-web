@@ -4,6 +4,7 @@ import * as yup from "yup";
 
 export type RoleFormValues = {
   email: string;
+  name: string;
   team: CommitteeType | "";
   roles: Role[];
 };
@@ -11,8 +12,14 @@ export type RoleFormValues = {
 export const RoleFormSchema = yup.object({
   email: yup
     .string()
-    .email("Email must be valid")
+    .trim()
+    .email("Please enter a valid email address")
     .required("Email is required"),
+  name: yup
+    .string()
+    .trim()
+    .min(1, "Name is required")
+    .required("Name is required"),
   team: yup
     .mixed<CommitteeType>()
     .oneOf(Config.COMMITTEE_TYPES)
@@ -26,6 +33,7 @@ export const RoleFormSchema = yup.object({
 
 export const RoleFormInitialValues: RoleFormValues = {
   email: "",
+  name: "",
   team: "",
   roles: ["STAFF"]
 };

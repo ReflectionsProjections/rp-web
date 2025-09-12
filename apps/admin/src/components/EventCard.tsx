@@ -37,6 +37,7 @@ function EventCard({ event }: { event: Event | null }) {
             alt={event?.name ?? "Sample Event"}
             borderRadius="lg"
             maxW="15vw"
+            minW="10vw"
           />
         </Center>
         <Stack mt="6" spacing="3">

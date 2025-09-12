@@ -37,6 +37,7 @@ export type LeaderboardUser = {
   name: string;
   email: string;
   points: number;
+  currentTier: string;
   isEligibleMerch: {
     base: boolean;
     first: boolean;
@@ -80,30 +81,65 @@ export type Event = {
   isVisible: boolean;
   attendanceCount: number;
   eventType: EventType;
+  tags: string[];
+};
+
+export type RegistrationDraft = {
+  allergies: string[];
+  allergiesOther: string;
+  dietaryRestrictions: string[];
+  dietaryOther: string;
+  educationLevel: string;
+  educationOther: string;
+  email: string;
+  ethnicity: string[];
+  ethnicityOther: string;
+  gender: string;
+  genderOther: string;
+  graduationYear: string;
+  howDidYouHear: string[];
+  majors: string[];
+  minors: string[];
+  name: string;
+  opportunities: string[];
+  personalLinks: string[];
+  resume: string;
+  school: string;
+  isInterestedMechMania: boolean;
+  isInterestedPuzzleBang: boolean;
+  tags: string[];
+  userId: string;
 };
 
 export type Registration = {
-  userId: string;
-  name: string;
-  email: string;
-  university: string;
-  graduation: string | null;
-  major: string | null;
-  dietaryRestrictions: string[];
   allergies: string[];
-  gender: string | null;
+  dietaryRestrictions: string[];
+  educationLevel: string;
+  email: string;
   ethnicity: string[];
-  hearAboutRP: string[];
-  portfolios: string[];
-  jobInterest: string[];
+  gender: string;
+  graduationYear: string;
+  howDidYouHear: string[];
+  majors: string[];
+  minors: string[];
+  name: string;
+  opportunities: string[];
+  personalLinks: string[];
+  school: string;
   isInterestedMechMania: boolean;
   isInterestedPuzzleBang: boolean;
+  tags: string[];
   hasResume: boolean;
-  hasSubmitted: boolean;
-  degree?: string;
+  userId: string;
 };
 
-export type Role = "USER" | "STAFF" | "ADMIN" | "CORPORATE" | "PUZZLEBANG";
+export type Role =
+  | "USER"
+  | "STAFF"
+  | "ADMIN"
+  | "CORPORATE"
+  | "PUZZLEBANG"
+  | "PENDING";
 
 export type RoleObject = {
   userId?: string;
@@ -123,11 +159,47 @@ export type CommitteeType =
 
 export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 
+export type Speaker = {
+  speakerId: string;
+  name: string;
+  title: string;
+  bio: string;
+  eventTitle: string;
+  eventDescription: string;
+  imgUrl: string;
+};
+
+export type ShiftRoleType =
+  | "CLEAN_UP"
+  | "DINNER"
+  | "CHECK_IN"
+  | "SPEAKER_BUDDY"
+  | "SPONSOR_BUDDY"
+  | "DEV_ON_CALL"
+  | "CHAIR_ON_CALL";
+
 export type Staff = {
-  userId: string;
+  email: string;
   name: string;
   team: CommitteeType;
   attendances: Record<string, AttendanceType>;
+};
+
+export type Shift = {
+  shiftId: string;
+  name: string;
+  role: ShiftRoleType;
+  startTime: string;
+  endTime: string;
+  location: string;
+};
+
+export type ShiftAssignment = {
+  shiftId: string;
+  staffEmail: string;
+  acknowledged: boolean;
+  staff?: Staff;
+  shifts?: Shift;
 };
 
 export type Meeting = {
@@ -162,17 +234,17 @@ export interface APIRoutes {
   };
   "/auth": {
     PUT: {
-      request: { email: string; role: Role };
+      request: { userId: string; role: Role };
       response: Role;
     };
     DELETE: {
-      request: { email: string; role: Role };
+      request: { userId: string; role: Role };
       response: never;
     };
   };
   "/auth/:role": {
     GET: {
-      response: RoleObject[];
+      response: string[]; // Array of userIds
     };
   };
   "/auth/login/web": {
@@ -186,6 +258,17 @@ export interface APIRoutes {
       response: RoleObject;
     };
   };
+  "/auth/user/:userId": {
+    GET: {
+      response: RoleObject;
+    };
+  };
+  "/auth/team": {
+    GET: {
+      response: RoleObject[];
+    };
+  };
+
   "/auth/corporate": {
     GET: {
       response: Corporate[];
@@ -195,6 +278,12 @@ export interface APIRoutes {
       response: Corporate;
     };
     DELETE: {
+      request: { email: string };
+      response: never;
+    };
+  };
+  "/auth/sponsor/login": {
+    POST: {
       request: { email: string };
       response: never;
     };
@@ -250,22 +339,52 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/registration/draft": {
+    POST: {
+      request: Omit<RegistrationDraft, "userId" | "resume"> & {
+        resume?: string;
+      };
+      response: { message: string };
+    };
+    GET: {
+      response: RegistrationDraft;
+    };
+  };
+  "/registration/submit": {
+    POST: {
+      request: Omit<Registration, "userId">;
+      response: { message: string };
+    };
+  };
   "/registration/all": {
     GET: {
-      request: {
-        graduations?: string[];
-        majors?: string[];
-        jobInterests?: string[];
-        degrees?: string[];
-      };
-      response: {
-        registrants: Registration[];
-      };
+      response: Array<{
+        userId: string;
+        name: string;
+        majors: string[];
+        minors: string[];
+        graduationYear: string;
+        educationLevel: string;
+        opportunities?: string[];
+        personalLinks?: string[];
+      }>;
+    };
+  };
+  "/staff/": {
+    POST: {
+      request: Omit<Staff, "attendances">;
+      response: Staff;
     };
   };
   "/staff": {
     GET: {
       response: Staff[];
+    };
+  };
+  "/staff/:EMAIL": {
+    DELETE: {
+      request: never;
+      response: never;
     };
   };
   "/staff/check-in": {
@@ -293,6 +412,38 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/speakers": {
+    GET: {
+      response: Speaker[];
+    };
+    POST: {
+      request: Omit<Speaker, "speakerId">;
+      response: Speaker;
+    };
+  };
+  "/speakers/:speakerId": {
+    GET: {
+      response: Speaker;
+    };
+    PUT: {
+      request: Partial<Omit<Speaker, "speakerId">>;
+      response: Speaker;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/s3/upload": {
+    GET: {
+      response: { url: string; fields: Record<string, unknown> };
+    };
+  };
+  "/s3/download": {
+    GET: {
+      response: { url: string };
+    };
+  };
   "/s3/download/user/:userId": {
     GET: {
       response: { url: string };
@@ -304,7 +455,7 @@ export interface APIRoutes {
       response: { data: (string | null)[]; errorCount: number };
     };
   };
-  "/staff/:staffId/attendance": {
+  "/staff/:EMAIL/attendance": {
     POST: {
       request: { meetingId: string; attendanceType: AttendanceType };
       response: Staff;
@@ -338,6 +489,117 @@ export interface APIRoutes {
   "/stats/merch-item/:price": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/shifts": {
+    GET: {
+      response: Shift[];
+    };
+    POST: {
+      request: Omit<Shift, "shiftId">;
+      response: Shift;
+    };
+  };
+  "/shifts/:shiftId": {
+    PATCH: {
+      request: Partial<Omit<Shift, "shiftId">>;
+      response: Shift;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/shifts/:shiftId/assignments": {
+    GET: {
+      response: ShiftAssignment[];
+    };
+    POST: {
+      request: { staffEmail: string };
+      response: ShiftAssignment;
+    };
+    DELETE: {
+      request: { staffEmail: string };
+      response: never;
+    };
+  };
+  "/shifts/my-shifts": {
+    GET: {
+      response: ShiftAssignment[];
+    };
+  };
+  "/shifts/:shiftId/acknowledge": {
+    POST: {
+      request: never;
+      response: ShiftAssignment;
+    };
+  };
+  "/leaderboard/daily": {
+    GET: {
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        day: string;
+        count: number;
+      };
+    };
+  };
+  "/leaderboard/global": {
+    GET: {
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        count: number;
+      };
+    };
+  };
+  "/leaderboard/submit": {
+    POST: {
+      request: {
+        day: string;
+        n: number;
+      };
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        day: string;
+        count: number;
+        entriesProcessed: number;
+        submissionId: string;
+        submittedAt: string;
+        submittedBy: string;
+      };
+    };
+  };
+  "/leaderboard/submission-status": {
+    GET: {
+      response: {
+        exists: boolean;
+        submission?: {
+          submissionId: string;
+          submittedAt: string;
+          submittedBy: string;
+          count: number;
+        };
+      };
     };
   };
 }

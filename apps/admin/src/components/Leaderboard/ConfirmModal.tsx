@@ -1,4 +1,3 @@
-import api from "@/util/api";
 import {
   Box,
   Button,
@@ -22,44 +21,46 @@ import { LeaderboardUser } from "@rp/shared";
 const ConfirmButton: React.FC<{
   disabled: boolean;
   leaderboardUsers: LeaderboardUser[];
-  previewNumberAwards: number;
   effectiveNumberAwards: number;
-  updatedLeaderboardPreview: LeaderboardUser[];
-  updateLeaderboard: () => void;
+  minimumPointsThreshold: number;
+  selectedDate: string;
+  updateLeaderboard: () => Promise<void>;
 }> = ({
   disabled,
   leaderboardUsers,
-  previewNumberAwards,
   effectiveNumberAwards,
-  updatedLeaderboardPreview,
+  minimumPointsThreshold,
   updateLeaderboard
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
-  const handleConfirmNumberAwards = () => {
+  const handleConfirmNumberAwards = async () => {
     setIsSubmitting(true);
     onClose();
-    toast.promise(
-      api
-        //.post("/attendees/awardMerch", { awardMerchPostData })
-        .post("/checkin/scan/merch", { qrCode: "todo(): implement api call" })
-        .then(() => {
-          updateLeaderboard();
-          onClose();
-        })
-        .finally(() => {
-          setIsSubmitting(false);
-        }),
-      {
-        success: {
-          title: `Successfully awarded merch to ${effectiveNumberAwards} attendees`
-        },
-        error: { title: `Failed awarding merch. Try again soon!` },
-        loading: { title: `Awarding merch...` }
-      }
-    );
+    try {
+      await updateLeaderboard();
+      toast({
+        title: `Successfully awarded merch to ${effectiveNumberAwards} attendees`,
+        status: "success",
+        duration: 3000,
+        isClosable: true
+      });
+    } catch (error: unknown) {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed awarding merch. Try again soon!";
+      toast({
+        title: errorMessage,
+        status: "error",
+        duration: 5000,
+        isClosable: true
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -83,9 +84,8 @@ const ConfirmButton: React.FC<{
             <Box>
               <ExtendedLeaderboardStats
                 leaderboardUsers={leaderboardUsers}
-                previewNumberAwards={previewNumberAwards}
                 effectiveNumberAwards={effectiveNumberAwards}
-                updatedLeaderboardPreview={updatedLeaderboardPreview}
+                minimumPointsThreshold={minimumPointsThreshold}
               />
             </Box>
           </ModalBody>
@@ -104,7 +104,7 @@ const ConfirmButton: React.FC<{
               type="submit"
               colorScheme="blue"
               mr={3}
-              onClick={handleConfirmNumberAwards}
+              onClick={() => void handleConfirmNumberAwards()}
             >
               Confirm
             </Button>

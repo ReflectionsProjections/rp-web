@@ -29,14 +29,14 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import AttendanceModal from "./AttendanceModal";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-import api from "../util/api";
 import {
   AttendanceType,
   Meeting,
   path,
   Staff,
   CommitteeType,
-  usePolling
+  usePolling,
+  api
 } from "@rp/shared";
 import { useMirrorStyles } from "@/styles/Mirror";
 import { MainContext } from "@/routes/Main";
@@ -93,9 +93,8 @@ const AttendanceBox = () => {
     data: staff,
     isLoading: staffLoading,
     mutate: mutateStaff
-  } = usePolling(api, "/staff", authorized);
+  } = usePolling("/staff", authorized);
   const { data: meetings, isLoading: meetingsLoading } = usePolling(
-    api,
     "/meetings",
     authorized
   );
@@ -114,14 +113,14 @@ const AttendanceBox = () => {
   };
 
   const handleStaffAttendance = (
-    staffId: string,
+    staffEmail: string,
     meetingId: string,
     attendanceType: AttendanceType
   ) => {
     setUpdating(true);
 
     const request = api
-      .post(path("/staff/:staffId/attendance", { staffId }), {
+      .post(path("/staff/:EMAIL/attendance", { EMAIL: staffEmail }), {
         meetingId,
         attendanceType
       })
@@ -129,7 +128,7 @@ const AttendanceBox = () => {
         mutateStaff(
           (previous) =>
             previous?.map((member) =>
-              member.userId === response.data.userId ? response.data : member
+              member.email === response.data.email ? response.data : member
             ) ?? [response.data]
         );
       })
@@ -372,11 +371,15 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
 
   const SelectAttendance = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
-    staffId: string,
+    staffEmail: string,
     attendanceType: AttendanceType
   ) => {
     event.stopPropagation();
-    handleStaffAttendance(staffId, selectedMeeting.meetingId, attendanceType);
+    handleStaffAttendance(
+      staffEmail,
+      selectedMeeting.meetingId,
+      attendanceType
+    );
   };
 
   useEffect(() => {
@@ -492,11 +495,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                         <MenuItem
                           bg="transparent"
                           onClick={(event) =>
-                            SelectAttendance(
-                              event,
-                              staffMember.userId,
-                              "ABSENT"
-                            )
+                            SelectAttendance(event, staffMember.email, "ABSENT")
                           }
                         >
                           🔴 Absent
@@ -507,7 +506,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                           onClick={(event) =>
                             SelectAttendance(
                               event,
-                              staffMember.userId,
+                              staffMember.email,
                               "PRESENT"
                             )
                           }
@@ -520,7 +519,7 @@ const AttendanceTable: React.FC<AttendanceTableProps> = ({
                           onClick={(event) =>
                             SelectAttendance(
                               event,
-                              staffMember.userId,
+                              staffMember.email,
                               "EXCUSED"
                             )
                           }

@@ -1,19 +1,15 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { TypedAxiosInstance } from "../api/type-wrapper";
+import api from "../api/api";
 
-type AuthCallbackProps = {
-  api: TypedAxiosInstance;
-};
-
-const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
+const AuthCallback = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const returnTo = decodeURIComponent(params.get("state") || "/");
-    const redirect_uri = `${window.location.origin}/auth/callback`;
+    const redirectUrl = new URL("/auth/callback", window.location.origin);
 
     if (!code) {
       void navigate("/unauthorized");
@@ -21,7 +17,7 @@ const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
     }
 
     api
-      .post("/auth/login/web", { code, redirectUri: redirect_uri })
+      .post("/auth/login/web", { code, redirectUri: redirectUrl.toString() })
       .then((response) => {
         localStorage.setItem("jwt", response.data.token);
         void navigate(returnTo);
@@ -29,7 +25,7 @@ const AuthCallback: React.FC<AuthCallbackProps> = ({ api }) => {
       .catch(() => {
         void navigate("/unauthorized");
       });
-  }, [api, navigate]);
+  }, [navigate]);
 
   return <p>Completing login...</p>;
 };

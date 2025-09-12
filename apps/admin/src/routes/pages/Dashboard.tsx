@@ -7,12 +7,12 @@ import {
   CardBody,
   VStack
 } from "@chakra-ui/react";
-import api from "../../util/api";
 import StatCard from "@/components/StatCard";
 import { motion } from "framer-motion";
 import { usePolling } from "@rp/shared";
 import EventCard from "@/components/EventCard";
 import Section from "@/components/Section";
+import MyShifts from "@/components/MyShifts";
 import { useOutletContext } from "react-router-dom";
 import { MainContext } from "../Main";
 
@@ -21,7 +21,6 @@ const MotionHeader = motion(Heading);
 function Dashboard() {
   const { authorized, displayName } = useOutletContext<MainContext>();
   const { data: currentEvent } = usePolling(
-    api,
     "/events/currentOrNext",
     authorized
   );
@@ -72,6 +71,15 @@ function Dashboard() {
                       transformer={(data) => data.count}
                     />
                   </StatGroup>
+                </CardBody>
+              </Section>
+
+              <Section>
+                <CardHeader>
+                  <Heading size="lg">My Shifts</Heading>
+                </CardHeader>
+                <CardBody>
+                  <MyShifts authorized={authorized} />
                 </CardBody>
               </Section>
             </VStack>

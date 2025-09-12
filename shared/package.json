@@ -15,24 +15,16 @@
     "verify": "yarn lint && yarn build"
   },
   "peerDependencies": {
-    "@chakra-ui/icons": "*",
-    "@chakra-ui/react": "*",
-    "react": "*",
-    "react-dom": "*"
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.2",
+    "axios": "^1.6.8",
+    "chakra-react-select": "^5.0.5",
+    "formik": "^2.4.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@eslint/js": "*",
-    "@types/node": "*",
-    "@types/react": "*",
-    "@types/react-autocomplete": "*",
-    "@types/react-dom": "*",
-    "eslint": "*",
-    "eslint-plugin-react-hooks": "*",
-    "eslint-plugin-react-refresh": "*",
-    "globals": "*",
-    "prettier": "*",
     "tsup": "^8.4.0",
-    "typescript": "*",
-    "typescript-eslint": "*"
+    "typescript": "^5.2.2"
   }
 }

@@ -1,5 +1,4 @@
 import { Heading, Flex, VStack } from "@chakra-ui/react";
-import api from "../../util/api.ts";
 import { Event, usePolling } from "@rp/shared";
 import EventCard, {
   EventCardSkeleton
@@ -13,12 +12,12 @@ import { useState } from "react";
 
 function Events() {
   const { authorized } = useOutletContext<MainContext>();
-  const [viewMode, setViewMode] = useState<ViewMode>("cards");
+  const [viewMode, setViewMode] = useState<ViewMode>("calendar");
   const {
     data: events,
     update: updateEvents,
     isLoading
-  } = usePolling(api, "/events", authorized);
+  } = usePolling("/events", authorized);
 
   return (
     <VStack spacing={4} align="stretch">

@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="20%" src="static/2024_rp_logo.svg" alt="Reflections | Projections Logo" />
+  <img width="20%" src="static/rp_logo.svg" alt="Reflections | Projections Logo" />
 </p>
 
 # Reflections | Projections Sponsor Site
@@ -105,7 +105,6 @@ export default {
 #### Recommended Plugins
 
 - Replace `plugin:@typescript-eslint/recommended` with:
-
   - `plugin:@typescript-eslint/recommended-type-checked`
   - `plugin:@typescript-eslint/strict-type-checked`
   - Optionally: `plugin:@typescript-eslint/stylistic-type-checked`

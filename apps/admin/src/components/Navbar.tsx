@@ -39,8 +39,10 @@ const linkMap = {
   Meetings: "/meetings",
   Roles: "/roles",
   Sponsors: "/sponsors",
-  Merch: "/merch",
+  Speakers: "/speakers",
+  Shifts: "/shifts",
   "Event Check-in": "/event-checkin",
+  Merch: "/merch",
   Leaderboard: "/leaderboard-view",
   Attendance: "/attendance-view"
 };

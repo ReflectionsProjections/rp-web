@@ -1,51 +1,55 @@
-import { ReactNode, useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import { googleAuth } from "../api/auth";
-import { TypedAxiosInstance } from "../api/type-wrapper";
-import { Role } from "../api/types";
+import { Role, RoleObject } from "../api/types";
+import { useState } from "react";
+import api from "../api/api";
+import { authRefresh } from "../api/auth";
 
 type RequireAuthProps = {
-  api: TypedAxiosInstance;
-  clientId: string;
-  requiredRoles: Role[];
-  children?: ReactNode;
+  requiredRoles?: Role[];
 };
 
-const RequireAuth: React.FC<RequireAuthProps> = ({
-  api,
-  clientId,
-  requiredRoles,
-  children
-}) => {
+const RequireAuth: React.FC<RequireAuthProps> = ({ requiredRoles = [] }) => {
+  const [authInfo, setAuthInfo] = useState<RoleObject | null>(null);
   const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
     if (!jwt) {
-      googleAuth(clientId, true);
+      authRefresh();
       return;
     }
 
-    api
-      .get("/auth/info")
-      .then((response) => {
-        const roles = response.data.roles;
+    if (!authInfo) {
+      api
+        .get("/auth/info")
+        .then((response) => {
+          const roles = response.data.roles;
 
-        const missingRole = requiredRoles.find((role) => !roles.includes(role));
-        if (missingRole) {
-          window.location.href = "/unauthorized";
-        }
-      })
-      .catch(() => {
-        localStorage.removeItem("jwt");
-        window.location.href = "/unauthorized";
-      });
-  }, [jwt, api, clientId, requiredRoles]);
+          const missingRole = requiredRoles.find(
+            (role) => !roles.includes(role)
+          );
+          if (missingRole) {
+            window.location.href = "/unauthorized";
+          } else {
+            setAuthInfo(response.data);
+          }
+        })
+        .catch(() => {
+          // This only happens if jwt is expired
+          // middleware will handle the error
+        });
+    }
+  }, [authInfo, jwt, requiredRoles]);
 
   if (!jwt) {
     return <p>Redirecting to login...</p>;
   }
 
-  return children ? <>{children}</> : <Outlet />;
+  if (!authInfo) {
+    return <p>Loading...</p>;
+  }
+
+  return <Outlet context={authInfo} />;
 };
 
 export default RequireAuth;
