@@ -62,7 +62,7 @@ const Checkin = () => {
           eventId: selectedEvent.eventId,
           qrCode: qrData.rawValue
         })
-        .then(() => {
+        .finally(() => {
           if (selectedEvent.eventType === "CHECKIN") {
             onOpen();
           }
