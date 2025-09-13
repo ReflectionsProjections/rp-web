@@ -2,7 +2,6 @@ import {
   Box,
   Flex,
   Grid,
-  Heading,
   Icon,
   Text,
   Tooltip,
@@ -15,44 +14,106 @@ import { useEffect, useState } from "react";
 import { CIRCLE_COLORS } from "@/constants/colors";
 import { EVENT_ICONS } from "@/constants/event-icons";
 
-export default function Events() {
+type EventSelected = Event & {
+  selected?: boolean;
+};
+
+type EventsProps = {
+  date?: Date;
+};
+
+export default function Events({ date }: EventsProps) {
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
+  const [displayedEvents, setDisplayedEvents] = useState<EventSelected[]>([]);
+
+  const fetchData = async () => {
+    try {
+      const events = await api.get("/events");
+      setEvents(events.data);
+    } catch (err: unknown) {
+      console.error(err);
+      toast({
+        title: `Error fetching events`,
+        status: "error",
+        duration: 9000,
+        isClosable: true
+      });
+    }
+  };
+
+  const handleUpdateData = () => {
+    if (!date) return;
+    const grouped: { [key: string]: Event[] } = {};
+    events.forEach((evt) => {
+      const eventDate = moment(evt.startTime).format("M/D");
+      if (!grouped[eventDate]) grouped[eventDate] = [];
+      grouped[eventDate].push(evt);
+    });
+
+    const groupKeys = Object.keys(grouped).sort((a, b) => {
+      // Sort by month and day, e.g. "9/11" -> 9, 11
+      const [aM, aD] = a.split("/").map(Number);
+      const [bM, bD] = b.split("/").map(Number);
+      if (aM !== bM) return aM - bM;
+      return aD - bD;
+    });
+
+    const currentDate = moment(date).format("M/D");
+
+    let newDisplayedEvents: EventSelected[] = [];
+
+    if (grouped[currentDate]) {
+      newDisplayedEvents = grouped[currentDate];
+    } else {
+      // Compare currentDate to the last groupKey
+      const lastKey = groupKeys[groupKeys.length - 1];
+      const isAfterLast = moment(currentDate, "M/D").isAfter(
+        moment(lastKey, "M/D")
+      );
+      if (isAfterLast) {
+        newDisplayedEvents = grouped[lastKey];
+      } else {
+        // Default to the first group (the earliest date)
+        newDisplayedEvents = grouped[groupKeys[0]];
+      }
+    }
+
+    newDisplayedEvents = (newDisplayedEvents || []).map((evt) => {
+      return {
+        ...evt,
+        selected:
+          moment(evt.startTime).isSameOrBefore(moment(date)) &&
+          moment(evt.endTime).isAfter(moment(date))
+      };
+    });
+
+    setDisplayedEvents(newDisplayedEvents);
+  };
 
   useEffect(() => {
-    api
-      .get("/events")
-      .then((events) => {
-        const grouped: { [key: string]: Event[] } = {};
-        events.data.forEach((evt) => {
-          const date = moment(evt.startTime).format("M/D");
-          if (!grouped[date]) grouped[date] = [];
-          grouped[date].push(evt);
-        });
-        const currentDate = moment(Date.now()).format("M/D");
-        if (currentDate in grouped) {
-          setEvents(grouped[currentDate]);
-        } else {
-          // Default to first date if we don't have any events right now
-          setEvents(grouped[Object.keys(grouped)[0]]);
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        toast({
-          title: `Error fetching events: ${err}`,
-          status: "error",
-          duration: 9000,
-          isClosable: true
-        });
-        console.error(err);
-        setTimeout(() => location.reload(), 10 * 1000);
-      });
+    void fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast]);
 
+  useEffect(() => {
+    void handleUpdateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events, date]);
+
   return (
-    <Box float={"right"} width={"fit-content"}>
-      <Heading textAlign={"center"}>Events</Heading>
+    <Box float={"right"} width={"100%"}>
+      <Text
+        w="100%"
+        fontSize={"3xl"}
+        fontWeight="bold"
+        color="white"
+        fontFamily="ProRacingSlant"
+        textAlign="center"
+        mb={3}
+      >
+        Events
+      </Text>
       <Flex
         marginTop={"0.5rem"}
         justifyContent="center"
@@ -63,8 +124,22 @@ export default function Events() {
         zIndex={1}
       >
         <Box flex={1} h="100%" py={0}>
-          <Box pb={5} overflowY={{ md: "auto" }} shadow={"md"} boxShadow="md">
-            <Box overflowY="auto" height={"100%"}>
+          <Box
+            overflowY={{ md: "auto" }}
+            shadow={"md"}
+            boxShadow="md"
+            bgColor={"rgba(0,0,0,0.2)"}
+            borderRadius={"1rem"}
+            py={3}
+          >
+            <Box
+              overflowY="auto"
+              height={"100%"}
+              gap={3}
+              display="flex"
+              flexDirection={"column"}
+              px={2}
+            >
               {events.length === 0 && (
                 <Text
                   fontSize="xl"
@@ -75,14 +150,15 @@ export default function Events() {
                   No events scheduled yet.
                 </Text>
               )}
-              {events.map((event, index) => (
-                <DayEvent
-                  key={index}
-                  backgroundColor={index % 2 === 0 ? "#2c2c2cff" : "#3f3f3fff"}
-                  number={index + 1}
-                  event={event}
-                />
-              ))}
+              {displayedEvents &&
+                displayedEvents.map((event, index) => (
+                  <DayEvent
+                    key={index}
+                    number={index + 1}
+                    event={event}
+                    selected={event.selected}
+                  />
+                ))}
             </Box>
           </Box>
         </Box>
@@ -92,13 +168,13 @@ export default function Events() {
 }
 
 function DayEvent({
-  backgroundColor,
   number,
-  event
+  event,
+  selected
 }: {
-  backgroundColor: string;
   number: number;
   event: Event;
+  selected?: boolean;
 }) {
   return (
     <Grid
@@ -106,6 +182,7 @@ function DayEvent({
         base: 3,
         md: 5
       }}
+      pt={number === 0 ? 6 : 0}
       py={3}
       templateColumns={{
         base: "12px 8px 1fr 40px",
@@ -116,7 +193,8 @@ function DayEvent({
         base: 2,
         md: 3
       }}
-      backgroundColor={backgroundColor}
+      backgroundColor={selected ? "rgba(255,255,255,0.2)" : undefined}
+      borderRadius={selected ? "0.5rem" : undefined}
       _first={{
         paddingTop: "calc(3px + 0.5rem)",
         borderTopRadius: "0.5rem"
@@ -125,27 +203,22 @@ function DayEvent({
         paddingBottom: "calc(3px + 0.5rem)",
         borderBottomRadius: "0.5rem"
       }}
-      _hover={{
-        bgColor: "#4D4C4C",
-        cursor: "pointer"
-      }}
       transition={"all 0.2s"}
+      sx={{
+        backdropFilter: "blur(3px)",
+        WebkitBackdropFilter: "blur(3px)" // for Safari
+        // optional: add a slight border and drop shadow
+      }}
     >
       <Box
         display="flex"
         justifyContent={"center"}
         alignItems={"center"}
-        w={{
-          base: "10px",
-          md: "20px"
-        }}
+        w={"10px"}
         borderRadius="sm"
       >
         <Text
-          fontSize={{
-            base: "lg",
-            md: "2xl"
-          }}
+          fontSize={"xl"}
           color="gray.200"
           fontWeight="thin"
           textAlign="center"
@@ -173,7 +246,7 @@ function DayEvent({
 
       <Flex flexDirection={"column"} gap={0} width={"fit-content"}>
         <Text
-          fontSize={{ base: "xl", md: "2xl" }}
+          fontSize={"xl"}
           color="white"
           fontFamily={"ProRacing"}
           transformOrigin={"top left"}
@@ -190,7 +263,7 @@ function DayEvent({
           width={"fit-content"}
         >
           <Text
-            fontSize={{ base: "md", md: "xl" }}
+            fontSize={"lg"}
             color="gray.100"
             fontWeight="bold"
             fontFamily="Magistral"
@@ -204,7 +277,7 @@ function DayEvent({
           </Text>
 
           <Text
-            fontSize={{ base: "md", md: "xl" }}
+            fontSize={"lg"}
             color="gray.400"
             fontWeight="bold"
             fontFamily="Magistral"
