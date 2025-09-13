@@ -2,9 +2,13 @@ import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
+import Car from "@/assets/car.svg?react";
 import Icon from "@/assets/icon.svg?react";
 import { useEffect, useRef, useState } from "react";
-import useUpdateAnimationLoop, { CarPosition } from "../hooks/LeaderboardDraw";
+import useUpdateAnimationLoop, {
+  CarPosition,
+  DRAW_CARS_IN_CANVAS
+} from "../hooks/LeaderboardDraw";
 // import { usePolling } from "@rp/shared";
 
 function useMockData() {
@@ -143,6 +147,7 @@ export default function Leaderboard() {
   }
 
   useEffect(() => {
+    if (!DRAW_CARS_IN_CANVAS) return;
     loadImages().catch(console.error);
   }, []);
 
@@ -178,6 +183,40 @@ export default function Leaderboard() {
 }
 
 function LeaderboardEntryDisplay({
+  i,
+  pos,
+  entry
+}: {
+  i: number;
+  pos: CarPosition;
+  entry: LeaderboardEntry;
+}) {
+  return (
+    <Box>
+      {!DRAW_CARS_IN_CANVAS && (
+        <Box
+          position={"absolute"}
+          style={{
+            top: pos.drawY,
+            left: pos.drawX,
+            width: pos.width,
+            height: pos.height,
+            transform: `translate(-50%, -50%) rotate(${pos.drawAngle}rad)`
+          }}
+        >
+          <Car
+            width={"100%"}
+            height={"100%"}
+            color={ICON_COLOR_TO_COLOR[entry.icon]}
+          />
+        </Box>
+      )}
+      <LeaderboardScorecard i={i} pos={pos} entry={entry} />
+    </Box>
+  );
+}
+
+function LeaderboardScorecard({
   i,
   pos,
   entry: { rank, displayName, points, icon }

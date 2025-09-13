@@ -29,10 +29,18 @@ type TrackDrawSegment = StraightTrackDrawSegment | ArcTrackDrawSegment;
 export type CarPosition = {
   x: number;
   y: number;
+  width: number;
+  height: number;
   drawX: number;
   drawY: number;
-  angle: number;
+  drawAngle: number;
 };
+
+// If we should draw cars directly on the canvas
+// Perf testing found drawing cars directly to take a lot of perf
+// If disabled, cars are drawn in the dom as svgs instead
+// Not sure which is better so leaving this as a toggle
+export const DRAW_CARS_IN_CANVAS = true;
 
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 50;
@@ -116,15 +124,25 @@ export default function useUpdateAnimationLoop({
                   new DOMPoint(pos.x, pos.y)
                 );
 
+                const scaleX = Math.hypot(transform.a, transform.b);
+                const scaleY = Math.hypot(transform.c, transform.d);
+                const widthTransformed = pos.width * scaleX;
+                const heightTransformed = pos.height * scaleY;
+
                 const drawTransformed = transform.transformPoint(
                   new DOMPoint(pos.drawX, pos.drawY)
                 );
+                const drawAngleTransformed =
+                  pos.drawAngle + Math.atan2(transform.b, transform.a);
+
                 return {
                   x: transformed.x,
                   y: transformed.y,
+                  width: widthTransformed,
+                  height: heightTransformed,
                   drawX: drawTransformed.x,
                   drawY: drawTransformed.y,
-                  angle: pos.angle
+                  drawAngle: drawAngleTransformed
                 };
               })
             );
@@ -543,7 +561,7 @@ function drawCar(
   driftX: number,
   driftY: number,
   image: HTMLImageElement
-) {
+): CarPosition {
   // viewBox = 49 55 236 109
   const svgWidth = 236;
   const svgHeight = 109;
@@ -564,18 +582,24 @@ function drawCar(
     y +
     width * driftX * Math.sin(angle + Math.PI) +
     height * driftY * Math.sin(angle + Math.PI / 2);
-  ctx.translate(drawX, drawY);
-  ctx.rotate(angle + Math.PI / 2);
-  ctx.beginPath();
-  ctx.drawImage(image, -height / 2, -width / 2, width, height);
-  ctx.fill();
-  ctx.restore();
+  const drawAngle = angle + Math.PI / 2;
+
+  if (DRAW_CARS_IN_CANVAS) {
+    ctx.translate(drawX, drawY);
+    ctx.rotate(drawAngle);
+    ctx.beginPath();
+    ctx.drawImage(image, -width / 2, -height / 2, width, height);
+    ctx.fill();
+    ctx.restore();
+  }
 
   return {
     x,
     y,
+    width,
+    height,
     drawX,
     drawY,
-    angle
+    drawAngle
   };
 }
