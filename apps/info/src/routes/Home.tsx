@@ -14,10 +14,11 @@ export const Home = () => {
       <Box id="home">
         <Header />
       </Box>
-      <Stats />
       <Box id="exhibits">
         <ExhibitSection />
       </Box>
+      <Stats />
+
       <Box id="team">
         <TeamSection />
       </Box>

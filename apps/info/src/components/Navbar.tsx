@@ -37,14 +37,15 @@ export const Navbar = () => {
       display="flex"
       justifyContent="center"
       alignItems="center"
-      pos="sticky"
-      top="10px"
+      pos="fixed" // Changed from sticky to fixed
+      top="10px" // Keep this for the floating effect, or change to "0px" for no gap
+      left="50%" // Center horizontally
+      transform="translateX(-50%)" // Center horizontally
     >
       <HStack justify="space-around" align="center" w="100%">
         <Box h="50px" w="50px" pos="relative">
           <AnimatedLogoHover />
         </Box>
-
         <Link
           as={NavLink}
           to="/"
@@ -57,7 +58,6 @@ export const Navbar = () => {
         >
           ABOUT
         </Link>
-
         <Link
           as={NavLink}
           to="/"
@@ -70,7 +70,6 @@ export const Navbar = () => {
         >
           TEAM
         </Link>
-
         <Link
           as={NavLink}
           to="/"
@@ -83,7 +82,6 @@ export const Navbar = () => {
         >
           SPONSORING
         </Link>
-
         <Link
           as={NavLink}
           to="/archive"
@@ -93,7 +91,6 @@ export const Navbar = () => {
         >
           ARCHIVE
         </Link>
-
         <Link
           as={NavLink}
           to="/faq"
@@ -103,7 +100,6 @@ export const Navbar = () => {
         >
           FAQ
         </Link>
-
         <Link
           as={NavLink}
           to="/"

@@ -1,6 +1,7 @@
 import { Box, VStack, Image, Flex, Container } from "@chakra-ui/react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { createPortal } from "react-dom";
+import { useRef } from "react";
 import AnimatedPillar from "./AnimatedPillar";
 
 interface AnimatedPillarsSectionProps {
@@ -14,22 +15,33 @@ const spotlightHeight = "975px";
 export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
   icons
 }) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const { scrollY } = useScroll();
-  const offset = 950;
+
+  const offset = 2000; // Increased from 950 to account for Header + ExhibitSection height
+
   const shadowOpacity = useTransform(
     scrollY,
     [-350 + offset, -60 + offset, 350 + offset, 650 + offset],
     [0, 0.35, 0.35, 0]
   );
+
   const heightDiff = useTransform(
     scrollY,
     [-250 + offset, 700 + offset],
     [200, -750]
   );
+
   const translateY = useTransform(heightDiff, (h) => `translateY(${h}px)`);
 
   return (
-    <Box pos="relative" zIndex={100} display={{ base: "none", md: "block" }}>
+    <Box
+      pos="relative"
+      zIndex={100}
+      display={{ base: "none", md: "block" }}
+      ref={containerRef}
+    >
       {/* portal */}
       {createPortal(
         <Box
@@ -44,7 +56,6 @@ export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
           <MotionBox
             style={{
               willChange: "opacity",
-              //transform: 'translateZ(0)',
               opacity: shadowOpacity
             }}
             bg="black"
@@ -72,64 +83,32 @@ export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
                 height="100%"
                 width="100%"
               >
-                <VStack spacing={1} width="20%" filter="blur(10px)">
-                  <MotionBox
-                    w="200px"
-                    h={spotlightHeight}
-                    bg="rgb(250, 230, 170)"
-                    pos="relative"
-                    zIndex={1}
-                    clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
-                  />
-                </VStack>
-                <VStack spacing={1} width="20%" filter="blur(10px)">
-                  <MotionBox
-                    w="200px"
-                    h={spotlightHeight}
-                    bg="rgb(250, 230, 170)"
-                    pos="relative"
-                    zIndex={1}
-                    clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
-                  />
-                </VStack>
-                <VStack spacing={1} width="20%" filter="blur(10px)">
-                  <MotionBox
-                    w="200px"
-                    h={spotlightHeight}
-                    bg="rgb(250, 230, 170)"
-                    pos="relative"
-                    zIndex={1}
-                    clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
-                  />
-                </VStack>
-                <VStack spacing={1} width="20%" filter="blur(10px)">
-                  <MotionBox
-                    w="200px"
-                    h={spotlightHeight}
-                    bg="rgb(250, 230, 170)"
-                    pos="relative"
-                    zIndex={1}
-                    clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
-                  />
-                </VStack>
-                <VStack spacing={1} width="20%" filter="blur(10px)">
-                  <MotionBox
-                    w="200px"
-                    h={spotlightHeight}
-                    bg="rgb(250, 230, 170)"
-                    pos="relative"
-                    zIndex={1}
-                    clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
-                  />
-                </VStack>
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <VStack
+                    key={index}
+                    spacing={1}
+                    width="20%"
+                    filter="blur(10px)"
+                  >
+                    <MotionBox
+                      w="200px"
+                      h={spotlightHeight}
+                      bg="rgb(250, 230, 170)"
+                      pos="relative"
+                      zIndex={1}
+                      clipPath="polygon(25% 0, 75% 0, 95% 100%, 5% 100%)"
+                    />
+                  </VStack>
+                ))}
               </Flex>
             </MotionContainer>
           </MotionBox>
         </Box>,
         document.body
-      )}{" "}
-      {/* portal */}
-      <Flex // pillars
+      )}
+
+      {/* pillars */}
+      <Flex
         direction="row"
         justify="space-between"
         top="-15px"
@@ -142,56 +121,25 @@ export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
           maskImage: "linear-gradient(black 30%, transparent 100%)"
         }}
       >
-        <VStack spacing={1} width="20%">
-          <AnimatedPillar baseHeight={-55} heightDelta={300} time={2}>
-            <Image
-              src={icons[0]}
-              w="75px"
-              h="75px"
-              filter="drop-shadow(5px 20px 10px gray)"
-            />
-          </AnimatedPillar>
-        </VStack>
-        <VStack spacing={1} width="20%">
-          <AnimatedPillar baseHeight={25} heightDelta={300} time={2}>
-            <Image
-              src={icons[1]}
-              w="75px"
-              h="75px"
-              filter="drop-shadow(5px 20px 10px gray)"
-            />
-          </AnimatedPillar>
-        </VStack>
-        <VStack spacing={1} width="20%">
-          <AnimatedPillar baseHeight={-5} heightDelta={300} time={2}>
-            <Image
-              src={icons[2]}
-              w="75px"
-              h="75px"
-              filter="drop-shadow(5px 20px 10px gray)"
-            />
-          </AnimatedPillar>
-        </VStack>
-        <VStack spacing={1} width="20%">
-          <AnimatedPillar baseHeight={45} heightDelta={300} time={2}>
-            <Image
-              src={icons[3]}
-              w="75px"
-              h="75px"
-              filter="drop-shadow(5px 20px 10px gray)"
-            />
-          </AnimatedPillar>
-        </VStack>
-        <VStack spacing={1} width="20%">
-          <AnimatedPillar baseHeight={-35} heightDelta={300} time={2}>
-            <Image
-              src={icons[4]}
-              w="75px"
-              h="75px"
-              filter="drop-shadow(5px 20px 10px gray)"
-            />
-          </AnimatedPillar>
-        </VStack>
+        {icons.map((icon, index) => {
+          const baseHeights = [-55, 25, -5, 45, -35];
+          return (
+            <VStack key={index} spacing={1} width="20%">
+              <AnimatedPillar
+                baseHeight={baseHeights[index]}
+                heightDelta={300}
+                time={2}
+              >
+                <Image
+                  src={icon}
+                  w="75px"
+                  h="75px"
+                  filter="drop-shadow(5px 20px 10px gray)"
+                />
+              </AnimatedPillar>
+            </VStack>
+          );
+        })}
       </Flex>
     </Box>
   );
