@@ -94,10 +94,12 @@ export default function Events({ date }: EventsProps) {
 
   useEffect(() => {
     void fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast]);
 
   useEffect(() => {
     void handleUpdateData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, date]);
 
   return (
