@@ -58,6 +58,9 @@ const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
+const PAN_DOWN_TIME = 2.5;
+const PAN_DOWN_PAUSE = 30;
+const PAN_DOWN_TO_CAR = 3; // 0-indexed
 const FOLLOW_FIRST_CAR = true;
 const ZOOM_OUT = false;
 
@@ -362,7 +365,7 @@ function draw(
   position = (timeSeconds * CAR_SPEED) % totalDistance;
 
   // Update camera
-  updateCamera(ctx, trackDrawSegments, totalDistance, position);
+  updateCamera(ctx, timeSeconds, trackDrawSegments, totalDistance, position);
 
   // Draw track
   drawTrack(ctx, trackDrawSegments);
@@ -420,19 +423,43 @@ function draw(
   };
 }
 
+// Cycles through:
+// 1. pause for PAN_DOWN_PAUSE
+// 2. pan down to PAN_DOWN_TO_CAR
+// 3. pause for PAN_DOWN_PAUSE
+// 4. pan up to 0
+function getCameraFocus(timeSeconds: number) {
+  const t = timeSeconds % ((PAN_DOWN_TIME + PAN_DOWN_PAUSE) * 2);
+  if (t < PAN_DOWN_PAUSE) {
+    return 0;
+  } else if (t < PAN_DOWN_PAUSE + PAN_DOWN_TIME) {
+    return ((t - PAN_DOWN_PAUSE) / PAN_DOWN_TIME) * PAN_DOWN_TO_CAR;
+  } else if (t < PAN_DOWN_PAUSE + PAN_DOWN_TIME + PAN_DOWN_PAUSE) {
+    return PAN_DOWN_TO_CAR;
+  } else {
+    return (
+      PAN_DOWN_TO_CAR -
+      ((t - PAN_DOWN_PAUSE - PAN_DOWN_TIME - PAN_DOWN_PAUSE) / PAN_DOWN_TIME) *
+        PAN_DOWN_TO_CAR
+    );
+  }
+}
+
 // Updates the camera based on the track position
 function updateCamera(
   ctx: CanvasRenderingContext2D,
+  timeSeconds: number,
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
   position: number
 ) {
+  const focusPosition = position - CAR_SPACING * getCameraFocus(timeSeconds);
   const {
     x: cameraX,
     y: cameraY,
     angle: cameraAngle
   } = FOLLOW_FIRST_CAR
-    ? getTrackPosition(trackDrawSegments, totalDistance, position)
+    ? getTrackPosition(trackDrawSegments, totalDistance, focusPosition)
     : {
         x: 215 * SCALE,
         y: 200 * SCALE,
