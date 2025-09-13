@@ -1,7 +1,9 @@
 import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
 import { useEffect, useState } from "react";
 
-type TrackSegment = { angle: number; radius: number } | { distance: number };
+type TrackSegment =
+  | { angle: number; radius: number; invisible?: boolean }
+  | { distance: number; invisible?: boolean };
 type TrackDrawSegmentCommon = {
   distance: number;
   x: number;
@@ -12,6 +14,7 @@ type TrackDrawSegmentCommon = {
   fY: number;
   fAngle: number;
   fSideI: number;
+  invisible?: boolean;
 };
 type StraightTrackDrawSegment = TrackDrawSegmentCommon & {
   type: "straight";
@@ -63,19 +66,32 @@ const SCALE = 20;
 const TRACK: TrackSegment[] = [
   { distance: 100 * SCALE },
   { angle: 90, radius: 100 * SCALE },
+  { distance: 50 * SCALE },
   { angle: -90, radius: 100 * SCALE },
   { distance: 200 * SCALE },
-  { angle: 180, radius: 100 * SCALE },
-  { distance: 200 * SCALE },
-  { angle: 90, radius: 150 * SCALE },
-  { angle: -45, radius: 50 * SCALE },
-  { angle: 45, radius: 50 * SCALE },
-  { angle: -45, radius: 50 * SCALE },
-  { angle: -45 - 90, radius: 50 * SCALE },
-  { angle: 180, radius: 100 * SCALE },
+  { angle: 90, radius: 100 * SCALE },
   { distance: 100 * SCALE },
-  { angle: 90, radius: 79.3125 * SCALE },
-  { distance: 100 * SCALE }
+  { angle: 90, radius: 100 * SCALE },
+  { distance: 200 * SCALE },
+  { angle: 90, radius: 125 * SCALE },
+  { distance: 100 * SCALE },
+  { angle: 270, radius: 50 * SCALE },
+  { distance: 45 * SCALE },
+  { distance: TRACK_WIDTH, invisible: true },
+  { distance: 50 * SCALE },
+  { angle: -90, radius: 75 * SCALE },
+  { distance: 50 * SCALE },
+  { angle: 90, radius: 75 * SCALE },
+  { distance: 50 * SCALE },
+  { angle: 180, radius: 100 * SCALE },
+  { distance: 50 * SCALE },
+  { angle: -180 + 5, radius: 85 * SCALE },
+  { angle: 45, radius: 200 * SCALE },
+  { distance: 10 * SCALE },
+  { angle: 45 - 5, radius: 75 * SCALE },
+  { distance: 3.775 * SCALE },
+  { angle: 90, radius: 75 * SCALE },
+  { distance: 107.35 * SCALE }
 ];
 
 // We need to resize the canvas to match the space it takes up
@@ -186,6 +202,7 @@ function getTrackDrawSegments(track: TrackSegment[]) {
             segment.angle,
             segment.radius
           );
+    trackDrawSegment.invisible = segment.invisible;
 
     trackDrawSegments.push(trackDrawSegment);
     x = trackDrawSegment.fX;
@@ -446,10 +463,12 @@ function drawTrack(
   for (const segment of trackDrawSegments) {
     // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
 
-    if (segment.type == "straight") {
-      drawStraightTrack(ctx, segment);
-    } else if (segment.type == "arc") {
-      drawArcTrack(ctx, segment);
+    if (!segment.invisible) {
+      if (segment.type == "straight") {
+        drawStraightTrack(ctx, segment);
+      } else if (segment.type == "arc") {
+        drawArcTrack(ctx, segment);
+      }
     }
 
     // Segment to reduce sub-pixel error
