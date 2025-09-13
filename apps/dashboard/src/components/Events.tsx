@@ -80,11 +80,6 @@ export default function Events({ date }: EventsProps) {
     }
 
     newDisplayedEvents = (newDisplayedEvents || []).map((evt) => {
-      // console.log('start date', moment(evt.startTime));
-      // console.log('end date', moment(evt.endTime));
-      // console.log('current date', moment(date), date);
-      // console.log('is selected', moment(evt.startTime).isSameOrBefore(moment(date)) && moment(evt.endTime).isAfter(moment(date)));
-
       return {
         ...evt,
         selected:
