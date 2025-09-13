@@ -6,26 +6,31 @@ import Icon from "@/assets/icon.svg?react";
 import { useEffect, useRef, useState } from "react";
 // import { usePolling } from "@rp/shared";
 
-type Segment = { angle: number; radius: number } | { distance: number };
-type Metadata =
-  | {
-      type: "straight";
-      distance: number;
-      x: number;
-      y: number;
-      fX: number;
-      fY: number;
-      angle: number;
-    }
-  | {
-      type: "arc";
-      distance: number;
-      radius: number;
-      cx: number;
-      cy: number;
-      startAngle: number;
-      endAngle: number;
-    };
+type TrackSegment = { angle: number; radius: number } | { distance: number };
+type TrackDrawSegmentCommon = {
+  distance: number;
+  x: number;
+  y: number;
+  angle: number;
+  sideI: number;
+  fX: number;
+  fY: number;
+  fAngle: number;
+  fSideI: number;
+};
+type StraightTrackDrawSegment = TrackDrawSegmentCommon & {
+  type: "straight";
+};
+type ArcTrackDrawSegment = TrackDrawSegmentCommon & {
+  type: "arc";
+  radius: number;
+  cx: number;
+  cy: number;
+  startDrawAngle: number;
+  endDrawAngle: number;
+  right: boolean;
+};
+type TrackDrawSegment = StraightTrackDrawSegment | ArcTrackDrawSegment;
 type CarPosition = {
   x: number;
   y: number;
@@ -45,6 +50,25 @@ const CAR_PERCENT = 0.325;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
 const ZOOM_OUT = false;
+
+const SCALE = 20;
+// The track defined as straight and angled segments
+const TRACK: TrackSegment[] = [
+  { distance: 200 * SCALE },
+  { angle: 90, radius: 100 * SCALE },
+  { angle: -90, radius: 100 * SCALE },
+  { distance: 200 * SCALE },
+  { angle: 180, radius: 100 * SCALE },
+  { distance: 200 * SCALE },
+  { angle: 90, radius: 150 * SCALE },
+  { angle: -45, radius: 50 * SCALE },
+  { angle: 45, radius: 50 * SCALE },
+  { angle: -45, radius: 50 * SCALE },
+  { angle: -45 - 90, radius: 50 * SCALE },
+  { angle: 180, radius: 100 * SCALE },
+  { distance: 100 * SCALE },
+  { angle: 90, radius: 79.3125 * SCALE }
+];
 
 function useMockData() {
   const [data, setData] = useState<
@@ -149,7 +173,11 @@ export default function Leaderboard() {
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
-  const { positions } = useUpdateAnimationLoop({ canvasRef, carImages, data });
+  const { positions } = useUpdateAnimationLoop({
+    canvasRef,
+    carImages,
+    data
+  });
 
   // Preload images for each color
   async function loadImages() {
@@ -294,6 +322,8 @@ function useUpdateAnimationLoop({
   const [positions, setPositions] = useState<(CarPosition | undefined)[]>([]);
 
   useEffect(() => {
+    const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
+
     let frame: number;
     function update() {
       // Resize the canvas so it matches the actual css space it takes up
@@ -301,7 +331,13 @@ function useUpdateAnimationLoop({
         resizeCanvas(canvasRef.current);
         const ctx = canvasRef.current.getContext("2d");
         if (ctx) {
-          const result = draw(ctx, data?.leaderboard, carImages);
+          const result = draw(
+            ctx,
+            trackDrawSegments,
+            totalDistance,
+            data?.leaderboard,
+            carImages
+          );
           if (result) {
             const { positions, transform } = result;
             setPositions(
@@ -341,9 +377,160 @@ function useUpdateAnimationLoop({
   return { positions };
 }
 
-let cameraX: number | undefined;
-let cameraY: number | undefined;
-let cameraAngle: number | undefined;
+function getTrackDrawSegments(track: TrackSegment[]) {
+  // The starting position and angle
+  let x = 125;
+  let y = 125;
+  let angle = 0;
+  let sideI = 0;
+  let totalDistance = 0;
+
+  const trackDrawSegments: TrackDrawSegment[] = [];
+  for (const segment of track) {
+    const trackDrawSegment: TrackDrawSegment =
+      "distance" in segment
+        ? getStraightTrackDrawSegment(x, y, angle, sideI, segment.distance)
+        : getArcTrackDrawSegment(
+            x,
+            y,
+            angle,
+            sideI,
+            segment.angle,
+            segment.radius
+          );
+
+    trackDrawSegments.push(trackDrawSegment);
+    x = trackDrawSegment.fX;
+    y = trackDrawSegment.fY;
+    angle = trackDrawSegment.fAngle;
+    sideI = trackDrawSegment.fSideI;
+    totalDistance += trackDrawSegment.distance;
+  }
+
+  return { trackDrawSegments, totalDistance };
+}
+
+function getStraightTrackDrawSegment(
+  x: number,
+  y: number,
+  angle: number,
+  sideI: number,
+  distance: number
+): TrackDrawSegment {
+  const fX = x + distance * Math.cos(rad(angle));
+  const fY = y + distance * Math.sin(rad(angle));
+  const fAngle = angle;
+  const maxSideI = Math.floor(distance / SIDE_DISTANCE);
+  const fSideI = sideI + maxSideI;
+
+  return {
+    type: "straight",
+    distance,
+    x,
+    y,
+    angle,
+    sideI,
+    fX,
+    fY,
+    fAngle,
+    fSideI
+  };
+}
+
+function getArcTrackDrawSegment(
+  x: number,
+  y: number,
+  angle: number,
+  sideI: number,
+  arcAngle: number,
+  radius: number
+): TrackDrawSegment {
+  const fAngle = angle + arcAngle;
+  const right = arcAngle > 0;
+  const sign = right ? 1 : -1;
+  const cx = x + radius * Math.cos(rad(angle) + (sign * Math.PI) / 2);
+  const cy = y + radius * Math.sin(rad(angle) + (sign * Math.PI) / 2);
+  const startDrawAngle = rad(angle) - (sign * Math.PI) / 2;
+  const endDrawAngle = rad(fAngle) - (sign * Math.PI) / 2;
+
+  const fX = cx + radius * Math.cos(endDrawAngle);
+  const fY = cy + radius * Math.sin(endDrawAngle);
+  const angleDiff = right
+    ? endDrawAngle - startDrawAngle
+    : startDrawAngle - endDrawAngle;
+  const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
+
+  const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const fSideI = sideI + maxI;
+
+  // Create the metadata
+  return {
+    type: "arc",
+    distance,
+    x,
+    y,
+    angle,
+    sideI,
+    fX,
+    fY,
+    fAngle,
+    fSideI,
+    cx,
+    cy,
+    radius,
+    startDrawAngle,
+    endDrawAngle,
+    right
+  };
+}
+
+function getTrackPosition(
+  trackDrawSegments: TrackDrawSegment[],
+  totalDistance: number,
+  position: number
+) {
+  let distance = (totalDistance * position) % totalDistance;
+
+  while (distance < 0) {
+    distance = (distance + totalDistance) % totalDistance;
+  }
+
+  // Figure out which segment the provided position is at, then draw at the right position along that
+  for (const segment of trackDrawSegments) {
+    // If it's not the next segment, we need to draw it somewhere in this segment
+    if (distance < segment.distance) {
+      const alpha = distance / segment.distance;
+      if (segment.type == "straight") {
+        // Straight, linearly interpolate
+        return {
+          x: segment.x * (1 - alpha) + segment.fX * alpha,
+          y: segment.y * (1 - alpha) + segment.fY * alpha,
+          angle: rad(segment.angle) - Math.PI / 2
+        };
+      } else if (segment.type == "arc") {
+        // Arc, interpolate the arc
+        const right = segment.startDrawAngle < segment.endDrawAngle;
+        const posAngle =
+          rad(segment.angle) * (1 - alpha) +
+          rad(segment.fAngle) * alpha +
+          (right ? -Math.PI / 2 : Math.PI / 2);
+        return {
+          x: segment.cx + segment.radius * Math.cos(posAngle),
+          y: segment.cy + segment.radius * Math.sin(posAngle),
+          angle: right ? posAngle : posAngle - Math.PI
+        };
+      }
+      break;
+    }
+
+    // It's not this segment, move on
+    distance -= segment.distance;
+  }
+
+  // If it's not on the track, give up
+  throw Error(`Invalid position: ${position}`);
+}
+
 const carCycles: {
   offsetX: number;
   cycleX: number;
@@ -355,6 +542,8 @@ let position = 0;
 // The main draw function - called every frame to draw the track & cars
 function draw(
   ctx: CanvasRenderingContext2D,
+  trackDrawSegments: TrackDrawSegment[],
+  totalDistance: number,
   leaderboard?: LeaderboardEntry[],
   carImages?: Record<IconColor, HTMLImageElement>
 ) {
@@ -363,42 +552,11 @@ function draw(
   // Clear screen
   ctx.clearRect(0, 0, width, height);
 
-  if (cameraX && cameraY && cameraAngle) {
-    // If zoom out debug flag, zoom the whole screen out
-    if (ZOOM_OUT) {
-      ctx.scale(0.1, 0.1);
-    }
-    // Move origin to screen center
-    ctx.translate(
-      width * FIRST_CAR_CAMERA_X_SCALE,
-      height * FIRST_CAR_CAMERA_Y_SCALE
-    );
-    // Rotate world so car faces "up"
-    ctx.rotate(-cameraAngle - Math.PI);
-    // Move world so car is centered
-    ctx.translate(-cameraX, -cameraY);
-  }
+  // Update camera
+  updateCamera(ctx, trackDrawSegments, totalDistance, position);
 
-  // The track defined as straight and angled segments
-  const scale = 20;
-  const track: Segment[] = [
-    { distance: 200 * scale },
-    { angle: 90, radius: 100 * scale },
-    { angle: -90, radius: 100 * scale },
-    { distance: 200 * scale },
-    { angle: 180, radius: 100 * scale },
-    { distance: 200 * scale },
-    { angle: 90, radius: 150 * scale },
-    { angle: -45, radius: 50 * scale },
-    { angle: 45, radius: 50 * scale },
-    { angle: -45, radius: 50 * scale },
-    { angle: -45 - 90, radius: 50 * scale },
-    { angle: 180, radius: 100 * scale },
-    { distance: 100 * scale },
-    { angle: 90, radius: 79.3125 * scale }
-  ];
-
-  const { trackMetadata, totalDistance } = drawTrack(ctx, track);
+  // Draw track
+  drawTrack(ctx, trackDrawSegments);
 
   // Increment the position the leading car is at
   position = (position + 0.0005) % 1;
@@ -430,25 +588,23 @@ function draw(
       0.05 * Math.sin(time / carCycles[i].cycleY + carCycles[i].offsetY);
 
     // Draw the car
+    const carPosition = (position + 10 - 0.0035 * i) % 1;
+    const { x, y, angle } = getTrackPosition(
+      trackDrawSegments,
+      totalDistance,
+      carPosition
+    );
     const res = drawCar(
       ctx,
-      (position + 10 - 0.0035 * i) % 1,
+      x,
+      y,
+      angle,
       driftX,
       driftY,
-      carImages[entry.icon],
-      trackMetadata,
-      totalDistance
+      carImages[entry.icon]
     );
 
     positions.push(res);
-  }
-
-  // Use the first car for camera
-  if (positions.length > 0 && positions[0]) {
-    const { x, y, angle } = positions[0];
-    cameraX = x;
-    cameraY = y;
-    cameraAngle = angle;
   }
 
   // Return positions of cars
@@ -458,30 +614,50 @@ function draw(
   };
 }
 
-// Draw the track cars drive on
-function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
-  // The starting position and angle
-  let x = 125;
-  let y = 125;
-  let angle = 0;
-  let sideI = 0;
+// Updates the camera based on the track position
+function updateCamera(
+  ctx: CanvasRenderingContext2D,
+  trackDrawSegments: TrackDrawSegment[],
+  totalDistance: number,
+  position: number
+) {
+  const {
+    x: cameraX,
+    y: cameraY,
+    angle: cameraAngle
+  } = getTrackPosition(trackDrawSegments, totalDistance, position);
+  // If zoom out debug flag, zoom the whole screen out
+  if (ZOOM_OUT) {
+    ctx.scale(0.1, 0.1);
+  }
+  // Move origin to screen center
+  ctx.translate(
+    ctx.canvas.width * FIRST_CAR_CAMERA_X_SCALE,
+    ctx.canvas.height * FIRST_CAR_CAMERA_Y_SCALE
+  );
+  // Rotate world so car faces "up"
+  ctx.rotate(-cameraAngle - Math.PI);
+  // Move world so car is centered
+  ctx.translate(-cameraX, -cameraY);
+}
 
-  const trackMetadata: Metadata[] = [];
-  let totalDistance = 0;
+// Draw the track cars drive on
+function drawTrack(
+  ctx: CanvasRenderingContext2D,
+  trackDrawSegments: TrackDrawSegment[]
+) {
   // Iterate through each segment, drawing the track and filling track metadata
-  for (const segment of track) {
+  for (const segment of trackDrawSegments) {
     // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
 
-    const { fX, fY, fAngle, fSideI, distance, metadata } = drawTrackSegment(
-      ctx,
-      segment,
-      x,
-      y,
-      angle,
-      sideI
-    );
+    if (segment.type == "straight") {
+      drawStraightTrack(ctx, segment);
+    } else if (segment.type == "arc") {
+      drawArcTrack(ctx, segment);
+    }
 
-    // Segment to reduce sub-pixel errors
+    // Segment to reduce sub-pixel error
+    const { x, y, angle } = segment;
     ctx.save();
     ctx.translate(x, y);
     ctx.rotate(rad(angle));
@@ -490,66 +666,19 @@ function drawTrack(ctx: CanvasRenderingContext2D, track: Segment[]) {
     ctx.rect(-1, -TRACK_WIDTH / 2, 2, TRACK_WIDTH);
     ctx.fill();
     ctx.restore();
-
-    // Update next segment start
-    x = fX;
-    y = fY;
-    angle = fAngle;
-    sideI = fSideI;
-    totalDistance += distance;
-
-    // Save metadata
-    trackMetadata.push(metadata);
   }
 
   // Draw the finish line
+  const { x, y, angle } = trackDrawSegments[0];
   drawFinishLine(ctx, x, y, angle);
-
-  return { trackMetadata, totalDistance };
-}
-
-type SegmentDrawResult = {
-  fX: number;
-  fY: number;
-  fAngle: number;
-  fSideI: number;
-  metadata: Metadata;
-  distance: number;
-};
-
-function drawTrackSegment(
-  ctx: CanvasRenderingContext2D,
-  segment: Segment,
-  x: number,
-  y: number,
-  angle: number,
-  sideI: number
-): SegmentDrawResult {
-  if ("distance" in segment) {
-    // Straight segment
-    const distance = segment.distance;
-    return drawStraightTrack(ctx, x, y, angle, sideI, distance);
-  } else {
-    // Arc segment
-    return drawArcTrack(ctx, x, y, angle, sideI, segment.angle, segment.radius);
-  }
 }
 
 function drawStraightTrack(
   ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  angle: number,
-  sideI: number,
-  distance: number
-): SegmentDrawResult {
-  const fX = x + distance * Math.cos(rad(angle));
-  const fY = y + distance * Math.sin(rad(angle));
-  const fAngle = angle;
-
+  { x, y, sideI, fX, fY, fSideI }: TrackDrawSegment
+) {
   // Draw the red-white side of the track
-  const maxI = Math.floor(distance / SIDE_DISTANCE);
-  const fSideI = sideI + maxI;
+  const maxI = fSideI - sideI;
   const dx = fX - x;
   const dy = fY - y;
   for (let i = 0; i < maxI; i++) {
@@ -568,47 +697,24 @@ function drawStraightTrack(
   ctx.moveTo(x, y);
   ctx.lineTo(fX, fY);
   ctx.stroke();
-
-  // Create the metadata
-  const metadata: Metadata = {
-    type: "straight",
-    x,
-    y,
-    fX,
-    fY,
-    angle,
-    distance
-  };
-
-  return { fX, fY, fAngle, fSideI, distance, metadata };
 }
 
 function drawArcTrack(
   ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
-  angle: number,
-  sideI: number,
-  arcAngle: number,
-  radius: number
-): SegmentDrawResult {
-  const fAngle = angle + arcAngle;
-  const right = arcAngle > 0;
-  const sign = right ? 1 : -1;
-  const cx = x + radius * Math.cos(rad(angle) + (sign * Math.PI) / 2);
-  const cy = y + radius * Math.sin(rad(angle) + (sign * Math.PI) / 2);
-  const startAngle = rad(angle) - (sign * Math.PI) / 2;
-  const endAngle = rad(fAngle) - (sign * Math.PI) / 2;
-
-  const fX = cx + radius * Math.cos(endAngle);
-  const fY = cy + radius * Math.sin(endAngle);
-  const angleDiff = right ? endAngle - startAngle : startAngle - endAngle;
-  const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
-
+  {
+    sideI,
+    fSideI,
+    cx,
+    cy,
+    radius,
+    startDrawAngle,
+    endDrawAngle,
+    right
+  }: ArcTrackDrawSegment
+) {
   // Draw sides of the track
-  const maxI = Math.floor(distance / SIDE_DISTANCE);
-  const fSideI = sideI + maxI;
-  const dAngle = endAngle - startAngle;
+  const maxI = fSideI - sideI;
+  const dAngle = endDrawAngle - startDrawAngle;
   for (let i = 0; i < maxI; i++) {
     ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
     ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
@@ -617,8 +723,8 @@ function drawArcTrack(
       cx,
       cy,
       radius,
-      startAngle + dAngle * (i / maxI),
-      startAngle + dAngle * ((i + 1) / maxI),
+      startDrawAngle + dAngle * (i / maxI),
+      startDrawAngle + dAngle * ((i + 1) / maxI),
       !right
     );
     ctx.stroke();
@@ -628,28 +734,8 @@ function drawArcTrack(
   ctx.lineWidth = TRACK_WIDTH;
   ctx.strokeStyle = TRACK_COLOR;
   ctx.beginPath();
-  ctx.arc(cx, cy, radius, startAngle, endAngle, !right);
+  ctx.arc(cx, cy, radius, startDrawAngle, endDrawAngle, !right);
   ctx.stroke();
-
-  // Create the metadata
-  const metadata: Metadata = {
-    type: "arc",
-    distance,
-    radius,
-    cx,
-    cy,
-    startAngle: angle,
-    endAngle: fAngle
-  };
-
-  return {
-    fX,
-    fY,
-    fAngle,
-    fSideI,
-    metadata,
-    distance
-  };
 }
 
 function drawFinishLine(
@@ -684,79 +770,45 @@ function drawFinishLine(
 // Draw a car using the metadata
 function drawCar(
   ctx: CanvasRenderingContext2D,
-  position: number,
+  x: number,
+  y: number,
+  angle: number,
   driftX: number,
   driftY: number,
-  image: HTMLImageElement,
-  trackMetadata: Metadata[],
-  totalDistance: number
+  image: HTMLImageElement
 ) {
-  let distance = totalDistance * position;
-  let x, y, angle;
+  // viewBox = 49 55 236 109
+  const svgWidth = 236;
+  const svgHeight = 109;
+  const width = Math.floor(TRACK_WIDTH * CAR_PERCENT);
+  const height = Math.floor(width * (svgWidth / svgHeight));
 
-  // Figure out which segment the provided position is at, then draw at the right position along that
-  for (const metadata of trackMetadata) {
-    // If it's not the next segment, we need to draw it somewhere in this segment
-    if (distance < metadata.distance) {
-      const alpha = distance / metadata.distance;
-      if (metadata.type == "straight") {
-        // Straight, linearly interpolate
-        x = metadata.x * (1 - alpha) + metadata.fX * alpha;
-        y = metadata.y * (1 - alpha) + metadata.fY * alpha;
-        angle = rad(metadata.angle) - Math.PI / 2;
-      } else if (metadata.type == "arc") {
-        // Arc, interpolate the arc
-        const right = metadata.startAngle < metadata.endAngle;
-        const posAngle =
-          rad(metadata.startAngle) * (1 - alpha) +
-          rad(metadata.endAngle) * alpha +
-          (right ? -Math.PI / 2 : Math.PI / 2);
-        x = metadata.cx + metadata.radius * Math.cos(posAngle);
-        y = metadata.cy + metadata.radius * Math.sin(posAngle);
-        angle = right ? posAngle : posAngle - Math.PI;
-      }
-      break;
-    }
+  // Draw the car by translating & rotating then drawing the image
+  // We need to save and restore to not change the root transform
+  ctx.save();
+  ctx.fillStyle = "#000";
 
-    // It's not this segment, move on
-    distance -= metadata.distance;
-  }
+  // Apply drift
+  const drawX =
+    x +
+    width * driftX * Math.cos(angle + Math.PI) +
+    height * driftY * Math.cos(angle + Math.PI / 2);
+  const drawY =
+    y +
+    width * driftX * Math.sin(angle + Math.PI) +
+    height * driftY * Math.sin(angle + Math.PI / 2);
+  ctx.translate(drawX, drawY);
+  ctx.rotate(angle + Math.PI / 2);
+  ctx.beginPath();
+  ctx.drawImage(image, -height / 2, -width / 2, height, width);
+  ctx.fill();
+  ctx.restore();
 
-  if (x && y && angle) {
-    // viewBox = 49 55 236 109
-    const svgWidth = 236;
-    const svgHeight = 109;
-    const width = Math.floor(TRACK_WIDTH * CAR_PERCENT);
-    const height = Math.floor(width * (svgWidth / svgHeight));
-    console.log(width, height);
-
-    // Draw the car by translating & rotating then drawing the image
-    // We need to save and restore to not change the root transform
-    ctx.save();
-    ctx.fillStyle = "#000";
-
-    // Apply drift
-    const drawX =
-      x +
-      width * driftX * Math.cos(angle + Math.PI) +
-      height * driftY * Math.cos(angle + Math.PI / 2);
-    const drawY =
-      y +
-      width * driftX * Math.sin(angle + Math.PI) +
-      height * driftY * Math.sin(angle + Math.PI / 2);
-    ctx.translate(drawX, drawY);
-    ctx.rotate(angle + Math.PI / 2);
-    ctx.beginPath();
-    ctx.drawImage(image, -height / 2, -width / 2, height, width);
-    ctx.fill();
-    ctx.restore();
-
-    return {
-      x,
-      y,
-      drawX,
-      drawY,
-      angle
-    };
-  }
+  return {
+    x,
+    y,
+    drawX,
+    drawY,
+    angle
+  };
 }
