@@ -50,7 +50,7 @@ const ZOOM_OUT = false;
 const SCALE = 20;
 // The track defined as straight and angled segments
 const TRACK: TrackSegment[] = [
-  { distance: 200 * SCALE },
+  { distance: 100 * SCALE },
   { angle: 90, radius: 100 * SCALE },
   { angle: -90, radius: 100 * SCALE },
   { distance: 200 * SCALE },
@@ -63,7 +63,8 @@ const TRACK: TrackSegment[] = [
   { angle: -45 - 90, radius: 50 * SCALE },
   { angle: 180, radius: 100 * SCALE },
   { distance: 100 * SCALE },
-  { angle: 90, radius: 79.3125 * SCALE }
+  { angle: 90, radius: 79.3125 * SCALE },
+  { distance: 100 * SCALE }
 ];
 
 // We need to resize the canvas to match the space it takes up
