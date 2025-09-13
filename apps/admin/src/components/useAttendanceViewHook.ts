@@ -1,6 +1,6 @@
 import { AttendanceType } from "@rp/shared";
 import moment from "moment";
-import React from "react";
+import React, { useCallback } from "react";
 
 export interface Meeting {
   meetingId: string;
@@ -52,7 +52,7 @@ export const useAttendanceViewHook = (attendanceData: StaffAttendance[]) => {
     [committeeType: string]: WeekData[];
   }>({});
 
-  const handleLoadData = () => {
+  const handleLoadData = useCallback(() => {
     if (!attendanceData || attendanceData.length === 0) {
       setWeeksData({}); // empty weeksData if no attendance
       return;
@@ -158,11 +158,11 @@ export const useAttendanceViewHook = (attendanceData: StaffAttendance[]) => {
     }
 
     setWeeksData(newWeekData);
-  };
+  }, [attendanceData]);
 
   React.useEffect(() => {
     handleLoadData();
-  }, [attendanceData]);
+  }, [attendanceData, handleLoadData]);
 
   return {
     weeksData

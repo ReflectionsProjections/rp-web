@@ -13,7 +13,7 @@ import "@fontsource/nunito";
 import "@fontsource/roboto-slab";
 import { motion, useAnimation, useInView } from "framer-motion";
 import Player from "lottie-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useCallback } from "react";
 
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
@@ -34,7 +34,7 @@ export const Landing = () => {
   const refCtrl = useAnimation();
   const projCtrl = useAnimation();
 
-  const handleLoad = async () => {
+  const handleLoad = useCallback(async () => {
     // 1) grow the bar
     await barCtrl.start({
       height: sepH,
@@ -52,12 +52,12 @@ export const Landing = () => {
       x: isSmall ? 10 : 20,
       transition: { duration: 0.8, ease: "easeOut" }
     });
-  };
+  }, [barCtrl, refCtrl, projCtrl, sepH, isSmall]);
 
   useEffect(() => {
     if (!inView) return;
     void handleLoad();
-  }, [inView, barCtrl, refCtrl, projCtrl, sepH]);
+  }, [inView, handleLoad]);
 
   return (
     <Box
