@@ -88,7 +88,6 @@ export default function Events({ date }: EventsProps) {
       };
     });
 
-
     setDisplayedEvents(newDisplayedEvents);
   };
 
