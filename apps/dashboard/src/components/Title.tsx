@@ -17,7 +17,6 @@ export default function Title() {
   const [isSmall] = useMediaQuery("(max-width: 500px)");
   const sepH = 40;
 
-  // refs & animation controls
   const barRef = useRef(null);
   const inView = useInView(barRef, { once: false }); // allow repeated triggers
   const barCtrl = useAnimation();
@@ -25,14 +24,11 @@ export default function Title() {
   const projCtrl = useAnimation();
   const dateCtrl = useAnimation();
 
-  // --- main animation sequence ---
   const animateIn = async () => {
-    // 1. Bar grows
     await barCtrl.start({
       height: sepH,
       transition: { duration: 0.8, ease: "easeInOut" }
     });
-    // 2. Texts slide in
     await Promise.all([
       refCtrl.start({
         x: isSmall ? -10 : -20,
@@ -45,7 +41,6 @@ export default function Title() {
         transition: { duration: 0.8, ease: "easeOut" }
       })
     ]);
-    // 3. Date fades in
     await dateCtrl.start({
       opacity: 1,
       y: 0,
@@ -53,15 +48,12 @@ export default function Title() {
     });
   };
 
-  // --- reverse (hide) sequence ---
   const animateOut = async () => {
-    // 1. Date fades out
     await dateCtrl.start({
       opacity: 0,
       y: -20,
       transition: { duration: 0.4, ease: "easeIn" }
     });
-    // 2. Texts slide/fade out
     await Promise.all([
       refCtrl.start({
         x: "100%",
@@ -74,7 +66,6 @@ export default function Title() {
         transition: { duration: 0.7, ease: "easeIn" }
       })
     ]);
-    // 3. Bar shrinks
     await barCtrl.start({
       height: 0,
       transition: { duration: 0.5, ease: "easeInOut" }
@@ -87,15 +78,11 @@ export default function Title() {
     await animateIn();
   };
 
-  // --- loop logic ---
   useEffect(() => {
     let timeout: NodeJS.Timeout | null = null;
     if (inView) {
-      // First run: show
-
       void animateIn();
 
-      // Start interval
       timeout = setInterval(() => {
         void intervalHandler();
       }, 10000); // 10s
