@@ -93,7 +93,6 @@ export default function Events({ date }: EventsProps) {
       };
     });
 
-    console.log("newDisplayedEvents", newDisplayedEvents);
 
     setDisplayedEvents(newDisplayedEvents);
   };
