@@ -42,6 +42,8 @@ export type CarPosition = {
 // Not sure which is better so leaving this as a toggle
 export const DRAW_CARS_IN_CANVAS = true;
 
+const CAR_SPEED = 2000;
+const CAR_SPACING = 150;
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 50;
 const SIDE_DISTANCE = 100;
@@ -53,6 +55,7 @@ const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
+const FOLLOW_FIRST_CAR = true;
 const ZOOM_OUT = false;
 
 const SCALE = 20;
@@ -274,9 +277,9 @@ function getTrackPosition(
   totalDistance: number,
   position: number
 ) {
-  let distance = (totalDistance * position) % totalDistance;
+  let distance = position % totalDistance;
 
-  while (distance < 0) {
+  if (distance < 0) {
     distance = (distance + totalDistance) % totalDistance;
   }
 
@@ -333,9 +336,13 @@ function draw(
   carImages?: Record<IconColor, HTMLImageElement>
 ) {
   const { width, height } = ctx.canvas;
+  const timeSeconds = Date.now() / 1000;
 
   // Clear screen
   ctx.clearRect(0, 0, width, height);
+
+  // Increment the position the leading car is at
+  position = (timeSeconds * CAR_SPEED) % totalDistance;
 
   // Update camera
   updateCamera(ctx, trackDrawSegments, totalDistance, position);
@@ -343,16 +350,12 @@ function draw(
   // Draw track
   drawTrack(ctx, trackDrawSegments);
 
-  // Increment the position the leading car is at
-  position = (position + 0.0005) % 1;
-
   if (!leaderboard || !carImages) {
     return;
   }
 
   // Draw each car slightly farther back from the last
   const positions: (CarPosition | undefined)[] = [];
-  const time = Date.now() / 1000;
   for (const [i, entry] of leaderboard.entries()) {
     // Create cycles for x and y drift to add realism
     if (carCycles.length <= i) {
@@ -368,12 +371,13 @@ function draw(
     const stagerX = i % 2 == 0 ? 0.25 : -0.25;
     const driftX =
       stagerX +
-      0.1 * Math.sin(time / carCycles[i].cycleX + carCycles[i].offsetX);
+      0.1 * Math.sin(timeSeconds / carCycles[i].cycleX + carCycles[i].offsetX);
     const driftY =
-      0.025 * Math.sin(time / carCycles[i].cycleY + carCycles[i].offsetY);
+      0.025 *
+      Math.sin(timeSeconds / carCycles[i].cycleY + carCycles[i].offsetY);
 
     // Draw the car
-    const carPosition = (position + 10 - 0.0035 * i) % 1;
+    const carPosition = position + -CAR_SPACING * i;
     const { x, y, angle } = getTrackPosition(
       trackDrawSegments,
       totalDistance,
@@ -410,16 +414,23 @@ function updateCamera(
     x: cameraX,
     y: cameraY,
     angle: cameraAngle
-  } = getTrackPosition(trackDrawSegments, totalDistance, position);
-  // If zoom out debug flag, zoom the whole screen out
-  if (ZOOM_OUT) {
-    ctx.scale(0.1, 0.1);
-  }
+  } = FOLLOW_FIRST_CAR
+    ? getTrackPosition(trackDrawSegments, totalDistance, position)
+    : {
+        x: 215 * SCALE,
+        y: 200 * SCALE,
+        angle: Math.PI / 2
+      };
+
   // Move origin to screen center
   ctx.translate(
-    ctx.canvas.width * FIRST_CAR_CAMERA_X_SCALE,
-    ctx.canvas.height * FIRST_CAR_CAMERA_Y_SCALE
+    ctx.canvas.width * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_X_SCALE : 0.5),
+    ctx.canvas.height * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_Y_SCALE : 0.5)
   );
+  // If zoom out debug flag, zoom the whole screen out
+  if (ZOOM_OUT) {
+    ctx.scale(0.06, 0.06);
+  }
   // Rotate world so car faces "up"
   ctx.rotate(-cameraAngle - Math.PI);
   // Move world so car is centered
