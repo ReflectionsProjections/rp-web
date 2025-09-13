@@ -57,10 +57,10 @@ const SIDE_COLOR1 = "#f00";
 const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
-const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
+const FIRST_CAR_CAMERA_Y_SCALE = 0.1;
 const PAN_DOWN_TIME = 2.5;
 const PAN_DOWN_PAUSE = 30;
-const PAN_DOWN_TO_CAR = 3; // 0-indexed
+const PAN_DOWN_TO_CAR = 3.1; // 0-indexed
 const FOLLOW_FIRST_CAR = true;
 const ZOOM_OUT = false;
 
@@ -471,10 +471,15 @@ function updateCamera(
     ctx.canvas.width * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_X_SCALE : 0.5),
     ctx.canvas.height * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_Y_SCALE : 0.5)
   );
+
+  // Scale to user screen vs expected world space
+  let scale = ctx.canvas.height / 1050;
   // If zoom out debug flag, zoom the whole screen out
   if (ZOOM_OUT) {
-    ctx.scale(0.06, 0.06);
+    scale *= 0.06;
   }
+
+  ctx.scale(scale, scale);
   // Rotate world so car faces "up"
   ctx.rotate(-cameraAngle - Math.PI);
   // Move world so car is centered
