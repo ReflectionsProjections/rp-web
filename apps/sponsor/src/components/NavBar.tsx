@@ -11,7 +11,7 @@ export function NavBar() {
       pb="10px"
     >
       <Image
-        src="/2024_rp_logo.svg"
+        src="/rp_logo.svg"
         maxH="100%"
         _hover={{
           filter: "brightness(30%)",

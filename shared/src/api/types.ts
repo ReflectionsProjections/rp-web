@@ -67,6 +67,7 @@ export type Event = {
   isVisible: boolean;
   attendanceCount: number;
   eventType: EventType;
+  tags: string[];
 };
 
 export type RegistrationDraft = {
@@ -144,11 +145,47 @@ export type CommitteeType =
 
 export type AttendanceType = "ABSENT" | "PRESENT" | "EXCUSED";
 
+export type Speaker = {
+  speakerId: string;
+  name: string;
+  title: string;
+  bio: string;
+  eventTitle: string;
+  eventDescription: string;
+  imgUrl: string;
+};
+
+export type ShiftRoleType =
+  | "CLEAN_UP"
+  | "DINNER"
+  | "CHECK_IN"
+  | "SPEAKER_BUDDY"
+  | "SPONSOR_BUDDY"
+  | "DEV_ON_CALL"
+  | "CHAIR_ON_CALL";
+
 export type Staff = {
   email: string;
   name: string;
   team: CommitteeType;
   attendances: Record<string, AttendanceType>;
+};
+
+export type Shift = {
+  shiftId: string;
+  name: string;
+  role: ShiftRoleType;
+  startTime: string;
+  endTime: string;
+  location: string;
+};
+
+export type ShiftAssignment = {
+  shiftId: string;
+  staffEmail: string;
+  acknowledged: boolean;
+  staff?: Staff;
+  shifts?: Shift;
 };
 
 export type Meeting = {
@@ -162,6 +199,17 @@ export type Meeting = {
     | "MARKETING"
     | "OPERATIONS";
   startTime: string;
+};
+
+export type Tier = "TIER1" | "TIER2" | "TIER3";
+export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
+export type LeaderboardEntry = {
+  rank: number;
+  userId: string;
+  displayName: string;
+  points: number;
+  currentTier: Tier;
+  icon: IconColor;
 };
 
 export interface APIRoutes {
@@ -288,6 +336,19 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/leaderboard/daily": {
+    GET: {
+      request: {
+        day: string;
+        count: number;
+      };
+      response: {
+        day: string;
+        count: number;
+        leaderboard: LeaderboardEntry[];
+      };
+    };
+  };
   "/registration/draft": {
     POST: {
       request: Omit<RegistrationDraft, "userId" | "resume"> & {
@@ -310,7 +371,8 @@ export interface APIRoutes {
       response: Array<{
         userId: string;
         name: string;
-        major: string;
+        majors: string[];
+        minors: string[];
         graduationYear: string;
         educationLevel: string;
         opportunities?: string[];
@@ -354,6 +416,28 @@ export interface APIRoutes {
     PUT: {
       request: Partial<Omit<Meeting, "meetingId">>;
       response: Meeting;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/speakers": {
+    GET: {
+      response: Speaker[];
+    };
+    POST: {
+      request: Omit<Speaker, "speakerId">;
+      response: Speaker;
+    };
+  };
+  "/speakers/:speakerId": {
+    GET: {
+      response: Speaker;
+    };
+    PUT: {
+      request: Partial<Omit<Speaker, "speakerId">>;
+      response: Speaker;
     };
     DELETE: {
       request: never;
@@ -415,6 +499,49 @@ export interface APIRoutes {
   "/stats/merch-item/:price": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/shifts": {
+    GET: {
+      response: Shift[];
+    };
+    POST: {
+      request: Omit<Shift, "shiftId">;
+      response: Shift;
+    };
+  };
+  "/shifts/:shiftId": {
+    PATCH: {
+      request: Partial<Omit<Shift, "shiftId">>;
+      response: Shift;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/shifts/:shiftId/assignments": {
+    GET: {
+      response: ShiftAssignment[];
+    };
+    POST: {
+      request: { staffEmail: string };
+      response: ShiftAssignment;
+    };
+    DELETE: {
+      request: { staffEmail: string };
+      response: never;
+    };
+  };
+  "/shifts/my-shifts": {
+    GET: {
+      response: ShiftAssignment[];
+    };
+  };
+  "/shifts/:shiftId/acknowledge": {
+    POST: {
+      request: never;
+      response: ShiftAssignment;
     };
   };
 }

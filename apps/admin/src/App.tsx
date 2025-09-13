@@ -1,7 +1,6 @@
 // import { useState } from 'react'
 // import reactLogo from './assets/react.svg'
 // import rpLogo from './assets/rp_logo.png'
-// import viteLogo from '/vite.svg'
 import "./App.css";
 // import axios from 'axios';
 import { ChakraProvider, theme } from "@chakra-ui/react";
