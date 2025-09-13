@@ -42,7 +42,7 @@ const FINISH_LINE_SQUARE_SIZE = 25;
 const TRACK_COLOR = "#686868ff";
 const SIDE_COLOR1 = "#f00";
 const SIDE_COLOR2 = "#fff";
-const CAR_PERCENT = 0.325;
+const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.125;
 const ZOOM_OUT = false;
@@ -346,12 +346,12 @@ function draw(
     }
 
     // Stagger cars left-right-left-right
-    const stagerX = i % 2 == 0 ? 0.5 : -0.5;
+    const stagerX = i % 2 == 0 ? 0.25 : -0.25;
     const driftX =
       stagerX +
-      0.2 * Math.sin(time / carCycles[i].cycleX + carCycles[i].offsetX);
+      0.1 * Math.sin(time / carCycles[i].cycleX + carCycles[i].offsetX);
     const driftY =
-      0.05 * Math.sin(time / carCycles[i].cycleY + carCycles[i].offsetY);
+      0.025 * Math.sin(time / carCycles[i].cycleY + carCycles[i].offsetY);
 
     // Draw the car
     const carPosition = (position + 10 - 0.0035 * i) % 1;
@@ -546,8 +546,8 @@ function drawCar(
   // viewBox = 49 55 236 109
   const svgWidth = 236;
   const svgHeight = 109;
-  const width = Math.floor(TRACK_WIDTH * CAR_PERCENT);
-  const height = Math.floor(width * (svgWidth / svgHeight));
+  const width = Math.floor(TRACK_WIDTH * 2 * CAR_PERCENT);
+  const height = Math.floor(width * (svgHeight / svgWidth));
 
   // Draw the car by translating & rotating then drawing the image
   // We need to save and restore to not change the root transform
@@ -566,7 +566,7 @@ function drawCar(
   ctx.translate(drawX, drawY);
   ctx.rotate(angle + Math.PI / 2);
   ctx.beginPath();
-  ctx.drawImage(image, -height / 2, -width / 2, height, width);
+  ctx.drawImage(image, -height / 2, -width / 2, width, height);
   ctx.fill();
   ctx.restore();
 
