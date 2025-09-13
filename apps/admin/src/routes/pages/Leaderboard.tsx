@@ -101,7 +101,7 @@ const Leaderboard: React.FC = () => {
         // Transform API response to match LeaderboardUser format
         const transformedData: LeaderboardUser[] = data.leaderboard.map(
           (entry) => ({
-            userId: parseInt(entry.userId),
+            userId: entry.userId, // Keep as string since it's a UUID
             name: entry.displayName,
             email: "", // Not provided by API
             points: entry.points,
@@ -154,9 +154,23 @@ const Leaderboard: React.FC = () => {
     if (!authorized) return;
 
     try {
+      // Get the first effectiveNumberAwards eligible users (already filtered to exclude TIER4)
+      // This accounts for tiebreaks and gives us the actual number that will be promoted
+      const eligibleUsers = leaderboardUsers.slice(0, effectiveNumberAwards);
+
+      const eligibleUserIds = eligibleUsers.map((user) => user.userId);
+
+      console.log(`Submitting leaderboard for ${day}:`, {
+        requestedPromotions: n,
+        effectivePromotions: effectiveNumberAwards,
+        eligibleUsersFound: eligibleUserIds.length,
+        eligibleUserIds
+      });
+
       await api.post("/leaderboard/submit", {
         day,
-        n
+        n: effectiveNumberAwards, // Send the effective number, not the original query number
+        userIdsToPromote: eligibleUserIds
       });
       // Refresh the leaderboard data after submission
       await fetchDailyLeaderboard(day, undefined);
@@ -210,6 +224,7 @@ const Leaderboard: React.FC = () => {
       if (!leaderboardData || leaderboardData.length === 0) {
         return [];
       }
+
       // Filter out TIER4 users (they already have all prizes)
       return leaderboardData.filter((user) => user.currentTier !== "TIER4");
     }, // don't show users who already have all prizes

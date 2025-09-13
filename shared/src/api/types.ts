@@ -33,7 +33,7 @@ export type Attendee = {
 };
 
 export type LeaderboardUser = {
-  userId: number;
+  userId: string;
   name: string;
   email: string;
   points: number;
@@ -578,6 +578,7 @@ export interface APIRoutes {
       request: {
         day: string;
         n: number;
+        userIdsToPromote?: string[];
       };
       response: {
         leaderboard: Array<{
