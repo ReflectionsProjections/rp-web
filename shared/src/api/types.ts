@@ -477,6 +477,12 @@ export interface APIRoutes {
       response: never;
     };
   };
+  "/subscription/send-email/single": {
+    POST: {
+      request: { email: string; subject: string; htmlBody: string };
+      response: never;
+    };
+  };
   "/s3/upload": {
     GET: {
       response: { url: string; fields: Record<string, unknown> };

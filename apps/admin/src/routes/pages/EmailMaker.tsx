@@ -175,13 +175,13 @@ function EmailMaker() {
     }
     if (values.isIndividualEmail) {
       const emailData = {
-        mailingList: values.recipient,
+        email: values.recipient,
         subject: values.subject,
         htmlBody: generateHtmlEmail(values.body, values.template)
       };
 
       const request = api
-        .post("/subscription/send-email", emailData)
+        .post("/subscription/send-email/single", emailData)
         .finally(() => helpers.setSubmitting(false));
 
       toast.promise(request, {
@@ -189,7 +189,24 @@ function EmailMaker() {
         error: { title: "Failed to send email. Try again soon!" },
         loading: { title: "Requesting email..." }
       });
+      return;
     }
+    const emailData = {
+      mailingList: values.recipient,
+      subject: values.subject,
+      htmlBody: generateHtmlEmail(values.body, values.template)
+    };
+
+    const request = api
+      .post("/subscription/send-email", emailData)
+      .finally(() => helpers.setSubmitting(false));
+
+    toast.promise(request, {
+      success: { title: `Email sent to ${values.recipient}!` },
+      error: { title: "Failed to send email. Try again soon!" },
+      loading: { title: "Requesting email..." }
+    });
+    return;
   };
 
   // note -- the markdown rendering for the preview takes place inside
