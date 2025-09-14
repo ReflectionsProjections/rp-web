@@ -17,7 +17,14 @@ import {
   Textarea,
   Checkbox,
   ModalFooter,
-  Button
+  Button,
+  Tag,
+  TagLabel,
+  TagCloseButton,
+  Wrap,
+  WrapItem,
+  Box,
+  Text
 } from "@chakra-ui/react";
 import { Form, Formik, FormikHelpers } from "formik";
 import { EventFormValues, EventFormSchema } from "./EventSchema";
@@ -192,6 +199,86 @@ const EventForm: React.FC<EventFormProps> = ({
                   onBlur={handleBlur}
                 />
                 <FormErrorMessage>{errors.location}</FormErrorMessage>
+              </FormControl>
+
+              <FormControl>
+                <FormLabel>Tags</FormLabel>
+                <VStack align="stretch" spacing={2}>
+                  {/* Current tags */}
+                  {values.tags && values.tags.length > 0 && (
+                    <Box>
+                      <Text fontSize="sm" color="gray.600" mb={2}>
+                        Current tags:
+                      </Text>
+                      <Wrap>
+                        {values.tags.map((tag, index) => (
+                          <WrapItem key={index}>
+                            <Tag
+                              size="md"
+                              colorScheme="blue"
+                              borderRadius="full"
+                            >
+                              <TagLabel>{tag}</TagLabel>
+                              <TagCloseButton
+                                onClick={() => {
+                                  const newTags = (values.tags || []).filter(
+                                    (_, i) => i !== index
+                                  );
+                                  void setFieldValue("tags", newTags);
+                                }}
+                              />
+                            </Tag>
+                          </WrapItem>
+                        ))}
+                      </Wrap>
+                    </Box>
+                  )}
+
+                  {/* Available suggested tags */}
+                  <Box>
+                    <Text fontSize="sm" color="gray.600" mb={2}>
+                      Available tags:
+                    </Text>
+                    <Wrap>
+                      {[
+                        "Career Readiness",
+                        "AI",
+                        "Research",
+                        "Interactive Events",
+                        "HCI",
+                        "Ethics",
+                        "Art/Media",
+                        "Autonomous Vehicles",
+                        "Networking",
+                        "Company Talk",
+                        "Cybersecurity"
+                      ]
+                        .filter(
+                          (suggestedTag) =>
+                            !(values.tags || []).includes(suggestedTag)
+                        )
+                        .map((suggestedTag) => (
+                          <WrapItem key={suggestedTag}>
+                            <Tag
+                              size="sm"
+                              colorScheme="gray"
+                              borderRadius="full"
+                              cursor="pointer"
+                              _hover={{ bg: "gray.200" }}
+                              onClick={() => {
+                                void setFieldValue("tags", [
+                                  ...(values.tags || []),
+                                  suggestedTag
+                                ]);
+                              }}
+                            >
+                              <TagLabel>+ {suggestedTag}</TagLabel>
+                            </Tag>
+                          </WrapItem>
+                        ))}
+                    </Wrap>
+                  </Box>
+                </VStack>
               </FormControl>
 
               <FormControl>

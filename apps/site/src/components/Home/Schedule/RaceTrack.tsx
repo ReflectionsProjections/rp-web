@@ -62,7 +62,7 @@ export function RaceTrack({
       width="100%"
       height={{
         base: "200px",
-        md: "500px"
+        md: "300px"
       }}
       overflow="visible"
     >
@@ -74,7 +74,7 @@ export function RaceTrack({
         width="100%"
         height={{
           base: "200px",
-          md: "500px"
+          md: "300px"
         }}
         overflow="visible"
         viewBox={`0 0 ${trackPath.width} ${trackPath.height}`}

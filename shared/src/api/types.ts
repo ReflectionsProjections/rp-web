@@ -67,6 +67,7 @@ export type Event = {
   isVisible: boolean;
   attendanceCount: number;
   eventType: EventType;
+  tags: string[];
 };
 
 export type RegistrationDraft = {
@@ -198,6 +199,17 @@ export type Meeting = {
     | "MARKETING"
     | "OPERATIONS";
   startTime: string;
+};
+
+export type Tier = "TIER1" | "TIER2" | "TIER3";
+export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
+export type LeaderboardEntry = {
+  rank: number;
+  userId: string;
+  displayName: string;
+  points: number;
+  currentTier: Tier;
+  icon: IconColor;
 };
 
 export interface APIRoutes {
@@ -352,6 +364,19 @@ export interface APIRoutes {
     POST: {
       request: { title: string; body: string };
       response: never;
+    };
+  };
+  "/leaderboard/daily": {
+    GET: {
+      request: {
+        day: string;
+        count: number;
+      };
+      response: {
+        day: string;
+        count: number;
+        leaderboard: LeaderboardEntry[];
+      };
     };
   };
   "/registration/draft": {
