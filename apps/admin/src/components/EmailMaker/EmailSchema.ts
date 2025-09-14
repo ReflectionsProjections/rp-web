@@ -1,8 +1,7 @@
 import * as yup from "yup";
 
 export type EmailFormValues = {
-  recipients?: string;
-  individualRecipient?: string;
+  recipient: string;
   subject: string;
   body: string;
   isMobileNotification: boolean;
@@ -11,20 +10,25 @@ export type EmailFormValues = {
 };
 
 export const EmailFormSchema: yup.Schema<EmailFormValues> = yup.object({
-  recipients: yup.string().when("isIndividualEmail", {
-    is: false,
-    then: (schema) =>
-      schema.required("Recipient or subscription group is required"),
-    otherwise: (schema) => schema.notRequired()
-  }),
-  individualRecipient: yup.string().when("isIndividualEmail", {
-    is: true,
-    then: (schema) =>
-      schema
-        .email("Recipient must be a valid email")
-        .required("Recipient or subscription group is required"),
-    otherwise: (schema) => schema.notRequired()
-  }),
+  recipient: yup
+    .string()
+    .defined()
+    .when(
+      ["isMobileNotification", "isIndividualEmail"],
+      ([isMobileNotification, isIndividualEmail], schema: yup.StringSchema) => {
+        // if we're looking at the mobile view, ignore the individual-email validation entirely
+        if (isMobileNotification) {
+          return schema.required("Recipient or subscription group is required");
+        }
+        // else -- if we're looking at the email view
+        if (isIndividualEmail) {
+          return schema
+            .required("Recipient or subscription group is required")
+            .email("Recipient must be a valid email");
+        }
+        return schema.required("Recipient or subscription group is required");
+      }
+    ),
   subject: yup
     .string()
     .required("Email subject is required")
@@ -33,19 +37,18 @@ export const EmailFormSchema: yup.Schema<EmailFormValues> = yup.object({
       then: (schema) =>
         schema.matches(
           /^[^!]*$/,
-          "The subject line cannot contain exclamation marks; UIUC email filters will block it from sending!"
+          "The subject line cannot contain exclamation marks; UIUC email filters will block it from sending"
         ),
       otherwise: (schema) => schema
     }),
-  body: yup.string().required("Email body is required"),
+  body: yup.string().required("Message body is required"),
   isMobileNotification: yup.boolean().required(),
   isIndividualEmail: yup.boolean().required(),
   template: yup.string().required()
 });
 
 export const EmailFormInitialValues: EmailFormValues = {
-  recipients: "",
-  individualRecipient: "",
+  recipient: "",
   subject: "",
   body: "",
   isMobileNotification: false,
