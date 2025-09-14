@@ -1,3 +1,12 @@
+/*
+
+Racetrack leaderboard drawing hook
+Created by Timothy Gonzalez
+
+This won't fit into 2026 theme so when you do delete this make sure to archive 2025.dash.reflectionsprojections.org c:
+
+*/
+
 import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
 import { useEffect, useState } from "react";
 
