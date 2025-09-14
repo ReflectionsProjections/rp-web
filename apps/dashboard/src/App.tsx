@@ -49,50 +49,50 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <Flex
-        flexDirection={"column"}
-        alignItems={"center"}
-        width={"100%"}
-        minH="100vh"
-        padding={"2rem"}
-        backgroundImage="url('./background.svg')"
-        backgroundSize="cover"
-        paddingTop="0.5rem"
-        zIndex={2}
-      >
-        <Title />
-        <Flex width={"100%"} mt={4} zIndex={2} flexGrow={1}>
-          <Flex
-            width={"50%"}
-            flexGrow={"1"}
-            marginRight={"5rem"}
-            alignItems={"end"}
-          >
-            <RegisterNow />
-          </Flex>
-          <Flex
-            width={"50%"}
-            marginLeft={"5rem"}
-            alignItems={"right"}
-            flexDir={"column"}
-            gap={4}
-          >
-            <Events date={date} />
-            <Sponsors />
+      <Box backgroundImage="url('./background.svg')" backgroundSize="cover">
+        <Flex
+          flexDirection={"column"}
+          alignItems={"center"}
+          width={"100%"}
+          minH="100vh"
+          padding={"2rem"}
+          paddingTop="0.5rem"
+          zIndex={2}
+        >
+          <Title />
+          <Flex width={"100%"} mt={4} zIndex={2} flexGrow={1}>
+            <Flex
+              width={"50%"}
+              flexGrow={"1"}
+              marginRight={"5rem"}
+              alignItems={"end"}
+            >
+              <RegisterNow />
+            </Flex>
+            <Flex
+              width={"50%"}
+              marginLeft={"5rem"}
+              alignItems={"right"}
+              flexDir={"column"}
+              gap={4}
+            >
+              <Events date={date} />
+              <Sponsors />
+            </Flex>
           </Flex>
         </Flex>
-      </Flex>
-      {/* Leaderboard needs to be positioned absolutely to ignore padding */}
-      <Box
-        zIndex={1}
-        position={"absolute"}
-        top={0}
-        left={0}
-        right={0}
-        bottom={0}
-        overflowY={"hidden"}
-      >
-        <Leaderboard trackPercent={0.5} />
+        {/* Leaderboard needs to be positioned absolutely to ignore padding */}
+        <Box
+          zIndex={1}
+          position={"absolute"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          overflowY={"hidden"}
+        >
+          <Leaderboard trackPercent={0.5} />
+        </Box>
       </Box>
     </ChakraProvider>
   );
