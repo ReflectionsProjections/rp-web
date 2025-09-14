@@ -1,6 +1,7 @@
 import {
   Box,
   HStack,
+  Icon,
   Image,
   Link,
   Spinner,
@@ -11,6 +12,7 @@ import { api, Attendee, path, RoleObject, TierTypes } from "@rp/shared";
 import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
+import { FaMedal } from "react-icons/fa";
 
 const MotionBox = motion(Box);
 
@@ -138,15 +140,49 @@ export function Profile() {
           </VStack>
           <Image src="/rp_logo.svg" w="40px" />
         </HStack>
-        <Text
-          fontFamily="Magistral"
-          fontSize="xl"
-          fontWeight="bold"
-          color="white"
-          fontStyle={"italic"}
-        >
-          Food Wave: {foodWave ?? "Not available"}
-        </Text>
+        <HStack>
+          <Text
+            fontFamily="Magistral"
+            fontSize="xl"
+            fontWeight="bold"
+            color="white"
+            fontStyle={"italic"}
+          >
+            Food Wave:
+          </Text>
+          {foodWave === 1 ? (
+            <Text
+              fontFamily="Magistral"
+              fontSize="xl"
+              fontWeight="bold"
+              fontStyle="italic"
+            >
+              Standard
+            </Text>
+          ) : foodWave === 2 ? (
+            <HStack spacing={2} alignItems="center">
+              <Text
+                fontFamily="Magistral"
+                fontSize="xl"
+                fontWeight="bold"
+                fontStyle="italic"
+                color="yellow.500"
+              >
+                Priority
+              </Text>
+              <Icon as={FaMedal} color="yellow.500" w={4} h={4} />
+            </HStack>
+          ) : (
+            <Text
+              fontFamily="Magistral"
+              fontSize="xl"
+              fontWeight="bold"
+              fontStyle="italic"
+            >
+              Not available
+            </Text>
+          )}
+        </HStack>
         <Text
           fontFamily="Magistral"
           fontSize="xl"
