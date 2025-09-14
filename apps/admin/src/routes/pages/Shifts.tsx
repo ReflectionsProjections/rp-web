@@ -416,7 +416,7 @@ const Shifts: React.FC = () => {
         duration: 3000,
         isClosable: true
       });
-      updateAssignments();
+      updateShifts();
     } catch (error) {
       console.error("Error deleting shift:", error);
       toast({
