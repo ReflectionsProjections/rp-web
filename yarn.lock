@@ -238,12 +238,12 @@ __metadata:
   linkType: hard
 
 "@chakra-ui/icons@npm:^2.1.1":
-  version: 2.2.6
-  resolution: "@chakra-ui/icons@npm:2.2.6"
+  version: 2.2.4
+  resolution: "@chakra-ui/icons@npm:2.2.4"
   peerDependencies:
     "@chakra-ui/react": ">=2.0.0"
     react: ">=18"
-  checksum: 10c0/588d013ac21f53430bf8f03530c7355c67bb4d7e245c86e5b9b93018d6373f4ef64ce6557b5f39185998969539101a8957b6a367d01175a3238f11c421fe8ee9
+  checksum: 10c0/db1aa925e9e22efe12d2417df2b21337f4cb6e6de0a2ba641bc4c3c36dbebb39ec6e6ce9b82f79f3a5d85e988779784468f8b604614170dee1b57c66ea400f9e
   languageName: node
   linkType: hard
 

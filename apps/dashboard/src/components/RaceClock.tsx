@@ -1,5 +1,6 @@
 import { Flex, Text } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useTime } from "@rp/shared";
+import { useMemo } from "react";
 
 function ClockSegment({
   value,
@@ -28,32 +29,24 @@ function ClockSegment({
   );
 }
 
-function getTimeParts() {
-  const now = new Date();
-  let hours = now.getHours() % 12;
-  if (hours === 0) hours = 12;
-  const parts = {
-    hours: hours.toString().padStart(2, "0"),
-    minutes: now.getMinutes().toString().padStart(2, "0"),
-    seconds: now.getSeconds().toString().padStart(2, "0"),
-    ms: Math.floor(now.getMilliseconds() / 100).toString(), // tenths of a sec
-    meridian: now.getHours() >= 12 ? "PM" : "AM"
-  };
-  return parts;
+function useClockParts() {
+  const time = useTime(100);
+  return useMemo(() => {
+    const now = new Date(time);
+    let hours = now.getHours() % 12;
+    if (hours === 0) hours = 12;
+    return {
+      hours: hours.toString().padStart(2, "0"),
+      minutes: now.getMinutes().toString().padStart(2, "0"),
+      seconds: now.getSeconds().toString().padStart(2, "0"),
+      ms: Math.floor(now.getMilliseconds() / 100).toString(), // tenths of a sec
+      meridian: now.getHours() >= 12 ? "PM" : "AM"
+    };
+  }, [time]);
 }
 
 export function RaceClock() {
-  const [parts, setParts] = useState(getTimeParts());
-
-  useEffect(() => {
-    let req: number;
-    const update = () => {
-      setParts(getTimeParts());
-      req = requestAnimationFrame(update);
-    };
-    update();
-    return () => cancelAnimationFrame(req);
-  }, []);
+  const clockParts = useClockParts();
 
   return (
     <Flex
@@ -76,21 +69,21 @@ export function RaceClock() {
       }}
     >
       {/* Hour */}
-      <ClockSegment value={parts.hours[0]} />
-      <ClockSegment value={parts.hours[1]} />
+      <ClockSegment value={clockParts.hours[0]} />
+      <ClockSegment value={clockParts.hours[1]} />
       <ClockSegment value=":" w="0.7em" semicolon />
       {/* Minute */}
-      <ClockSegment value={parts.minutes[0]} />
-      <ClockSegment value={parts.minutes[1]} />
+      <ClockSegment value={clockParts.minutes[0]} />
+      <ClockSegment value={clockParts.minutes[1]} />
       <ClockSegment value=":" w="0.7em" semicolon />
       {/* Second */}
-      <ClockSegment value={parts.seconds[0]} />
-      <ClockSegment value={parts.seconds[1]} />
+      <ClockSegment value={clockParts.seconds[0]} />
+      <ClockSegment value={clockParts.seconds[1]} />
       <ClockSegment value="." w="0.6em" />
       {/* Tenths */}
-      <ClockSegment value={parts.ms} w="0.85em" />
+      <ClockSegment value={clockParts.ms} w="0.85em" />
       {/* AM/PM */}
-      <ClockSegment value={parts.meridian} w="1.8em" />
+      <ClockSegment value={clockParts.meridian} w="1.8em" />
     </Flex>
   );
 }

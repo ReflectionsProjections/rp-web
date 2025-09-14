@@ -217,6 +217,14 @@ export type Meeting = {
 
 export type Tier = "TIER1" | "TIER2" | "TIER3" | "TIER4";
 export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
+export const IconColors: Record<IconColor, IconColor> = {
+  BLUE: "BLUE",
+  GREEN: "GREEN",
+  ORANGE: "ORANGE",
+  PINK: "PINK",
+  PURPLE: "PURPLE",
+  RED: "RED"
+};
 export type LeaderboardEntry = {
   rank: number;
   userId: string;
@@ -364,10 +372,21 @@ export interface APIRoutes {
     GET: {
       request: {
         day: string;
-        count: number;
+        n: number;
       };
       response: {
         day: string;
+        count: number;
+        leaderboard: LeaderboardEntry[];
+      };
+    };
+  };
+  "/leaderboard/global": {
+    GET: {
+      request: {
+        n: number;
+      };
+      response: {
         count: number;
         leaderboard: LeaderboardEntry[];
       };
@@ -598,21 +617,6 @@ export interface APIRoutes {
     POST: {
       request: never;
       response: ShiftAssignment;
-    };
-  };
-  "/leaderboard/global": {
-    GET: {
-      response: {
-        leaderboard: Array<{
-          rank: number;
-          userId: string;
-          displayName: string;
-          points: number;
-          currentTier: number;
-          icon: string;
-        }>;
-        count: number;
-      };
     };
   };
   "/leaderboard/submit": {
