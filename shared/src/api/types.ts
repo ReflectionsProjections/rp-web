@@ -348,10 +348,21 @@ export interface APIRoutes {
     GET: {
       request: {
         day: string;
-        count: number;
+        n: number;
       };
       response: {
         day: string;
+        count: number;
+        leaderboard: LeaderboardEntry[];
+      };
+    };
+  };
+  "/leaderboard/global": {
+    GET: {
+      request: {
+        n: number;
+      };
+      response: {
         count: number;
         leaderboard: LeaderboardEntry[];
       };

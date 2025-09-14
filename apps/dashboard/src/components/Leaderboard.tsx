@@ -1,6 +1,6 @@
 import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
 import { Box, Flex, Text } from "@chakra-ui/react";
-import { IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
+import { api, IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
 import Car from "@/assets/car.svg?react";
 import Icon from "@/assets/icon.svg?react";
@@ -9,111 +9,17 @@ import useUpdateAnimationLoop, {
   CarPosition,
   DRAW_CARS_IN_CANVAS
 } from "../hooks/LeaderboardDraw";
-// import { usePolling } from "@rp/shared";
 
-function useMockData() {
-  const [data, setData] = useState<
-    { leaderboard: LeaderboardEntry[] } | undefined
-  >(undefined);
-  useEffect(() => {
-    setData({
-      leaderboard: [
-        {
-          displayName: "Bob",
-          currentTier: "TIER2",
-          icon: "ORANGE",
-          points: 32,
-          rank: 1,
-          userId: "1234"
-        },
-        {
-          displayName: "Alice",
-          currentTier: "TIER1",
-          icon: "RED",
-          points: 28,
-          rank: 2,
-          userId: "12345"
-        },
-        {
-          displayName: "Alex",
-          currentTier: "TIER1",
-          icon: "BLUE",
-          points: 25,
-          rank: 3,
-          userId: "123456"
-        },
-        {
-          displayName: "Tree",
-          currentTier: "TIER1",
-          icon: "GREEN",
-          points: 18,
-          rank: 4,
-          userId: "1234567"
-        },
-        {
-          displayName: "OnlyTwentyCharacters", // Crazy this is exactly 20
-          currentTier: "TIER1",
-          icon: "PURPLE",
-          points: 16,
-          rank: 5,
-          userId: "1234568"
-        },
-        {
-          displayName: "OnlyOne",
-          currentTier: "TIER1",
-          icon: "GREEN",
-          points: 13,
-          rank: 6,
-          userId: "1234569"
-        },
-        {
-          displayName: "TesterTheGuy",
-          currentTier: "TIER1",
-          icon: "RED",
-          points: 11,
-          rank: 7,
-          userId: "12532"
-        },
-        {
-          displayName: "Bazinga",
-          currentTier: "TIER1",
-          icon: "ORANGE",
-          points: 5,
-          rank: 8,
-          userId: "13454315"
-        },
-        {
-          displayName: "Sheldon",
-          currentTier: "TIER1",
-          icon: "PINK",
-          points: 3,
-          rank: 9,
-          userId: "12352353"
-        },
-        {
-          displayName: "Duck",
-          currentTier: "TIER1",
-          icon: "PURPLE",
-          points: 2,
-          rank: 10,
-          userId: "1235235239845"
-        }
-      ]
-    });
-  }, []);
-
-  return { data, isLoading: false };
-}
+const TOP_CARS_NUMBER = 10;
 
 export default function Leaderboard({
   trackPercent
 }: {
   trackPercent: number;
 }) {
-  // const { data, isLoading } = usePolling("/leaderboard/daily");
-
-  // Testing data until leaderboard is done
-  const { data } = useMockData();
+  const [leaderboard, setLeaderboard] = useState<
+    LeaderboardEntry[] | undefined
+  >(undefined);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
@@ -122,8 +28,43 @@ export default function Leaderboard({
     canvasRef,
     trackPercent,
     carImages,
-    leaderboard: data?.leaderboard
+    leaderboard
   });
+
+  useEffect(() => {
+    const date = new Date();
+
+    // First try to get daily leaderboard
+    api
+      .get("/leaderboard/daily", {
+        params: {
+          // Cursed day format requirement - why is this not just unix time???
+          day: `${date.getFullYear()}-${date.getMonth().toString().padStart(2, "0")}-${date.getDay().toString().padStart(2, "0")}`,
+          n: TOP_CARS_NUMBER
+        }
+      })
+      .then((response) => {
+        // If there's results currently, then use that
+        if (response.data.leaderboard.length > 0) {
+          setLeaderboard(response.data.leaderboard.slice(0, TOP_CARS_NUMBER));
+        } else {
+          // Otherwise, show global leaderboard
+          api
+            .get("/leaderboard/global", {
+              params: {
+                n: TOP_CARS_NUMBER
+              }
+            })
+            .then((response) => {
+              setLeaderboard(
+                response.data.leaderboard.slice(0, TOP_CARS_NUMBER)
+              );
+            })
+            .catch(console.error);
+        }
+      })
+      .catch(console.error);
+  }, []);
 
   // Preload images for each color
   async function loadImages() {
@@ -161,9 +102,9 @@ export default function Leaderboard({
       <Flex position={"relative"} minHeight={"0"} flexGrow={"1"}>
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
-          {data?.leaderboard &&
+          {leaderboard &&
             positions.map((pos, i) => {
-              const entry = data.leaderboard[i];
+              const entry = leaderboard[i];
               const scorecardVisible =
                 !zoomedOut &&
                 !!canvasRef.current &&
