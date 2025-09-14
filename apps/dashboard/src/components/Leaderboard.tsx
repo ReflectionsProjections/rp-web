@@ -163,7 +163,12 @@ export default function Leaderboard({
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {data?.leaderboard &&
             positions.map((pos, i) => {
-              const entry = data?.leaderboard[i];
+              const entry = data.leaderboard[i];
+              const scorecardVisible =
+                !!canvasRef.current &&
+                pos.y > canvasRef.current.height * 0.05 &&
+                pos.y < canvasRef.current.height * 0.95;
+
               return (
                 pos && (
                   <LeaderboardEntryDisplay
@@ -172,6 +177,7 @@ export default function Leaderboard({
                     pos={pos}
                     entry={entry}
                     trackPercent={trackPercent}
+                    scorecardVisible={scorecardVisible}
                   />
                 )
               );
@@ -186,12 +192,14 @@ function LeaderboardEntryDisplay({
   i,
   pos,
   entry,
-  trackPercent
+  trackPercent,
+  scorecardVisible
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
   trackPercent: number;
+  scorecardVisible: boolean;
 }) {
   return (
     <Box>
@@ -218,6 +226,7 @@ function LeaderboardEntryDisplay({
         pos={pos}
         entry={entry}
         trackPercent={trackPercent}
+        visible={scorecardVisible}
       />
     </Box>
   );
@@ -227,12 +236,14 @@ function LeaderboardScorecard({
   i,
   pos,
   entry: { rank, displayName, points, icon },
-  trackPercent
+  trackPercent,
+  visible
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
   trackPercent: number;
+  visible: boolean;
 }) {
   let placePostfix = "th";
   if (rank % 10 == 1 && (rank < 10 || rank > 20)) {
@@ -245,6 +256,11 @@ function LeaderboardScorecard({
     placePostfix = "rd";
   }
 
+  const stagerOffset = i % 2 == 0 ? pos.width * 0.25 : -pos.width * 0.25;
+  const carOffset = stagerOffset + 0.5 * pos.width;
+  const left = pos.x + carOffset;
+  const top = pos.y;
+
   return (
     <Box
       position={"absolute"}
@@ -253,10 +269,12 @@ function LeaderboardScorecard({
       width={"max-content"}
       padding={"0.25rem"}
       borderRadius={"0.5rem"}
+      transition={"opacity 0.5s"}
       // Style inlined here to prevent chakra generating a new class every frame
       style={{
-        top: pos.y,
-        left: `calc(${pos.x}px + ${i % 2 == 0 ? 15 * trackPercent : 7.5 * trackPercent}%`
+        opacity: visible ? 1 : 0,
+        top,
+        left
       }}
     >
       <Flex

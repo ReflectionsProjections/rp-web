@@ -118,7 +118,7 @@ export default function useUpdateAnimationLoop({
   carImages: Record<IconColor, HTMLImageElement> | undefined;
   leaderboard: LeaderboardEntry[] | undefined;
 }) {
-  const [positions, setPositions] = useState<(CarPosition | undefined)[]>([]);
+  const [positions, setPositions] = useState<CarPosition[]>([]);
 
   useEffect(() => {
     const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
@@ -142,9 +142,6 @@ export default function useUpdateAnimationLoop({
             const { positions, transform } = result;
             setPositions(
               positions.map((pos) => {
-                const canvas = canvasRef.current;
-                if (!canvas || !pos) return;
-
                 const transformed = transform.transformPoint(
                   new DOMPoint(pos.x, pos.y)
                 );
@@ -386,7 +383,7 @@ function draw(
   }
 
   // Draw each car slightly farther back from the last
-  const positions: (CarPosition | undefined)[] = [];
+  const positions: CarPosition[] = [];
   for (const [i, entry] of leaderboard.entries()) {
     // Create cycles for x and y drift to add realism
     if (carCycles.length <= i) {
