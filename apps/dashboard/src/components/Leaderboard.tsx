@@ -176,7 +176,6 @@ export default function Leaderboard({
                     i={i}
                     pos={pos}
                     entry={entry}
-                    trackPercent={trackPercent}
                     scorecardVisible={scorecardVisible}
                   />
                 )
@@ -192,13 +191,11 @@ function LeaderboardEntryDisplay({
   i,
   pos,
   entry,
-  trackPercent,
   scorecardVisible
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
-  trackPercent: number;
   scorecardVisible: boolean;
 }) {
   return (
@@ -225,7 +222,6 @@ function LeaderboardEntryDisplay({
         i={i}
         pos={pos}
         entry={entry}
-        trackPercent={trackPercent}
         visible={scorecardVisible}
       />
     </Box>
@@ -236,13 +232,11 @@ function LeaderboardScorecard({
   i,
   pos,
   entry: { rank, displayName, points, icon },
-  trackPercent,
   visible
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
-  trackPercent: number;
   visible: boolean;
 }) {
   let placePostfix = "th";
