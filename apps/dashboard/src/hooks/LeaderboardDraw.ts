@@ -57,7 +57,7 @@ const SIDE_COLOR1 = "#f00";
 const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
-const FIRST_CAR_CAMERA_Y_SCALE = 0.1;
+const FIRST_CAR_CAMERA_Y_SCALE = 0.115;
 const PAN_DOWN_TIME = 2.5;
 const PAN_DOWN_PAUSE = 30;
 const PAN_DOWN_TO_CAR = 3.1; // 0-indexed
@@ -485,7 +485,7 @@ function updateCamera(
   ctx.translate(ctx.canvas.width * centerX, ctx.canvas.height * centerY);
 
   // Scale to user screen vs expected world space
-  let scale = ctx.canvas.height / 1050;
+  let scale = ctx.canvas.height / 1100;
   // If zoom out debug flag, zoom the whole screen out
   if (ZOOM_OUT) {
     scale *= 0.06;

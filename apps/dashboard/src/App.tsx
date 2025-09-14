@@ -3,6 +3,7 @@ import {
   ChakraProvider,
   extendTheme,
   Flex,
+  Text,
   ThemeConfig
 } from "@chakra-ui/react";
 import "@fontsource/nunito";
@@ -68,6 +69,22 @@ function App() {
               marginRight={"5rem"}
               alignItems={"end"}
             >
+              <Text
+                position={"absolute"}
+                top={"0.5rem"}
+                left={"25%"}
+                fontSize={"3xl"}
+                fontWeight="bold"
+                color="white"
+                fontFamily="ProRacingSlant"
+                textAlign="center"
+                transform={"translateX(-50%)"}
+                paddingX={"1rem"}
+                borderRadius="1rem"
+                bgColor={"rgba(0,0,0,0.2)"}
+              >
+                Leaderboard
+              </Text>
               <RegisterNow />
             </Flex>
             <Flex
