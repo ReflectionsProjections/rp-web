@@ -8,12 +8,13 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/nunito";
 import "@fontsource/roboto-slab";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Events from "./components/Events";
 import Leaderboard from "./components/Leaderboard";
 import { RegisterNow } from "./components/RegisterNow";
 import { Sponsors } from "./components/Sponsors";
 import Title from "./components/Title";
+import { useTime } from "@rp/shared";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -35,18 +36,8 @@ function App() {
   useEffect(() => {
     // setTimeout(() => location.reload(), 5 * 60 * 1000);
   }, []);
-
-  const [date, setDate] = useState<Date>(new Date());
-
-  useEffect(() => {
-    // Update every 1000ms (1 second)
-    const interval = setInterval(() => {
-      setDate((prev) => new Date(prev ? prev.getTime() + 1000 : Date.now()));
-    }, 1000);
-
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
+  const time = useTime(1000);
+  const date = new Date(time);
 
   return (
     <ChakraProvider theme={theme}>
