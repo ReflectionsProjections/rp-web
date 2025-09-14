@@ -347,7 +347,6 @@ const carCycles: {
   offsetY: number;
   cycleY: number;
 }[] = [];
-let position = 0;
 
 // The main draw function - called every frame to draw the track & cars
 function draw(
@@ -364,8 +363,8 @@ function draw(
   // Clear screen
   ctx.clearRect(0, 0, width, height);
 
-  // Increment the position the leading car is at
-  position = (timeSeconds * CAR_SPEED) % totalDistance;
+  // Increment the position the leading car is at based on time
+  const position = (timeSeconds * CAR_SPEED) % totalDistance;
 
   // Update camera
   updateCamera(
@@ -380,51 +379,21 @@ function draw(
   // Draw track
   drawTrack(ctx, trackDrawSegments);
 
+  // We need leaderboard and car images to draw the cars
   if (!leaderboard || !carImages) {
     return;
   }
 
-  // Draw each car slightly farther back from the last
-  const positions: CarPosition[] = [];
-  for (const [i, entry] of leaderboard.entries()) {
-    // Create cycles for x and y drift to add realism
-    if (carCycles.length <= i) {
-      carCycles.push({
-        offsetX: 3 * Math.random(),
-        cycleX: 0.5 * Math.random() + 1,
-        offsetY: 3 * Math.random(),
-        cycleY: 0.5 * Math.random() + 1
-      });
-    }
-
-    // Stagger cars left-right-left-right
-    const stagerX = i % 2 == 0 ? 0.25 : -0.25;
-    const driftX =
-      stagerX +
-      0.1 * Math.sin(timeSeconds / carCycles[i].cycleX + carCycles[i].offsetX);
-    const driftY =
-      0.025 *
-      Math.sin(timeSeconds / carCycles[i].cycleY + carCycles[i].offsetY);
-
-    // Draw the car
-    const carPosition = position + -CAR_SPACING * i;
-    const { x, y, angle } = getTrackPosition(
-      trackDrawSegments,
-      totalDistance,
-      carPosition
-    );
-    const res = drawCar(
-      ctx,
-      x,
-      y,
-      angle,
-      driftX,
-      driftY,
-      carImages[entry.icon]
-    );
-
-    positions.push(res);
-  }
+  // Draw cars
+  const positions = drawCars(
+    ctx,
+    timeSeconds,
+    position,
+    trackDrawSegments,
+    totalDistance,
+    leaderboard,
+    carImages
+  );
 
   // Return positions of cars
   return {
@@ -624,6 +593,61 @@ function drawFinishLine(
   }
 
   ctx.restore();
+}
+
+// Draws all cars using the starting position
+function drawCars(
+  ctx: CanvasRenderingContext2D,
+  timeSeconds: number,
+  position: number,
+  trackDrawSegments: TrackDrawSegment[],
+  totalDistance: number,
+  leaderboard: LeaderboardEntry[],
+  carImages: Record<IconColor, HTMLImageElement>
+): CarPosition[] {
+  const positions: CarPosition[] = [];
+
+  for (const [i, entry] of leaderboard.entries()) {
+    // Create cycles for x and y drift to add realism
+    if (carCycles.length <= i) {
+      carCycles.push({
+        offsetX: 3 * Math.random(),
+        cycleX: 0.5 * Math.random() + 1,
+        offsetY: 3 * Math.random(),
+        cycleY: 0.5 * Math.random() + 1
+      });
+    }
+
+    // Stagger cars left-right-left-right
+    const stagerX = i % 2 == 0 ? 0.25 : -0.25;
+    const driftX =
+      stagerX +
+      0.1 * Math.sin(timeSeconds / carCycles[i].cycleX + carCycles[i].offsetX);
+    const driftY =
+      0.025 *
+      Math.sin(timeSeconds / carCycles[i].cycleY + carCycles[i].offsetY);
+
+    // Draw the car
+    const carPosition = position + -CAR_SPACING * i;
+    const { x, y, angle } = getTrackPosition(
+      trackDrawSegments,
+      totalDistance,
+      carPosition
+    );
+    const res = drawCar(
+      ctx,
+      x,
+      y,
+      angle,
+      driftX,
+      driftY,
+      carImages[entry.icon]
+    );
+
+    positions.push(res);
+  }
+
+  return positions;
 }
 
 // Draw a car using the metadata
