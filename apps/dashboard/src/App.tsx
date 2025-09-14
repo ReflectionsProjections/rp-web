@@ -51,6 +51,7 @@ function App() {
     <ChakraProvider theme={theme}>
       <Box backgroundImage="url('./background.svg')" backgroundSize="cover">
         <Flex
+          position={"relative"} // Required for z-index
           flexDirection={"column"}
           alignItems={"center"}
           width={"100%"}
@@ -60,7 +61,7 @@ function App() {
           zIndex={2}
         >
           <Title />
-          <Flex width={"100%"} mt={4} zIndex={2} flexGrow={1}>
+          <Flex width={"100%"} mt={4} flexGrow={1}>
             <Flex
               width={"50%"}
               flexGrow={"1"}
