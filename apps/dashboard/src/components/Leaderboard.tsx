@@ -118,7 +118,7 @@ export default function Leaderboard({
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
-  const { positions } = useUpdateAnimationLoop({
+  const { positions, zoomedOut } = useUpdateAnimationLoop({
     canvasRef,
     trackPercent,
     carImages,
@@ -165,6 +165,7 @@ export default function Leaderboard({
             positions.map((pos, i) => {
               const entry = data.leaderboard[i];
               const scorecardVisible =
+                !zoomedOut &&
                 !!canvasRef.current &&
                 pos.y > canvasRef.current.height * 0.05 &&
                 pos.y < canvasRef.current.height * 0.95;

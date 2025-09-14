@@ -119,6 +119,7 @@ export default function useUpdateAnimationLoop({
   leaderboard: LeaderboardEntry[] | undefined;
 }) {
   const [positions, setPositions] = useState<CarPosition[]>([]);
+  const [zoomedOut, setZoomedOut] = useState(false);
 
   useEffect(() => {
     const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
@@ -139,7 +140,7 @@ export default function useUpdateAnimationLoop({
             carImages
           );
           if (result) {
-            const { positions, transform } = result;
+            const { positions, transform, zoomedOut } = result;
             setPositions(
               positions.map((pos) => {
                 const transformed = transform.transformPoint(
@@ -168,6 +169,7 @@ export default function useUpdateAnimationLoop({
                 };
               })
             );
+            setZoomedOut(zoomedOut);
           }
         }
       }
@@ -181,7 +183,7 @@ export default function useUpdateAnimationLoop({
     return () => cancelAnimationFrame(frame);
   }, [canvasRef, trackPercent, carImages, leaderboard]);
 
-  return { positions };
+  return { positions, zoomedOut };
 }
 
 function getTrackDrawSegments(track: TrackSegment[]) {
@@ -427,7 +429,8 @@ function draw(
   // Return positions of cars
   return {
     positions,
-    transform: ctx.getTransform()
+    transform: ctx.getTransform(),
+    zoomedOut: ZOOM_OUT
   };
 }
 
