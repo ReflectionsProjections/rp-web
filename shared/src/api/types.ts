@@ -201,7 +201,7 @@ export type Meeting = {
   startTime: string;
 };
 
-export type Tier = "TIER1" | "TIER2" | "TIER3";
+export type Tier = "TIER1" | "TIER2" | "TIER3" | "TIER4";
 export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
 export type LeaderboardEntry = {
   rank: number;
@@ -215,7 +215,7 @@ export type LeaderboardEntry = {
 export interface APIRoutes {
   "/attendee/emails": {
     GET: {
-      response: Array<{ email: string; userId: string }>;
+      response: Array<{ email: string; userId: string; name: string }>;
     };
   };
   "/attendee/id/:userId": {
@@ -223,10 +223,20 @@ export interface APIRoutes {
       response: Attendee;
     };
   };
-  "/attendee/redeemMerch/:item": {
+  "/attendee/redeem": {
     POST: {
-      request: { userId: string };
+      request: { userId: string; tier: Tier };
       response: { message: string };
+    };
+  };
+  "/attendee/redeemable/:userId": {
+    GET: {
+      response: {
+        userId: string;
+        currentTier: Tier;
+        redeemedTiers: Tier[];
+        redeemableTiers: Tier[];
+      };
     };
   };
   "/auth": {
