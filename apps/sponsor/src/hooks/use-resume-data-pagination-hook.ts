@@ -452,7 +452,6 @@ export function useResumeDataPaginationHook({
           }
         });
 
-        // Sort developer resumes according to the order in RESUMEBOOK_DEVELOPER_UIDS
         developerResumes.sort((a, b) => {
           return (
             Config.RESUMEBOOK_DEVELOPER_UIDS.indexOf(a.id) -
@@ -460,7 +459,6 @@ export function useResumeDataPaginationHook({
           );
         });
 
-        // Combine the sorted developer resumes with other resumes
         resumes = [...developerResumes, ...allResumes];
 
         setResumes(resumes);
