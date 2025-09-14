@@ -182,7 +182,7 @@ export default function useUpdateAnimationLoop({
 
     // On cancel, make sure to cancel the previous frame loop
     return () => cancelAnimationFrame(frame);
-  }, [canvasRef, carImages, leaderboard]);
+  }, [canvasRef, trackPercent, carImages, leaderboard]);
 
   return { positions };
 }
