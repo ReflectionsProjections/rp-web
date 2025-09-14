@@ -574,10 +574,12 @@ export interface APIRoutes {
       response: never;
     };
   };
-  "/shifts/:shiftId/assignments": {
+  "/shifts/assignments": {
     GET: {
       response: ShiftAssignment[];
     };
+  };
+  "/shifts/:shiftId/assignments": {
     POST: {
       request: { staffEmail: string };
       response: ShiftAssignment;
