@@ -282,7 +282,7 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Siri Nallamothu"
-                          imagePath="/team/siri.jpg"
+                          imagePath="/team/Siri.png"
                         />
                       </WrapItem>
                       <WrapItem>
@@ -551,7 +551,7 @@ const TeamPage = () => {
                     <WrapItem>
                       <ProfileBox
                         name="Yash Jagtap"
-                        imagePath="/team/yash.jpg"
+                        imagePath="/Marketing/Yash.png"
                       />
                     </WrapItem>
                   </Wrap>
