@@ -6,6 +6,7 @@ import { IoCloseCircle } from "react-icons/io5";
 import { useParams } from "react-router-dom";
 import { Resume } from "./ResumeBook/ResumeBook";
 import { api } from "@rp/shared";
+import { Config } from "@/config";
 
 export function DownloadPage() {
   const { resumeId } = useParams<{ resumeId: string }>();
@@ -36,7 +37,7 @@ export function DownloadPage() {
     api
       .get("/registration/all")
       .then(function (response) {
-        return response.data.map(
+        let resumes = response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,
@@ -49,6 +50,27 @@ export function DownloadPage() {
               portfolios: registrant.personalLinks
             }) as Resume
         );
+
+        const developerResumes: Resume[] = [];
+        const allResumes: Resume[] = [];
+
+        resumes.forEach((resume) => {
+          if (Config.RESUMEBOOK_DEVELOPER_UIDS.includes(resume.id)) {
+            developerResumes.push(resume);
+          } else {
+            allResumes.push(resume);
+          }
+        });
+
+        developerResumes.sort((a, b) => {
+          return (
+            Config.RESUMEBOOK_DEVELOPER_UIDS.indexOf(a.id) -
+            Config.RESUMEBOOK_DEVELOPER_UIDS.indexOf(b.id)
+          );
+        });
+
+        resumes = [...developerResumes, ...allResumes];
+        return resumes;
       })
       .then(function (resumes) {
         return downloadResumes(resumes, [resumeId]);
