@@ -29,8 +29,8 @@ export const HoverIconLink: React.FC<HoverIconLinkProps> = ({
       alignItems="center"
       display="flex"
       overflow="visible"
-      w="80px"
-      h="80px"
+      w="60px"
+      h="60px"
       position="relative"
       zIndex="1"
       sx={{
@@ -41,6 +41,7 @@ export const HoverIconLink: React.FC<HoverIconLinkProps> = ({
         <Image
           src={src}
           fit="cover"
+          filter="brightness(0)"
           borderRadius="200px"
           transition="transform 0.3s ease-out"
           pos="relative"
@@ -64,8 +65,8 @@ export const HoverIconLink: React.FC<HoverIconLinkProps> = ({
           // onMouseEnter={() => setIsHovered(true)}
           // onMouseLeave={() => setIsHovered(false)}
           style={{
-            width: "80px",
-            height: "80px",
+            width: "60px",
+            height: "60px",
             zIndex: "2",
             position: "absolute",
             top: "0px",

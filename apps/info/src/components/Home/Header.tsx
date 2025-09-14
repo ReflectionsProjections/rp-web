@@ -37,7 +37,7 @@ export const Header = () => {
           minH={{ base: "100vh", md: "100vh" }}
           bgImage="url('/TOP.svg')"
           bgSize="cover"
-          bgPosition="center"
+          bgPosition="center bottom"
           bgRepeat="no-repeat"
           position="relative"
           display="flex"
@@ -88,10 +88,10 @@ export const Header = () => {
         py={{ base: 8, md: 16 }}
         w="100%"
         justifyContent="center"
-        minH={{ base: "100vh", md: "100vh" }}
+        minH={{ base: "105vh", md: "105vh" }}
         bgImage="url('/TOP.svg')"
         bgSize="cover"
-        bgPosition="center"
+        bgPosition="center bottom"
         bgRepeat="no-repeat"
         position="relative"
         display="flex"

@@ -8,7 +8,6 @@ import {
   Button,
   Image
 } from "@chakra-ui/react";
-
 export const SponsorSection = () => {
   return (
     <Box data-label="sponsor section" minH="40vh" py={10}>
@@ -74,6 +73,8 @@ export const SponsorSection = () => {
             justifyContent="center"
             alignItems="center"
             borderRadius="20px"
+            transform="rotate(-15deg)"
+            transformOrigin="center"
           >
             <VStack w="60%" height="100%" justifyContent="space-between">
               <Image w="30px" h="30px" src="card_icon_3.svg" />

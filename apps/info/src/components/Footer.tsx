@@ -1,81 +1,93 @@
-import { Box, Flex, Heading, Text, Container } from "@chakra-ui/react";
+import { Box, Flex, Text, Image, Link } from "@chakra-ui/react";
 import { HoverIconLink } from "@/components/HoverIconLink";
 
+const footerLinkIcons: { src: string; to: string }[] = [
+  {
+    src: "linkedin_red.svg",
+    to: "https://linkedin.com/company/reflections-projections-uiuc"
+  },
+  { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
+  { src: "tiktok_red.svg", to: "https://www.tiktok.com/@uiuc_rp" }
+];
+
+const footerLinkIcons2: { src: string; to: string }[] = [
+  { src: "facebook_red.svg", to: "https://facebook.com/acmrp/" },
+  { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
+  { src: "email_red.svg", to: "mailto:contact@reflectionsprojections.org" }
+];
+
 export const Footer = () => {
-  const footerLinkIcons: { src: string; to: string }[] = [
-    {
-      src: "linkedin_red.svg",
-      to: "https://linkedin.com/company/reflections-projections-uiuc"
-    },
-    { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
-    { src: "tiktok_red.svg", to: "https://www.tiktok.com/@uiuc_rp" }
-  ];
-
-  const footerLinkIcons2: { src: string; to: string }[] = [
-    { src: "facebook_red.svg", to: "https://facebook.com/acmrp/" },
-    { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
-    { src: "email_red.svg", to: "mailto:contact@reflectionsprojections.org" }
-  ];
-
   return (
-    <Box data-label="footer" minH="40vh" py={10} mb="5vh">
-      <Container maxW="container.xl">
-        <Box textAlign="center" my={6}>
-          <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
-            Contact Us!
-          </Heading>
-        </Box>
+    <Box data-label="footer" minH="40vh">
+      {/* Full width image with social icons overlay */}
+      <Box position="relative" width="100%">
+        <Image
+          src="/footer/CONTACT.svg"
+          width="100%"
+          height="700px"
+          objectFit="cover"
+        />
+
+        {/* Social media icons overlay */}
+        <Flex
+          position="absolute"
+          top="30%"
+          left="50%"
+          transform="translate(-50%, -50%)"
+          direction={{ base: "column", md: "row" }}
+          gap={{ base: "10", md: "10" }}
+        >
+          {footerLinkIcons.map((item) => (
+            <HoverIconLink
+              key={item.src}
+              link={item.to}
+              src={`/socials/${item.src}`}
+            />
+          ))}
+        </Flex>
 
         <Flex
+          position="absolute"
+          top="40%"
+          left="50%"
+          transform="translateX(-50%)"
           direction={{ base: "column", md: "row" }}
-          gap={{ base: 8, md: 20 }}
-          justifyContent="space-between"
-          alignItems="center"
-          textAlign="center"
-          pt="80px"
+          gap={{ base: "10", md: "10" }}
         >
-          <Box w="100%" px="20px">
-            <Text>
-              R|P is the largest student-run technology conference in the
-              Midwest! Held at UIUC, we bring together students, professionals,
-              and companies for talks, networking, competitions, and career
-              opportunities!
-            </Text>
-          </Box>
-          <Flex
-            w="100%"
-            direction={{ base: "row", md: "column" }}
-            justifyContent="center"
-            alignItems="center"
-            gap={{ base: "10", md: "10" }}
-          >
-            <Flex
-              direction={{ base: "column", md: "row" }}
-              gap={{ base: "10", md: "10" }}
-            >
-              {footerLinkIcons.map((item) => (
-                <HoverIconLink
-                  key={item.src}
-                  link={item.to}
-                  src={`/socials/${item.src}`}
-                />
-              ))}
-            </Flex>
-            <Flex
-              direction={{ base: "column", md: "row" }}
-              gap={{ base: "10", md: "10" }}
-            >
-              {footerLinkIcons2.map((item) => (
-                <HoverIconLink
-                  key={item.src}
-                  link={item.to}
-                  src={`/socials/${item.src}`}
-                />
-              ))}
-            </Flex>
-          </Flex>
+          {footerLinkIcons2.map((item) => (
+            <HoverIconLink
+              key={item.src}
+              link={item.to}
+              src={`/socials/${item.src}`}
+            />
+          ))}
         </Flex>
-      </Container>
+      </Box>
+
+      {/* Second full width image */}
+      {/* Second full width image with clickable text box */}
+      <Box position="relative" width="100%">
+        <Image src="/footer/2.svg" bgSize="cover" width="100%" />
+
+        <Box position="absolute" bottom="20px" right="1%">
+          <Link href="YOUR_LINK_HERE" isExternal>
+            <Box
+              color="black"
+              px={6}
+              py={3}
+              borderRadius="md"
+              _hover={{ bg: "gray.800", transform: "scale(1.05)" }}
+              transition="all 0.2s"
+              cursor="pointer"
+              textAlign="center"
+            >
+              <Text fontSize="xl" fontWeight="bold">
+                visit reflectionsprojections.org
+              </Text>
+            </Box>
+          </Link>
+        </Box>
+      </Box>
     </Box>
   );
 };
