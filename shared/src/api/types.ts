@@ -619,21 +619,6 @@ export interface APIRoutes {
       response: ShiftAssignment;
     };
   };
-  "/leaderboard/global": {
-    GET: {
-      response: {
-        leaderboard: Array<{
-          rank: number;
-          userId: string;
-          displayName: string;
-          points: number;
-          currentTier: number;
-          icon: string;
-        }>;
-        count: number;
-      };
-    };
-  };
   "/leaderboard/submit": {
     POST: {
       request: {
