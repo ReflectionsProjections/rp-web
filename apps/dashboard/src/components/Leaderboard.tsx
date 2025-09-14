@@ -192,8 +192,8 @@ function LeaderboardScorecard({
     placePostfix = "rd";
   }
 
-  const stagerOffset = i % 2 == 0 ? pos.width * 0.25 : -pos.width * 0.25;
-  const carOffset = stagerOffset + 0.5 * pos.width;
+  const stagerOffset = i % 2 == 0 ? pos.width * 0.3 : -pos.width * 0.3;
+  const carOffset = stagerOffset + 0.6 * pos.width; // Increased offset for better spacing
   const left = pos.x + carOffset;
   const top = pos.y;
 
@@ -203,8 +203,8 @@ function LeaderboardScorecard({
       transform={"translate(0,-50%)"}
       backgroundColor={"#0000008c"}
       width={"max-content"}
-      padding={"0.25rem"}
-      borderRadius={"0.5rem"}
+      padding={"0.5vh"}
+      borderRadius={"1vh"}
       transition={"opacity 0.5s"}
       // Style inlined here to prevent chakra generating a new class every frame
       style={{
@@ -214,25 +214,40 @@ function LeaderboardScorecard({
       }}
     >
       <Flex
-        border={`2px solid ${ICON_COLOR_TO_COLOR[icon]}`}
-        borderRadius={"0.5rem"}
-        padding={"0.75rem"}
+        border={`0.2vh solid ${ICON_COLOR_TO_COLOR[icon]}`}
+        borderRadius={"0.8vh"}
+        padding={"0.5vh"}
+        paddingX="0.9vh"
         alignItems={"center"}
       >
-        <Text marginRight={"0.5rem"}>
+        <Text
+          marginRight={"0.5vh"}
+          fontFamily={"Magistral"}
+          fontWeight={"bold"}
+          letterSpacing={"0.1vh"}
+          fontSize={"1.7vh"}
+        >
           {rank}
           <small>{placePostfix}</small>
         </Text>
-        <Box marginRight={"0.5rem"}>
+        <Box marginRight={"0.5vh"}>
           <Icon
-            width={"3rem"}
-            height={"3rem"}
+            width={"4vh"}
+            height={"4vh"}
             color={ICON_COLOR_TO_COLOR[icon]}
           />
         </Box>
         <Flex flexDirection={"column"}>
-          <Text fontWeight={"bold"}>{displayName}</Text>
-          <Text>{points} PTS</Text>
+          <Text
+            fontWeight={"black"}
+            fontFamily={"Magistral"}
+            fontSize={"1.5vh"}
+          >
+            {displayName}
+          </Text>
+          <Text fontFamily={"Magistral"} fontSize={"1.2vh"} fontWeight="bold">
+            {points} PTS
+          </Text>
         </Flex>
       </Flex>
     </Box>

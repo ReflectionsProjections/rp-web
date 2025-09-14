@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 function ClockSegment({
   value,
-  w = "0.5em",
+  w = "1vh",
   semicolon = false
 }: {
   value: string;
@@ -15,13 +15,13 @@ function ClockSegment({
     <Text
       as="span"
       fontFamily="SevenSegment"
-      fontSize="3xl"
+      fontSize="2vh"
       letterSpacing="0"
       width={w}
       display="inline-block"
       textAlign="center"
       lineHeight="1"
-      mb={semicolon ? 3 : undefined}
+      mb={semicolon ? ".7vh" : undefined}
       color="red.500"
     >
       {value}
@@ -51,18 +51,18 @@ export function RaceClock() {
   return (
     <Flex
       display={"flex"}
-      gap="0.12em"
+      gap="0.12vh"
       alignItems="center"
       fontFamily="SevenSegment"
       fontWeight="bold"
       bgColor={"rgba(0,0,0,0.2)"}
-      px={3}
-      py={1}
-      borderRadius={"md"}
+      px="1.5vh"
+      py="0.5vh"
+      borderRadius={"0.5vh"}
       borderColor={"gray.600"}
       userSelect="none"
-      mr={3}
-      mt={3}
+      mr="1.5vh"
+      mt="1.5vh"
       sx={{
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)"
@@ -71,19 +71,19 @@ export function RaceClock() {
       {/* Hour */}
       <ClockSegment value={clockParts.hours[0]} />
       <ClockSegment value={clockParts.hours[1]} />
-      <ClockSegment value=":" w="0.7em" semicolon />
+      <ClockSegment value=":" w="1vh" semicolon />
       {/* Minute */}
       <ClockSegment value={clockParts.minutes[0]} />
       <ClockSegment value={clockParts.minutes[1]} />
-      <ClockSegment value=":" w="0.7em" semicolon />
+      <ClockSegment value=":" w="1vh" semicolon />
       {/* Second */}
       <ClockSegment value={clockParts.seconds[0]} />
       <ClockSegment value={clockParts.seconds[1]} />
-      <ClockSegment value="." w="0.6em" />
+      <ClockSegment value="." w="1vh" />
       {/* Tenths */}
-      <ClockSegment value={clockParts.ms} w="0.85em" />
+      <ClockSegment value={clockParts.ms} w="1vh" />
       {/* AM/PM */}
-      <ClockSegment value={clockParts.meridian} w="1.8em" />
+      <ClockSegment value={clockParts.meridian} w="4vh" />
     </Flex>
   );
 }

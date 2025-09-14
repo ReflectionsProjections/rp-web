@@ -14,22 +14,27 @@ export const RegisterNow = () => {
       w="100%"
       display="flex"
       flexDir="column"
-      pt={5}
+      pt="2.5vh"
     >
       <Text
-        fontSize="3xl"
+        fontSize="2.5vh"
         fontWeight="bold"
-        mb={4}
+        mb="2vh"
         fontFamily="ProRacingSlant"
         textAlign="center"
       >
         Register Now for Free
       </Text>
-      <Box display="flex" alignItems="center" justifyContent="center" gap={3}>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        gap="1.5vh"
+      >
         {/* QR CODE */}
         <Box
-          p={4}
-          borderRadius="lg"
+          p="1vh"
+          borderRadius="1vh"
           bgColor={"rgba(0,0,0,0.2)"}
           display="flex"
           justifyContent="center"
@@ -41,8 +46,8 @@ export const RegisterNow = () => {
         >
           <QRCode
             style={{
-              width: "150px",
-              height: "150px",
+              width: "12vh",
+              height: "12vh",
               background: "transparent"
             }}
             value={REGISTER_URL}
@@ -53,17 +58,17 @@ export const RegisterNow = () => {
 
         {/* BOUNCING ARROW */}
         <MotionBox
-          ml={5}
+          ml="2.5vh"
           initial={{ y: 0 }}
-          animate={{ x: [0, -8, 0] }}
+          animate={{ x: [0, "-1vh", 0] }}
           transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut" }}
           display="flex"
           alignItems="center"
           justifyContent="center"
           color="yellow.400"
-          fontSize="2xl"
+          fontSize="2.2vh"
         >
-          <ArrowLeftIcon boxSize={9} />
+          <ArrowLeftIcon boxSize="4vh" />
         </MotionBox>
       </Box>
     </Box>

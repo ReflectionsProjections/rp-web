@@ -8,12 +8,12 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/nunito";
 import "@fontsource/roboto-slab";
+import { useTime } from "@rp/shared";
 import Events from "./components/Events";
 import Leaderboard from "./components/Leaderboard";
 import { RegisterNow } from "./components/RegisterNow";
 import { Sponsors } from "./components/Sponsors";
 import Title from "./components/Title";
-import { useTime } from "@rp/shared";
 import useTimeSyncedReload from "./hooks/TimeSynchedReload";
 
 const config: ThemeConfig = {
@@ -47,29 +47,24 @@ function App() {
           alignItems={"center"}
           width={"100%"}
           minH="100vh"
-          padding={"2rem"}
-          paddingTop="0.5rem"
+          padding={"2vh"}
+          paddingTop="0.5vh"
           zIndex={2}
         >
           <Title />
-          <Flex width={"100%"} mt={4} flexGrow={1}>
-            <Flex
-              width={"50%"}
-              flexGrow={"1"}
-              marginRight={"5rem"}
-              alignItems={"end"}
-            >
+          <Flex width={"100%"} mt={"0"} flexGrow={1}>
+            <Flex width={"50%"} marginRight={"1vh"} alignItems={"end"}>
               <Text
                 position={"absolute"}
-                top={"0.5rem"}
+                top={"1.5vh"}
                 left={"25%"}
-                fontSize={"3xl"}
+                fontSize={"2.5vh"}
                 fontWeight="bold"
                 color="white"
                 fontFamily="ProRacingSlant"
                 textAlign="center"
                 transform={"translateX(-50%)"}
-                paddingX={"1rem"}
+                paddingX={"2vh"}
                 borderRadius="1rem"
                 bgColor={"rgba(0,0,0,0.2)"}
               >
@@ -79,10 +74,9 @@ function App() {
             </Flex>
             <Flex
               width={"50%"}
-              marginLeft={"5rem"}
               alignItems={"right"}
               flexDir={"column"}
-              gap={4}
+              gap={"1.5vh"}
             >
               <Events date={date} />
               <Sponsors />
