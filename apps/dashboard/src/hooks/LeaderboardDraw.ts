@@ -109,10 +109,12 @@ function resizeCanvas(canvas: HTMLCanvasElement) {
 // Positions is returned to be used by dom elements
 export default function useUpdateAnimationLoop({
   canvasRef,
+  trackPercent,
   carImages,
   leaderboard
 }: {
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  trackPercent: number;
   carImages: Record<IconColor, HTMLImageElement> | undefined;
   leaderboard: LeaderboardEntry[] | undefined;
 }) {
@@ -130,6 +132,7 @@ export default function useUpdateAnimationLoop({
         if (ctx) {
           const result = draw(
             ctx,
+            trackPercent,
             trackDrawSegments,
             totalDistance,
             leaderboard,
@@ -350,6 +353,7 @@ let position = 0;
 // The main draw function - called every frame to draw the track & cars
 function draw(
   ctx: CanvasRenderingContext2D,
+  trackPercent: number,
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
   leaderboard?: LeaderboardEntry[],
@@ -365,7 +369,14 @@ function draw(
   position = (timeSeconds * CAR_SPEED) % totalDistance;
 
   // Update camera
-  updateCamera(ctx, timeSeconds, trackDrawSegments, totalDistance, position);
+  updateCamera(
+    ctx,
+    trackPercent,
+    timeSeconds,
+    trackDrawSegments,
+    totalDistance,
+    position
+  );
 
   // Draw track
   drawTrack(ctx, trackDrawSegments);
@@ -448,6 +459,7 @@ function getCameraFocus(timeSeconds: number) {
 // Updates the camera based on the track position
 function updateCamera(
   ctx: CanvasRenderingContext2D,
+  trackPercent: number,
   timeSeconds: number,
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
@@ -467,10 +479,10 @@ function updateCamera(
       };
 
   // Move origin to screen center
-  ctx.translate(
-    ctx.canvas.width * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_X_SCALE : 0.5),
-    ctx.canvas.height * (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_Y_SCALE : 0.5)
-  );
+  const centerX =
+    (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_X_SCALE : 0.5) * trackPercent;
+  const centerY = FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_Y_SCALE : 0.5;
+  ctx.translate(ctx.canvas.width * centerX, ctx.canvas.height * centerY);
 
   // Scale to user screen vs expected world space
   let scale = ctx.canvas.height / 1050;

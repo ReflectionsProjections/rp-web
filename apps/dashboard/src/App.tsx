@@ -58,26 +58,42 @@ function App() {
         backgroundImage="url('./background.svg')"
         backgroundSize="cover"
         paddingTop="0.5rem"
+        zIndex={2}
       >
         <Title />
-        <Flex width={"100%"} mt={4}>
-          <Box width={"50%"} marginRight={"5rem"} alignItems={"left"} pb={4}>
-            <Leaderboard />
+        <Flex width={"100%"} mt={4} zIndex={2} flexGrow={1}>
+          <Flex
+            width={"50%"}
+            flexGrow={"1"}
+            marginRight={"5rem"}
+            alignItems={"end"}
+          >
             <RegisterNow />
-          </Box>
-          <Box
+          </Flex>
+          <Flex
             width={"50%"}
             marginLeft={"5rem"}
             alignItems={"right"}
-            display="flex"
             flexDir={"column"}
             gap={4}
           >
             <Events date={date} />
             <Sponsors />
-          </Box>
+          </Flex>
         </Flex>
       </Flex>
+      {/* Leaderboard needs to be positioned absolutely to ignore padding */}
+      <Box
+        zIndex={1}
+        position={"absolute"}
+        top={0}
+        left={0}
+        right={0}
+        bottom={0}
+        overflowY={"hidden"}
+      >
+        <Leaderboard trackPercent={0.5} />
+      </Box>
     </ChakraProvider>
   );
 }

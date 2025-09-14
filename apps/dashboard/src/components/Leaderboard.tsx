@@ -1,5 +1,5 @@
 import { ICON_COLOR_TO_COLOR } from "@/constants/colors";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
 import Car from "@/assets/car.svg?react";
@@ -105,7 +105,11 @@ function useMockData() {
   return { data, isLoading: false };
 }
 
-export default function Leaderboard() {
+export default function Leaderboard({
+  trackPercent
+}: {
+  trackPercent: number;
+}) {
   // const { data, isLoading } = usePolling("/leaderboard/daily");
 
   // Testing data until leaderboard is done
@@ -116,6 +120,7 @@ export default function Leaderboard() {
   >(undefined);
   const { positions } = useUpdateAnimationLoop({
     canvasRef,
+    trackPercent,
     carImages,
     leaderboard: data?.leaderboard
   });
@@ -153,13 +158,7 @@ export default function Leaderboard() {
 
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
-      <Heading textAlign={"center"}>Leaderboard</Heading>
-      <Flex
-        position={"relative"}
-        minHeight={"0"}
-        flexGrow={"1"}
-        overflow={"hidden"}
-      >
+      <Flex position={"relative"} minHeight={"0"} flexGrow={"1"}>
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {data?.leaderboard &&
@@ -172,6 +171,7 @@ export default function Leaderboard() {
                     i={i}
                     pos={pos}
                     entry={entry}
+                    trackPercent={trackPercent}
                   />
                 )
               );
@@ -185,11 +185,13 @@ export default function Leaderboard() {
 function LeaderboardEntryDisplay({
   i,
   pos,
-  entry
+  entry,
+  trackPercent
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
+  trackPercent: number;
 }) {
   return (
     <Box>
@@ -211,7 +213,12 @@ function LeaderboardEntryDisplay({
           />
         </Box>
       )}
-      <LeaderboardScorecard i={i} pos={pos} entry={entry} />
+      <LeaderboardScorecard
+        i={i}
+        pos={pos}
+        entry={entry}
+        trackPercent={trackPercent}
+      />
     </Box>
   );
 }
@@ -219,11 +226,13 @@ function LeaderboardEntryDisplay({
 function LeaderboardScorecard({
   i,
   pos,
-  entry: { rank, displayName, points, icon }
+  entry: { rank, displayName, points, icon },
+  trackPercent
 }: {
   i: number;
   pos: CarPosition;
   entry: LeaderboardEntry;
+  trackPercent: number;
 }) {
   let placePostfix = "th";
   if (rank % 10 == 1 && (rank < 10 || rank > 20)) {
@@ -247,7 +256,7 @@ function LeaderboardScorecard({
       // Style inlined here to prevent chakra generating a new class every frame
       style={{
         top: pos.y,
-        left: `calc(${pos.x}px + ${i % 2 == 0 ? "15%" : "7.5%"}`
+        left: `calc(${pos.x}px + ${i % 2 == 0 ? 15 * trackPercent : 7.5 * trackPercent}%`
       }}
     >
       <Flex
