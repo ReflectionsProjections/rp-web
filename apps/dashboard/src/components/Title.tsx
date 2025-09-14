@@ -10,9 +10,10 @@ import { motion, useAnimation, useInView } from "framer-motion";
 import { useEffect, useRef } from "react";
 import { RaceClock } from "./RaceClock";
 
+const MotionBox = motion(Box);
+const MotionText = motion(Text);
+
 export default function Title() {
-  const MotionBox = motion(Box);
-  const MotionText = motion(Text);
   const [isSmall] = useMediaQuery("(max-width: 500px)");
   const sepH = 40;
 
