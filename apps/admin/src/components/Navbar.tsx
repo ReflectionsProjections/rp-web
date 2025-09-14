@@ -42,6 +42,7 @@ const linkMap = {
   Speakers: "/speakers",
   Shifts: "/shifts",
   "Check-in": "/checkin",
+  Leaderboard: "/leaderboard-view",
   Attendance: "/attendance-view"
 };
 

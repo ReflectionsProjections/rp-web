@@ -32,6 +32,20 @@ export type Attendee = {
   puzzlesCompleted: string[];
 };
 
+export type LeaderboardUser = {
+  userId: string;
+  name: string;
+  email: string;
+  points: number;
+  currentTier: string;
+  isEligibleMerch: {
+    base: boolean;
+    first: boolean;
+    second: boolean;
+    third: boolean;
+  };
+};
+
 export type Corporate = {
   name: string;
   email: string;
@@ -582,6 +596,59 @@ export interface APIRoutes {
     POST: {
       request: never;
       response: ShiftAssignment;
+    };
+  };
+  "/leaderboard/global": {
+    GET: {
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        count: number;
+      };
+    };
+  };
+  "/leaderboard/submit": {
+    POST: {
+      request: {
+        day: string;
+        n: number;
+        userIdsToPromote?: string[];
+      };
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        day: string;
+        count: number;
+        entriesProcessed: number;
+        submissionId: string;
+        submittedAt: string;
+        submittedBy: string;
+      };
+    };
+  };
+  "/leaderboard/submission-status": {
+    GET: {
+      response: {
+        exists: boolean;
+        submission?: {
+          submissionId: string;
+          submittedAt: string;
+          submittedBy: string;
+          count: number;
+        };
+      };
     };
   };
 }
