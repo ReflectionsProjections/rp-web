@@ -86,30 +86,17 @@ const Shifts: React.FC = () => {
   const mirrorStyles = useMirrorStyles();
   const toast = useToast();
 
-  // Fetch shifts data manually (no polling)
-  const [shifts, setShifts] = useState<Shift[]>([]);
-  const [shiftsLoading, setShiftsLoading] = useState(false);
+  const {
+    data: shifts,
+    isLoading: shiftsLoading,
+    update: updateShifts
+  } = usePolling("/shifts", authorized);
 
-  const fetchShifts = async () => {
-    setShiftsLoading(true);
-    try {
-      const response = await api.get("/shifts");
-      if (response.data && Array.isArray(response.data)) {
-        setShifts(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching shifts:", error);
-    } finally {
-      setShiftsLoading(false);
-    }
-  };
-
-  // Fetch shifts on component mount
-  React.useEffect(() => {
-    if (authorized) {
-      void fetchShifts();
-    }
-  }, [authorized]);
+  const {
+    data: assignments,
+    isLoading: assignmentsLoading,
+    update: updateAssignments
+  } = usePolling("/shifts/assignments", authorized);
 
   const { data: staff, isLoading: staffLoading } = usePolling(
     "/staff",
@@ -120,10 +107,6 @@ const Shifts: React.FC = () => {
     "/events",
     authorized
   );
-
-  // Fetch assignments for all shifts
-  const [assignments, setAssignments] = useState<ShiftAssignment[]>([]);
-  const [assignmentsLoading, setAssignmentsLoading] = useState(false);
 
   const borderColor = useColorModeValue("gray.200", "gray.600");
   const hoverBg = useColorModeValue("gray.50", "gray.700");
@@ -249,7 +232,7 @@ const Shifts: React.FC = () => {
 
   // Process shifts to calculate time slots and handle overlaps
   const processedShifts = useMemo(() => {
-    if (!shifts || !staff) return {};
+    if (!shifts || !staff || !assignments) return {};
 
     const processed: { [dateKey: string]: CalendarShift[] } = {};
 
@@ -413,54 +396,14 @@ const Shifts: React.FC = () => {
     return moment.tz(time, "America/Chicago").format("h:mm A");
   };
 
-  // Fetch assignments for all shifts
-  const fetchAssignments = React.useCallback(async () => {
-    if (!shifts || shifts.length === 0) return;
-
-    setAssignmentsLoading(true);
-    try {
-      const allAssignments: ShiftAssignment[] = [];
-
-      // Fetch assignments for each shift
-      for (const shift of shifts) {
-        try {
-          const response = await api.get(
-            `/shifts/${shift.shiftId}/assignments` as "/shifts/:shiftId/assignments"
-          );
-          if (response.data && Array.isArray(response.data)) {
-            allAssignments.push(...response.data);
-          }
-        } catch (error) {
-          console.warn(
-            `Failed to fetch assignments for shift ${shift.shiftId}:`,
-            error
-          );
-        }
-      }
-
-      setAssignments(allAssignments);
-    } catch (error) {
-      console.error("Error fetching assignments:", error);
-    } finally {
-      setAssignmentsLoading(false);
-    }
-  }, [shifts]);
-
-  // Fetch assignments when shifts change
-  React.useEffect(() => {
-    if (shifts && shifts.length > 0) {
-      void fetchAssignments();
-    }
-  }, [shifts, fetchAssignments]);
-
   const handleAssignmentUpdate = () => {
     // Refresh both shifts and assignments
-    void fetchShifts();
-    void fetchAssignments();
+    updateShifts();
+    updateAssignments();
   };
 
   const handleShiftUpdate = () => {
-    void fetchShifts();
+    updateShifts();
     onFormClose();
   };
 
@@ -473,7 +416,7 @@ const Shifts: React.FC = () => {
         duration: 3000,
         isClosable: true
       });
-      void fetchShifts();
+      updateAssignments();
     } catch (error) {
       console.error("Error deleting shift:", error);
       toast({
