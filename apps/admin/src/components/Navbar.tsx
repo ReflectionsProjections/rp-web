@@ -274,8 +274,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading, displayName }) => {
       w={{ base: "calc(100vw - 8px)", md: "calc(12vw - 8px)" }}
       minW={{ md: "300px" }}
       h={{
-        base: `calc(${isOpen ? "100vh" : "100px"} - 8px)`,
-        md: "calc(100vh - 8px)"
+        base: `calc(${isOpen ? "100svh" : "100px"} - 8px)`,
+        md: "calc(100svh - 8px)"
       }}
       transform={
         inView
