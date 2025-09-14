@@ -8,13 +8,13 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/nunito";
 import "@fontsource/roboto-slab";
-import { useEffect } from "react";
 import Events from "./components/Events";
 import Leaderboard from "./components/Leaderboard";
 import { RegisterNow } from "./components/RegisterNow";
 import { Sponsors } from "./components/Sponsors";
 import Title from "./components/Title";
 import { useTime } from "@rp/shared";
+import useTimeSyncedReload from "./hooks/TimeSynchedReload";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -33,9 +33,8 @@ const theme = extendTheme({
 });
 
 function App() {
-  useEffect(() => {
-    // setTimeout(() => location.reload(), 5 * 60 * 1000);
-  }, []);
+  useTimeSyncedReload();
+
   const time = useTime(1000);
   const date = new Date(time);
 
