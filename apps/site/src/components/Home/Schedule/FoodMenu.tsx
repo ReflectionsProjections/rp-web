@@ -108,7 +108,7 @@ export function FoodMenuGrid({ foodMenu }: { foodMenu: FoodMenuData }) {
             alignItems="center"
             gap={2}
           >
-            <Text fontSize="sm">Full Menu</Text>
+            <Text fontFamily={"Magistral"}>Full Menu</Text>
             <Icon as={FaExternalLinkAlt} boxSize={3} />
           </Link>
         )}
@@ -117,8 +117,7 @@ export function FoodMenuGrid({ foodMenu }: { foodMenu: FoodMenuData }) {
       <Grid
         templateColumns={{
           base: "repeat(1, 1fr)",
-          md: "repeat(2, 1fr)",
-          lg: "repeat(3, 1fr)"
+          md: "repeat(2, 1fr)"
         }}
         gap={4}
         mb={6}
@@ -133,15 +132,16 @@ export function FoodMenuGrid({ foodMenu }: { foodMenu: FoodMenuData }) {
               transition="transform 0.2s"
               _hover={{ transform: "scale(1.02)" }}
             >
-              {item.imageUrl && (
-                <Image
-                  src={item.imageUrl}
-                  alt={item.name}
-                  width="100%"
-                  height="160px"
-                  objectFit="cover"
-                />
-              )}
+              <Image
+                src={item.imageUrl}
+                alt={item.name}
+                width="100%"
+                height="160px"
+                objectFit="cover"
+                fallback={
+                  <Box width="100%" height="160px" bg="rgba(41, 41, 41, 0.9)" />
+                }
+              />
               <Box p={4}>
                 <Text
                   fontSize="lg"
@@ -152,10 +152,11 @@ export function FoodMenuGrid({ foodMenu }: { foodMenu: FoodMenuData }) {
                 >
                   {item.name}
                 </Text>
-                <HStack flexWrap="wrap" gap={1}>
+                <HStack flexWrap="wrap" rowGap={2.5}>
                   {item.dietaryRestrictions.map((restriction, idx) => (
                     <Badge
                       key={idx}
+                      fontFamily={"Magistral"}
                       colorScheme={getDietaryBadgeColor(restriction)}
                       variant="solid"
                       fontSize="xs"
