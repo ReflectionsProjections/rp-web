@@ -6,7 +6,7 @@ import { SponsorSection } from "@/components/Home/SponsorSection";
 import { Stats } from "@/components/Home/Stats";
 import { TeamSection } from "@/components/Home/TeamSection";
 
-import { Box } from "@chakra-ui/react";
+import { Box, Divider } from "@chakra-ui/react";
 
 export const Home = () => {
   return (
@@ -18,10 +18,10 @@ export const Home = () => {
         <ExhibitSection />
       </Box>
       <Stats />
-
       <Box id="team">
         <TeamSection />
       </Box>
+      <Divider borderColor="blackAlpha.900" borderWidth="1px" />{" "}
       <Box id="sponsors">
         <SponsorSection />
       </Box>

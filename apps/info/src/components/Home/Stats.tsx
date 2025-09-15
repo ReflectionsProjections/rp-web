@@ -15,7 +15,6 @@ export const Stats = () => {
         backgroundRepeat="no-repeat"
         zIndex={1}
       >
-        {/* Gradient overlay for fade effect - responsive opacity */}
         <Box
           position="absolute"
           top={0}
@@ -29,7 +28,6 @@ export const Stats = () => {
           zIndex={1}
         />
 
-        {/* Content container */}
         <Container
           maxW="container.xl"
           height="100%"
@@ -43,29 +41,53 @@ export const Stats = () => {
             minH="400px"
             justify="flex-end"
           >
-            <VStack
-              align="flex-start"
-              p={8}
-              spacing={4}
+            <Box
               maxW="400px"
               w={{ base: "100%", md: "50%" }}
+              mt={{ base: 0, md: 8 }}
+              mr={{ base: 0, md: 16 }}
+              bg="rgba(255, 240, 240, 0.92)"
+              backdropFilter="blur(10px)"
+              borderRadius="xl"
+              boxShadow="0 8px 32px rgba(220, 38, 38, 0.15)"
+              border="1px solid black"
+              transform="perspective(1000px) rotateX(-2deg) rotateY(-30deg) translateZ(10px)"
+              transition="all 0.4s ease-in-out"
+              _hover={{
+                transform:
+                  "perspective(1000px) rotateX(2deg) rotateY(-2deg) translateZ(-20px)",
+                cursor: "default",
+                boxShadow: "0 4px 16px rgba(220, 38, 38, 0.25)"
+              }}
+              sx={{
+                transformStyle: "preserve-3d"
+              }}
             >
-              <Heading as="h2" size="lg" fontWeight="bold" color="black" px={4}>
-                build your future now
-              </Heading>
-              <Text fontSize="lg" color="black" px={4} py={2}>
-                RP is a week-long ipsum dolor sit amet, consectetur adipiscing
-                elit, sed do eiusmod tempor incididunt ut labore et dolore magna
-                aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis
-                aute
-              </Text>
-            </VStack>
+              <VStack align="flex-start" p={8} spacing={4}>
+                <Heading
+                  as="h2"
+                  size="lg"
+                  fontWeight="bold"
+                  color="black"
+                  transition="all 0.3s ease-in-out"
+                >
+                  build your future now
+                </Heading>
+                <Text
+                  fontSize="lg"
+                  color="black"
+                  transition="all 0.3s ease-in-out"
+                >
+                  Reflections | Projections is the Midwest's <em>largest</em>{" "}
+                  student-run conference. Meet industry and academic leaders,
+                  learn new skills, and connect with other students!
+                </Text>
+              </VStack>
+            </Box>
           </Flex>
         </Container>
       </Box>
 
-      {/* Stats section without background */}
       <Box data-label="stats" id="stats-section" py={10}>
         <Container maxW="container.xl">
           <div id="stats">
@@ -76,7 +98,7 @@ export const Stats = () => {
                 Tech Conference
               </Heading>
             </Box>
-            <Flex // numbers
+            <Flex
               direction={{ base: "column", md: "row" }}
               gap={{ base: 8, md: 0 }}
               justify="space-between"
@@ -117,7 +139,6 @@ export const Stats = () => {
             </Flex>
             <AnimatedPillarsSection
               icons={[
-                // pillars
                 "icon_person.svg",
                 "icon_calendar.svg",
                 "icon_building.svg",

@@ -1,87 +1,226 @@
-import { Box, Flex, Text, Image, Link } from "@chakra-ui/react";
-import { HoverIconLink } from "@/components/HoverIconLink";
+import { Box, Flex, Image, Text, Link, Icon } from "@chakra-ui/react";
+import {
+  FaLinkedin,
+  FaInstagram,
+  FaGithub,
+  FaFacebook,
+  FaEnvelope,
+  FaTiktok
+} from "react-icons/fa";
 
-const footerLinkIcons: { src: string; to: string }[] = [
+const socialLinks = [
   {
-    src: "linkedin_red.svg",
-    to: "https://linkedin.com/company/reflections-projections-uiuc"
+    name: "LinkedIn",
+    url: "https://linkedin.com/company/reflections-projections-uiuc",
+    icon: FaLinkedin
   },
-  { src: "instagram_red.svg", to: "https://instagram.com/uiuc_rp/" },
-  { src: "tiktok_red.svg", to: "https://www.tiktok.com/@uiuc_rp" }
-];
-
-const footerLinkIcons2: { src: string; to: string }[] = [
-  { src: "facebook_red.svg", to: "https://facebook.com/acmrp/" },
-  { src: "github_red.svg", to: "https://github.com/ReflectionsProjections" },
-  { src: "email_red.svg", to: "mailto:contact@reflectionsprojections.org" }
+  {
+    name: "Instagram",
+    url: "https://instagram.com/uiuc_rp/",
+    icon: FaInstagram
+  },
+  {
+    name: "TikTok",
+    url: "https://www.tiktok.com/@uiuc_rp",
+    icon: FaTiktok
+  },
+  {
+    name: "Facebook",
+    url: "https://facebook.com/acmrp/",
+    icon: FaFacebook
+  },
+  {
+    name: "GitHub",
+    url: "https://github.com/ReflectionsProjections",
+    icon: FaGithub
+  },
+  {
+    name: "Email",
+    url: "mailto:contact@reflectionsprojections.org",
+    icon: FaEnvelope
+  }
 ];
 
 export const Footer = () => {
   return (
-    <Box data-label="footer" minH="40vh">
-      {/* Full width image with social icons overlay */}
+    <Box id="contact" data-label="footer" minH="40vh">
       <Box position="relative" width="100%">
         <Image
           src="/footer/CONTACT.svg"
           width="100%"
-          height="700px"
+          height={{ base: "400px", sm: "500px", md: "600px", lg: "700px" }}
           objectFit="cover"
         />
 
-        {/* Social media icons overlay */}
-        <Flex
+        <Box
           position="absolute"
-          top="30%"
+          top="38%"
           left="50%"
           transform="translate(-50%, -50%)"
-          direction={{ base: "column", md: "row" }}
-          gap={{ base: "10", md: "10" }}
+          textAlign="center"
+          w="100%"
+          px={4}
         >
-          {footerLinkIcons.map((item) => (
-            <HoverIconLink
-              key={item.src}
-              link={item.to}
-              src={`/socials/${item.src}`}
-            />
-          ))}
-        </Flex>
+          <Flex
+            display={{ base: "flex", sm: "none" }}
+            direction="column"
+            align="center"
+            gap={6}
+          >
+            {socialLinks.map((social) => (
+              <Link
+                key={social.name}
+                href={social.url}
+                isExternal={!social.url.includes("mailto")}
+                _hover={{ transform: "scale(1.15)" }}
+                transition="all 0.3s ease"
+              >
+                <Box
+                  bg="rgba(255, 255, 255, 0.95)"
+                  borderRadius="full"
+                  p={4}
+                  boxShadow="xl"
+                  border="2px solid transparent"
+                  _hover={{
+                    borderColor: "white",
+                    boxShadow: "2xl"
+                  }}
+                  transition="all 0.3s ease"
+                >
+                  <Icon
+                    as={social.icon}
+                    boxSize={8}
+                    color="white"
+                    _groupHover={{ color: "white" }}
+                  />
+                </Box>
+              </Link>
+            ))}
+          </Flex>
 
-        <Flex
-          position="absolute"
-          top="40%"
-          left="50%"
-          transform="translateX(-50%)"
-          direction={{ base: "column", md: "row" }}
-          gap={{ base: "10", md: "10" }}
-        >
-          {footerLinkIcons2.map((item) => (
-            <HoverIconLink
-              key={item.src}
-              link={item.to}
-              src={`/socials/${item.src}`}
-            />
-          ))}
-        </Flex>
+          <Box display={{ base: "none", sm: "block", md: "none" }}>
+            <Flex wrap="wrap" justify="center" gap={8} maxW="400px" mx="auto">
+              {socialLinks.map((social) => (
+                <Link
+                  key={social.name}
+                  href={social.url}
+                  isExternal={!social.url.includes("mailto")}
+                  _hover={{ transform: "scale(1.15)" }}
+                  transition="all 0.3s ease"
+                >
+                  <Box
+                    bg="black"
+                    borderRadius="full"
+                    p={4}
+                    boxShadow="xl"
+                    border="2px solid transparent"
+                    _hover={{
+                      borderColor: "white",
+                      boxShadow: "2xl"
+                    }}
+                    transition="all 0.3s ease"
+                  >
+                    <Icon as={social.icon} boxSize={8} color="white" />
+                  </Box>
+                </Link>
+              ))}
+            </Flex>
+          </Box>
+
+          <Box display={{ base: "none", md: "block" }}>
+            <Flex direction="column" align="center" gap={8}>
+              <Flex justify="center" gap={10}>
+                {socialLinks.slice(0, 3).map((social) => (
+                  <Link
+                    key={social.name}
+                    href={social.url}
+                    isExternal={!social.url.includes("mailto")}
+                    _hover={{ transform: "scale(1.15)" }}
+                    transition="all 0.3s ease"
+                  >
+                    <Box
+                      bg="black"
+                      borderRadius="full"
+                      p={5}
+                      boxShadow="xl"
+                      border="2px solid transparent"
+                      _hover={{
+                        borderColor: "white",
+                        boxShadow: "2xl"
+                      }}
+                      transition="all 0.3s ease"
+                    >
+                      <Icon as={social.icon} boxSize={10} color="white" />
+                    </Box>
+                  </Link>
+                ))}
+              </Flex>
+              <Flex justify="center" gap={10}>
+                {socialLinks.slice(3, 6).map((social) => (
+                  <Link
+                    key={social.name}
+                    href={social.url}
+                    isExternal={!social.url.includes("mailto")}
+                    _hover={{ transform: "scale(1.15)" }}
+                    transition="all 0.3s ease"
+                  >
+                    <Box
+                      bg="black"
+                      borderRadius="full"
+                      p={5}
+                      boxShadow="xl"
+                      border="2px solid transparent"
+                      _hover={{
+                        borderColor: "white",
+                        boxShadow: "2xl"
+                      }}
+                      transition="all 0.3s ease"
+                    >
+                      <Icon as={social.icon} boxSize={10} color="white" />
+                    </Box>
+                  </Link>
+                ))}
+              </Flex>
+            </Flex>
+          </Box>
+        </Box>
       </Box>
 
-      {/* Second full width image */}
-      {/* Second full width image with clickable text box */}
       <Box position="relative" width="100%">
-        <Image src="/footer/2.svg" bgSize="cover" width="100%" />
+        <Image
+          src="/footer/2.svg"
+          width="100%"
+          height={{ base: "300px", sm: "350px", md: "400px", lg: "450px" }}
+          objectFit="cover"
+        />
 
-        <Box position="absolute" bottom="20px" right="1%">
-          <Link href="YOUR_LINK_HERE" isExternal>
+        <Box
+          position="absolute"
+          bottom={{ base: "15px", md: "20px" }}
+          right={{ base: "2%", md: "1%" }}
+        >
+          <Link href="https://www.reflectionsprojections.org" isExternal>
             <Box
               color="black"
-              px={6}
-              py={3}
+              px={{ base: 4, md: 6 }}
+              py={{ base: 2, md: 3 }}
               borderRadius="md"
-              _hover={{ bg: "gray.800", transform: "scale(1.05)" }}
-              transition="all 0.2s"
+              bg="rgba(255, 255, 255, 0.1)"
+              backdropFilter="blur(10px)"
+              border="1px solid rgba(255, 255, 255, 0.2)"
+              _hover={{
+                transform: "scale(1.05)",
+                bg: "rgba(255, 255, 255, 0.2)"
+              }}
+              transition="all 0.3s ease"
               cursor="pointer"
               textAlign="center"
             >
-              <Text fontSize="xl" fontWeight="bold">
+              <Text
+                fontSize={{ base: "lg", md: "xl" }}
+                fontWeight="bold"
+                textShadow="1px 1px 2px rgba(255, 255, 255, 0.5)"
+              >
                 visit reflectionsprojections.org
               </Text>
             </Box>

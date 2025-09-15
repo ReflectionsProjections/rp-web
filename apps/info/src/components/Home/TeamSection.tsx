@@ -37,7 +37,7 @@ export const TeamSection = () => {
         </Flex>
         <Button
           as={NavLink}
-          to="/archive"
+          to="/team"
           colorScheme="teal"
           bgColor="teal.300"
           size="lg"

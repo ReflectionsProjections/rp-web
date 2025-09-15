@@ -70,7 +70,7 @@ export const Navbar = () => {
         >
           TEAM
         </Link>
-        <Link
+        {/* <Link
           as={NavLink}
           to="/"
           textStyle="menu"
@@ -81,16 +81,16 @@ export const Navbar = () => {
           }}
         >
           SPONSORING
-        </Link>
-        <Link
+        </Link> */}
+        {/* <Link
           as={NavLink}
           to="/archive"
           textStyle="menu"
           fontSize="inherit"
           textDecoration={location.pathname === "/archive" ? "underline" : ""}
         >
-          ARCHIVE
-        </Link>
+          ARCHIVE */}
+        {/* </Link> */}
         <Link
           as={NavLink}
           to="/faq"
@@ -112,7 +112,7 @@ export const Navbar = () => {
           borderRadius="lg"
           onClick={(e) => {
             e.preventDefault();
-            scrollToSection("home");
+            scrollToSection("contact");
           }}
         >
           join us!

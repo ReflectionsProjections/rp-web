@@ -10,10 +10,10 @@ import {
   Image,
   Flex,
   Wrap,
-  WrapItem
+  WrapItem,
+  Stack
 } from "@chakra-ui/react";
 
-// Reusable team sidebar component
 const TeamSidebar = ({ teamName }: { teamName: string }) => {
   const sidebarWidth = useBreakpointValue({
     base: "0px", // Hide sidebar on mobile
@@ -154,52 +154,92 @@ const TeamPage = () => {
     <Box w="100vw" py={8}>
       <VStack spacing={8} align="stretch" maxW="none">
         {/* Header */}
-        <VStack spacing={4}>
-          <Heading size="2xl" fontWeight="bold">
-            2025▼
-          </Heading>
-          <Heading size="lg" fontWeight="normal">
-            Meet the team
-          </Heading>
-        </VStack>
 
-        {/* Co-Directors Section */}
-        <Container maxW="container.lg">
-          <VStack spacing={6}>
-            <Box bg="gray.200" px={4} py={2} borderRadius="md">
-              <Text fontSize="lg" fontWeight="semibold">
-                Co - Directors
-              </Text>
-            </Box>
-
-            <SimpleGrid columns={{ base: 1, md: 2 }} spacing={8}>
-              <VStack>
-                <Image
-                  src="/Directors/Shreenija.JPG"
-                  alt="Shreenija"
-                  w={{ base: "120px", md: "150px" }}
-                  h={{ base: "120px", md: "150px" }}
-                  border="3px solid black"
-                  objectFit="cover"
-                />
-                <Text fontSize="md">Shreenija</Text>
+        <Box as="section" w="100%" pt={{ base: "80px", md: "100px" }}>
+          <Container maxW="container.xl">
+            <Stack
+              direction={{ base: "column", lg: "row" }}
+              align={{ base: "center", lg: "center" }}
+              justify="center"
+              spacing={{ base: 10, md: 16 }}
+              textAlign={{ base: "center", lg: "left" }}
+            >
+              <VStack
+                spacing={3}
+                align={{ base: "center", lg: "flex-start" }}
+                flexShrink={0}
+              >
+                <Heading size="3xl" fontWeight="bold">
+                  2025
+                </Heading>
+                <Heading size="xl" fontWeight="normal">
+                  Meet the team
+                </Heading>
               </VStack>
-              <VStack>
-                <Image
-                  src="/Directors/Cole.JPG"
-                  alt="Cole"
-                  w={{ base: "120px", md: "150px" }}
-                  h={{ base: "120px", md: "150px" }}
-                  border="3px solid black"
-                  objectFit="cover"
-                />
-                <Text fontSize="md">Cole</Text>
-              </VStack>
-            </SimpleGrid>
-          </VStack>
-        </Container>
 
-        {/* Team Sections - Gray Background with Hanging Titles */}
+              <Box position="relative" w="full" maxW={{ base: "sm", md: "lg" }}>
+                <Box
+                  position="absolute"
+                  top={{ base: "-12px" }}
+                  left="50%"
+                  transform="translateX(-50%)"
+                  bg="black"
+                  color="white"
+                  px={{ base: 4, md: 6 }}
+                  py={{ base: 1.5, md: 2 }}
+                  textAlign={"center"}
+                >
+                  <Text
+                    fontSize={{ base: "md", md: "lg" }}
+                    fontWeight="semibold"
+                  >
+                    Co-Directors
+                  </Text>
+                </Box>
+
+                {/* Images */}
+                <SimpleGrid
+                  columns={{ base: 1, md: 2 }}
+                  spacing={{ base: 6, md: 8 }}
+                  alignItems="center"
+                  justifyItems="center"
+                  bg="white"
+                  p={{ base: 4, md: 6 }}
+                  pt={{ base: 8, md: 10 }} // room under the tab
+                  borderRadius="lg"
+                  boxShadow="sm"
+                >
+                  <VStack spacing={3}>
+                    <Image
+                      src="/Directors/Shreenija.JPG"
+                      alt="Shreenija"
+                      w={{ base: "160px", md: "180px" }}
+                      h={{ base: "160px", md: "180px" }}
+                      border="3px solid"
+                      borderColor="black"
+                      objectFit="cover"
+                    />
+                    <Text fontSize="md">Shreenija</Text>
+                  </VStack>
+
+                  <VStack spacing={3}>
+                    <Image
+                      src="/Directors/Cole.JPG"
+                      alt="Cole"
+                      w={{ base: "160px", md: "180px" }}
+                      h={{ base: "160px", md: "180px" }}
+                      border="3px solid"
+                      borderColor="black"
+                      objectFit="cover"
+                    />
+                    <Text fontSize="md">Cole</Text>
+                  </VStack>
+                </SimpleGrid>
+              </Box>
+            </Stack>
+          </Container>
+        </Box>
+
         <Box bg="gray.300" w="100%" position="relative">
           <VStack spacing={0} align="stretch" w="100%">
             {/* Development Team */}
@@ -318,7 +358,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Aashna Mauskar"
