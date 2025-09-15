@@ -15,6 +15,7 @@ import moment from "moment";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
 import FoodMenu from "./FoodMenu";
+import LinkButtons from "./LinkButtons";
 
 export default function EventModal({
   event,
@@ -24,10 +25,20 @@ export default function EventModal({
   onClose: () => void;
 }) {
   const hasFoodMenu = event?.description?.includes(":food:") || false;
-  const displayDescription =
-    event && hasFoodMenu
-      ? event.description.split(":food:")[0].trim()
-      : event?.description;
+  const hasLinks = event?.description?.includes(":link:") || false;
+
+  // Extract the main description by removing both food and link sections
+  let displayDescription = event?.description;
+  if (displayDescription) {
+    // Remove food section if present
+    if (hasFoodMenu) {
+      displayDescription = displayDescription.split(":food:")[0].trim();
+    }
+    // Remove link section if present
+    if (hasLinks) {
+      displayDescription = displayDescription.split(":link:")[0].trim();
+    }
+  }
 
   return (
     <Modal isOpen={event !== null} onClose={onClose} size="xl" isCentered>
@@ -93,6 +104,8 @@ export default function EventModal({
           )}
 
           <FoodMenu description={event.description} />
+
+          <LinkButtons description={event.description} />
 
           <CheckerBoardPattern />
         </ModalContent>
