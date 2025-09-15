@@ -282,7 +282,7 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Siri Nallamothu"
-                          imagePath="/team/Siri.png"
+                          imagePath="/Dev/Siri.png"
                         />
                       </WrapItem>
                       <WrapItem>
