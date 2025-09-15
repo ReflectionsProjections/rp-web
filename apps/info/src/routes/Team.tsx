@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Box,
   Container,
@@ -16,7 +17,7 @@ import {
 
 const TeamSidebar = ({ teamName }: { teamName: string }) => {
   const sidebarWidth = useBreakpointValue({
-    base: "0px", // Hide sidebar on mobile
+    base: "0px",
     md: "70px",
     lg: "80px"
   });
@@ -56,7 +57,6 @@ const TeamSidebar = ({ teamName }: { teamName: string }) => {
   );
 };
 
-// Team header component for mobile
 const TeamHeader = ({ teamName }: { teamName: string }) => {
   const showHeader = useBreakpointValue({ base: true, md: false });
 
@@ -71,7 +71,6 @@ const TeamHeader = ({ teamName }: { teamName: string }) => {
   );
 };
 
-// Profile box component with responsive sizing
 const ProfileBox = ({
   name,
   imagePath,
@@ -87,14 +86,12 @@ const ProfileBox = ({
     lg: "160px"
   });
 
-  // Bigger images for leads (chairs)
   const imageSize = useBreakpointValue({
     base: isLead ? "100px" : "80px",
     md: isLead ? "120px" : "90px",
     lg: isLead ? "140px" : "100px"
   });
 
-  // Bigger boxes for leads
   const leadBoxSize = useBreakpointValue({
     base: "140px",
     md: "160px",
@@ -145,16 +142,18 @@ const ProfileBox = ({
 
 const TeamPage = () => {
   const sidebarOffset = useBreakpointValue({
-    base: "0px", // No offset on mobile since no sidebar
+    base: "0px",
     md: "100px",
     lg: "140px"
   });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <Box w="100vw" py={8}>
       <VStack spacing={8} align="stretch" maxW="none">
-        {/* Header */}
-
         <Box as="section" w="100%" pt={{ base: "80px", md: "100px" }}>
           <Container maxW="container.xl">
             <Stack
@@ -197,7 +196,6 @@ const TeamPage = () => {
                   </Text>
                 </Box>
 
-                {/* Images */}
                 <SimpleGrid
                   columns={{ base: 1, md: 2 }}
                   spacing={{ base: 6, md: 8 }}
@@ -205,7 +203,7 @@ const TeamPage = () => {
                   justifyItems="center"
                   bg="white"
                   p={{ base: 4, md: 6 }}
-                  pt={{ base: 8, md: 10 }} // room under the tab
+                  pt={{ base: 8, md: 10 }}
                   borderRadius="lg"
                   boxShadow="sm"
                 >
@@ -242,7 +240,6 @@ const TeamPage = () => {
 
         <Box bg="gray.300" w="100%" position="relative">
           <VStack spacing={0} align="stretch" w="100%">
-            {/* Development Team */}
             <Box
               w="100%"
               position="relative"
@@ -255,7 +252,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Ronit Anandani"
@@ -269,9 +265,7 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members - 5 per row on large screens */}
                   <Box>
-                    {/* First row of 5 */}
                     <Wrap justify="center" spacing={4} mb={4}>
                       <WrapItem>
                         <ProfileBox
@@ -305,7 +299,6 @@ const TeamPage = () => {
                       </WrapItem>
                     </Wrap>
 
-                    {/* Second row of 5 */}
                     <Wrap justify="center" spacing={4}>
                       <WrapItem>
                         <ProfileBox
@@ -345,7 +338,6 @@ const TeamPage = () => {
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Design Team */}
             <Box
               w="100%"
               position="relative"
@@ -371,7 +363,6 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members */}
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
                       <ProfileBox name="Hua Tong" imagePath="/Design/Hua.JPG" />
@@ -407,7 +398,6 @@ const TeamPage = () => {
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Content Team - 4 + 3 layout for better distribution */}
             <Box
               w="100%"
               position="relative"
@@ -420,7 +410,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Rohan Nunugonda"
@@ -434,9 +423,7 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members - 4 + 3 layout */}
                   <Box>
-                    {/* First row of 4 */}
                     <Wrap justify="center" spacing={4} mb={4}>
                       <WrapItem>
                         <ProfileBox
@@ -464,7 +451,6 @@ const TeamPage = () => {
                       </WrapItem>
                     </Wrap>
 
-                    {/* Second row of 3 */}
                     <Wrap justify="center" spacing={4}>
                       <WrapItem>
                         <ProfileBox
@@ -492,7 +478,6 @@ const TeamPage = () => {
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Corporate Team */}
             <Box
               w="100%"
               position="relative"
@@ -505,7 +490,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Kaavya Mahajan"
@@ -519,7 +503,6 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members */}
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
                       <ProfileBox
@@ -540,7 +523,6 @@ const TeamPage = () => {
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Marketing Team */}
             <Box
               w="100%"
               position="relative"
@@ -553,7 +535,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Savannah Lau"
@@ -567,7 +548,6 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members */}
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
                       <ProfileBox
@@ -600,7 +580,6 @@ const TeamPage = () => {
 
             <Divider borderColor="black" borderBottomWidth="4px" />
 
-            {/* Operations Team */}
             <Box
               w="100%"
               position="relative"
@@ -613,7 +592,6 @@ const TeamPage = () => {
 
               <Box ml={sidebarOffset} mr={4} px={{ base: 4, md: 0 }}>
                 <VStack spacing={6}>
-                  {/* Leads Row */}
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Rishit Chatterjee"
@@ -627,7 +605,6 @@ const TeamPage = () => {
                     />
                   </Flex>
 
-                  {/* Members */}
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
                       <ProfileBox name="Hazel Lu" imagePath="/Ops/Hazel.JPG" />
