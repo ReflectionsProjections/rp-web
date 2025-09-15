@@ -82,7 +82,7 @@ export function RaceClock() {
       {/* Tenths */}
       <ClockSegment value={clockParts.ms} w="1vh" />
       {/* AM/PM */}
-      <ClockSegment value={clockParts.meridian} w="4vh" />
+      <ClockSegment value={clockParts.meridian} w="3.5vh" />
     </Flex>
   );
 }

@@ -64,7 +64,7 @@ function App() {
                 fontFamily="ProRacingSlant"
                 textAlign="center"
                 transform={"translateX(-50%)"}
-                paddingX={"2vh"}
+                paddingX={"1.25vh"}
                 borderRadius="1rem"
                 bgColor={"rgba(0,0,0,0.2)"}
               >
