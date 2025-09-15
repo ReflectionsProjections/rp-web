@@ -1,31 +1,28 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import api from "../api/api";
 
 const AuthCallback = () => {
-  const navigate = useNavigate();
-
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const returnTo = decodeURIComponent(params.get("state") || "/");
-    const redirect_uri = `${window.location.origin}/auth/callback`;
+    const redirectUrl = new URL("/auth/callback", window.location.origin);
 
     if (!code) {
-      void navigate("/unauthorized");
+      window.location.href = "/unauthorized";
       return;
     }
 
     api
-      .post("/auth/login/web", { code, redirectUri: redirect_uri })
+      .post("/auth/login/web", { code, redirectUri: redirectUrl.toString() })
       .then((response) => {
         localStorage.setItem("jwt", response.data.token);
-        void navigate(returnTo);
+        window.location.href = returnTo;
       })
       .catch(() => {
-        void navigate("/unauthorized");
+        window.location.href = "/unauthorized";
       });
-  }, [navigate]);
+  }, []);
 
   return <p>Completing login...</p>;
 };
