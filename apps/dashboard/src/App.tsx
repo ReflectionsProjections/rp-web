@@ -56,7 +56,7 @@ function App() {
             <Flex width={"50%"} marginRight={"1vh"} alignItems={"end"}>
               <Text
                 position={"absolute"}
-                top={"1.5vh"}
+                top={"0.5vh"}
                 left={"25%"}
                 fontSize={"2.5vh"}
                 fontWeight="bold"
