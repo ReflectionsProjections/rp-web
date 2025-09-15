@@ -1,26 +1,21 @@
 import {
   Box,
   Flex,
-  Grid,
   HStack,
-  Icon,
   Image,
   Spacer,
   Text,
-  Tooltip,
   useToast
 } from "@chakra-ui/react";
-import { api, Event, path } from "@rp/shared";
+import { api, circleColors, DayEvent, Event, path } from "@rp/shared";
 import moment from "moment";
 import { useCallback, useEffect, useState } from "react";
 
-import { CIRCLE_COLORS } from "@/constants/colors";
-import { EVENT_ICONS } from "@/constants/event-icons";
+import { AnimatedHeader } from "../shared/AnimatedHeader";
+import { AudioVisualizer } from "./AudioVisualizer";
 import EventModal from "./EventModal";
 import { RaceTrack } from "./RaceTrack";
 import ScheduleDaySelector from "./ScheduleDaySelector";
-import { AnimatedHeader } from "../shared/AnimatedHeader";
-import { AudioVisualizer } from "./AudioVisualizer";
 
 export default function Schedule() {
   const toast = useToast();
@@ -319,7 +314,6 @@ function DayEventsSection({
             <DayEvent
               key={index}
               number={index + 1}
-              lastIndex={dayEvents.length}
               hoveredIndex={hoveredIndex}
               event={event}
               onHover={onHover}
@@ -387,7 +381,7 @@ function RaceTrackSection({
         >
           <RaceTrack
             dayEvents={dayEvents}
-            colors={CIRCLE_COLORS}
+            colors={circleColors}
             hoveredIndex={hoveredEventIndex}
             onHover={handleHover}
             onClick={handleSelectEvent}
@@ -477,183 +471,6 @@ function RaceTrackSection({
         </Box>
       </Box>
     </Flex>
-  );
-}
-
-function DayEvent({
-  number,
-  hoveredIndex,
-  lastIndex,
-  event,
-  onHover,
-  onClick
-}: {
-  number: number;
-  hoveredIndex: number | null;
-  lastIndex: number;
-  event: Event;
-  onHover: (index: number) => void;
-  onClick: (event: Event) => void;
-}) {
-  // Check if this is Sue's keynote event
-  const isSueKeynote =
-    event.name.toLowerCase().includes("sue") &&
-    event.eventType.toLowerCase() === "speaker";
-  return (
-    <Grid
-      w="100%"
-      px={{
-        base: 3,
-        md: 5
-      }}
-      py={2}
-      templateColumns={{
-        base: "12px 8px 1fr 40px",
-        md: "20px 10px 1fr 40px"
-      }}
-      alignItems="center"
-      bgColor={hoveredIndex === number ? "#333131" : "#242424"}
-      borderTopRadius={{
-        base: number === 1 ? "xl" : "none",
-        md: "none"
-      }}
-      borderBottomRadius={{
-        base: lastIndex === number ? "xl" : "none",
-        md: "none"
-      }}
-      gap={{
-        base: 2,
-        md: 3
-      }}
-      _hover={{
-        bgColor: "#4D4C4C",
-        cursor: "pointer"
-      }}
-      transition={"all 0.2s"}
-      onMouseEnter={() => {
-        onHover(number);
-      }}
-      onMouseLeave={() => {
-        onHover(-1);
-      }}
-      onClick={() => {
-        onClick(event);
-      }}
-    >
-      <Box
-        display="flex"
-        justifyContent={"center"}
-        alignItems={"center"}
-        w={{
-          base: "10px",
-          md: "20px"
-        }}
-        borderRadius="sm"
-      >
-        <Text
-          fontSize={{
-            base: "lg",
-            md: "2xl"
-          }}
-          color="gray.200"
-          fontWeight="thin"
-          textAlign="center"
-          fontFamily="ProRacingSlant"
-          mb={"2px"}
-          mt={"4px"}
-        >
-          {number}
-        </Text>
-      </Box>
-
-      <Box
-        display="flex"
-        justifyContent={"center"}
-        alignItems={"center"}
-        w={{
-          base: "5px",
-          md: "7px"
-        }}
-        h="50px"
-        bg={CIRCLE_COLORS[(number - 1) % CIRCLE_COLORS.length]}
-        boxShadow="md"
-        borderRadius="sm"
-      ></Box>
-
-      <Flex flexDirection={"column"} gap={0}>
-        <Text
-          fontSize={{ base: "xl", md: "lg" }}
-          color="white"
-          fontFamily={"ProRacing"}
-          transformOrigin={"top left"}
-          w="100%"
-          // Keynote speaker text glow
-          textShadow={isSueKeynote ? "0 0 10px rgba(255, 215, 0, 0.8)" : "none"}
-        >
-          {isSueKeynote ? `★ ${event.name}` : event.name}
-        </Text>
-
-        <Flex
-          flexDirection={{
-            base: "column",
-            md: "row"
-          }}
-          gap={0}
-        >
-          <Text
-            fontSize={{ base: "md", md: "md" }}
-            color="gray.100"
-            fontWeight="bold"
-            fontFamily="Magistral"
-            letterSpacing="0.5px"
-            transformOrigin={"top left"}
-            wordBreak="break-all"
-            whiteSpace="normal"
-            mr={3}
-          >
-            {event.location || "Siebel CS"}
-          </Text>
-
-          <Text
-            fontSize={{ base: "md", md: "md" }}
-            color="gray.400"
-            fontWeight="bold"
-            fontFamily="Magistral"
-            letterSpacing="0.5px"
-            transformOrigin={"top left"}
-            whiteSpace={{
-              md: "nowrap"
-            }}
-          >
-            {formatEventRange(event.startTime, event.endTime)}
-          </Text>
-        </Flex>
-      </Flex>
-
-      <Tooltip
-        label={event.eventType
-          .toLowerCase()
-          .replace(/^\w/, (c) => c.toUpperCase())}
-        fontFamily="Magistral"
-        fontSize="lg"
-        fontWeight={600}
-        placement="top"
-        hasArrow
-      >
-        <Flex w="30px" h="30px" justifyContent={"center"} alignItems={"center"}>
-          <Icon
-            as={EVENT_ICONS[event.eventType]}
-            color={isSueKeynote ? "gold" : "yellow.500"}
-            boxSize={6}
-            filter={
-              isSueKeynote
-                ? "drop-shadow(0 0 8px rgba(255, 215, 0, 0.8))"
-                : "none"
-            }
-          />
-        </Flex>
-      </Tooltip>
-    </Grid>
   );
 }
 

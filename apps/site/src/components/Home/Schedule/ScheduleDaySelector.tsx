@@ -1,6 +1,5 @@
-import { DAY_COLORS } from "@/constants/colors";
 import { Box, Flex, Text, VStack } from "@chakra-ui/react";
-import { Event } from "@rp/shared";
+import { dayColors, Event } from "@rp/shared";
 import { useMemo } from "react";
 
 import { motion, useInView } from "framer-motion";
@@ -46,7 +45,7 @@ export default function ScheduleDaySelector({
           }}
         >
           <ScheduleDayButton
-            color={DAY_COLORS[index % DAY_COLORS.length]}
+            color={dayColors[index % dayColors.length]}
             date={date}
             selected={selectedDay === date}
             onSelectDay={onSelectDay}
