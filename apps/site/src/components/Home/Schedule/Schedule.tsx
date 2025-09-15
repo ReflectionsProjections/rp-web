@@ -37,7 +37,7 @@ export default function Schedule() {
   );
   const dayEvents = selectedDay ? eventsByDay[selectedDay] : [];
 
-  const handleLoadEvents = () => {
+  const handleLoadEvents = useCallback(() => {
     api
       .get(path("/events", {}))
       .then((events) => {
@@ -81,11 +81,11 @@ export default function Schedule() {
           isClosable: true
         });
       });
-  };
+  }, [toast]);
 
   useEffect(() => {
     handleLoadEvents();
-  }, []);
+  }, [handleLoadEvents]);
 
   const handleHover = (index: number) => setHoveredEventIndex(index);
   const handleSelectDay = (date: string) => {

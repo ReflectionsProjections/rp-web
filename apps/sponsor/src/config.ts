@@ -16,6 +16,14 @@ export const Config = {
     "639c7103-6ec2-4e91-826e-56026790f8b7",
     "daa0a06a-aaff-4e5a-add5-cc16b4109f20",
     "b62c1c00-f692-4710-9361-70a7e6a6ab9f",
-    "9762db64-f5a3-4fa3-b334-830355e41eb0"
+    "9762db64-f5a3-4fa3-b334-830355e41eb0",
+    "74df0fa3-f102-4e4a-90d0-74745cf52718",
+    "decc47d7-d7ee-40db-970c-67da38d33943"
+  ],
+  RESUMEBOOK_DEVELOPER_UIDS: [
+    "3dfdb33a-0dd3-468c-a8e2-b300b2406b47",
+    "194cd6b5-1edf-47ff-b078-998290637fd8",
+    "74df0fa3-f102-4e4a-90d0-74745cf52718",
+    "23b61c05-ccb7-4971-bb4d-d0fc963088a6"
   ]
 };

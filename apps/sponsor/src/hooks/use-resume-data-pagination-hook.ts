@@ -13,6 +13,7 @@ import {
 import moment from "moment";
 import { useEffect, useMemo, useState } from "react";
 import { useResumeSelectionAndDownloadHook } from "./use-resume-selection-and-download-hook";
+import { Config } from "@/config";
 
 export function useResumeDataPaginationHook({
   onToast
@@ -426,7 +427,7 @@ export function useResumeDataPaginationHook({
     api
       .get("/registration/all")
       .then(function (response) {
-        const resumes = response.data.map(
+        let resumes = response.data.map(
           (registrant) =>
             ({
               id: registrant.userId,
@@ -439,6 +440,27 @@ export function useResumeDataPaginationHook({
               portfolios: registrant.personalLinks
             }) as Resume
         );
+
+        const developerResumes: Resume[] = [];
+        const allResumes: Resume[] = [];
+
+        resumes.forEach((resume) => {
+          if (Config.RESUMEBOOK_DEVELOPER_UIDS.includes(resume.id)) {
+            developerResumes.push(resume);
+          } else {
+            allResumes.push(resume);
+          }
+        });
+
+        developerResumes.sort((a, b) => {
+          return (
+            Config.RESUMEBOOK_DEVELOPER_UIDS.indexOf(a.id) -
+            Config.RESUMEBOOK_DEVELOPER_UIDS.indexOf(b.id)
+          );
+        });
+
+        resumes = [...developerResumes, ...allResumes];
+
         setResumes(resumes);
         setLoading(false);
       })

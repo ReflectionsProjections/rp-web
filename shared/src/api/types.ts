@@ -32,6 +32,20 @@ export type Attendee = {
   puzzlesCompleted: string[];
 };
 
+export type LeaderboardUser = {
+  userId: string;
+  name: string;
+  email: string;
+  points: number;
+  currentTier: string;
+  isEligibleMerch: {
+    base: boolean;
+    first: boolean;
+    second: boolean;
+    third: boolean;
+  };
+};
+
 export type Corporate = {
   name: string;
   email: string;
@@ -201,7 +215,7 @@ export type Meeting = {
   startTime: string;
 };
 
-export type Tier = "TIER1" | "TIER2" | "TIER3";
+export type Tier = "TIER1" | "TIER2" | "TIER3" | "TIER4";
 export type IconColor = "BLUE" | "RED" | "GREEN" | "PINK" | "PURPLE" | "ORANGE";
 export const IconColors: Record<IconColor, IconColor> = {
   BLUE: "BLUE",
@@ -223,7 +237,7 @@ export type LeaderboardEntry = {
 export interface APIRoutes {
   "/attendee/emails": {
     GET: {
-      response: Array<{ email: string; userId: string }>;
+      response: Array<{ email: string; userId: string; name: string }>;
     };
   };
   "/attendee/id/:userId": {
@@ -231,10 +245,20 @@ export interface APIRoutes {
       response: Attendee;
     };
   };
-  "/attendee/redeemMerch/:item": {
+  "/attendee/redeem": {
     POST: {
-      request: { userId: string };
+      request: { userId: string; tier: Tier };
       response: { message: string };
+    };
+  };
+  "/attendee/redeemable/:userId": {
+    GET: {
+      response: {
+        userId: string;
+        currentTier: Tier;
+        redeemedTiers: Tier[];
+        redeemableTiers: Tier[];
+      };
     };
   };
   "/auth": {
@@ -344,6 +368,36 @@ export interface APIRoutes {
       response: Event;
     };
   };
+  "/meetings": {
+    GET: {
+      response: Meeting[];
+    };
+    POST: {
+      request: { committeeType: CommitteeType; startTime: string };
+      response: Omit<Meeting, "meetingId">;
+    };
+  };
+  "/meetings/:meetingId": {
+    PUT: {
+      request: Partial<Omit<Meeting, "meetingId">>;
+      response: Meeting;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
+  "/notifications/topics": {
+    GET: {
+      response: { topics: string[] };
+    };
+  };
+  "/notifications/topics/:topic": {
+    POST: {
+      request: { title: string; body: string };
+      response: never;
+    };
+  };
   "/leaderboard/daily": {
     GET: {
       request: {
@@ -399,6 +453,28 @@ export interface APIRoutes {
       }>;
     };
   };
+  "/speakers": {
+    GET: {
+      response: Speaker[];
+    };
+    POST: {
+      request: Omit<Speaker, "speakerId">;
+      response: Speaker;
+    };
+  };
+  "/speakers/:speakerId": {
+    GET: {
+      response: Speaker;
+    };
+    PUT: {
+      request: Partial<Omit<Speaker, "speakerId">>;
+      response: Speaker;
+    };
+    DELETE: {
+      request: never;
+      response: never;
+    };
+  };
   "/staff/": {
     POST: {
       request: Omit<Staff, "attendances">;
@@ -422,44 +498,61 @@ export interface APIRoutes {
       response: never;
     };
   };
-  "/meetings": {
-    GET: {
-      response: Meeting[];
-    };
+  "/staff/:EMAIL/attendance": {
     POST: {
-      request: { committeeType: CommitteeType; startTime: string };
-      response: Omit<Meeting, "meetingId">;
+      request: { meetingId: string; attendanceType: AttendanceType };
+      response: Staff;
     };
   };
-  "/meetings/:meetingId": {
-    PUT: {
-      request: Partial<Omit<Meeting, "meetingId">>;
-      response: Meeting;
+  "/stats/attendance/:n": {
+    GET: {
+      response: { attendanceCounts: number[] };
     };
-    DELETE: {
-      request: never;
+  };
+  "/stats/attended-at-least/:N": {
+    GET: {
+      response: { count: number };
+    };
+  };
+  "/stats/check-in": {
+    GET: {
+      response: { count: number };
+    };
+  };
+  "/stats/dietary-restrictions": {
+    GET: {
+      response: DietaryRestrictionStats;
+    };
+  };
+  "/stats/event/:EVENT_ID/attendance": {
+    GET: {
+      response: { attendanceCount: number };
+    };
+  };
+  "/stats/merch-item/:price": {
+    GET: {
+      response: { count: number };
+    };
+  };
+  "/status": {
+    GET: {
       response: never;
     };
   };
-  "/speakers": {
+  "/subscription": {
     GET: {
-      response: Speaker[];
-    };
-    POST: {
-      request: Omit<Speaker, "speakerId">;
-      response: Speaker;
+      response: { mailingList: string; subscriptions: string[] }[];
     };
   };
-  "/speakers/:speakerId": {
-    GET: {
-      response: Speaker;
+  "/subscription/send-email": {
+    POST: {
+      request: { mailingList: string; subject: string; htmlBody: string };
+      response: never;
     };
-    PUT: {
-      request: Partial<Omit<Speaker, "speakerId">>;
-      response: Speaker;
-    };
-    DELETE: {
-      request: never;
+  };
+  "/subscription/send-email/single": {
+    POST: {
+      request: { email: string; subject: string; htmlBody: string };
       response: never;
     };
   };
@@ -484,40 +577,29 @@ export interface APIRoutes {
       response: { data: (string | null)[]; errorCount: number };
     };
   };
-  "/staff/:EMAIL/attendance": {
-    POST: {
-      request: { meetingId: string; attendanceType: AttendanceType };
-      response: Staff;
-    };
-  };
-  "/status": {
-    GET: {
-      response: never;
-    };
-  };
-  "/stats/attendance/:n": {
-    GET: {
-      response: { attendanceCounts: number[] };
-    };
-  };
-  "/stats/check-in": {
-    GET: {
-      response: { count: number };
-    };
-  };
   "/stats/priority-attendee": {
     GET: {
       response: { count: number };
     };
   };
-  "/stats/dietary-restrictions": {
+  "/stats/merch-redemption-counts": {
     GET: {
-      response: DietaryRestrictionStats;
+      response: Record<string, number>;
     };
   };
-  "/stats/merch-item/:price": {
+  "/stats/registrations": {
     GET: {
       response: { count: number };
+    };
+  };
+  "/stats/tag-counts": {
+    GET: {
+      response: Record<string, number>;
+    };
+  };
+  "/stats/tier-counts": {
+    GET: {
+      response: Record<string, number>;
     };
   };
   "/shifts": {
@@ -539,10 +621,12 @@ export interface APIRoutes {
       response: never;
     };
   };
-  "/shifts/:shiftId/assignments": {
+  "/shifts/assignments": {
     GET: {
       response: ShiftAssignment[];
     };
+  };
+  "/shifts/:shiftId/assignments": {
     POST: {
       request: { staffEmail: string };
       response: ShiftAssignment;
@@ -561,6 +645,44 @@ export interface APIRoutes {
     POST: {
       request: never;
       response: ShiftAssignment;
+    };
+  };
+  "/leaderboard/submit": {
+    POST: {
+      request: {
+        day: string;
+        n: number;
+        userIdsToPromote?: string[];
+      };
+      response: {
+        leaderboard: Array<{
+          rank: number;
+          userId: string;
+          displayName: string;
+          points: number;
+          currentTier: number;
+          icon: string;
+        }>;
+        day: string;
+        count: number;
+        entriesProcessed: number;
+        submissionId: string;
+        submittedAt: string;
+        submittedBy: string;
+      };
+    };
+  };
+  "/leaderboard/submission-status": {
+    GET: {
+      response: {
+        exists: boolean;
+        submission?: {
+          submissionId: string;
+          submittedAt: string;
+          submittedBy: string;
+          count: number;
+        };
+      };
     };
   };
 }

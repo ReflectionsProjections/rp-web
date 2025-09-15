@@ -15,7 +15,7 @@ function ClockSegment({
     <Text
       as="span"
       fontFamily="SevenSegment"
-      fontSize="2vh"
+      fontSize="2.5vh"
       letterSpacing="0"
       width={w}
       display="inline-block"
@@ -51,7 +51,7 @@ export function RaceClock() {
   return (
     <Flex
       display={"flex"}
-      gap="0.12vh"
+      gap="0.35vh"
       alignItems="center"
       fontFamily="SevenSegment"
       fontWeight="bold"
@@ -61,7 +61,6 @@ export function RaceClock() {
       borderRadius={"0.5vh"}
       borderColor={"gray.600"}
       userSelect="none"
-      mr="1.5vh"
       mt="1.5vh"
       sx={{
         backdropFilter: "blur(12px)",
@@ -83,7 +82,7 @@ export function RaceClock() {
       {/* Tenths */}
       <ClockSegment value={clockParts.ms} w="1vh" />
       {/* AM/PM */}
-      <ClockSegment value={clockParts.meridian} w="4vh" />
+      <ClockSegment value={clockParts.meridian} w="3.5vh" />
     </Flex>
   );
 }
