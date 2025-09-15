@@ -53,7 +53,7 @@ const SIDE_DISTANCE = 200;
 const FINISH_LINE_WIDTH = TRACK_WIDTH / 4;
 const FINISH_LINE_SQUARE_SIZE = 25;
 const TRACK_COLOR = "#686868ff";
-const SIDE_COLOR1 = "#f22";
+const SIDE_COLOR1 = "#fff";
 const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
@@ -230,7 +230,7 @@ function getStraightTrackDrawSegment(
   const fX = x + distance * Math.cos(rad(angle));
   const fY = y + distance * Math.sin(rad(angle));
   const fAngle = angle;
-  const maxSideI = Math.floor(distance / SIDE_DISTANCE);
+  const maxSideI = 1;
   const fSideI = sideI + maxSideI;
 
   return {
@@ -270,7 +270,7 @@ function getArcTrackDrawSegment(
     : startDrawAngle - endDrawAngle;
   const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
 
-  const maxI = Math.floor(distance / SIDE_DISTANCE);
+  const maxI = 1;
   const fSideI = sideI + maxI;
 
   // Create the metadata
