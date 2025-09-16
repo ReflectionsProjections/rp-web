@@ -21,7 +21,7 @@ export default function NotFound() {
     >
       <VStack spacing={8} textAlign="center" maxW="600px" px={8}>
         {/* Racing Meme */}
-        <Image 
+        <Image
           src="/faq/meme.jpg"
           alt="When you turn off traction control - F1 car spinning on grass"
           maxW="400px"
@@ -30,37 +30,39 @@ export default function NotFound() {
           boxShadow="0 8px 32px rgba(0, 0, 0, 0.3)"
           mb={4}
         />
-        
+
         <VStack spacing={4}>
-          <Heading 
-            fontSize="8xl" 
-            fontWeight="bold" 
+          <Heading
+            fontSize="8xl"
+            fontWeight="bold"
             color="#FFE4E4"
             lineHeight="0.8"
             textShadow="0 0 20px rgba(255, 107, 53, 0.5)"
           >
             404
           </Heading>
-          <Heading 
-            fontSize="2xl" 
+          <Heading
+            fontSize="2xl"
             fontWeight="semibold"
             color="#FFE4E4"
             fontFamily="Roboto Slab"
           >
             Page Not Found
           </Heading>
-          <Text 
-            fontSize="lg" 
-            color="#D1D5DB"
-            textAlign="center"
-            opacity="0.9"
-          >
-Sorry, this page didn’t make it to the finish line. It might have been moved, deleted, or you took a wrong turn on the URL track. Don’t worry—no penalty for cutting the corner this time.          </Text>
+          <Text fontSize="lg" color="#D1D5DB" textAlign="center" opacity="0.9">
+            Sorry, this page didn't make it to the finish line. It might have
+            been moved, deleted, or you took a wrong turn on the URL track.{" "}
+          </Text>
+          <Text fontSize="lg" color="#D1D5DB" textAlign="center" opacity="0.9">
+            Don't worry—no penalty for cutting the corner this time.{" "}
+          </Text>
         </VStack>
-        
+
         <VStack spacing={4}>
           <Button
-            onClick={() => navigate("/")}
+            onClick={() => {
+              void navigate("/");
+            }}
             bg="#f5bc43"
             color="black"
             size="lg"
@@ -83,7 +85,6 @@ Sorry, this page didn’t make it to the finish line. It might have been moved, 
           >
             Go Home
           </Button>
-        
         </VStack>
       </VStack>
     </Box>
