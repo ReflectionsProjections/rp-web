@@ -56,9 +56,9 @@ const CAR_SPACING = 150;
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 35;
 // const SIDE_DISTANCE = 200;
-const FINISH_LINE_WIDTH = TRACK_WIDTH / 4;
-const FINISH_LINE_SQUARE_SIZE = 25;
 const CONNECTOR_SEGMENT_WIDTH = 10;
+const FINISH_LINE_SQUARE_ROWS = 4;
+const FINISH_LINE_SQUARE_COLS = 20;
 const TRACK_COLOR = "#686868ff";
 const SIDE_COLOR1 = "#fff";
 const SIDE_COLOR2 = "#fff";
@@ -590,18 +590,19 @@ function drawFinishLine(
   ctx.save();
   ctx.translate(x, y);
   ctx.rotate(rad(angle));
-  const width = FINISH_LINE_WIDTH;
-  const height = TRACK_WIDTH + SIDE_WIDTH;
+  const width = TRACK_WIDTH;
+  const squareSize = width / FINISH_LINE_SQUARE_COLS;
+  const height = squareSize * FINISH_LINE_SQUARE_ROWS;
 
-  for (let i = 0; i < width / FINISH_LINE_SQUARE_SIZE; i++) {
-    for (let j = 0; j < height / FINISH_LINE_SQUARE_SIZE; j++) {
+  for (let i = 0; i < FINISH_LINE_SQUARE_ROWS; i++) {
+    for (let j = 0; j < FINISH_LINE_SQUARE_COLS; j++) {
       ctx.beginPath();
       ctx.fillStyle = (i + j) % 2 == 0 ? "#fff" : "#000";
       ctx.rect(
-        i * FINISH_LINE_SQUARE_SIZE - width / 2,
-        j * FINISH_LINE_SQUARE_SIZE - height / 2,
-        FINISH_LINE_SQUARE_SIZE,
-        FINISH_LINE_SQUARE_SIZE
+        i * squareSize - height / 2,
+        j * squareSize - width / 2,
+        squareSize,
+        squareSize
       );
       ctx.fill();
     }
