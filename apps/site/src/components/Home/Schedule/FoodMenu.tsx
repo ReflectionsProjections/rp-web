@@ -23,7 +23,7 @@ interface FoodMenuData {
   menuUrl?: string;
 }
 
-export function parseFoodMenu(description: string): FoodMenuData | null {
+function parseFoodMenu(description: string): FoodMenuData | null {
   if (!description.includes(":food:")) {
     return null;
   }
