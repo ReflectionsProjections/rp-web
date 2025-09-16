@@ -7,7 +7,7 @@ This won't fit into 2026 theme so when you do delete this make sure to archive 2
 
 */
 
-import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
+import { IconColor, IconColors, LeaderboardEntry, rad } from "@rp/shared";
 import { useEffect, useState } from "react";
 import seedrandom from "seedrandom";
 
@@ -238,6 +238,7 @@ export default function useUpdateAnimationLoop({
           roadSidingImage.height * 0.025
         )
       };
+      console.log(bitmaps.cars[IconColors.BLUE]);
 
       function update() {
         // Resize the canvas so it matches the actual css space it takes up
@@ -331,7 +332,7 @@ async function generateCarBitmaps(
   const entries = await Promise.all(
     Object.entries(carImages).map(async ([color, img]) => [
       color,
-      await createBitmapFromImage(img, CAR_WIDTH * 2, CAR_HEIGHT)
+      await createBitmapFromImage(img, CAR_WIDTH * 2, CAR_HEIGHT * 2)
     ])
   );
 
