@@ -99,7 +99,12 @@ export default function Leaderboard({
 
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
-      <Flex position={"relative"} minHeight={"0"} flexGrow={"1"}>
+      <Flex
+        position={"relative"}
+        minHeight={"0"}
+        flexGrow={"1"}
+        overflow={"hidden"}
+      >
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {leaderboard &&
@@ -108,6 +113,8 @@ export default function Leaderboard({
               const scorecardVisible =
                 !zoomedOut &&
                 !!canvasRef.current &&
+                pos.x > canvasRef.current.width * 0.05 &&
+                pos.x < canvasRef.current.width * 0.95 &&
                 pos.y > canvasRef.current.height * 0.05 &&
                 pos.y < canvasRef.current.height * 0.95;
 
