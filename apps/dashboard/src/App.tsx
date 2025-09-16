@@ -69,15 +69,10 @@ function App() {
             Leaderboard
           </Text>
           <Flex width={"100%"} mt={"0"} flexGrow={1}>
-            <Flex width={"50%"} marginRight={"1vh"} alignItems={"end"}>
+            <Flex width={"50%"} marginRight={"1vh"} alignItems={"flex-end"}>
               <RegisterNow />
             </Flex>
-            <Flex
-              width={"50%"}
-              alignItems={"right"}
-              flexDir={"column"}
-              gap={"1.5vh"}
-            >
+            <Flex width={"50%"} flexDir={"column"} gap={"1.5vh"}>
               <Events date={date} />
               <Sponsors />
             </Flex>
