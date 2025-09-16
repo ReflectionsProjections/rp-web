@@ -91,7 +91,7 @@ export const Navbar = () => {
         >
           ARCHIVE */}
         {/* </Link> */}
-        <Link
+        {/* <Link
           as={NavLink}
           to="/faq"
           textStyle="menu"
@@ -99,7 +99,7 @@ export const Navbar = () => {
           textDecoration={location.pathname === "/faq" ? "underline" : ""}
         >
           FAQ
-        </Link>
+        </Link> */}
         <Link
           as={NavLink}
           to="/"
