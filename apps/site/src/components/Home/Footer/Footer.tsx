@@ -92,7 +92,6 @@ export const Footer = () => {
               </Link>
             ))}
           </Grid>
-
           <ChakraLink
             as={RouterLink}
             to="/app"
@@ -111,6 +110,25 @@ export const Footer = () => {
               }}
             >
               Download the app
+            </Text>
+          </ChakraLink>
+          <ChakraLink
+            as={RouterLink}
+            to="/profile"
+            _hover={{ textDecoration: "none" }}
+          >
+            <Text
+              color="blue.400"
+              w="100%"
+              fontFamily="Magistral"
+              fontSize={{ base: "md", md: "lg", lg: "xl" }}
+              textAlign={{ base: "center", md: "right" }}
+              _hover={{
+                color: "blue.200",
+                cursor: "pointer"
+              }}
+            >
+              Go to profile and QR code
             </Text>
           </ChakraLink>
           <Text

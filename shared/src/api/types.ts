@@ -1,5 +1,8 @@
+export type TierTypes = "TIER1" | "TIER2" | "TIER3" | "TIER4";
+
 export type Attendee = {
   userId: string;
+  currentTier: TierTypes;
   name: string;
   email: string;
   events: string[];
@@ -238,6 +241,20 @@ export interface APIRoutes {
   "/attendee/emails": {
     GET: {
       response: Array<{ email: string; userId: string; name: string }>;
+    };
+  };
+  "/attendee/foodwave": {
+    GET: {
+      response: {
+        foodwave: number;
+      };
+    };
+  };
+  "/attendee/qr": {
+    GET: {
+      response: {
+        qrCode: string;
+      };
     };
   };
   "/attendee/id/:userId": {

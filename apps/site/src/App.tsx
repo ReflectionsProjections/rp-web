@@ -1,3 +1,6 @@
+import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
+import { AuthCallback, googleAuth, RequireAuth } from "@rp/shared";
+import { useEffect, useMemo } from "react";
 import {
   BrowserRouter,
   Outlet,
@@ -5,15 +8,13 @@ import {
   Routes,
   useLocation
 } from "react-router-dom";
-import Home from "./routes/Home";
-import Register from "./routes/Register";
-import { AuthCallback, googleAuth, RequireAuth } from "@rp/shared";
-import { useEffect, useMemo } from "react";
-import Resume from "./routes/Resume";
-import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
-import theme from "./theme";
 import Navbar from "./components/Navbar";
+import Home from "./routes/Home";
+import { Profile } from "./routes/Profile";
+import Register from "./routes/Register";
+import Resume from "./routes/Resume";
 import Speakers from "./routes/Speakers/Speakers";
+import theme from "./theme";
 import AppScreen from "./routes/AppScreen";
 import NotFound from "./routes/NotFound";
 
@@ -42,6 +43,7 @@ function App() {
           </Route>
           <Route element={<RequireAuth />}>
             <Route key="/resume" path="/resume" element={<Resume />} />
+            <Route key="/profile" path="/profile" element={<Profile />} />
           </Route>
           <Route path="/auth/refresh" element={<RefreshHandler />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
