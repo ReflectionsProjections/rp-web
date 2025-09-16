@@ -68,6 +68,7 @@ const FIRST_CAR_CAMERA_Y_SCALE = 0.115;
 const PAN_DOWN_TIME = 2.5;
 const PAN_DOWN_PAUSE = 30;
 const PAN_DOWN_TO_CAR = 3.1; // 0-indexed
+const RENDER_DISTANCE = 5000;
 const CAMERA_MOVE_SPEED = CAR_SPEED;
 const CAMERA_ZOOM_SPEED = 1.125;
 
@@ -393,7 +394,7 @@ function getTrackPosition(
   }
 
   // Figure out which segment the provided position is at, then draw at the right position along that
-  for (const segment of trackDrawSegments) {
+  for (const [i, segment] of trackDrawSegments.entries()) {
     // If it's not the next segment, we need to draw it somewhere in this segment
     if (distance < segment.distance) {
       const alpha = distance / segment.distance;
@@ -402,7 +403,8 @@ function getTrackPosition(
         return {
           x: segment.x * (1 - alpha) + segment.fX * alpha,
           y: segment.y * (1 - alpha) + segment.fY * alpha,
-          angle: rad(segment.angle) - Math.PI / 2
+          angle: rad(segment.angle) - Math.PI / 2,
+          i
         };
       } else if (segment.type == "arc") {
         // Arc, interpolate the arc
@@ -414,7 +416,8 @@ function getTrackPosition(
         return {
           x: segment.cx + segment.radius * Math.cos(posAngle),
           y: segment.cy + segment.radius * Math.sin(posAngle),
-          angle: right ? posAngle : posAngle - Math.PI
+          angle: right ? posAngle : posAngle - Math.PI,
+          i
         };
       }
       break;
@@ -451,7 +454,7 @@ function draw(
   ctx.clearRect(0, 0, width, height);
 
   // Increment the position the leading car is at based on time
-  const position = (timeSeconds * CAR_SPEED) % totalDistance;
+  const leadingCarPosition = (timeSeconds * CAR_SPEED) % totalDistance;
 
   // Update camera
   updateCamera(
@@ -460,7 +463,7 @@ function draw(
     timeSeconds,
     trackDrawSegments,
     totalDistance,
-    position
+    leadingCarPosition
   );
 
   // Draw track
@@ -475,7 +478,7 @@ function draw(
   const positions = drawCars(
     ctx,
     timeSeconds,
-    position,
+    leadingCarPosition,
     trackDrawSegments,
     totalDistance,
     leaderboard,
@@ -558,13 +561,30 @@ function drawTrack(
   ctx: CanvasRenderingContext2D,
   trackDrawSegments: TrackDrawSegment[]
 ) {
-  // Draw siding first
+  // Get the segments that are drawable
+  const drawSegments = [];
   for (const segment of trackDrawSegments) {
+    const startDistance = Math.sqrt(
+      Math.pow(cameraX - segment.x, 2) + Math.pow(cameraY - segment.y, 2)
+    );
+    const endDistance = Math.sqrt(
+      Math.pow(cameraX - segment.fX, 2) + Math.pow(cameraY - segment.fY, 2)
+    );
+    if (
+      Math.min(startDistance, endDistance) <
+      RENDER_DISTANCE / Math.min(1, cameraScale)
+    ) {
+      drawSegments.push(segment);
+    }
+  }
+
+  // Draw siding first
+  for (const segment of drawSegments) {
     drawTrackSegmentSide(ctx, segment);
   }
 
   // Then draw track
-  for (const segment of trackDrawSegments) {
+  for (const segment of drawSegments) {
     drawTrackSegment(ctx, segment);
   }
 
