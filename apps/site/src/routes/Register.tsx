@@ -3,12 +3,14 @@ import {
   Heading,
   HStack,
   Text,
+  Image,
   IconButton,
   useToast,
   VStack,
   useBreakpointValue,
   Center,
-  Spinner
+  Spinner,
+  Link
 } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
 import React, { useEffect, useState, useRef } from "react";
@@ -496,8 +498,51 @@ const Register = () => {
           color="white"
           textAlign="center"
         >
-          Look out for a confirmation email from R|P soon!
+          Look out for a confirmation email from R|P, and download the app
+          today!
         </Text>
+        <HStack
+          spacing={6}
+          flexDir={{ base: "column", sm: "row" }}
+          align="center"
+          justify="center"
+        >
+          <Link
+            href="https://apps.apple.com/us/app/r-p-2025/id6744465190"
+            isExternal
+            _hover={{ transform: "scale(1.05)" }}
+            transition="all 0.3s ease"
+          >
+            <Image
+              src="/appscreen/app_store.png"
+              alt="Download on the App Store"
+              h={{ base: "50px", md: "60px" }}
+              w="auto"
+              filter="drop-shadow(0 4px 8px rgba(0,0,0,0.3))"
+              _hover={{
+                filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.4))"
+              }}
+            />
+          </Link>
+
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.reflectionsprojections&utm_source=na_Med"
+            isExternal
+            _hover={{ transform: "scale(1.05)" }}
+            transition="all 0.3s ease"
+          >
+            <Image
+              src="/appscreen/google_play.png"
+              alt="Get it on Google Play"
+              h={{ base: "50px", md: "60px" }}
+              w="auto"
+              filter="drop-shadow(0 4px 8px rgba(0,0,0,0.3))"
+              _hover={{
+                filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.4))"
+              }}
+            />
+          </Link>
+        </HStack>
       </VStack>
     </MotionBox>
   );

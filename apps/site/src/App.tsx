@@ -14,6 +14,7 @@ import { Box, ChakraProvider, VStack } from "@chakra-ui/react";
 import theme from "./theme";
 import Navbar from "./components/Navbar";
 import Speakers from "./routes/Speakers/Speakers";
+import AppScreen from "./routes/AppScreen";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -33,6 +34,7 @@ function App() {
           <Route element={<Main />}>
             <Route path="/" element={<Home />} />
             <Route path="/speakers" element={<Speakers />} />
+            <Route path="/app" element={<AppScreen />} />
             <Route element={<RequireAuth />}>
               <Route key="/register" path="/register" element={<Register />} />
             </Route>
