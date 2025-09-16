@@ -29,7 +29,7 @@ export const FAQS: FAQItem[] = [
   {
     question: "What do I need to do before R|P?",
     answer:
-      "Be sure to **[register](/register)** (it’s free!) and look out for the **upcoming Reflections | Projections app** to stay updated on schedules, attend all our events, and receive free food and swag!",
+      "Be sure to **[register](/register)** (it's free!) and download the **Reflections | Projections app** on the [App Store](https://apps.apple.com/us/app/r-p-2025/id6744465190) or [Google Play Store](https://play.google.com/store/apps/details?id=com.reflectionsprojections&utm_source=na_Med) to stay updated on schedules, attend all our events, and receive free food and swag!",
     colors: { light: "#E6930D", dark: "#B77408" }
   },
   {

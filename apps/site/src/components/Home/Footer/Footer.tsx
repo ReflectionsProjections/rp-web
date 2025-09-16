@@ -50,6 +50,7 @@ export const Footer = () => {
           src="main/footer/footer_car.svg"
           zIndex={2}
           maxH={{ md: "150px", lg: "200px" }}
+          transform="scaleX(-1)"
         />
         <Flex
           flexDirection="column"
@@ -91,7 +92,26 @@ export const Footer = () => {
               </Link>
             ))}
           </Grid>
-
+          <ChakraLink
+            as={RouterLink}
+            to="/app"
+            _hover={{ textDecoration: "none" }}
+          >
+            <Text
+              mt={{ base: 6, lg: 12 }}
+              color="blue.400"
+              w="100%"
+              fontFamily="Magistral"
+              fontSize={{ base: "md", md: "lg", lg: "xl" }}
+              textAlign={{ base: "center", md: "right" }}
+              _hover={{
+                color: "blue.200",
+                cursor: "pointer"
+              }}
+            >
+              Download the app
+            </Text>
+          </ChakraLink>
           <ChakraLink
             as={RouterLink}
             to="/profile"

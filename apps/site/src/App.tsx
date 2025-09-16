@@ -15,6 +15,7 @@ import Register from "./routes/Register";
 import Resume from "./routes/Resume";
 import Speakers from "./routes/Speakers/Speakers";
 import theme from "./theme";
+import AppScreen from "./routes/AppScreen";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -34,6 +35,7 @@ function App() {
           <Route element={<Main />}>
             <Route path="/" element={<Home />} />
             <Route path="/speakers" element={<Speakers />} />
+            <Route path="/app" element={<AppScreen />} />
             <Route element={<RequireAuth />}>
               <Route key="/register" path="/register" element={<Register />} />
             </Route>
