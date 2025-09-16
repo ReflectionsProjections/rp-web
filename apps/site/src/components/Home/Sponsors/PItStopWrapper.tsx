@@ -63,7 +63,7 @@ const PitStopSceneWrapper = () => {
             minHeight: "120vh" // Shorter desktop screens need more height
           },
           "@media screen and (min-height: 801px)": {
-            minHeight: "100vh" // Taller desktop screens are fine with 100vh
+            minHeight: "500px" // Taller desktop screens are fine with 100vh
           }
         }}
       >
@@ -378,8 +378,8 @@ const PitStopSceneWrapper = () => {
               <Image
                 src="/sponsors/car_new/aech.png"
                 pos="absolute"
-                bottom="-11%"
-                left="55%"
+                bottom="0%"
+                left="64%"
                 transform="translateX(-50%)"
                 display="block"
                 w="320px"
