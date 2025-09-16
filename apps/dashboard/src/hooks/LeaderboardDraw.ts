@@ -55,13 +55,9 @@ const CAR_SPEED = 2000;
 const CAR_SPACING = 150;
 const TRACK_WIDTH = 200;
 const SIDE_WIDTH = 35;
-// const SIDE_DISTANCE = 200;
 const CONNECTOR_SEGMENT_WIDTH = 10;
 const FINISH_LINE_SQUARE_ROWS = 4;
 const FINISH_LINE_SQUARE_COLS = 20;
-const TRACK_COLOR = "#686868ff";
-const SIDE_COLOR1 = "#fff";
-const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
 // car svg viewBox = 49 55 236 109
 const CAR_WIDTH = Math.floor(TRACK_WIDTH * 2 * CAR_PERCENT);
@@ -202,11 +198,15 @@ export default function useUpdateAnimationLoop({
   canvasRef,
   trackPercent,
   carImages,
+  roadImage,
+  roadSidingImage,
   leaderboard
 }: {
   canvasRef: React.RefObject<HTMLCanvasElement>;
   trackPercent: number;
   carImages: Record<IconColor, HTMLImageElement> | undefined;
+  roadImage: HTMLImageElement | undefined;
+  roadSidingImage: HTMLImageElement | undefined;
   leaderboard: LeaderboardEntry[] | undefined;
 }) {
   const [positions, setPositions] = useState<CarPosition[]>([]);
@@ -216,10 +216,20 @@ export default function useUpdateAnimationLoop({
   useEffect(() => {
     let frame: number;
     async function init() {
-      if (!carImages) return;
+      if (!carImages || !roadImage || !roadSidingImage) return;
 
       const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
-      const carBitmaps = await generateCarBitmaps(carImages);
+      const bitmaps = {
+        cars: await generateCarBitmaps(carImages),
+        road: await createImageBitmap(roadImage, {
+          resizeWidth: roadImage.width * 0.1,
+          resizeHeight: roadImage.height * 0.1
+        }),
+        roadSiding: await createImageBitmap(roadSidingImage, {
+          resizeWidth: roadSidingImage.width * 0.025,
+          resizeHeight: roadSidingImage.height * 0.025
+        })
+      };
 
       function update() {
         // Resize the canvas so it matches the actual css space it takes up
@@ -232,8 +242,8 @@ export default function useUpdateAnimationLoop({
               trackPercent,
               trackDrawSegments,
               totalDistance,
-              leaderboard,
-              carBitmaps
+              bitmaps,
+              leaderboard
             );
             if (result) {
               const { positions, transform, zoomedOut } = result;
@@ -280,7 +290,14 @@ export default function useUpdateAnimationLoop({
 
     // On cancel, make sure to cancel the previous frame loop
     return () => cancelAnimationFrame(frame);
-  }, [canvasRef, trackPercent, carImages, leaderboard]);
+  }, [
+    canvasRef,
+    trackPercent,
+    carImages,
+    roadImage,
+    roadSidingImage,
+    leaderboard
+  ]);
 
   return { positions, zoomedOut };
 }
@@ -470,8 +487,12 @@ function draw(
   trackPercent: number,
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
-  leaderboard?: LeaderboardEntry[],
-  carBitmaps?: Record<IconColor, ImageBitmap>
+  bitmaps: {
+    cars?: Record<IconColor, ImageBitmap>;
+    road?: ImageBitmap;
+    roadSiding?: ImageBitmap;
+  },
+  leaderboard?: LeaderboardEntry[]
 ) {
   const { width, height } = ctx.canvas;
   const timeSeconds = Date.now() / 1000;
@@ -492,11 +513,16 @@ function draw(
     leadingCarPosition
   );
 
+  // We need road image to draw track
+  if (!bitmaps.road || !bitmaps.roadSiding) {
+    return;
+  }
+
   // Draw track
-  drawTrack(ctx, trackDrawSegments);
+  drawTrack(ctx, trackDrawSegments, bitmaps.road, bitmaps.roadSiding);
 
   // We need leaderboard and car images to draw the cars
-  if (!leaderboard || !carBitmaps) {
+  if (!leaderboard || !bitmaps.cars) {
     return;
   }
 
@@ -508,7 +534,7 @@ function draw(
     trackDrawSegments,
     totalDistance,
     leaderboard,
-    carBitmaps
+    bitmaps.cars
   );
 
   // Return positions of cars
@@ -585,7 +611,9 @@ function updateCamera(
 // Draw the track cars drive on
 function drawTrack(
   ctx: CanvasRenderingContext2D,
-  trackDrawSegments: TrackDrawSegment[]
+  trackDrawSegments: TrackDrawSegment[],
+  roadBitmap: ImageBitmap,
+  roadSidingBitmap: ImageBitmap
 ) {
   // Get the segments that are drawable
   const drawSegments = [];
@@ -605,13 +633,17 @@ function drawTrack(
   }
 
   // Draw siding first
+  const roadSidingPattern = ctx.createPattern(roadSidingBitmap, "repeat");
+  if (!roadSidingPattern) return;
   for (const segment of drawSegments) {
-    drawTrackSegmentSide(ctx, segment);
+    drawTrackSegmentSide(ctx, segment, roadSidingPattern);
   }
 
   // Then draw track
+  const roadPattern = ctx.createPattern(roadBitmap, "repeat");
+  if (!roadPattern) return;
   for (const segment of drawSegments) {
-    drawTrackSegment(ctx, segment);
+    drawTrackSegment(ctx, segment, roadPattern);
   }
 
   // Draw the finish line
@@ -621,7 +653,8 @@ function drawTrack(
 
 function drawTrackSegmentSide(
   ctx: CanvasRenderingContext2D,
-  segment: TrackDrawSegment
+  segment: TrackDrawSegment,
+  style: string | CanvasPattern
 ) {
   const { type, x, y, angle, sideI, fX, fY, fSideI } = segment;
   // Draw the red-white side of the track
@@ -632,7 +665,7 @@ function drawTrackSegmentSide(
     const dy = fY - y;
     for (let i = 0; i < maxI; i++) {
       ctx.beginPath();
-      ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+      ctx.strokeStyle = style;
       ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
       ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
       ctx.stroke();
@@ -642,7 +675,7 @@ function drawTrackSegmentSide(
     const maxI = fSideI - sideI;
     const dAngle = endDrawAngle - startDrawAngle;
     for (let i = 0; i < maxI; i++) {
-      ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+      ctx.strokeStyle = style;
       ctx.beginPath();
       ctx.arc(
         cx,
@@ -657,16 +690,17 @@ function drawTrackSegmentSide(
   }
 
   // Segment to reduce sub-pixel error
-  ctx.fillStyle = sideI % 2 ? SIDE_COLOR1 : SIDE_COLOR2;
+  ctx.fillStyle = style;
   drawTrackSegmentConnector(ctx, x, y, angle, TRACK_WIDTH + SIDE_WIDTH);
 }
 
 function drawTrackSegment(
   ctx: CanvasRenderingContext2D,
-  segment: TrackDrawSegment
+  segment: TrackDrawSegment,
+  style: string | CanvasPattern
 ) {
   ctx.lineWidth = TRACK_WIDTH;
-  ctx.strokeStyle = TRACK_COLOR;
+  ctx.strokeStyle = style;
   const { type, x, y, angle, fX, fY } = segment;
   if (type == "straight") {
     ctx.beginPath();
@@ -681,7 +715,7 @@ function drawTrackSegment(
   }
 
   // Segment to reduce sub-pixel error
-  ctx.fillStyle = TRACK_COLOR;
+  ctx.fillStyle = style;
   drawTrackSegmentConnector(ctx, x, y, angle, TRACK_WIDTH);
 }
 

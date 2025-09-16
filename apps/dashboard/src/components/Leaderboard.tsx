@@ -4,6 +4,8 @@ import { api, IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
 import Car from "@/assets/car.svg?react";
 import Icon from "@/assets/icon.svg?react";
+import Road from "@/assets/road.png";
+import RoadSiding from "@/assets/road-side.png";
 import { useEffect, useRef, useState } from "react";
 import useUpdateAnimationLoop, {
   CarPosition,
@@ -24,10 +26,18 @@ export default function Leaderboard({
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
+  const [roadImage, setRoadImage] = useState<HTMLImageElement | undefined>(
+    undefined
+  );
+  const [roadSidingImage, setRoadSidingImage] = useState<
+    HTMLImageElement | undefined
+  >(undefined);
   const { positions, zoomedOut } = useUpdateAnimationLoop({
     canvasRef,
     trackPercent,
     carImages,
+    roadImage,
+    roadSidingImage,
     leaderboard
   });
 
@@ -95,6 +105,19 @@ export default function Leaderboard({
   useEffect(() => {
     if (!DRAW_CARS_IN_CANVAS) return;
     loadImages().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = Road;
+    image.onload = () => {
+      setRoadImage(image);
+    };
+    const image2 = new Image();
+    image2.src = RoadSiding;
+    image2.onload = () => {
+      setRoadSidingImage(image2);
+    };
   }, []);
 
   return (
