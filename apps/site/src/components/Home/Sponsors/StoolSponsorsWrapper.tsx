@@ -11,35 +11,57 @@ type Sponsor = {
     lg?: string;
     xl?: string;
   };
+  glowColor: string;
 };
 
 const StoolsSceneWrapper: React.FC = () => {
+  // const getSubtleGlowFilter = (color: string) => {
+  //   return `drop-shadow(0 0 8px ${color}AA) drop-shadow(0 0 25px ${color}88) drop-shadow(0 0 35px ${color}66)`;
+  // };
+
   const STOOL_SPONSOR_IMAGES: Sponsor[] = [
     {
       filename: "janestreet.png",
       url: "https://www.janestreet.com/",
-      heights: { base: "60px", md: "95px", lg: "95px" }
+      heights: { base: "60px", md: "95px", lg: "95px" },
+      glowColor: "#ffffff"
     }, // row 1
+    {
+      filename: "openai.svg",
+      url: "https://www.openai.com/",
+      heights: { base: "40px", md: "50px", lg: "65px" },
+      glowColor: "#ffffff"
+    }, // row 4
     {
       filename: "cloudflare.png",
       url: "https://www.cloudflare.com/",
-      heights: { base: "70px", md: "100px", lg: "110px" }
+      heights: { base: "70px", md: "100px", lg: "110px" },
+      glowColor: "#F78D2A"
     }, // row 2
     {
       filename: "everfox.svg",
       url: "https://www.everfox.com/",
-      heights: { base: "60px", md: "80px", lg: "90px" }
+      heights: { base: "60px", md: "80px", lg: "90px" },
+      glowColor: "#0066cc"
     }, // row 2
     {
       filename: "statefarm.png",
       url: "https://www.statefarm.com/",
-      heights: { base: "30px", md: "40px", lg: "45px" }
+      heights: { base: "30px", md: "40px", lg: "45px" },
+      glowColor: "#EC0C21"
     }, // row 3
     {
       filename: "capitalone.png",
       url: "https://www.capitalone.com/",
-      heights: { base: "80px", md: "120px", lg: "95px" }
-    } // row 3, last
+      heights: { base: "80px", md: "120px", lg: "95px" },
+      glowColor: "#3B8927"
+    }, // row 3, last
+    {
+      filename: "magna.svg",
+      url: "https://www.magna.com/",
+      heights: { base: "40px", md: "50px", lg: "65px" },
+      glowColor: "#E4D00A"
+    } // row 4, last
   ];
 
   return (
@@ -58,7 +80,7 @@ const StoolsSceneWrapper: React.FC = () => {
           columns={1}
           justifyItems="center"
           alignItems="center"
-          mb={{ base: 10, lg: 16 }}
+          mb={{ base: 12, lg: 16 }}
         >
           <Link
             href={STOOL_SPONSOR_IMAGES[0].url}
@@ -83,10 +105,10 @@ const StoolsSceneWrapper: React.FC = () => {
         {/* Row 2 - Cloudflare + Everfox */}
         <SimpleGrid
           columns={{ base: 1, lg: 2 }}
-          spacing={{ base: 16, lg: 8 }}
+          spacing={{ base: 10, lg: 8 }}
           justifyItems="center"
           alignItems="center"
-          mb={{ base: 12, lg: 16 }}
+          mb={{ base: 12, lg: 12 }}
         >
           {STOOL_SPONSOR_IMAGES.slice(1, 3).map((img, idx) => (
             <Link
@@ -102,10 +124,11 @@ const StoolsSceneWrapper: React.FC = () => {
             >
               <Image
                 src={`/main/sponsors/${img.filename}`}
-                alt={img.filename.replace(".png", "")}
+                alt={img.filename.replace(/\.(png|svg)$/, "")}
                 h={img.heights}
                 maxW="500px"
                 objectFit="contain"
+                // filter={getSubtleGlowFilter(img.glowColor)}
               />
             </Link>
           ))}
@@ -132,7 +155,7 @@ const StoolsSceneWrapper: React.FC = () => {
             >
               <Image
                 src={`/main/sponsors/${img.filename}`}
-                alt={img.filename.replace(".png", "")}
+                alt={img.filename.replace(/\.(png|svg)$/, "")}
                 h={img.heights}
                 maxW="500px"
                 objectFit="contain"

@@ -79,6 +79,7 @@ const baseRegistrationSchema = yup.object({
           "Username is required"
         )
         .required()
+        .max(50, "Maximum link length is 50 characters")
     )
     .required()
     .max(5)

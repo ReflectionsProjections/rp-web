@@ -5,6 +5,8 @@ import {
   Button,
   HStack,
   Spacer,
+  Image,
+  Link,
   Text,
   useMediaQuery,
   VStack
@@ -18,6 +20,7 @@ import { useEffect, useRef, useCallback } from "react";
 const MotionBox = motion(Box);
 const MotionText = motion(Text);
 const MotionVStack = motion(VStack);
+const MotionHStack = motion(HStack);
 
 export const Landing = () => {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
@@ -184,6 +187,53 @@ export const Landing = () => {
             </Text>
           </Button>
         </MotionBox>
+
+        <MotionHStack
+          spacing={6}
+          pt={4}
+          flexDir={{ base: "column", sm: "row" }}
+          align="center"
+          justify="center"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3, duration: 0.6, ease: "easeOut" }}
+        >
+          <Link
+            href="https://apps.apple.com/us/app/r-p-2025/id6744465190"
+            isExternal
+            _hover={{ transform: "scale(1.05)" }}
+            transition="all 0.3s ease"
+          >
+            <Image
+              src="/appscreen/app_store.png"
+              alt="Download on the App Store"
+              h={{ base: "50px", md: "60px" }}
+              w="auto"
+              filter="drop-shadow(0 4px 8px rgba(0,0,0,0.3))"
+              _hover={{
+                filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.4))"
+              }}
+            />
+          </Link>
+
+          <Link
+            href="https://play.google.com/store/apps/details?id=com.reflectionsprojections&utm_source=na_Med"
+            isExternal
+            _hover={{ transform: "scale(1.05)" }}
+            transition="all 0.3s ease"
+          >
+            <Image
+              src="/appscreen/google_play.png"
+              alt="Get it on Google Play"
+              h={{ base: "50px", md: "60px" }}
+              w="auto"
+              filter="drop-shadow(0 4px 8px rgba(0,0,0,0.3))"
+              _hover={{
+                filter: "drop-shadow(0 6px 12px rgba(0,0,0,0.4))"
+              }}
+            />
+          </Link>
+        </MotionHStack>
         <Spacer />
       </VStack>
 
