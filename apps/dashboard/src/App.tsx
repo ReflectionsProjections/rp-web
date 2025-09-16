@@ -52,24 +52,24 @@ function App() {
           zIndex={2}
         >
           <Title />
+          <Text
+            position={"absolute"}
+            top={"0.5vh"}
+            left={"25%"}
+            fontSize={"2.5vh"}
+            fontWeight="bold"
+            color="white"
+            fontFamily="ProRacingSlant"
+            textAlign="center"
+            transform={"translateX(-50%)"}
+            paddingX={"1.25vh"}
+            borderRadius="1rem"
+            bgColor={"rgba(0,0,0,0.2)"}
+          >
+            Leaderboard
+          </Text>
           <Flex width={"100%"} mt={"0"} flexGrow={1}>
             <Flex width={"50%"} marginRight={"1vh"} alignItems={"end"}>
-              <Text
-                position={"absolute"}
-                top={"0.5vh"}
-                left={"25%"}
-                fontSize={"2.5vh"}
-                fontWeight="bold"
-                color="white"
-                fontFamily="ProRacingSlant"
-                textAlign="center"
-                transform={"translateX(-50%)"}
-                paddingX={"1.25vh"}
-                borderRadius="1rem"
-                bgColor={"rgba(0,0,0,0.2)"}
-              >
-                Leaderboard
-              </Text>
               <RegisterNow />
             </Flex>
             <Flex
