@@ -10,7 +10,7 @@ import useUpdateAnimationLoop, {
   DRAW_CARS_IN_CANVAS
 } from "../hooks/LeaderboardDraw";
 
-const TOP_CARS_NUMBER = 10;
+const TOP_CARS_NUMBER = 100;
 
 export default function Leaderboard({
   trackPercent

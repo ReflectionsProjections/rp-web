@@ -68,8 +68,8 @@ const FIRST_CAR_CAMERA_Y_SCALE = 0.115;
 const PAN_DOWN_TIME = 2.5;
 const PAN_DOWN_PAUSE = 30;
 const PAN_DOWN_TO_CAR = 3.1; // 0-indexed
-const FOLLOW_FIRST_CAR = true;
-const ZOOM_OUT = false;
+const CAMERA_MOVE_SPEED = CAR_SPEED;
+const CAMERA_ZOOM_SPEED = 1.125;
 
 const SCALE = 20;
 // The track defined as straight and angled segments
@@ -102,11 +102,93 @@ const TRACK: TrackSegment[] = [
   { distance: 100 * SCALE }
 ];
 
+// Camera position
+let cameraFollowing = true;
+let cameraX: number = 0;
+let cameraY: number = 0;
+let cameraAngle: number = 0;
+let cameraScale: number = 1;
+
 // We need to resize the canvas to match the space it takes up
 function resizeCanvas(canvas: HTMLCanvasElement) {
   const realSize = canvas.getBoundingClientRect();
   canvas.width = realSize.width;
   canvas.height = realSize.height;
+}
+
+// Handle camera input
+function useCameraInput() {
+  useEffect(() => {
+    const pressed: Record<string, boolean | undefined> = {};
+    function keydown(event: KeyboardEvent) {
+      pressed[event.code] = true;
+    }
+    function keyup(event: KeyboardEvent) {
+      pressed[event.code] = false;
+
+      if (event.code === "KeyF") {
+        if (cameraFollowing) {
+          cameraFollowing = false;
+        } else {
+          cameraFollowing = true;
+          cameraScale = 1;
+        }
+      }
+    }
+    function wheel(event: WheelEvent) {
+      if (event.deltaY > 0) {
+        cameraScale *= 1 / CAMERA_ZOOM_SPEED;
+      } else if (event.deltaY < 0) {
+        cameraScale *= CAMERA_ZOOM_SPEED;
+      }
+
+      if (Math.abs(cameraScale - 1) < 0.01) {
+        cameraScale = 1;
+      }
+    }
+    window.addEventListener("keydown", keydown);
+    window.addEventListener("keyup", keyup);
+    window.addEventListener("wheel", wheel);
+
+    let frame: number;
+    let prev: number;
+    function updateInput() {
+      const now = Date.now();
+      if (!prev) {
+        prev = now;
+      }
+      const delta = (now - prev) / 1000;
+
+      if (pressed["KeyW"]) {
+        cameraFollowing = false;
+        cameraY -= delta * (CAMERA_MOVE_SPEED / cameraScale);
+      }
+      if (pressed["KeyS"]) {
+        cameraFollowing = false;
+        cameraY += delta * (CAMERA_MOVE_SPEED / cameraScale);
+      }
+      if (pressed["KeyA"]) {
+        cameraFollowing = false;
+        cameraX -= delta * (CAMERA_MOVE_SPEED / cameraScale);
+      }
+      if (pressed["KeyD"]) {
+        cameraFollowing = false;
+        cameraX += delta * (CAMERA_MOVE_SPEED / cameraScale);
+      }
+
+      prev = now;
+
+      frame = requestAnimationFrame(updateInput);
+    }
+    frame = requestAnimationFrame(updateInput);
+
+    return () => {
+      window.removeEventListener("keydown", keydown);
+      window.removeEventListener("keyup", keyup);
+      window.removeEventListener("wheel", wheel);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
 }
 
 // A hook which connects to the update animation loop
@@ -125,6 +207,7 @@ export default function useUpdateAnimationLoop({
 }) {
   const [positions, setPositions] = useState<CarPosition[]>([]);
   const [zoomedOut, setZoomedOut] = useState(false);
+  useCameraInput();
 
   useEffect(() => {
     const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
@@ -403,7 +486,7 @@ function draw(
   return {
     positions,
     transform: ctx.getTransform(),
-    zoomedOut: ZOOM_OUT
+    zoomedOut: cameraScale < 0.75
   };
 }
 
@@ -439,34 +522,33 @@ function updateCamera(
   position: number
 ) {
   const focusPosition = position - CAR_SPACING * getCameraFocus(timeSeconds);
-  const {
-    x: cameraX,
-    y: cameraY,
-    angle: cameraAngle
-  } = FOLLOW_FIRST_CAR
-    ? getTrackPosition(trackDrawSegments, totalDistance, focusPosition)
-    : {
-        x: 215 * SCALE,
-        y: 200 * SCALE,
-        angle: Math.PI / 2
-      };
+
+  // Update camera if following
+  if (cameraFollowing) {
+    const { x, y, angle } = getTrackPosition(
+      trackDrawSegments,
+      totalDistance,
+      focusPosition
+    );
+    cameraX = x;
+    cameraY = y;
+    cameraAngle = angle - Math.PI;
+  } else {
+    cameraAngle = 0;
+  }
 
   // Move origin to screen center
   const centerX =
-    (FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_X_SCALE : 0.5) * trackPercent;
-  const centerY = FOLLOW_FIRST_CAR ? FIRST_CAR_CAMERA_Y_SCALE : 0.5;
+    (cameraFollowing ? FIRST_CAR_CAMERA_X_SCALE : 0.5) * trackPercent;
+  const centerY = cameraFollowing ? FIRST_CAR_CAMERA_Y_SCALE : 0.5;
   ctx.translate(ctx.canvas.width * centerX, ctx.canvas.height * centerY);
 
   // Scale to user screen vs expected world space
-  let scale = ctx.canvas.height / 1100;
-  // If zoom out debug flag, zoom the whole screen out
-  if (ZOOM_OUT) {
-    scale *= 0.06;
-  }
+  const scale = (ctx.canvas.height / 1100) * cameraScale;
 
   ctx.scale(scale, scale);
   // Rotate world so car faces "up"
-  ctx.rotate(-cameraAngle - Math.PI);
+  ctx.rotate(-cameraAngle);
   // Move world so car is centered
   ctx.translate(-cameraX, -cameraY);
 }
@@ -568,9 +650,9 @@ function drawTrackSegmentConnector(
   ctx.translate(x, y);
   ctx.rotate(rad(angle));
   ctx.beginPath();
-  const connectorSegmentWidth = ZOOM_OUT
-    ? CONNECTOR_SEGMENT_WIDTH * 2
-    : CONNECTOR_SEGMENT_WIDTH;
+  const connectorSegmentWidth = Math.ceil(
+    CONNECTOR_SEGMENT_WIDTH / cameraScale
+  );
   ctx.rect(
     -connectorSegmentWidth / 2,
     -width / 2,
