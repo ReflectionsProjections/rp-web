@@ -49,14 +49,53 @@ export function Profile() {
   };
 
   const handleLoadAuthData = async () => {
-    const role = await api.get("/auth/info");
-    setRoleObject(role.data);
+    let role: RoleObject | null;
+    try {
+      role = (await api.get("/auth/info")).data;
+      setRoleObject(role);
+    } catch {
+      toast({
+        title: "Error loading authentication data",
+        description: "Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top"
+      });
+      return;
+    }
 
-    if (role.data.userId) {
-      const newAttendee = await api.get(
-        path(`/attendee/id/:userId`, { userId: role.data.userId })
-      );
-      setAttendee(newAttendee.data);
+    if (!role) {
+      toast({
+        title: "Error loading authentication data",
+        description: "Please try again later.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top"
+      });
+      return;
+    }
+
+    if (role.userId) {
+      let newAttendee: Attendee | null = null;
+      try {
+        newAttendee = (
+          await api.get(path(`/attendee/id/:userId`, { userId: role.userId }))
+        ).data;
+      } catch (error) {
+        console.error("Failed to fetch attendee data:", error);
+        toast({
+          title: "Error loading attendee data",
+          description: "Please try again later.",
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+          position: "top"
+        });
+        return;
+      }
+      setAttendee(newAttendee);
 
       const now = new Date();
       const todayShort = new Intl.DateTimeFormat("en-US", {
@@ -70,9 +109,8 @@ export function Profile() {
       if (now > rpStartDate && now < rpEndDate) {
         // RP in progress
         const hasPriority =
-          newAttendee.data[
-            `hasPriority${todayShort}` as keyof typeof newAttendee.data
-          ] || false;
+          newAttendee[`hasPriority${todayShort}` as keyof typeof newAttendee] ||
+          false;
         setFoodWave(hasPriority ? "priority" : "standard");
       } else if (now < rpStartDate) {
         // RP has not started
