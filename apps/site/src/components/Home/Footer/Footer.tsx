@@ -118,7 +118,6 @@ export const Footer = () => {
             _hover={{ textDecoration: "none" }}
           >
             <Text
-              mt={{ base: 6, lg: 12 }}
               color="blue.400"
               w="100%"
               fontFamily="Magistral"

@@ -6,6 +6,7 @@ import {
   Link,
   Spinner,
   Text,
+  useToast,
   VStack
 } from "@chakra-ui/react";
 import { api, Attendee, path, RoleObject, TierTypes } from "@rp/shared";
@@ -34,6 +35,8 @@ const tierToLeftMargin: Record<TierTypes, string> = {
 type FoodWave = "standard" | "priority" | "not-yet" | null;
 
 export function Profile() {
+  const toast = useToast();
+
   const [qr, setQr] = useState<string>("");
   const [roleObject, setRoleObject] = useState<RoleObject | null>(null);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
@@ -62,8 +65,6 @@ export function Profile() {
       }).format(now);
       const rpStartDate = new Date("2025-09-16T00:00:00-05:00");
       const rpEndDate = new Date("2025-09-20T23:59:59-05:00");
-
-      console.log("newAttendee data", newAttendee.data);
 
       setCurrDay(todayShort);
       if (now > rpStartDate && now < rpEndDate) {
@@ -262,15 +263,18 @@ export function Profile() {
             color: "blue.500"
           }}
           fontWeight={"bold"}
+          onClick={() => {
+            void handleLoadQr();
+            toast({
+              title: "QR Code Refreshed",
+              status: "success",
+              duration: 3000,
+              isClosable: true,
+              position: "top"
+            });
+          }}
         >
-          <Icon
-            as={MdRefresh}
-            w={5}
-            h={5}
-            onClick={() => {
-              void handleLoadQr();
-            }}
-          />
+          <Icon as={MdRefresh} w={5} h={5} />
           Refresh QR Code
         </Text>
         <Box p={8} bgColor={"#ccc"} borderRadius={"xl"}>
