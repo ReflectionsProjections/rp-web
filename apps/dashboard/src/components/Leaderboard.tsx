@@ -4,6 +4,8 @@ import { api, IconColor, IconColors, LeaderboardEntry } from "@rp/shared";
 import CarSvg from "@/assets/car.svg?raw";
 import Car from "@/assets/car.svg?react";
 import Icon from "@/assets/icon.svg?react";
+import Road from "@/assets/road.png";
+import RoadSiding from "@/assets/road-side.png";
 import { useEffect, useRef, useState } from "react";
 import useUpdateAnimationLoop, {
   CarPosition,
@@ -24,10 +26,18 @@ export default function Leaderboard({
   const [carImages, setCarImages] = useState<
     Record<IconColor, HTMLImageElement> | undefined
   >(undefined);
+  const [roadImage, setRoadImage] = useState<HTMLImageElement | undefined>(
+    undefined
+  );
+  const [roadSidingImage, setRoadSidingImage] = useState<
+    HTMLImageElement | undefined
+  >(undefined);
   const { positions, zoomedOut } = useUpdateAnimationLoop({
     canvasRef,
     trackPercent,
     carImages,
+    roadImage,
+    roadSidingImage,
     leaderboard
   });
 
@@ -97,9 +107,27 @@ export default function Leaderboard({
     loadImages().catch(console.error);
   }, []);
 
+  useEffect(() => {
+    const image = new Image();
+    image.src = Road;
+    image.onload = () => {
+      setRoadImage(image);
+    };
+    const image2 = new Image();
+    image2.src = RoadSiding;
+    image2.onload = () => {
+      setRoadSidingImage(image2);
+    };
+  }, []);
+
   return (
     <Flex flexDirection={"column"} height={"100%"} maxHeight={"100%"}>
-      <Flex position={"relative"} minHeight={"0"} flexGrow={"1"}>
+      <Flex
+        position={"relative"}
+        minHeight={"0"}
+        flexGrow={"1"}
+        overflow={"hidden"}
+      >
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {leaderboard &&
@@ -108,6 +136,8 @@ export default function Leaderboard({
               const scorecardVisible =
                 !zoomedOut &&
                 !!canvasRef.current &&
+                pos.x > canvasRef.current.width * 0.05 &&
+                pos.x < canvasRef.current.width * 0.95 &&
                 pos.y > canvasRef.current.height * 0.05 &&
                 pos.y < canvasRef.current.height * 0.95;
 
