@@ -227,14 +227,16 @@ export default function useUpdateAnimationLoop({
       const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
       const bitmaps = {
         cars: await generateCarBitmaps(carImages),
-        road: await createImageBitmap(roadImage, {
-          resizeWidth: roadImage.width * 0.1,
-          resizeHeight: roadImage.height * 0.1
-        }),
-        roadSiding: await createImageBitmap(roadSidingImage, {
-          resizeWidth: roadSidingImage.width * 0.025,
-          resizeHeight: roadSidingImage.height * 0.025
-        })
+        road: await createBitmapFromImage(
+          roadImage,
+          roadImage.width * 0.1,
+          roadImage.height * 0.1
+        ),
+        roadSiding: await createBitmapFromImage(
+          roadSidingImage,
+          roadSidingImage.width * 0.025,
+          roadSidingImage.height * 0.025
+        )
       };
 
       function update() {
@@ -308,16 +310,28 @@ export default function useUpdateAnimationLoop({
   return { positions, zoomedOut };
 }
 
+// createImageBitmap isn't supported properly for svgs on some browsers, so we implement it ourselves
+async function createBitmapFromImage(
+  image: HTMLImageElement,
+  width: number,
+  height: number
+) {
+  const canvas = new OffscreenCanvas(width, height);
+  const ctx = canvas.getContext("2d")!;
+  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  // Now create a bitmap from the resized canvas
+  const bitmap = await createImageBitmap(canvas);
+  return bitmap;
+}
+
 async function generateCarBitmaps(
   carImages: Record<IconColor, HTMLImageElement>
 ) {
   const entries = await Promise.all(
     Object.entries(carImages).map(async ([color, img]) => [
       color,
-      await createImageBitmap(img, {
-        resizeWidth: CAR_WIDTH * 2,
-        resizeHeight: CAR_HEIGHT * 2
-      })
+      await createBitmapFromImage(img, CAR_WIDTH * 2, CAR_HEIGHT)
     ])
   );
 
