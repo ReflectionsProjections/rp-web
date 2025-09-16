@@ -68,6 +68,19 @@ function App() {
           >
             Leaderboard
           </Text>
+          <Text
+            position={"absolute"}
+            top={"0"}
+            left={"0"}
+            right={"0"}
+            fontSize={"2.5vh"}
+            color="white"
+            background={"black"}
+          >
+            Debug Info: {window.innerWidth}x{window.innerHeight} (
+            {window.devicePixelRatio}) - {navigator.userAgent} -{" "}
+            {navigator.platform}
+          </Text>
           <Flex width={"100%"} mt={"0"} flexGrow={1}>
             <Flex width={"50%"} marginRight={"1vh"} alignItems={"flex-end"}>
               <RegisterNow />
