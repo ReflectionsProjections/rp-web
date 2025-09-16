@@ -10,9 +10,7 @@ This won't fit into 2026 theme so when you do delete this make sure to archive 2
 import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
 import { useEffect, useState } from "react";
 
-type TrackSegment =
-  | { angle: number; radius: number; invisible?: boolean }
-  | { distance: number; invisible?: boolean };
+type TrackSegment = { angle: number; radius: number } | { distance: number };
 type TrackDrawSegmentCommon = {
   distance: number;
   x: number;
@@ -23,7 +21,6 @@ type TrackDrawSegmentCommon = {
   fY: number;
   fAngle: number;
   fSideI: number;
-  invisible?: boolean;
 };
 type StraightTrackDrawSegment = TrackDrawSegmentCommon & {
   type: "straight";
@@ -61,6 +58,7 @@ const SIDE_WIDTH = 35;
 // const SIDE_DISTANCE = 200;
 const FINISH_LINE_WIDTH = TRACK_WIDTH / 4;
 const FINISH_LINE_SQUARE_SIZE = 25;
+const CONNECTOR_SEGMENT_WIDTH = 10;
 const TRACK_COLOR = "#686868ff";
 const SIDE_COLOR1 = "#fff";
 const SIDE_COLOR2 = "#fff";
@@ -78,32 +76,30 @@ const SCALE = 20;
 const TRACK: TrackSegment[] = [
   { distance: 100 * SCALE },
   { angle: 90, radius: 100 * SCALE },
-  { distance: 50 * SCALE },
+  { distance: 100 * SCALE },
   { angle: -90, radius: 100 * SCALE },
   { distance: 200 * SCALE },
   { angle: 90, radius: 100 * SCALE },
   { distance: 100 * SCALE },
   { angle: 90, radius: 100 * SCALE },
-  { distance: 200 * SCALE },
-  { angle: 90, radius: 125 * SCALE },
+  { distance: 100 * SCALE },
+  { angle: 90, radius: 100 * SCALE },
   { distance: 100 * SCALE },
   { angle: 270, radius: 50 * SCALE },
-  { distance: 45 * SCALE },
-  { distance: TRACK_WIDTH, invisible: true },
-  { distance: 50 * SCALE },
+  { distance: 100 * SCALE },
   { angle: -90, radius: 75 * SCALE },
   { distance: 50 * SCALE },
   { angle: 90, radius: 75 * SCALE },
   { distance: 50 * SCALE },
   { angle: 180, radius: 100 * SCALE },
   { distance: 50 * SCALE },
-  { angle: -180 + 5, radius: 85 * SCALE },
-  { angle: 45, radius: 200 * SCALE },
-  { distance: 10 * SCALE },
-  { angle: 45 - 5, radius: 75 * SCALE },
-  { distance: 3.775 * SCALE },
+  { angle: -180, radius: 85 * SCALE },
+  { angle: -30, radius: 200 * SCALE },
+  { angle: 30, radius: 200 * SCALE },
   { angle: 90, radius: 75 * SCALE },
-  { distance: 107.35 * SCALE }
+  { distance: 183.5875 * SCALE },
+  { angle: 90, radius: 75 * SCALE },
+  { distance: 100 * SCALE }
 ];
 
 // We need to resize the canvas to match the space it takes up
@@ -216,7 +212,6 @@ function getTrackDrawSegments(track: TrackSegment[]) {
             segment.angle,
             segment.radius
           );
-    trackDrawSegment.invisible = segment.invisible;
 
     trackDrawSegments.push(trackDrawSegment);
     x = trackDrawSegment.fX;
@@ -481,28 +476,14 @@ function drawTrack(
   ctx: CanvasRenderingContext2D,
   trackDrawSegments: TrackDrawSegment[]
 ) {
-  // Iterate through each segment, drawing the track and filling track metadata
+  // Draw siding first
   for (const segment of trackDrawSegments) {
-    // ctx.strokeStyle = ["#f00", "#ff0", "#090", "#00f"][i % 4];
+    drawTrackSegmentSide(ctx, segment);
+  }
 
-    if (!segment.invisible) {
-      if (segment.type == "straight") {
-        drawStraightTrack(ctx, segment);
-      } else if (segment.type == "arc") {
-        drawArcTrack(ctx, segment);
-      }
-    }
-
-    // Segment to reduce sub-pixel error
-    const { x, y, angle } = segment;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.rotate(rad(angle));
-    ctx.fillStyle = TRACK_COLOR;
-    ctx.beginPath();
-    ctx.rect(-1, -TRACK_WIDTH / 2, 2, TRACK_WIDTH);
-    ctx.fill();
-    ctx.restore();
+  // Then draw track
+  for (const segment of trackDrawSegments) {
+    drawTrackSegment(ctx, segment);
   }
 
   // Draw the finish line
@@ -510,69 +491,94 @@ function drawTrack(
   drawFinishLine(ctx, x, y, angle);
 }
 
-function drawStraightTrack(
+function drawTrackSegmentSide(
   ctx: CanvasRenderingContext2D,
-  { x, y, sideI, fX, fY, fSideI }: TrackDrawSegment
+  segment: TrackDrawSegment
 ) {
+  const { type, x, y, angle, sideI, fX, fY, fSideI } = segment;
   // Draw the red-white side of the track
+  ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
   const maxI = fSideI - sideI;
-  const dx = fX - x;
-  const dy = fY - y;
-  for (let i = 0; i < maxI; i++) {
-    ctx.beginPath();
-    ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-    ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
-    ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
-    ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
-    ctx.stroke();
+  if (type == "straight") {
+    const dx = fX - x;
+    const dy = fY - y;
+    for (let i = 0; i < maxI; i++) {
+      ctx.beginPath();
+      ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+      ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
+      ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
+      ctx.stroke();
+    }
+  } else if (type == "arc") {
+    const { startDrawAngle, endDrawAngle, cx, cy, radius, right } = segment;
+    const maxI = fSideI - sideI;
+    const dAngle = endDrawAngle - startDrawAngle;
+    for (let i = 0; i < maxI; i++) {
+      ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+      ctx.beginPath();
+      ctx.arc(
+        cx,
+        cy,
+        radius,
+        startDrawAngle + dAngle * (i / maxI),
+        startDrawAngle + dAngle * ((i + 1) / maxI),
+        !right
+      );
+      ctx.stroke();
+    }
   }
 
-  // Draw the main track
-  ctx.beginPath();
-  ctx.lineWidth = TRACK_WIDTH;
-  ctx.strokeStyle = TRACK_COLOR;
-  ctx.moveTo(x, y);
-  ctx.lineTo(fX, fY);
-  ctx.stroke();
+  // Segment to reduce sub-pixel error
+  ctx.fillStyle = sideI % 2 ? SIDE_COLOR1 : SIDE_COLOR2;
+  drawTrackSegmentConnector(ctx, x, y, angle, TRACK_WIDTH + SIDE_WIDTH);
 }
 
-function drawArcTrack(
+function drawTrackSegment(
   ctx: CanvasRenderingContext2D,
-  {
-    sideI,
-    fSideI,
-    cx,
-    cy,
-    radius,
-    startDrawAngle,
-    endDrawAngle,
-    right
-  }: ArcTrackDrawSegment
+  segment: TrackDrawSegment
 ) {
-  // Draw sides of the track
-  const maxI = fSideI - sideI;
-  const dAngle = endDrawAngle - startDrawAngle;
-  for (let i = 0; i < maxI; i++) {
-    ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-    ctx.strokeStyle = (i + sideI) % 2 == 0 ? SIDE_COLOR1 : SIDE_COLOR2;
+  ctx.lineWidth = TRACK_WIDTH;
+  ctx.strokeStyle = TRACK_COLOR;
+  const { type, x, y, angle, fX, fY } = segment;
+  if (type == "straight") {
     ctx.beginPath();
-    ctx.arc(
-      cx,
-      cy,
-      radius,
-      startDrawAngle + dAngle * (i / maxI),
-      startDrawAngle + dAngle * ((i + 1) / maxI),
-      !right
-    );
+    ctx.moveTo(x, y);
+    ctx.lineTo(fX, fY);
+    ctx.stroke();
+  } else if (type == "arc") {
+    const { startDrawAngle, endDrawAngle, cx, cy, radius, right } = segment;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, startDrawAngle, endDrawAngle, !right);
     ctx.stroke();
   }
 
-  // Draw the track
-  ctx.lineWidth = TRACK_WIDTH;
-  ctx.strokeStyle = TRACK_COLOR;
+  // Segment to reduce sub-pixel error
+  ctx.fillStyle = TRACK_COLOR;
+  drawTrackSegmentConnector(ctx, x, y, angle, TRACK_WIDTH);
+}
+
+function drawTrackSegmentConnector(
+  ctx: CanvasRenderingContext2D,
+  x: number,
+  y: number,
+  angle: number,
+  width: number
+) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.rotate(rad(angle));
   ctx.beginPath();
-  ctx.arc(cx, cy, radius, startDrawAngle, endDrawAngle, !right);
-  ctx.stroke();
+  const connectorSegmentWidth = ZOOM_OUT
+    ? CONNECTOR_SEGMENT_WIDTH * 2
+    : CONNECTOR_SEGMENT_WIDTH;
+  ctx.rect(
+    -connectorSegmentWidth / 2,
+    -width / 2,
+    connectorSegmentWidth,
+    width
+  );
+  ctx.fill();
+  ctx.restore();
 }
 
 function drawFinishLine(
