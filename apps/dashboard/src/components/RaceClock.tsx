@@ -1,6 +1,14 @@
 import { Flex, Text } from "@chakra-ui/react";
 import { useTime } from "@rp/shared";
 import { useMemo } from "react";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+// Configure dayjs plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("America/Chicago");
 
 function ClockSegment({
   value,
@@ -32,15 +40,14 @@ function ClockSegment({
 function useClockParts() {
   const time = useTime(100);
   return useMemo(() => {
-    const now = new Date(time);
-    let hours = now.getHours() % 12;
-    if (hours === 0) hours = 12;
+    const now = dayjs(time).tz();
+    const hours = now.format("h");
     return {
-      hours: hours.toString().padStart(2, "0"),
-      minutes: now.getMinutes().toString().padStart(2, "0"),
-      seconds: now.getSeconds().toString().padStart(2, "0"),
-      ms: Math.floor(now.getMilliseconds() / 100).toString(), // tenths of a sec
-      meridian: now.getHours() >= 12 ? "PM" : "AM"
+      hours: hours.padStart(2, "0"),
+      minutes: now.format("mm"),
+      seconds: now.format("ss"),
+      ms: Math.floor(now.millisecond() / 100).toString(),
+      meridian: now.format("A")
     };
   }, [time]);
 }
