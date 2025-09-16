@@ -63,6 +63,9 @@ const TRACK_COLOR = "#686868ff";
 const SIDE_COLOR1 = "#fff";
 const SIDE_COLOR2 = "#fff";
 const CAR_PERCENT = 0.35;
+// car svg viewBox = 49 55 236 109
+const CAR_WIDTH = Math.floor(TRACK_WIDTH * 2 * CAR_PERCENT);
+const CAR_HEIGHT = Math.floor(CAR_WIDTH * (236 / 109));
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.115;
 const PAN_DOWN_TIME = 2.5;
@@ -211,68 +214,91 @@ export default function useUpdateAnimationLoop({
   useCameraInput();
 
   useEffect(() => {
-    const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
-
     let frame: number;
-    function update() {
-      // Resize the canvas so it matches the actual css space it takes up
-      if (canvasRef.current) {
-        resizeCanvas(canvasRef.current);
-        const ctx = canvasRef.current.getContext("2d");
-        if (ctx) {
-          const result = draw(
-            ctx,
-            trackPercent,
-            trackDrawSegments,
-            totalDistance,
-            leaderboard,
-            carImages
-          );
-          if (result) {
-            const { positions, transform, zoomedOut } = result;
-            setPositions(
-              positions.map((pos) => {
-                const transformed = transform.transformPoint(
-                  new DOMPoint(pos.x, pos.y)
-                );
+    async function init() {
+      if (!carImages) return;
 
-                const scaleX = Math.hypot(transform.a, transform.b);
-                const scaleY = Math.hypot(transform.c, transform.d);
-                const widthTransformed = pos.width * scaleX;
-                const heightTransformed = pos.height * scaleY;
+      const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
+      const carBitmaps = await generateCarBitmaps(carImages);
 
-                const drawTransformed = transform.transformPoint(
-                  new DOMPoint(pos.drawX, pos.drawY)
-                );
-                const drawAngleTransformed =
-                  pos.drawAngle + Math.atan2(transform.b, transform.a);
-
-                return {
-                  x: transformed.x,
-                  y: transformed.y,
-                  width: widthTransformed,
-                  height: heightTransformed,
-                  drawX: drawTransformed.x,
-                  drawY: drawTransformed.y,
-                  drawAngle: drawAngleTransformed
-                };
-              })
+      function update() {
+        // Resize the canvas so it matches the actual css space it takes up
+        if (canvasRef.current) {
+          resizeCanvas(canvasRef.current);
+          const ctx = canvasRef.current.getContext("2d");
+          if (ctx) {
+            const result = draw(
+              ctx,
+              trackPercent,
+              trackDrawSegments,
+              totalDistance,
+              leaderboard,
+              carBitmaps
             );
-            setZoomedOut(zoomedOut);
+            if (result) {
+              const { positions, transform, zoomedOut } = result;
+              setPositions(
+                positions.map((pos) => {
+                  const transformed = transform.transformPoint(
+                    new DOMPoint(pos.x, pos.y)
+                  );
+
+                  const scaleX = Math.hypot(transform.a, transform.b);
+                  const scaleY = Math.hypot(transform.c, transform.d);
+                  const widthTransformed = pos.width * scaleX;
+                  const heightTransformed = pos.height * scaleY;
+
+                  const drawTransformed = transform.transformPoint(
+                    new DOMPoint(pos.drawX, pos.drawY)
+                  );
+                  const drawAngleTransformed =
+                    pos.drawAngle + Math.atan2(transform.b, transform.a);
+
+                  return {
+                    x: transformed.x,
+                    y: transformed.y,
+                    width: widthTransformed,
+                    height: heightTransformed,
+                    drawX: drawTransformed.x,
+                    drawY: drawTransformed.y,
+                    drawAngle: drawAngleTransformed
+                  };
+                })
+              );
+              setZoomedOut(zoomedOut);
+            }
           }
         }
+
+        frame = requestAnimationFrame(update);
       }
 
       frame = requestAnimationFrame(update);
     }
 
-    frame = requestAnimationFrame(update);
+    init().catch(console.error);
 
     // On cancel, make sure to cancel the previous frame loop
     return () => cancelAnimationFrame(frame);
   }, [canvasRef, trackPercent, carImages, leaderboard]);
 
   return { positions, zoomedOut };
+}
+
+async function generateCarBitmaps(
+  carImages: Record<IconColor, HTMLImageElement>
+) {
+  const entries = await Promise.all(
+    Object.entries(carImages).map(async ([color, img]) => [
+      color,
+      await createImageBitmap(img, {
+        resizeWidth: CAR_WIDTH * 2,
+        resizeHeight: CAR_HEIGHT * 2
+      })
+    ])
+  );
+
+  return Object.fromEntries(entries) as Record<IconColor, ImageBitmap>;
 }
 
 function getTrackDrawSegments(track: TrackSegment[]) {
@@ -445,7 +471,7 @@ function draw(
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
   leaderboard?: LeaderboardEntry[],
-  carImages?: Record<IconColor, HTMLImageElement>
+  carBitmaps?: Record<IconColor, ImageBitmap>
 ) {
   const { width, height } = ctx.canvas;
   const timeSeconds = Date.now() / 1000;
@@ -470,7 +496,7 @@ function draw(
   drawTrack(ctx, trackDrawSegments);
 
   // We need leaderboard and car images to draw the cars
-  if (!leaderboard || !carImages) {
+  if (!leaderboard || !carBitmaps) {
     return;
   }
 
@@ -482,7 +508,7 @@ function draw(
     trackDrawSegments,
     totalDistance,
     leaderboard,
-    carImages
+    carBitmaps
   );
 
   // Return positions of cars
@@ -721,7 +747,7 @@ function drawCars(
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
   leaderboard: LeaderboardEntry[],
-  carImages: Record<IconColor, HTMLImageElement>
+  carBitmaps: Record<IconColor, ImageBitmap>
 ): CarPosition[] {
   const positions: CarPosition[] = [];
 
@@ -759,7 +785,7 @@ function drawCars(
       angle,
       driftX,
       driftY,
-      carImages[entry.icon]
+      carBitmaps[entry.icon]
     );
 
     positions.push(res);
@@ -776,14 +802,10 @@ function drawCar(
   angle: number,
   driftX: number,
   driftY: number,
-  image: HTMLImageElement
+  bitmap: ImageBitmap
 ): CarPosition {
-  // viewBox = 49 55 236 109
-  const svgWidth = 236;
-  const svgHeight = 109;
-  const width = Math.floor(TRACK_WIDTH * 2 * CAR_PERCENT);
-  const height = Math.floor(width * (svgHeight / svgWidth));
-
+  const width = CAR_WIDTH;
+  const height = CAR_HEIGHT;
   // Draw the car by translating & rotating then drawing the image
   // We need to save and restore to not change the root transform
   ctx.save();
@@ -804,7 +826,7 @@ function drawCar(
     ctx.translate(drawX, drawY);
     ctx.rotate(drawAngle);
     ctx.beginPath();
-    ctx.drawImage(image, -width / 2, -height / 2, width, height);
+    ctx.drawImage(bitmap, -width / 2, -height / 2, width, height);
     ctx.fill();
     ctx.restore();
   }
