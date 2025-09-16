@@ -255,7 +255,7 @@ function LeaderboardScorecard({
           fontFamily={"Magistral"}
           fontWeight={"bold"}
           letterSpacing={"0.1vh"}
-          fontSize={"1.7vh"}
+          fontSize={"2vh"}
         >
           {rank}
           <small>{placePostfix}</small>
@@ -268,14 +268,10 @@ function LeaderboardScorecard({
           />
         </Box>
         <Flex flexDirection={"column"}>
-          <Text
-            fontWeight={"black"}
-            fontFamily={"Magistral"}
-            fontSize={"1.5vh"}
-          >
+          <Text fontWeight={"black"} fontFamily={"Magistral"} fontSize={"2vh"}>
             {displayName}
           </Text>
-          <Text fontFamily={"Magistral"} fontSize={"1.2vh"} fontWeight="bold">
+          <Text fontFamily={"Magistral"} fontSize={"1.5vh"} fontWeight="bold">
             {points} PTS
           </Text>
         </Flex>

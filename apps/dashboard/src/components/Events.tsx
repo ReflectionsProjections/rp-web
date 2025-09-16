@@ -94,7 +94,7 @@ export default function Events({ date }: EventsProps) {
     <Box float={"right"} width={"100%"}>
       <Text
         w="100%"
-        fontSize={"2.5vh"}
+        fontSize={"3vh"}
         fontWeight="bold"
         color="white"
         fontFamily="ProRacingSlant"
