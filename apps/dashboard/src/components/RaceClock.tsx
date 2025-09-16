@@ -4,7 +4,7 @@ import { useMemo } from "react";
 
 function ClockSegment({
   value,
-  w = "1vh",
+  w = "1.5vh",
   semicolon = false
 }: {
   value: string;
@@ -15,7 +15,7 @@ function ClockSegment({
     <Text
       as="span"
       fontFamily="SevenSegment"
-      fontSize="2.5vh"
+      fontSize="3vh"
       letterSpacing="0"
       width={w}
       display="inline-block"
@@ -82,7 +82,7 @@ export function RaceClock() {
       {/* Tenths */}
       <ClockSegment value={clockParts.ms} w="1vh" />
       {/* AM/PM */}
-      <ClockSegment value={clockParts.meridian} w="3.5vh" />
+      <ClockSegment value={clockParts.meridian} w="6vh" />
     </Flex>
   );
 }

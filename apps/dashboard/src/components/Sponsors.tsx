@@ -41,7 +41,7 @@ export const Sponsors = () => {
   return (
     <Box position="relative" display={"flex"} flexDir={"column"} gap="1.5vh">
       <Text
-        fontSize="2.5vh"
+        fontSize="3vh"
         fontWeight="bold"
         textAlign="center"
         fontFamily="ProRacingSlant"

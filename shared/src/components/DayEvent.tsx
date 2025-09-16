@@ -30,15 +30,15 @@ export default function DayEvent({
   const isDashboard = variant === "dashboard";
   const dashboardStyles = {
     fontSize: {
-      number: "1.5vh",
-      title: "1.8vh",
-      details: "1.4vh",
+      number: "2.5vh",
+      title: "2vh",
+      details: "2vh",
       tooltip: "1.8vh"
     },
     spacing: {
       grid: {
         px: "1.2vh",
-        py: "1.5vh",
+        py: "0.5vh",
         gap: "0.5vh",
         templateColumns: "2vh 1vh 1fr 4vh"
       },

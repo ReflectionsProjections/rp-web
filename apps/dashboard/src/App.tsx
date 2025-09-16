@@ -61,7 +61,7 @@ function App() {
             position={"absolute"}
             top={"0.5vh"}
             left={"25%"}
-            fontSize={"2.5vh"}
+            fontSize={"3vh"}
             fontWeight="bold"
             color="white"
             fontFamily="ProRacingSlant"
