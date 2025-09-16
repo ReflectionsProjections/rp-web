@@ -15,6 +15,7 @@ import theme from "./theme";
 import Navbar from "./components/Navbar";
 import Speakers from "./routes/Speakers/Speakers";
 import AppScreen from "./routes/AppScreen";
+import NotFound from "./routes/NotFound";
 
 function RefreshHandler() {
   useEffect(() => {
@@ -44,6 +45,7 @@ function App() {
           </Route>
           <Route path="/auth/refresh" element={<RefreshHandler />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ChakraProvider>
