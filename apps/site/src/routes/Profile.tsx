@@ -13,14 +13,15 @@ import { motion } from "framer-motion";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useState } from "react";
 import { FaMedal } from "react-icons/fa";
+import { MdRefresh } from "react-icons/md";
 
 const MotionBox = motion(Box);
 
 const tierToName: Record<TierTypes, string> = {
-  TIER1: "Tier 1",
-  TIER2: "Tier 2",
-  TIER3: "Tier 3",
-  TIER4: "Tier 4"
+  TIER1: "Tier 0",
+  TIER2: "Tier 1",
+  TIER3: "Tier 2",
+  TIER4: "Tier 3"
 };
 
 const tierToLeftMargin: Record<TierTypes, string> = {
@@ -30,11 +31,14 @@ const tierToLeftMargin: Record<TierTypes, string> = {
   TIER4: "85%"
 };
 
+type FoodWave = "standard" | "priority" | "not-yet" | null;
+
 export function Profile() {
   const [qr, setQr] = useState<string>("");
   const [roleObject, setRoleObject] = useState<RoleObject | null>(null);
   const [attendee, setAttendee] = useState<Attendee | null>(null);
-  const [foodWave, setFoodWave] = useState<number | null>(null);
+  const [foodWave, setFoodWave] = useState<FoodWave>(null);
+  const [currDay, setCurrDay] = useState<string>("");
 
   const handleLoadQr = async () => {
     const qrCode = await api.get("/attendee/qr");
@@ -51,8 +55,31 @@ export function Profile() {
       );
       setAttendee(newAttendee.data);
 
-      const foodWave = await api.get("/attendee/foodwave");
-      setFoodWave(foodWave.data.foodwave);
+      const now = new Date();
+      const todayShort = new Intl.DateTimeFormat("en-US", {
+        weekday: "short",
+        timeZone: "America/Chicago"
+      }).format(now);
+      const rpStartDate = new Date("2025-09-16T00:00:00-05:00");
+      const rpEndDate = new Date("2025-09-20T23:59:59-05:00");
+
+      console.log("newAttendee data", newAttendee.data);
+
+      setCurrDay(todayShort);
+      if (now > rpStartDate && now < rpEndDate) {
+        // RP in progress
+        const hasPriority =
+          newAttendee.data[
+            `hasPriority${todayShort}` as keyof typeof newAttendee.data
+          ] || false;
+        setFoodWave(hasPriority ? "priority" : "standard");
+      } else if (now < rpStartDate) {
+        // RP has not started
+        setFoodWave("not-yet");
+      } else {
+        // RP is over
+        setFoodWave(null);
+      }
     }
   };
 
@@ -104,7 +131,7 @@ export function Profile() {
                 px={3}
                 borderRadius={"lg"}
               >
-                PTS
+                PTS TOTAL
               </Text>
             </HStack>
           </HStack>
@@ -141,46 +168,53 @@ export function Profile() {
           <Image src="/rp_logo.svg" w="40px" />
         </HStack>
         <HStack>
-          <Text
-            fontFamily="Magistral"
-            fontSize="xl"
-            fontWeight="bold"
-            color="white"
-            fontStyle={"italic"}
-          >
-            Food Wave:
-          </Text>
-          {foodWave === 1 ? (
-            <Text
-              fontFamily="Magistral"
-              fontSize="xl"
-              fontWeight="bold"
-              fontStyle="italic"
-            >
-              Standard
-            </Text>
-          ) : foodWave === 2 ? (
-            <HStack spacing={2} alignItems="center">
+          {foodWave && currDay ? (
+            <>
               <Text
                 fontFamily="Magistral"
                 fontSize="xl"
                 fontWeight="bold"
-                fontStyle="italic"
-                color="yellow.500"
+                color="white"
+                fontStyle={"italic"}
               >
-                Priority
+                Food Wave
+                {currDay && foodWave !== "not-yet" ? ` (${currDay})` : ""}:
               </Text>
-              <Icon as={FaMedal} color="yellow.500" w={4} h={4} />
-            </HStack>
+              {foodWave === "priority" ? (
+                <HStack spacing={2} alignItems="center">
+                  <Text
+                    fontFamily="Magistral"
+                    fontSize="xl"
+                    fontWeight="bold"
+                    fontStyle="italic"
+                    color="yellow.500"
+                  >
+                    Priority
+                  </Text>
+                  <Icon as={FaMedal} color="yellow.500" w={4} h={4} />
+                </HStack>
+              ) : foodWave === "standard" ? (
+                <Text
+                  fontFamily="Magistral"
+                  fontSize="xl"
+                  fontWeight="bold"
+                  fontStyle="italic"
+                >
+                  Standard
+                </Text>
+              ) : foodWave === "not-yet" ? (
+                <Text
+                  fontFamily="Magistral"
+                  fontSize="xl"
+                  fontWeight="bold"
+                  fontStyle="italic"
+                >
+                  Not yet available
+                </Text>
+              ) : null}
+            </>
           ) : (
-            <Text
-              fontFamily="Magistral"
-              fontSize="xl"
-              fontWeight="bold"
-              fontStyle="italic"
-            >
-              Not available
-            </Text>
+            <></>
           )}
         </HStack>
         <Text
@@ -212,14 +246,32 @@ export function Profile() {
           tier.
         </Text>
 
+        <Text fontFamily="Magistral" fontSize="2xl" fontWeight="bold" mt={4}>
+          Check-in QR Code
+        </Text>
         <Text
           fontFamily="Magistral"
-          fontSize="2xl"
-          fontWeight="bold"
-          mb={2}
-          mt={4}
+          fontSize="xl"
+          pb={3}
+          display="flex"
+          alignItems={"center"}
+          gap={1}
+          color="blue.300"
+          cursor="pointer"
+          _hover={{
+            color: "blue.500"
+          }}
+          fontWeight={"bold"}
         >
-          Check-in QR Code
+          <Icon
+            as={MdRefresh}
+            w={5}
+            h={5}
+            onClick={() => {
+              void handleLoadQr();
+            }}
+          />
+          Refresh QR Code
         </Text>
         <Box p={8} bgColor={"#ccc"} borderRadius={"xl"}>
           {qr ? (
@@ -262,7 +314,7 @@ export function PrizeTier({ tier }: { tier: TierTypes }) {
   const markers = [1, 2, 3, 4].map((n, i) => {
     const isCurrent = i <= tierIndex;
     return {
-      label: n,
+      label: n - 1,
       left: `${(i / 3) * 100}%`,
       size: isCurrent ? 24 : 20,
       bg: isCurrent ? "#ffd700" : "#555",
