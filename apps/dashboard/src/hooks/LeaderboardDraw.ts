@@ -9,6 +9,7 @@ This won't fit into 2026 theme so when you do delete this make sure to archive 2
 
 import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
 import { useEffect, useState } from "react";
+import seedrandom from "seedrandom";
 
 type TrackSegment = { angle: number; radius: number } | { distance: number };
 type TrackDrawSegmentCommon = {
@@ -16,11 +17,10 @@ type TrackDrawSegmentCommon = {
   x: number;
   y: number;
   angle: number;
-  sideI: number;
+  trees: [number, number, number][];
   fX: number;
   fY: number;
   fAngle: number;
-  fSideI: number;
 };
 type StraightTrackDrawSegment = TrackDrawSegmentCommon & {
   type: "straight";
@@ -62,6 +62,12 @@ const CAR_PERCENT = 0.35;
 // car svg viewBox = 49 55 236 109
 const CAR_WIDTH = Math.floor(TRACK_WIDTH * 2 * CAR_PERCENT);
 const CAR_HEIGHT = Math.floor(CAR_WIDTH * (236 / 109));
+const TREE_SPACING = 500;
+const TREE_SIZE = 50;
+const TREE_SEED = "#teamtreees";
+const TREE_CHANCE = 0.25;
+const TREE_MAX_OFFSET = TREE_SIZE * 3;
+const TREE_COLOR = "rgba(0, 155, 0, 1)";
 const FIRST_CAR_CAMERA_X_SCALE = 0.5;
 const FIRST_CAR_CAMERA_Y_SCALE = 0.115;
 const PAN_DOWN_TIME = 2.5;
@@ -323,19 +329,19 @@ function getTrackDrawSegments(track: TrackSegment[]) {
   let x = 125;
   let y = 125;
   let angle = 0;
-  let sideI = 0;
   let totalDistance = 0;
 
+  const rng = seedrandom(TREE_SEED);
   const trackDrawSegments: TrackDrawSegment[] = [];
   for (const segment of track) {
     const trackDrawSegment: TrackDrawSegment =
       "distance" in segment
-        ? getStraightTrackDrawSegment(x, y, angle, sideI, segment.distance)
+        ? getStraightTrackDrawSegment(x, y, angle, rng, segment.distance)
         : getArcTrackDrawSegment(
             x,
             y,
             angle,
-            sideI,
+            rng,
             segment.angle,
             segment.radius
           );
@@ -344,7 +350,6 @@ function getTrackDrawSegments(track: TrackSegment[]) {
     x = trackDrawSegment.fX;
     y = trackDrawSegment.fY;
     angle = trackDrawSegment.fAngle;
-    sideI = trackDrawSegment.fSideI;
     totalDistance += trackDrawSegment.distance;
   }
 
@@ -355,14 +360,23 @@ function getStraightTrackDrawSegment(
   x: number,
   y: number,
   angle: number,
-  sideI: number,
+  rng: seedrandom.PRNG,
   distance: number
 ): TrackDrawSegment {
   const fX = x + distance * Math.cos(rad(angle));
   const fY = y + distance * Math.sin(rad(angle));
   const fAngle = angle;
-  const maxSideI = 1;
-  const fSideI = sideI + maxSideI;
+
+  const maxTrees = Math.floor(distance / TREE_SPACING);
+  const trees = Array.from(
+    { length: maxTrees },
+    () =>
+      [
+        rng() <= TREE_CHANCE ? (rng() > 0.5 ? 1 : -1) : 0,
+        rng() * Math.PI - Math.PI / 2,
+        rng() * TREE_MAX_OFFSET
+      ] satisfies [number, number, number]
+  );
 
   return {
     type: "straight",
@@ -370,11 +384,10 @@ function getStraightTrackDrawSegment(
     x,
     y,
     angle,
-    sideI,
+    trees,
     fX,
     fY,
-    fAngle,
-    fSideI
+    fAngle
   };
 }
 
@@ -382,7 +395,7 @@ function getArcTrackDrawSegment(
   x: number,
   y: number,
   angle: number,
-  sideI: number,
+  rng: seedrandom.PRNG,
   arcAngle: number,
   radius: number
 ): TrackDrawSegment {
@@ -401,8 +414,16 @@ function getArcTrackDrawSegment(
     : startDrawAngle - endDrawAngle;
   const distance = 2 * Math.PI * radius * (angleDiff / (Math.PI * 2));
 
-  const maxI = 1;
-  const fSideI = sideI + maxI;
+  const maxTrees = Math.floor(distance / TREE_SPACING);
+  const trees = Array.from(
+    { length: maxTrees },
+    () =>
+      [
+        rng() <= TREE_CHANCE ? (rng() > 0.5 ? 1 : -1) : 0,
+        rng() * Math.PI - Math.PI / 2,
+        rng() * TREE_MAX_OFFSET
+      ] satisfies [number, number, number]
+  );
 
   // Create the metadata
   return {
@@ -411,11 +432,10 @@ function getArcTrackDrawSegment(
     x,
     y,
     angle,
-    sideI,
+    trees,
     fX,
     fY,
     fAngle,
-    fSideI,
     cx,
     cy,
     radius,
@@ -646,6 +666,11 @@ function drawTrack(
     drawTrackSegment(ctx, segment, roadPattern);
   }
 
+  // Plant some trees
+  for (const segment of drawSegments) {
+    drawTrees(ctx, segment);
+  }
+
   // Draw the finish line
   const { x, y, angle } = trackDrawSegments[0];
   drawFinishLine(ctx, x, y, angle);
@@ -656,37 +681,22 @@ function drawTrackSegmentSide(
   segment: TrackDrawSegment,
   style: string | CanvasPattern
 ) {
-  const { type, x, y, angle, sideI, fX, fY, fSideI } = segment;
+  const { type, x, y, angle, fX, fY } = segment;
   // Draw the red-white side of the track
   ctx.lineWidth = TRACK_WIDTH + SIDE_WIDTH;
-  const maxI = fSideI - sideI;
+
   if (type == "straight") {
-    const dx = fX - x;
-    const dy = fY - y;
-    for (let i = 0; i < maxI; i++) {
-      ctx.beginPath();
-      ctx.strokeStyle = style;
-      ctx.moveTo(x + (i / maxI) * dx, y + (i / maxI) * dy);
-      ctx.lineTo(x + ((i + 1) / maxI) * dx, y + ((i + 1) / maxI) * dy);
-      ctx.stroke();
-    }
+    ctx.beginPath();
+    ctx.strokeStyle = style;
+    ctx.moveTo(x, y);
+    ctx.lineTo(fX, fY);
+    ctx.stroke();
   } else if (type == "arc") {
     const { startDrawAngle, endDrawAngle, cx, cy, radius, right } = segment;
-    const maxI = fSideI - sideI;
-    const dAngle = endDrawAngle - startDrawAngle;
-    for (let i = 0; i < maxI; i++) {
-      ctx.strokeStyle = style;
-      ctx.beginPath();
-      ctx.arc(
-        cx,
-        cy,
-        radius,
-        startDrawAngle + dAngle * (i / maxI),
-        startDrawAngle + dAngle * ((i + 1) / maxI),
-        !right
-      );
-      ctx.stroke();
-    }
+    ctx.strokeStyle = style;
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, startDrawAngle, endDrawAngle, !right);
+    ctx.stroke();
   }
 
   // Segment to reduce sub-pixel error
@@ -771,6 +781,60 @@ function drawFinishLine(
   }
 
   ctx.restore();
+}
+
+function drawTrees(ctx: CanvasRenderingContext2D, segment: TrackDrawSegment) {
+  const { type, x, y, angle, trees, fX, fY, distance } = segment;
+  const maxTrees = Math.floor(distance / TREE_SPACING);
+  if (type == "straight") {
+    const perpAngle = rad(angle) + Math.PI / 2;
+    const nx = TRACK_WIDTH * 1.5 * Math.cos(perpAngle);
+    const ny = TRACK_WIDTH * 1.5 * Math.sin(perpAngle);
+    const dx = fX - x;
+    const dy = fY - y;
+
+    for (let i = 0; i < maxTrees; i++) {
+      const midpointX = x + (i / maxTrees) * dx;
+      const midpointY = y + (i / maxTrees) * dy;
+      const [spawn, treeAngle, treeDistance] = trees[i];
+      if (spawn) {
+        const dx = treeDistance * Math.cos(treeAngle + perpAngle) * spawn;
+        const dy = treeDistance * Math.sin(treeAngle + perpAngle) * spawn;
+        drawTree(ctx, midpointX + nx * spawn + dx, midpointY + ny * spawn + dy);
+      }
+    }
+  } else if (type == "arc") {
+    const { startDrawAngle, endDrawAngle, cx, cy, radius } = segment;
+    const dAngle = endDrawAngle - startDrawAngle;
+    for (let i = 0; i < maxTrees; i++) {
+      const angleAlongArc = startDrawAngle + (i / maxTrees) * dAngle;
+
+      const centerX = cx + radius * Math.cos(angleAlongArc);
+      const centerY = cy + radius * Math.sin(angleAlongArc);
+
+      const nx = TRACK_WIDTH * 1.5 * Math.cos(angleAlongArc);
+      const ny = TRACK_WIDTH * 1.5 * Math.sin(angleAlongArc);
+      const [spawn, treeAngle, treeDistance] = trees[i];
+      if (spawn) {
+        const dx = treeDistance * Math.cos(treeAngle + angleAlongArc) * spawn;
+        const dy = treeDistance * Math.sin(treeAngle + angleAlongArc) * spawn;
+        drawTree(ctx, centerX + nx * spawn + dx, centerY + ny * spawn + dy);
+      }
+    }
+  }
+}
+
+function drawTree(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  ctx.fillStyle = TREE_COLOR;
+  ctx.beginPath();
+  ctx.arc(x, y, TREE_SIZE, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x - TREE_SIZE, y + TREE_SIZE / 2, TREE_SIZE, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(x, y + TREE_SIZE, TREE_SIZE, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 // Draws all cars using the starting position
