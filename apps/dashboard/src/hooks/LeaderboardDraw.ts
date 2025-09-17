@@ -7,8 +7,8 @@ This won't fit into 2026 theme so when you do delete this make sure to archive 2
 
 */
 
-import { IconColor, IconColors, LeaderboardEntry, rad } from "@rp/shared";
-import { useEffect, useState } from "react";
+import { IconColor, LeaderboardEntry, rad } from "@rp/shared";
+import { useEffect } from "react";
 import seedrandom from "seedrandom";
 
 type TrackSegment = { angle: number; radius: number } | { distance: number };
@@ -201,6 +201,7 @@ function useCameraInput() {
 // On cancel, the animation loop is canceled and restarted with the next invocation
 // Positions is returned to be used by dom elements
 export default function useUpdateAnimationLoop({
+  entryRefs,
   canvasRef,
   trackPercent,
   carImages,
@@ -208,6 +209,7 @@ export default function useUpdateAnimationLoop({
   roadSidingImage,
   leaderboard
 }: {
+  entryRefs: React.RefObject<(HTMLDivElement | null)[]>;
   canvasRef: React.RefObject<HTMLCanvasElement>;
   trackPercent: number;
   carImages: Record<IconColor, HTMLImageElement> | undefined;
@@ -215,18 +217,16 @@ export default function useUpdateAnimationLoop({
   roadSidingImage: HTMLImageElement | undefined;
   leaderboard: LeaderboardEntry[] | undefined;
 }) {
-  const [positions, setPositions] = useState<CarPosition[]>([]);
-  const [zoomedOut, setZoomedOut] = useState(false);
   useCameraInput();
 
   useEffect(() => {
     let frame: number;
     async function init() {
-      if (!carImages || !roadImage || !roadSidingImage) return;
+      if (!roadImage || !roadSidingImage) return;
 
       const { trackDrawSegments, totalDistance } = getTrackDrawSegments(TRACK);
       const bitmaps = {
-        cars: await generateCarBitmaps(carImages),
+        cars: carImages && (await generateCarBitmaps(carImages)),
         road: await createBitmapFromImage(
           roadImage,
           roadImage.width * 0.1,
@@ -238,7 +238,6 @@ export default function useUpdateAnimationLoop({
           roadSidingImage.height * 0.025
         )
       };
-      console.log(bitmaps.cars[IconColors.BLUE]);
 
       function update() {
         // Resize the canvas so it matches the actual css space it takes up
@@ -256,35 +255,54 @@ export default function useUpdateAnimationLoop({
             );
             if (result) {
               const { positions, transform, zoomedOut } = result;
-              setPositions(
-                positions.map((pos) => {
-                  const transformed = transform.transformPoint(
-                    new DOMPoint(pos.x, pos.y)
-                  );
+              for (const [i, pos] of positions.entries()) {
+                const entryRef = entryRefs.current && entryRefs.current[i];
+                if (!entryRef) continue;
 
-                  const scaleX = Math.hypot(transform.a, transform.b);
-                  const scaleY = Math.hypot(transform.c, transform.d);
-                  const widthTransformed = pos.width * scaleX;
-                  const heightTransformed = pos.height * scaleY;
+                const transformed = transform.transformPoint(
+                  new DOMPoint(pos.x, pos.y)
+                );
+                const scaleX = Math.hypot(transform.a, transform.b);
+                const scaleY = Math.hypot(transform.c, transform.d);
+                const widthTransformed = pos.width * scaleX;
+                const heightTransformed = pos.height * scaleY;
+                const drawTransformed = transform.transformPoint(
+                  new DOMPoint(pos.drawX, pos.drawY)
+                );
+                const drawAngleTransformed =
+                  pos.drawAngle + Math.atan2(transform.b, transform.a);
+                const stagerOffset =
+                  (0.6 + (i % 2 == 0 ? 0.3 : -0.3)) * widthTransformed;
+                const scorecardX = transformed.x + stagerOffset;
+                const scorecardY = transformed.y;
+                const scorecardVisible =
+                  !zoomedOut &&
+                  !!canvasRef.current &&
+                  transformed.x > canvasRef.current.width * 0.05 &&
+                  transformed.x < canvasRef.current.width * 0.95 &&
+                  transformed.y > canvasRef.current.height * 0.05 &&
+                  transformed.y < canvasRef.current.height * 0.95;
 
-                  const drawTransformed = transform.transformPoint(
-                    new DOMPoint(pos.drawX, pos.drawY)
-                  );
-                  const drawAngleTransformed =
-                    pos.drawAngle + Math.atan2(transform.b, transform.a);
-
-                  return {
-                    x: transformed.x,
-                    y: transformed.y,
-                    width: widthTransformed,
-                    height: heightTransformed,
-                    drawX: drawTransformed.x,
-                    drawY: drawTransformed.y,
-                    drawAngle: drawAngleTransformed
-                  };
-                })
-              );
-              setZoomedOut(zoomedOut);
+                // We update the entries using css variables instead of using state
+                // to avoid a component re-render every frame from positions changing
+                entryRef.style.setProperty("--drawX", `${drawTransformed.x}px`);
+                entryRef.style.setProperty("--drawY", `${drawTransformed.y}px`);
+                entryRef.style.setProperty(
+                  "--drawAngle",
+                  `${drawAngleTransformed}rad`
+                );
+                entryRef.style.setProperty("--width", `${widthTransformed}px`);
+                entryRef.style.setProperty(
+                  "--height",
+                  `${heightTransformed}px`
+                );
+                entryRef.style.setProperty("--scorecardX", `${scorecardX}px`);
+                entryRef.style.setProperty("--scorecardY", `${scorecardY}px`);
+                entryRef.style.setProperty(
+                  "--scorecardOpacity",
+                  scorecardVisible ? "1" : "0"
+                );
+              }
             }
           }
         }
@@ -300,6 +318,7 @@ export default function useUpdateAnimationLoop({
     // On cancel, make sure to cancel the previous frame loop
     return () => cancelAnimationFrame(frame);
   }, [
+    entryRefs,
     canvasRef,
     trackPercent,
     carImages,
@@ -307,8 +326,6 @@ export default function useUpdateAnimationLoop({
     roadSidingImage,
     leaderboard
   ]);
-
-  return { positions, zoomedOut };
 }
 
 // createImageBitmap isn't supported properly for svgs on some browsers, so we implement it ourselves
@@ -557,7 +574,7 @@ function draw(
   drawTrack(ctx, trackDrawSegments, bitmaps.road, bitmaps.roadSiding);
 
   // We need leaderboard and car images to draw the cars
-  if (!leaderboard || !bitmaps.cars) {
+  if (!leaderboard) {
     return;
   }
 
@@ -860,7 +877,7 @@ function drawCars(
   trackDrawSegments: TrackDrawSegment[],
   totalDistance: number,
   leaderboard: LeaderboardEntry[],
-  carBitmaps: Record<IconColor, ImageBitmap>
+  carBitmaps: Record<IconColor, ImageBitmap> | undefined
 ): CarPosition[] {
   const positions: CarPosition[] = [];
 
@@ -898,7 +915,7 @@ function drawCars(
       angle,
       driftX,
       driftY,
-      carBitmaps[entry.icon]
+      carBitmaps?.[entry.icon]
     );
 
     positions.push(res);
@@ -915,7 +932,7 @@ function drawCar(
   angle: number,
   driftX: number,
   driftY: number,
-  bitmap: ImageBitmap
+  bitmap: ImageBitmap | undefined
 ): CarPosition {
   const width = CAR_WIDTH;
   const height = CAR_HEIGHT;
@@ -935,7 +952,7 @@ function drawCar(
     height * driftY * Math.sin(angle + Math.PI / 2);
   const drawAngle = angle + Math.PI / 2;
 
-  if (DRAW_CARS_IN_CANVAS) {
+  if (bitmap && DRAW_CARS_IN_CANVAS) {
     ctx.translate(drawX, drawY);
     ctx.rotate(drawAngle);
     ctx.beginPath();
