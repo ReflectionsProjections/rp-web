@@ -6,9 +6,8 @@ import Car from "@/assets/car.svg?react";
 import Icon from "@/assets/icon.svg?react";
 import Road from "@/assets/road.png";
 import RoadSiding from "@/assets/road-side.png";
-import { useEffect, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import useUpdateAnimationLoop, {
-  CarPosition,
   DRAW_CARS_IN_CANVAS
 } from "../hooks/LeaderboardDraw";
 
@@ -32,7 +31,9 @@ export default function Leaderboard({
   const [roadSidingImage, setRoadSidingImage] = useState<
     HTMLImageElement | undefined
   >(undefined);
-  const { positions, zoomedOut } = useUpdateAnimationLoop({
+  const entryRefs = useRef<(HTMLDivElement | null)[]>([]);
+  useUpdateAnimationLoop({
+    entryRefs,
     canvasRef,
     trackPercent,
     carImages,
@@ -43,7 +44,6 @@ export default function Leaderboard({
 
   useEffect(() => {
     const date = new Date();
-
     // First try to get daily leaderboard
     api
       .get("/leaderboard/daily", {
@@ -131,26 +131,13 @@ export default function Leaderboard({
         <canvas style={{ width: "100%", height: "100%" }} ref={canvasRef} />
         <Box position="absolute" top={0} left={0} right={0} bottom={0}>
           {leaderboard &&
-            positions.map((pos, i) => {
-              const entry = leaderboard[i];
-              const scorecardVisible =
-                !zoomedOut &&
-                !!canvasRef.current &&
-                pos.x > canvasRef.current.width * 0.05 &&
-                pos.x < canvasRef.current.width * 0.95 &&
-                pos.y > canvasRef.current.height * 0.05 &&
-                pos.y < canvasRef.current.height * 0.95;
-
+            leaderboard.map((entry, i) => {
               return (
-                pos && (
-                  <LeaderboardEntryDisplay
-                    key={i}
-                    i={i}
-                    pos={pos}
-                    entry={entry}
-                    scorecardVisible={scorecardVisible}
-                  />
-                )
+                <LeaderboardEntryDisplay
+                  ref={(element) => (entryRefs.current[i] = element)}
+                  key={i}
+                  entry={entry}
+                />
               );
             })}
         </Box>
@@ -159,29 +146,22 @@ export default function Leaderboard({
   );
 }
 
-function LeaderboardEntryDisplay({
-  i,
-  pos,
-  entry,
-  scorecardVisible
-}: {
-  i: number;
-  pos: CarPosition;
-  entry: LeaderboardEntry;
-  scorecardVisible: boolean;
-}) {
+const LeaderboardEntryDisplay = forwardRef<
+  HTMLDivElement,
+  {
+    entry: LeaderboardEntry;
+  }
+>(function LeaderboardEntryDisplay({ entry }, ref) {
   return (
-    <Box>
+    <Box ref={ref}>
       {!DRAW_CARS_IN_CANVAS && (
         <Box
           position={"absolute"}
-          style={{
-            top: pos.drawY,
-            left: pos.drawX,
-            width: pos.width,
-            height: pos.height,
-            transform: `translate(-50%, -50%) rotate(${pos.drawAngle}rad)`
-          }}
+          left={"var(--drawX)"}
+          top={"var(--drawY)"}
+          width={"var(--width)"}
+          height={"var(--height)"}
+          transform={"translate(-50%, -50%) rotate(var(--drawAngle))"}
         >
           <Car
             width={"100%"}
@@ -190,26 +170,15 @@ function LeaderboardEntryDisplay({
           />
         </Box>
       )}
-      <LeaderboardScorecard
-        i={i}
-        pos={pos}
-        entry={entry}
-        visible={scorecardVisible}
-      />
+      <LeaderboardScorecard entry={entry} />
     </Box>
   );
-}
+});
 
 function LeaderboardScorecard({
-  i,
-  pos,
-  entry: { rank, displayName, points, icon },
-  visible
+  entry: { rank, displayName, points, icon }
 }: {
-  i: number;
-  pos: CarPosition;
   entry: LeaderboardEntry;
-  visible: boolean;
 }) {
   let placePostfix = "th";
   if (rank % 10 == 1 && (rank < 10 || rank > 20)) {
@@ -222,10 +191,8 @@ function LeaderboardScorecard({
     placePostfix = "rd";
   }
 
-  const stagerOffset = i % 2 == 0 ? pos.width * 0.3 : -pos.width * 0.3;
-  const carOffset = stagerOffset + 0.6 * pos.width; // Increased offset for better spacing
-  const left = pos.x + carOffset;
-  const top = pos.y;
+  // const stagerOffset = i % 2 == 0 ? pos.width * 0.3 : -pos.width * 0.3;
+  // const carOffset = stagerOffset + 0.6 * pos.width; // Increased offset for better spacing
 
   return (
     <Box
@@ -236,12 +203,9 @@ function LeaderboardScorecard({
       padding={"0.5vh"}
       borderRadius={"1vh"}
       transition={"opacity 0.5s"}
-      // Style inlined here to prevent chakra generating a new class every frame
-      style={{
-        opacity: visible ? 1 : 0,
-        top,
-        left
-      }}
+      left={"var(--scorecardX)"}
+      top={"var(--scorecardY)"}
+      opacity={"var(--scorecardOpacity)"}
     >
       <Flex
         border={`0.2vh solid ${ICON_COLOR_TO_COLOR[icon]}`}

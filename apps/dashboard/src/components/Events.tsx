@@ -1,17 +1,15 @@
 import { Box, Flex, Text, useToast } from "@chakra-ui/react";
-import { api, Event, DayEvent } from "@rp/shared";
+import { api, Event, DayEvent, useTime } from "@rp/shared";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type EventSelected = Event & {
   selected?: boolean;
 };
 
-type EventsProps = {
-  date?: Date;
-};
-
-export default function Events({ date }: EventsProps) {
+export default function Events() {
+  const time = useTime(60 * 1000);
+  const date = useMemo(() => new Date(time), [time]);
   const toast = useToast();
   const [events, setEvents] = useState<Event[]>([]);
   const [displayedEvents, setDisplayedEvents] = useState<EventSelected[]>([]);

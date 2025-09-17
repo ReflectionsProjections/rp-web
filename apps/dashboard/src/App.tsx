@@ -8,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 import "@fontsource/nunito";
 import "@fontsource/roboto-slab";
-import { useTime } from "@rp/shared";
 import Events from "./components/Events";
 import Leaderboard from "./components/Leaderboard";
 import { RegisterNow } from "./components/RegisterNow";
@@ -39,9 +38,6 @@ const theme = extendTheme({
 
 function App() {
   useTimeSyncedReload();
-
-  const time = useTime(1000);
-  const date = new Date(time);
 
   return (
     <ChakraProvider theme={theme}>
@@ -78,7 +74,7 @@ function App() {
               <RegisterNow />
             </Flex>
             <Flex width={"50%"} flexDir={"column"} gap={"1.5vh"}>
-              <Events date={date} />
+              <Events />
               <Sponsors />
             </Flex>
           </Flex>
