@@ -81,7 +81,7 @@ export function Profile() {
       let newAttendee: Attendee | null = null;
       try {
         newAttendee = (
-          await api.get(path(`/attendee/id/:userId`, { userId: role.userId }))
+          await api.get(path(`/attendee`, { userId: role.userId }))
         ).data;
       } catch (error) {
         console.error("Failed to fetch attendee data:", error);
