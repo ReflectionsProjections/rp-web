@@ -8,7 +8,7 @@ import {
   useToast
 } from "@chakra-ui/react";
 import { api, circleColors, DayEvent, Event, path } from "@rp/shared";
-import moment from "moment";
+import moment from "moment-timezone";
 import { useCallback, useEffect, useState } from "react";
 
 import { AnimatedHeader } from "../shared/AnimatedHeader";
@@ -201,8 +201,8 @@ export default function Schedule() {
 }
 
 function formatEventTime(iso: string): string {
-  const m = moment(iso);
-  const now = moment();
+  const m = moment(iso).tz("America/Chicago");
+  const now = moment().tz("America/Chicago");
 
   if (m.isSame(now, "day")) {
     return m.format("h:mma");
@@ -221,8 +221,8 @@ function formatEventTime(iso: string): string {
 }
 
 function formatEventRange(startIso: string, endIso: string): string {
-  const start = moment(startIso);
-  const end = moment(endIso);
+  const start = moment(startIso).tz("America/Chicago");
+  const end = moment(endIso).tz("America/Chicago");
 
   const startLabel = formatEventTime(startIso);
 
@@ -230,7 +230,7 @@ function formatEventRange(startIso: string, endIso: string): string {
     ? end.format("h:mma")
     : formatEventTime(endIso);
 
-  return `${startLabel} – ${endLabel}`;
+  return `${startLabel} – ${endLabel} CT`;
 }
 
 function DayEventsSection({

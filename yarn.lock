@@ -1463,6 +1463,7 @@ __metadata:
     formik: "npm:^2.4.6"
     framer-motion: "npm:11.3.23"
     lottie-react: "npm:^2.4.1"
+    moment-timezone: "npm:^0.6.0"
     qrcode.react: "npm:^4.2.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -4414,6 +4415,15 @@ __metadata:
   dependencies:
     moment: "npm:^2.29.4"
   checksum: 10c0/ab14ec9d94bc33f29ac18e5417b7f8aca0b17130b952c5cc9697b8fea839e5ece9313af5fd3c9703a05db472b1560ddbfc7ad2aa24aac9afd047d6da6c3c6033
+  languageName: node
+  linkType: hard
+
+"moment-timezone@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "moment-timezone@npm:0.6.0"
+  dependencies:
+    moment: "npm:^2.29.4"
+  checksum: 10c0/16164cf321d8be0bf7d43855286b426c94c8200e0634f2e42cf469f591c6a230ac43f37d3826d76b05ac221f69a571400323fb8625e3d4e8669f4d9ab00fe779
   languageName: node
   linkType: hard
 
