@@ -1,8 +1,14 @@
 import { Box, Flex, Grid, Icon, Text, Tooltip } from "@chakra-ui/react";
-import moment from "moment";
 import { Event } from "../api/types";
 import { circleColors } from "../assets/event-circle-colors";
 import { eventIcons } from "../assets/event-icons";
+
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 export type DayEventProps = {
   number: number;
@@ -228,8 +234,8 @@ export default function DayEvent({
               isDashboard ? "nowrap" : { base: "normal", md: "nowrap" }
             }
           >
-            {moment(event.startTime).format("h:mma")} –{" "}
-            {moment(event.endTime).format("h:mma")}
+            {dayjs(event.startTime).tz("America/Chicago").format("h:mma")} –{" "}
+            {dayjs(event.endTime).tz("America/Chicago").format("h:mma")} CT
           </Text>
         </Flex>
       </Flex>
