@@ -12,10 +12,12 @@ dayjs.tz.setDefault("America/Chicago");
 
 function ClockSegment({
   value,
+  mr,
   w = "1.5vh",
   semicolon = false
 }: {
   value: string;
+  mr: string;
   w?: string;
   semicolon?: boolean;
 }) {
@@ -29,6 +31,7 @@ function ClockSegment({
       display="inline-block"
       textAlign="center"
       lineHeight="1"
+      mr={mr}
       mb={semicolon ? ".7vh" : undefined}
       color="red.500"
     >
@@ -40,7 +43,7 @@ function ClockSegment({
 function useClockParts() {
   const time = useTime(100);
   return useMemo(() => {
-    const now = dayjs(time).tz();
+    const now = dayjs(time).tz("America/Chicago");
     const hours = now.format("h");
     return {
       hours: hours.padStart(2, "0"),
@@ -58,7 +61,6 @@ export function RaceClock() {
   return (
     <Flex
       display={"flex"}
-      gap="0.35vh"
       alignItems="center"
       fontFamily="SevenSegment"
       fontWeight="bold"
@@ -75,21 +77,21 @@ export function RaceClock() {
       }}
     >
       {/* Hour */}
-      <ClockSegment value={clockParts.hours[0]} />
-      <ClockSegment value={clockParts.hours[1]} />
-      <ClockSegment value=":" w="1vh" semicolon />
+      <ClockSegment mr={"0.35vh"} value={clockParts.hours[0]} />
+      <ClockSegment mr={"0.35vh"} value={clockParts.hours[1]} />
+      <ClockSegment mr={"0.35vh"} value=":" w="1vh" semicolon />
       {/* Minute */}
-      <ClockSegment value={clockParts.minutes[0]} />
-      <ClockSegment value={clockParts.minutes[1]} />
-      <ClockSegment value=":" w="1vh" semicolon />
+      <ClockSegment mr={"0.35vh"} value={clockParts.minutes[0]} />
+      <ClockSegment mr={"0.35vh"} value={clockParts.minutes[1]} />
+      <ClockSegment mr={"0.35vh"} value=":" w="1vh" semicolon />
       {/* Second */}
-      <ClockSegment value={clockParts.seconds[0]} />
-      <ClockSegment value={clockParts.seconds[1]} />
-      <ClockSegment value="." w="1vh" />
+      <ClockSegment mr={"0.35vh"} value={clockParts.seconds[0]} />
+      <ClockSegment mr={"0.35vh"} value={clockParts.seconds[1]} />
+      <ClockSegment mr={"0.35vh"} value="." w="1vh" />
       {/* Tenths */}
-      <ClockSegment value={clockParts.ms} w="1vh" />
+      <ClockSegment mr={"0.35vh"} value={clockParts.ms} />
       {/* AM/PM */}
-      <ClockSegment value={clockParts.meridian} w="6vh" />
+      <ClockSegment mr={"0"} value={clockParts.meridian} w="4vh" />
     </Flex>
   );
 }

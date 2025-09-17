@@ -89,7 +89,7 @@ export default function Events() {
   }, [events, date]);
 
   return (
-    <Box float={"right"} width={"100%"}>
+    <Box float={"right"} width={"100%"} mb={"1.5vh"}>
       <Text
         w="100%"
         fontSize={"3vh"}
@@ -120,7 +120,6 @@ export default function Events() {
             <Box
               overflowY="auto"
               height={"100%"}
-              gap={"1vh"}
               display="flex"
               flexDirection={"column"}
               px={"1vh"}

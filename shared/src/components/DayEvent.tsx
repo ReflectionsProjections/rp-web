@@ -95,6 +95,7 @@ export default function DayEvent({
       templateColumns={styles.spacing.grid.templateColumns}
       alignItems="right"
       gap={styles.spacing.grid.gap}
+      mb={isDashboard ? "1vh" : undefined}
       backgroundColor={
         isDashboard
           ? selected
@@ -121,7 +122,8 @@ export default function DayEvent({
           : {
               base: styles.borderRadius,
               md: "none"
-            }
+            },
+        mb: isDashboard ? "0" : undefined
       }}
       _hover={
         !isDashboard

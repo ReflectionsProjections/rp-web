@@ -48,6 +48,7 @@ function App() {
           alignItems={"center"}
           width={"100%"}
           minH="100vh"
+          boxSizing="border-box"
           padding={"2vh"}
           paddingTop="0.5vh"
           zIndex={2}
@@ -73,7 +74,7 @@ function App() {
             <Flex width={"50%"} marginRight={"1vh"} alignItems={"flex-end"}>
               <RegisterNow />
             </Flex>
-            <Flex width={"50%"} flexDir={"column"} gap={"1.5vh"}>
+            <Flex width={"50%"} flexDir={"column"}>
               <Events />
               <Sponsors />
             </Flex>

@@ -42,12 +42,13 @@ export const Sponsors = () => {
   const speed = useMarqueeSpeed();
 
   return (
-    <Box position="relative" display={"flex"} flexDir={"column"} gap="1.5vh">
+    <Box position="relative" display={"flex"} flexDir={"column"}>
       <Text
         fontSize="3vh"
         fontWeight="bold"
         textAlign="center"
         fontFamily="ProRacingSlant"
+        marginBottom="1.5vh"
       >
         Sponsors
       </Text>

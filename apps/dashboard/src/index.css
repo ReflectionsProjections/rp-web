@@ -3,6 +3,12 @@
   background-color: #000000;
 }
 
+/* Required for abnormal style sheets (QtWebEngine looking at you) */
+* {
+  margin: 0;
+  padding: 0;
+}
+
 .condensed {
   font-stretch: condensed;
 }

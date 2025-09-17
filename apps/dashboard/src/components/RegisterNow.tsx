@@ -25,12 +25,7 @@ export const RegisterNow = () => {
       >
         Register Now for Free
       </Text>
-      <Box
-        display="flex"
-        alignItems="center"
-        justifyContent="center"
-        gap="1.5vh"
-      >
+      <Box display="flex" alignItems="center" justifyContent="center">
         {/* QR CODE */}
         <Box
           p="1vh"
@@ -43,6 +38,7 @@ export const RegisterNow = () => {
             backdropFilter: "blur(12px)",
             WebkitBackdropFilter: "blur(12px)"
           }}
+          marginRight={"1.5vh"}
         >
           <QRCode
             style={{
