@@ -74,7 +74,7 @@ function App() {
             <Flex width={"50%"} marginRight={"1vh"} alignItems={"flex-end"}>
               <RegisterNow />
             </Flex>
-            <Flex width={"50%"} flexDir={"column"} gap={"1.5vh"}>
+            <Flex width={"50%"} flexDir={"column"}>
               <Events />
               <Sponsors />
             </Flex>
