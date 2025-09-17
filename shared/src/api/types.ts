@@ -238,6 +238,11 @@ export type LeaderboardEntry = {
 };
 
 export interface APIRoutes {
+  "/attendee": {
+    GET: {
+      response: Attendee;
+    };
+  };
   "/attendee/emails": {
     GET: {
       response: Array<{ email: string; userId: string; name: string }>;
