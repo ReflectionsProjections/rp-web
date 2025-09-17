@@ -43,7 +43,7 @@ function ClockSegment({
 function useClockParts() {
   const time = useTime(100);
   return useMemo(() => {
-    const now = dayjs(time).tz();
+    const now = dayjs(time).tz("America/Chicago");
     const hours = now.format("h");
     return {
       hours: hours.padStart(2, "0"),
