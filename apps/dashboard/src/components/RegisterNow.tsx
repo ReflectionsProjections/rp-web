@@ -17,7 +17,7 @@ export const RegisterNow = () => {
       pt="2.5vh"
     >
       <Text
-        fontSize="2.5vh"
+        fontSize="3vh"
         fontWeight="bold"
         mb="2vh"
         fontFamily="ProRacingSlant"
@@ -46,8 +46,8 @@ export const RegisterNow = () => {
         >
           <QRCode
             style={{
-              width: "12vh",
-              height: "12vh",
+              width: "18vh",
+              height: "18vh",
               background: "transparent"
             }}
             value={REGISTER_URL}

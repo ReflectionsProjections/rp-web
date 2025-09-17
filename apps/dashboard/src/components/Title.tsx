@@ -7,7 +7,7 @@ const MotionBox = motion(Box);
 const MotionText = motion(Text);
 
 export default function Title() {
-  const sepH = 3.5;
+  const sepH = 4;
 
   const barRef = useRef(null);
   const inView = useInView(barRef, { once: false }); // allow repeated triggers
@@ -103,7 +103,7 @@ export default function Title() {
               justifyContent="flex-end"
             >
               <MotionText
-                fontSize={"2.5vh"}
+                fontSize={"3vh"}
                 fontFamily="Roboto Slab"
                 fontWeight="600"
                 letterSpacing="0.03em"
@@ -137,7 +137,7 @@ export default function Title() {
               alignItems="center"
             >
               <MotionText
-                fontSize={"2.5vh"}
+                fontSize={"3vh"}
                 fontFamily="Roboto Slab"
                 fontWeight="600"
                 letterSpacing="0.03em"
@@ -153,7 +153,7 @@ export default function Title() {
           </HStack>
 
           <MotionText
-            fontSize={"1.8vh"}
+            fontSize={"3vh"}
             fontFamily="Magistral"
             color="gray.300"
             fontWeight="600"
