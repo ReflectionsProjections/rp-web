@@ -48,6 +48,7 @@ function App() {
           alignItems={"center"}
           width={"100%"}
           minH="100vh"
+          boxSizing="border-box"
           padding={"2vh"}
           paddingTop="0.5vh"
           zIndex={2}
