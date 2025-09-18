@@ -155,6 +155,14 @@ function EmailMaker() {
     values: EmailFormValues,
     helpers: FormikHelpers<EmailFormValues>
   ) => {
+    if (
+      !window.confirm(
+        `Are you sure you want to send this ${values.isMobileNotification ? "notification" : "email"}?`
+      )
+    ) {
+      helpers.setSubmitting(false);
+      return;
+    }
     if (values.isMobileNotification) {
       const notifData = {
         title: values.subject,
@@ -164,6 +172,10 @@ function EmailMaker() {
 
       const request = api
         .post(path("/notifications/topics/:topic", { topic }), notifData)
+        .then(async () => {
+          helpers.resetForm();
+          await helpers.setFieldValue("isMobileNotification", true);
+        })
         .finally(() => helpers.setSubmitting(false));
 
       toast.promise(request, {
@@ -182,6 +194,10 @@ function EmailMaker() {
 
       const request = api
         .post("/subscription/send-email/single", emailData)
+        .then(async () => {
+          helpers.resetForm();
+          await helpers.setFieldValue("isMobileNotification", false);
+        })
         .finally(() => helpers.setSubmitting(false));
 
       toast.promise(request, {
@@ -199,6 +215,10 @@ function EmailMaker() {
 
     const request = api
       .post("/subscription/send-email", emailData)
+      .then(async () => {
+        helpers.resetForm();
+        await helpers.setFieldValue("isMobileNotification", false);
+      })
       .finally(() => helpers.setSubmitting(false));
 
     toast.promise(request, {
@@ -208,7 +228,6 @@ function EmailMaker() {
     });
     return;
   };
-
   // note -- the markdown rendering for the preview takes place inside
   // the <Formik /> component to interact with its values
 
