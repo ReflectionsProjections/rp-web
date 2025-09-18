@@ -114,16 +114,14 @@ function EmailMaker() {
   const toast = useToast();
   const mirrorStyle = useMirrorStyles();
 
-  const [emailGroups, setEmailGroups] = useState<
-    { mailingList: string; subscriptions: string[] }[]
-  >([]);
+  const [emailGroups, setEmailGroups] = useState<string[]>([]);
   const [notifGroups, setNotifGroups] = useState<string[]>([]);
   const [showExtendedNotifPreview, setShowExtendedEmailPreview] =
     useState<boolean>(false);
 
   useEffect(() => {
     api
-      .get("/subscription")
+      .get("/subscription/lists")
       .then((response) => setEmailGroups(response.data))
       .catch(() => {
         toast({
@@ -317,11 +315,8 @@ function EmailMaker() {
                             flex={1}
                           >
                             {emailGroups?.map((mailingList) => (
-                              <option
-                                key={mailingList.mailingList}
-                                value={mailingList.mailingList}
-                              >
-                                {mailingList.mailingList}
+                              <option key={mailingList} value={mailingList}>
+                                {mailingList}
                               </option>
                             ))}
                           </Select>
