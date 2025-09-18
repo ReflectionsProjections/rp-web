@@ -142,7 +142,8 @@ export type Role =
   | "ADMIN"
   | "CORPORATE"
   | "PUZZLEBANG"
-  | "PENDING";
+  | "PENDING"
+  | "SUPER_ADMIN";
 
 export type RoleObject = {
   userId?: string;
