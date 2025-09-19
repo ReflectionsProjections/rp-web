@@ -218,6 +218,8 @@ const RolesCard: React.FC<RolesCardProps> = () => {
 
   const getRoleIcon = (userRole: Role) => {
     switch (userRole) {
+      case "SUPER_ADMIN":
+        return <StarIcon color="yellow.500" />;
       case "ADMIN":
         return <StarIcon color="red.500" />;
       case "STAFF":
@@ -229,6 +231,8 @@ const RolesCard: React.FC<RolesCardProps> = () => {
 
   const getRoleColor = (userRole: Role) => {
     switch (userRole) {
+      case "SUPER_ADMIN":
+        return "yellow";
       case "ADMIN":
         return "red";
       case "STAFF":
@@ -422,8 +426,10 @@ const RolesCard: React.FC<RolesCardProps> = () => {
                                 }
                               }}
                               isDisabled={
-                                userRole === "STAFF" &&
-                                user.roles.includes("ADMIN")
+                                (userRole === "STAFF" &&
+                                  user.roles.includes("ADMIN")) ||
+                                (userRole === "ADMIN" &&
+                                  user.roles.includes("SUPER_ADMIN"))
                               }
                               _hover={{
                                 bg: "red.100"
@@ -433,29 +439,33 @@ const RolesCard: React.FC<RolesCardProps> = () => {
                         ))}
 
                         {/* Add role button - only show for users with userId (logged in users) */}
-                        {user.userId && !user.roles.includes("ADMIN") && (
-                          <IconButton
-                            size="xs"
-                            icon={<AddIcon />}
-                            aria-label="Add role"
-                            colorScheme="green"
-                            variant="outline"
-                            onClick={() => {
-                              // For now, just add ADMIN role
-                              // Could be expanded to show a dropdown of available roles
-                              if (
-                                !user.roles.includes("ADMIN") &&
-                                user.userId
-                              ) {
-                                addRole("ADMIN", user.userId);
-                              }
-                            }}
-                            isDisabled={user.roles.includes("ADMIN")}
-                            _hover={{
-                              bg: "green.50"
-                            }}
-                          />
-                        )}
+                        {user.userId &&
+                          (!user.roles.includes("ADMIN") ||
+                            !user.roles.includes("SUPER_ADMIN")) && (
+                            <IconButton
+                              size="xs"
+                              icon={<AddIcon />}
+                              aria-label="Add role"
+                              colorScheme="green"
+                              variant="outline"
+                              onClick={() => {
+                                // For now, just add ADMIN/SUPER_ADMIN role
+                                // Could be expanded to show a dropdown of available roles
+                                if (!user.userId) return;
+
+                                if (!user.roles.includes("ADMIN")) {
+                                  addRole("ADMIN", user.userId);
+                                } else if (
+                                  !user.roles.includes("SUPER_ADMIN")
+                                ) {
+                                  addRole("SUPER_ADMIN", user.userId);
+                                }
+                              }}
+                              _hover={{
+                                bg: "green.50"
+                              }}
+                            />
+                          )}
                       </HStack>
                     </VStack>
                   </Flex>
