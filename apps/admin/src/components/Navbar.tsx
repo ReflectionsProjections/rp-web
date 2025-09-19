@@ -44,7 +44,7 @@ const linkMap: Record<string, { path: string; role: Role }> = {
   Shifts: { path: "/shifts", role: "ADMIN" },
   "Check-in": { path: "/checkin", role: "ADMIN" },
   Massmailer: { path: "/massmailer", role: "SUPER_ADMIN" },
-  Leaderboard: { path: "/leaderboard-view", role: "ADMIN" },
+  Leaderboard: { path: "/leaderboard-view", role: "SUPER_ADMIN" },
   Attendance: { path: "/attendance-view", role: "ADMIN" }
 };
 
