@@ -11,7 +11,7 @@ import {
   Text
 } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
-import moment from "moment";
+import moment from "moment-timezone";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
 import FoodMenu from "./FoodMenu";
@@ -145,8 +145,8 @@ function EventCard({ event }: { event: Event }) {
             fontWeight="bold"
             letterSpacing="0.5px"
           >
-            {moment(event.startTime).format("h:mma")} –{" "}
-            {moment(event.endTime).format("h:mma")}
+            {moment(event.startTime).tz("America/Chicago").format("h:mma")} –{" "}
+            {moment(event.endTime).tz("America/Chicago").format("h:mma")} CT
           </Text>
         </Flex>
         <Flex flex="1 1 0%" alignItems="center">
