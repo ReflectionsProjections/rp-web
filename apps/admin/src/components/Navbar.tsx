@@ -34,7 +34,7 @@ import { useColorTheme } from "@/contexts/ColorThemeContext";
 import { Role } from "@rp/shared";
 
 const linkMap: Record<string, { path: string; role: Role }> = {
-  Dashboard: { path: "/", role: "STAFF" },
+  Home: { path: "/", role: "STAFF" },
   Stats: { path: "/stats", role: "ADMIN" },
   Events: { path: "/events", role: "ADMIN" },
   Meetings: { path: "/meetings", role: "ADMIN" },

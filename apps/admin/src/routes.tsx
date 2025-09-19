@@ -1,4 +1,4 @@
-import Dashboard from "./routes/pages/Dashboard";
+import Home from "./routes/pages/Home";
 import Stats from "./routes/pages/Stats";
 import Events from "./routes/pages/Events";
 import Meetings from "./routes/pages/Meetings";
@@ -12,7 +12,7 @@ import Speakers from "./routes/pages/Speakers";
 import Shifts from "./routes/pages/Shifts";
 
 const routes = [
-  { path: "/", element: <Dashboard /> },
+  { path: "/", element: <Home /> },
   { path: "/stats", element: <Stats /> },
   { path: "/events", element: <Events /> },
   { path: "/meetings", element: <Meetings /> },

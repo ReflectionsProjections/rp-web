@@ -18,7 +18,7 @@ import { MainContext } from "../Main";
 
 const MotionHeader = motion(Heading);
 
-function Dashboard() {
+function Home() {
   const { authorized, displayName } = useOutletContext<MainContext>();
   const { data: currentEvent } = usePolling(
     "/events/currentOrNext",
@@ -101,4 +101,4 @@ function Dashboard() {
   );
 }
 
-export default Dashboard;
+export default Home;
