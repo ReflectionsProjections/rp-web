@@ -1,8 +1,8 @@
-import useWebhook from "@/hooks/webhook";
+import useWebSocket from "@/hooks/websocket";
 import { Flex, Text } from "@chakra-ui/react";
 
-export default function WebhookPopup() {
-  const { message } = useWebhook();
+export default function WebSocketPopup() {
+  const { message } = useWebSocket();
 
   const textMessage = message && "message" in message;
   const width =

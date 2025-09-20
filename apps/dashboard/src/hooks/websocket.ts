@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 
 const RETRY_CONNECTION_MS = 5 * 1000;
 
-export default function useWebhook() {
+export default function useWebSocket() {
   const [message, setMessage] = useState<DashboardMessageRequest | null>(null);
   const messageTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
