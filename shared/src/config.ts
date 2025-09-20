@@ -33,9 +33,14 @@ const API_BASE_URL = IS_DEV
   ? "http://localhost:3000"
   : "https://api.reflectionsprojections.org";
 
+const WS_BASE_URL = IS_DEV
+  ? "ws://localhost:3000"
+  : "wss://api.reflectionsprojections.org";
+
 const Config = {
   ENV: env.VITE_ENV,
   API_BASE_URL,
+  WS_BASE_URL,
   EVENT_TYPES: [
     "SPEAKER",
     "CORPORATE",

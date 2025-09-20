@@ -10,6 +10,7 @@ import Attendance from "./routes/pages/Attendance";
 import Massmailer from "./routes/pages/Massmailer";
 import Speakers from "./routes/pages/Speakers";
 import Shifts from "./routes/pages/Shifts";
+import Dashboard from "./routes/pages/Dashboard";
 
 const routes = [
   { path: "/", element: <Home /> },
@@ -23,7 +24,8 @@ const routes = [
   { path: "/checkin", element: <Checkin /> },
   { path: "/massmailer", element: <Massmailer /> },
   { path: "/leaderboard-view", element: <Leaderboard /> },
-  { path: "/attendance-view", element: <Attendance /> }
+  { path: "/attendance-view", element: <Attendance /> },
+  { path: "/dashboard", element: <Dashboard /> }
 ];
 
 export default routes;

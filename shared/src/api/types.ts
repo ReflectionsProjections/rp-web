@@ -238,6 +238,29 @@ export type LeaderboardEntry = {
   icon: IconColor;
 };
 
+export type Display = {
+  id: number;
+  metadata?: {
+    screenWidth: number;
+    screenHeight: number;
+    devicePixelRatio: number;
+    userAgent: string;
+    platform: string;
+    unixTime: number;
+  };
+  lastUpdate: number;
+};
+
+export type DashboardMessageRequest =
+  | {
+      message: string;
+    }
+  | {
+      url: string;
+      fullscreen?: boolean;
+      iframe?: boolean;
+    };
+
 export interface APIRoutes {
   "/attendee": {
     GET: {
@@ -365,6 +388,48 @@ export interface APIRoutes {
     POST: {
       request: { qrCode: string };
       response: string;
+    };
+  };
+  "/dashboard": {
+    GET: {
+      request: never;
+      response: Display[];
+    };
+  };
+  "/dashboard/identify": {
+    POST: {
+      request: undefined;
+      response: { sentTo: number[] };
+    };
+  };
+  "/dashboard/identify/:id": {
+    POST: {
+      request: undefined;
+      response: { sentTo: number[] };
+    };
+  };
+  "/dashboard/reload": {
+    POST: {
+      request: undefined;
+      response: { sentTo: number[] };
+    };
+  };
+  "/dashboard/reload/:id": {
+    POST: {
+      request: undefined;
+      response: { sentTo: number[] };
+    };
+  };
+  "/dashboard/message": {
+    POST: {
+      request: DashboardMessageRequest;
+      response: { sentTo: number[] };
+    };
+  };
+  "/dashboard/message/:id": {
+    POST: {
+      request: DashboardMessageRequest;
+      response: { sentTo: number[] };
     };
   };
   "/events": {

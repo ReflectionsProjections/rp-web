@@ -45,7 +45,8 @@ const linkMap: Record<string, { path: string; role: Role }> = {
   "Check-in": { path: "/checkin", role: "ADMIN" },
   Massmailer: { path: "/massmailer", role: "SUPER_ADMIN" },
   Leaderboard: { path: "/leaderboard-view", role: "SUPER_ADMIN" },
-  Attendance: { path: "/attendance-view", role: "ADMIN" }
+  Attendance: { path: "/attendance-view", role: "ADMIN" },
+  Dashboard: { path: "/dashboard", role: "ADMIN" }
 };
 
 const getLinks = (roles: string[], loading: boolean) => {
