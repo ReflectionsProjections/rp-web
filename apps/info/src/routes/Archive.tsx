@@ -53,94 +53,140 @@ export const Archive = () => {
         <YearContent year={24} />
         <YearContent year={23} />
         <br />
+      </Container>
 
-        <Flex
-          mb={16}
-          align="center"
-          justifyContent="center"
-          p={4}
-          gap={4}
-          flexDirection={{
-            base: "column",
-            md: "row"
+      <Box
+        position="relative"
+        minHeight="600px"
+        overflow="hidden"
+        w="100vw"
+        ml="calc(-50vw + 50%)"
+      >
+        <Box
+          position="absolute"
+          top="0"
+          left="0"
+          width="100%"
+          height="100%"
+          _before={{
+            content: '""',
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "30%",
+            background:
+              "linear-gradient(45deg, #9CA3AF 0%, #6B7280 50%, #4B5563 100%)",
+            clipPath: "ellipse(80% 100% at 20% 0%)",
+            zIndex: 1
           }}
-          ref={speakersRef}
-        >
-          <Box
-            bgColor={"gray.300"}
-            p={5}
-            borderRadius={"50%"}
-            width="400px"
-            height="300px"
-            display="flex"
-            flexDirection="column"
+          _after={{
+            content: '""',
+            position: "absolute",
+            bottom: "0",
+            right: "0",
+            width: "100%",
+            height: "20%",
+            background:
+              "linear-gradient(-45deg, #6B7280 0%, #4B5563 50%, #374151 100%)",
+            clipPath: "ellipse(75% 100% at 80% 100%)",
+            zIndex: 1
+          }}
+        />
+
+        <Container maxW="container.xl" position="relative" zIndex={10} py={16}>
+          <Flex
+            mb={16}
+            align="center"
             justifyContent="center"
-            alignItems={"center"}
-            mr={3}
+            p={4}
+            gap={4}
+            flexDirection={{ base: "column", md: "row" }}
+            ref={speakersRef}
           >
-            <Text fontSize={"4xl"} fontWeight={"bold"}>
-              HALL OF{" "}
-            </Text>
-            <Text fontSize="3xl" fontStyle={"italic"} lineHeight={"6"}>
-              Previous
-              <br />
-              Speakers{" "}
-            </Text>
-          </Box>
-          <VStack>
-            <Flex gap={4} mb={"-80px"} justifyContent={"flex-start"}>
-              <SpeakerOval
-                speakersRef={speakersRef}
-                speakerName="Speaker 2"
-                companyName="Company"
-                width={150}
-                height={130}
-                ml={"100px"}
-                horizontal
-                delay={0.4}
-              />
-              <SpeakerOval
-                speakersRef={speakersRef}
-                speakerName="Speaker 4"
-                companyName="Company"
-                width={150}
-                height={130}
-                delay={0.8}
-              />
-            </Flex>
+            <Box
+              background="linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 50%, #c8c8c8 100%)"
+              p={5}
+              borderRadius="50%"
+              width="400px"
+              height="300px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              mr={3}
+              boxShadow="0 8px 32px rgba(0,0,0,0.1)"
+              position="relative"
+              zIndex={5}
+            >
+              <Text fontSize="4xl" fontWeight="bold" color="gray.700">
+                HALL OF{" "}
+              </Text>
+              <Text
+                fontSize="3xl"
+                fontStyle="italic"
+                lineHeight="6"
+                color="gray.600"
+              >
+                Previous <br /> Speakers{" "}
+              </Text>
+            </Box>
+            <VStack zIndex={5} position="relative">
+              <Flex gap={4} mb="-80px" justifyContent="flex-start">
+                <SpeakerOval
+                  speakersRef={speakersRef}
+                  speakerName="Speaker 2"
+                  companyName="Company"
+                  width={150}
+                  height={130}
+                  ml="100px"
+                  horizontal
+                  delay={0.4}
+                />
+                <SpeakerOval
+                  speakersRef={speakersRef}
+                  speakerName="Speaker 4"
+                  companyName="Company"
+                  width={150}
+                  height={130}
+                  delay={0.8}
+                />
+              </Flex>
+              <Flex gap={4}>
+                <SpeakerOval
+                  speakersRef={speakersRef}
+                  speakerName="Speaker 1"
+                  companyName="Company"
+                  width={150}
+                  height={130}
+                  delay={0.2}
+                />
+                <SpeakerOval
+                  speakersRef={speakersRef}
+                  speakerName="Speaker 3"
+                  companyName="Company"
+                  width={180}
+                  height={150}
+                  ml="100px"
+                  mt="20px"
+                  delay={0.6}
+                />
+                <SpeakerOval
+                  speakersRef={speakersRef}
+                  speakerName="Speaker 5"
+                  companyName="Company"
+                  width={150}
+                  height={130}
+                  mt={20}
+                  delay={1}
+                />
+              </Flex>
+            </VStack>
+          </Flex>
+        </Container>
+      </Box>
 
-            <Flex gap={4}>
-              <SpeakerOval
-                speakersRef={speakersRef}
-                speakerName="Speaker 1"
-                companyName="Company"
-                width={150}
-                height={130}
-                delay={0.2}
-              />
-              <SpeakerOval
-                speakersRef={speakersRef}
-                speakerName="Speaker 3"
-                companyName="Company"
-                width={180}
-                height={150}
-                ml={"100px"}
-                mt={"20px"}
-                delay={0.6}
-              />
-              <SpeakerOval
-                speakersRef={speakersRef}
-                speakerName="Speaker 5"
-                companyName="Company"
-                width={150}
-                height={130}
-                mt={20}
-                delay={1}
-              />
-            </Flex>
-          </VStack>
-        </Flex>
-
+      <Container maxW="container.xl">
         <br />
 
         <VStack p={4}>
@@ -171,6 +217,7 @@ export const Archive = () => {
     </Box>
   );
 };
+
 const YearContent: React.FC<{
   year: number;
 }> = ({ year }) => {
@@ -304,7 +351,7 @@ const SpeakerOval: React.FC<{
     <MotionFlex
       flexDirection={horizontal ? "row" : "column"}
       gap={horizontal ? 3 : 0}
-      alignItems={"center"}
+      alignItems="center"
       mt={mt}
       ml={ml}
       mr={mr}
@@ -318,8 +365,8 @@ const SpeakerOval: React.FC<{
       }}
     >
       <Box
-        bgColor={"gray.300"}
-        borderRadius={"50%"}
+        background="linear-gradient(135deg, #e8e8e8 0%, #d8d8d8 50%, #c8c8c8 100%)"
+        borderRadius="50%"
         width={`${width}px`}
         height={`${height}px`}
         minWidth={`${width}px`}
@@ -328,12 +375,13 @@ const SpeakerOval: React.FC<{
         flexDirection="column"
         justifyContent="center"
         alignItems="center"
-      ></Box>
-      <VStack gap={0} mt={1} alignItems={"center"} w={"100%"}>
-        <Text fontSize={"lg"} fontWeight={"bold"} my={0}>
+        boxShadow="0 4px 16px rgba(0,0,0,0.1)"
+      />
+      <VStack gap={0} mt={1} alignItems="center" w="100%">
+        <Text fontSize="lg" fontWeight="bold" my={0} color="gray.700">
           {speakerName}
         </Text>
-        <Text fontSize="sm" fontStyle={"italic"} mt={0}>
+        <Text fontSize="sm" fontStyle="italic" mt={0} color="gray.600">
           {companyName}
         </Text>
       </VStack>
