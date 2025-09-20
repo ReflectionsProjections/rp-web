@@ -34,7 +34,7 @@ import { useColorTheme } from "@/contexts/ColorThemeContext";
 import { Role } from "@rp/shared";
 
 const linkMap: Record<string, { path: string; role: Role }> = {
-  Dashboard: { path: "/", role: "STAFF" },
+  Home: { path: "/", role: "STAFF" },
   Stats: { path: "/stats", role: "ADMIN" },
   Events: { path: "/events", role: "ADMIN" },
   Meetings: { path: "/meetings", role: "ADMIN" },
@@ -45,7 +45,8 @@ const linkMap: Record<string, { path: string; role: Role }> = {
   "Check-in": { path: "/checkin", role: "ADMIN" },
   Massmailer: { path: "/massmailer", role: "SUPER_ADMIN" },
   Leaderboard: { path: "/leaderboard-view", role: "SUPER_ADMIN" },
-  Attendance: { path: "/attendance-view", role: "ADMIN" }
+  Attendance: { path: "/attendance-view", role: "ADMIN" },
+  Dashboard: { path: "/dashboard", role: "ADMIN" }
 };
 
 const getLinks = (roles: string[], loading: boolean) => {

@@ -1,4 +1,4 @@
-import Dashboard from "./routes/pages/Dashboard";
+import Home from "./routes/pages/Home";
 import Stats from "./routes/pages/Stats";
 import Events from "./routes/pages/Events";
 import Meetings from "./routes/pages/Meetings";
@@ -10,9 +10,10 @@ import Attendance from "./routes/pages/Attendance";
 import Massmailer from "./routes/pages/Massmailer";
 import Speakers from "./routes/pages/Speakers";
 import Shifts from "./routes/pages/Shifts";
+import Dashboard from "./routes/pages/Dashboard";
 
 const routes = [
-  { path: "/", element: <Dashboard /> },
+  { path: "/", element: <Home /> },
   { path: "/stats", element: <Stats /> },
   { path: "/events", element: <Events /> },
   { path: "/meetings", element: <Meetings /> },
@@ -23,7 +24,8 @@ const routes = [
   { path: "/checkin", element: <Checkin /> },
   { path: "/massmailer", element: <Massmailer /> },
   { path: "/leaderboard-view", element: <Leaderboard /> },
-  { path: "/attendance-view", element: <Attendance /> }
+  { path: "/attendance-view", element: <Attendance /> },
+  { path: "/dashboard", element: <Dashboard /> }
 ];
 
 export default routes;

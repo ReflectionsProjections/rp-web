@@ -14,6 +14,7 @@ import { RegisterNow } from "./components/RegisterNow";
 import { Sponsors } from "./components/Sponsors";
 import Title from "./components/Title";
 import useTimeSyncedReload from "./hooks/TimeSynchedReload";
+import WebSocketPopup from "./components/WebSocketPopup";
 
 const config: ThemeConfig = {
   initialColorMode: "dark",
@@ -53,6 +54,7 @@ function App() {
           paddingTop="0.5vh"
           zIndex={2}
         >
+          <WebSocketPopup />
           <Title />
           <Text
             position={"absolute"}
