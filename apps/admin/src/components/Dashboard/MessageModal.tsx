@@ -95,7 +95,7 @@ export default function MessageModal({
   return (
     <>
       <Button variant="outline" colorScheme="orange" onClick={onOpen}>
-        {target !== undefined ? "Message" : "Message All"}
+        {target !== null ? "Message" : "Message All"}
       </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         messageModalDisclosure
@@ -103,7 +103,7 @@ export default function MessageModal({
         <ModalContent sx={mirrorStyle}>
           <ModalHeader>
             Send a message to{" "}
-            {target !== undefined ? `display #${target}` : "all displays"}
+            {target !== null ? `display #${target}` : "all displays"}
           </ModalHeader>
           <ModalBody>
             <Formik<MessageForm>
