@@ -31,34 +31,39 @@ import StatusMonitor from "./StatusMonitor";
 import { MdDarkMode, MdLightMode, MdPalette } from "react-icons/md";
 import ColorProfileSelector from "./ColorProfileSelector";
 import { useColorTheme } from "@/contexts/ColorThemeContext";
+import { Role } from "@rp/shared";
 
-const linkMap = {
-  Dashboard: "/",
-  Stats: "/stats",
-  Events: "/events",
-  Meetings: "/meetings",
-  Roles: "/roles",
-  Sponsors: "/sponsors",
-  Speakers: "/speakers",
-  "Event Check-in": "/event-checkin",
-  Merch: "/merch",
-  Attendance: "/attendance-view"
+const linkMap: Record<string, { path: string; role: Role }> = {
+  Home: { path: "/", role: "STAFF" },
+  Stats: { path: "/stats", role: "ADMIN" },
+  Events: { path: "/events", role: "ADMIN" },
+  Meetings: { path: "/meetings", role: "ADMIN" },
+  Roles: { path: "/roles", role: "SUPER_ADMIN" },
+  Sponsors: { path: "/sponsors", role: "ADMIN" },
+  Speakers: { path: "/speakers", role: "ADMIN" },
+  Shifts: { path: "/shifts", role: "ADMIN" },
+  "Check-in": { path: "/checkin", role: "ADMIN" },
+  Massmailer: { path: "/massmailer", role: "SUPER_ADMIN" },
+  Leaderboard: { path: "/leaderboard-view", role: "SUPER_ADMIN" },
+  Attendance: { path: "/attendance-view", role: "ADMIN" },
+  Dashboard: { path: "/dashboard", role: "ADMIN" }
 };
 
-const getLinks = (roles: string[], loading: boolean): string[] => {
+const getLinks = (roles: string[], loading: boolean) => {
   if (loading) {
     return [];
   }
 
-  if (roles.includes("ADMIN")) {
-    return Object.keys(linkMap);
-  }
+  const accessible = Object.entries(linkMap)
+    .filter(([, { role }]) => roles.includes(role))
+    .map(([name, { path }]) => {
+      return {
+        name,
+        path
+      };
+    });
 
-  if (roles.includes("STAFF")) {
-    return ["Dashboard"];
-  }
-
-  return [];
+  return accessible;
 };
 
 const Settings = ({ displayName }: { displayName?: string }) => {
@@ -273,8 +278,8 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading, displayName }) => {
       w={{ base: "calc(100vw - 8px)", md: "calc(12vw - 8px)" }}
       minW={{ md: "300px" }}
       h={{
-        base: `calc(${isOpen ? "100vh" : "100px"} - 8px)`,
-        md: "calc(100vh - 8px)"
+        base: `calc(${isOpen ? "100svh" : "100px"} - 8px)`,
+        md: "calc(100svh - 8px)"
       }}
       transform={
         inView
@@ -311,9 +316,9 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading, displayName }) => {
           height="100%"
           overflowY="auto"
         >
-          {getLinks(roles, loading).map((link) => (
-            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
-              {link}
+          {getLinks(roles, loading).map(({ name, path }) => (
+            <NavbarLink key={name} href={path}>
+              {name}
             </NavbarLink>
           ))}
         </VStack>
@@ -346,9 +351,9 @@ const Navbar: React.FC<NavbarProps> = ({ roles, loading, displayName }) => {
           h="100%"
           maxH="calc(100% - calc(100px - 42px))"
         >
-          {getLinks(roles, loading).map((link) => (
-            <NavbarLink key={link} href={linkMap[link as keyof typeof linkMap]}>
-              {link}
+          {getLinks(roles, loading).map(({ name, path }) => (
+            <NavbarLink key={name} href={path}>
+              {name}
             </NavbarLink>
           ))}
           <HStack

@@ -64,7 +64,7 @@ const TableColumn: React.FC<{
 export type SingleCol =
   | "checkbox"
   | "name"
-  | "major"
+  | "fieldsOfStudy"
   | "degree"
   | "graduationYear"
   | "actions"
@@ -234,8 +234,8 @@ const ResumeList: React.FC<ResumeListProps> = ({
                   onSort={onSortByColumn}
                 />
                 <Column
-                  id="major"
-                  name="Major"
+                  id="fieldsOfStudy"
+                  name="Fields of Study"
                   sortColId={sortByColumn}
                   sortDirection={sortDirection}
                   icon={FaBook}

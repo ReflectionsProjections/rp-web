@@ -12,8 +12,8 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 import { FaFilePdf } from "react-icons/fa6";
-import { Config } from "../../config";
 import PortfolioLinks from "../../components/PortfolioLinks";
+import { Config } from "../../config";
 import { Resume } from "./ResumeBook";
 
 interface ResumeComponentProps {
@@ -69,7 +69,7 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
         overflow="hidden"
       >
         <GridItem>
-          <HStack gap={4}>
+          <HStack gap={4} justifyContent={"space-between"} pr={1}>
             <Checkbox
               size="lg"
               isChecked={isSelected}
@@ -78,7 +78,12 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
             />
             {Config.STAFF_UIDs.includes(resume.id) && (
               <Tooltip label="Staff Member" fontSize="md">
-                <Image src="/2024_rp_logo.svg" width="20px" height="20px" />
+                <Image
+                  src="/rp_logo.svg"
+                  width="20px"
+                  height="20px"
+                  opacity={0.8}
+                />
               </Tooltip>
             )}
           </HStack>
@@ -108,15 +113,36 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               </Text>
             </GridItem>
             <GridItem>
-              <Text
-                color="gray.700"
-                fontSize={{
-                  base: "sm",
-                  lg: "md"
-                }}
-              >
-                {resume.major}
-              </Text>
+              <VStack alignItems="flex-start" gap={0}>
+                {resume.majors.map((major) => (
+                  <Text
+                    key={major}
+                    color="gray.700"
+                    fontSize={{ base: "sm", lg: "md" }}
+                  >
+                    {major}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Major)`}</Text>
+                  </Text>
+                ))}
+                {resume.minors.map((minor) => (
+                  <Text
+                    key={minor}
+                    color="gray.700"
+                    fontSize={{ base: "sm", lg: "md" }}
+                  >
+                    {minor}
+                    <Text
+                      as="span"
+                      color="gray.500"
+                      fontSize="sm"
+                    >{` (Minor)`}</Text>
+                  </Text>
+                ))}
+              </VStack>
             </GridItem>
             <GridItem>
               <Text
@@ -139,9 +165,19 @@ const ResumeListBox: React.FC<ResumeComponentProps> = ({
               <Text color="gray.700" fontSize="sm">
                 {resume.degree} - {resume.graduationYear}
               </Text>
-              <Text color="gray.570" fontSize="sm">
-                {resume.major}
-              </Text>
+
+              <VStack alignItems="flex-start" gap={0}>
+                {resume.majors.map((major) => (
+                  <Text key={major} color="gray.570" fontSize={"sm"}>
+                    {`${major} ${resume.minors.length > 0 ? "(Major)" : ""}`}
+                  </Text>
+                ))}
+                {resume.minors.map((minor) => (
+                  <Text key={minor} color="gray.570" fontSize={"sm"}>
+                    {`${minor} (Minor)`}
+                  </Text>
+                ))}
+              </VStack>
             </VStack>
           </GridItem>
         )}

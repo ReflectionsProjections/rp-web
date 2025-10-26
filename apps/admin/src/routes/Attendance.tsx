@@ -141,7 +141,7 @@ const AttendancePage = () => {
     <Center padding={8} minHeight="100vh">
       <Box sx={mirrorStyles} p={8} borderRadius="lg" maxW="500px" w="100%">
         <VStack spacing={6} align="stretch">
-          {/* Return to Dashboard Button */}
+          {/* Return to Home Button */}
           <Box>
             <Button
               as={Link}
@@ -151,7 +151,7 @@ const AttendancePage = () => {
               size="sm"
               colorScheme="blue"
             >
-              Return to Dashboard
+              Return to Home
             </Button>
           </Box>
 

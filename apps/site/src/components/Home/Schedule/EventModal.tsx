@@ -11,9 +11,11 @@ import {
   Text
 } from "@chakra-ui/react";
 import { Event } from "@rp/shared";
-import moment from "moment";
+import moment from "moment-timezone";
 import { FaAward, FaClock, FaMapPin, FaTag } from "react-icons/fa";
 import { AudioVisualizer } from "./AudioVisualizer";
+import FoodMenu from "./FoodMenu";
+import LinkButtons from "./LinkButtons";
 
 export default function EventModal({
   event,
@@ -22,6 +24,22 @@ export default function EventModal({
   event: Event | null;
   onClose: () => void;
 }) {
+  const hasFoodMenu = event?.description?.includes(":food:") || false;
+  const hasLinks = event?.description?.includes(":link:") || false;
+
+  // Extract the main description by removing both food and link sections
+  let displayDescription = event?.description;
+  if (displayDescription) {
+    // Remove food section if present
+    if (hasFoodMenu) {
+      displayDescription = displayDescription.split(":food:")[0].trim();
+    }
+    // Remove link section if present
+    if (hasLinks) {
+      displayDescription = displayDescription.split(":link:")[0].trim();
+    }
+  }
+
   return (
     <Modal isOpen={event !== null} onClose={onClose} size="xl" isCentered>
       <ModalOverlay />
@@ -67,19 +85,27 @@ export default function EventModal({
 
           <EventCard event={event} />
 
-          <Text
-            fontSize="xl"
-            fontWeight="bold"
-            lineHeight="1.5"
-            whiteSpace="pre-wrap"
-            fontFamily="Magistral"
-            letterSpacing="0.5px"
-            mt={4}
-            transformOrigin={"top left"}
-          >
-            {event.description}
-          </Text>
-          <br />
+          {displayDescription && (
+            <>
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                lineHeight="1.5"
+                whiteSpace="pre-wrap"
+                fontFamily="Magistral"
+                letterSpacing="0.5px"
+                mt={4}
+                transformOrigin={"top left"}
+              >
+                {displayDescription}
+              </Text>
+              <br />
+            </>
+          )}
+
+          <FoodMenu description={event.description} />
+
+          <LinkButtons description={event.description} />
 
           <CheckerBoardPattern />
         </ModalContent>
@@ -119,8 +145,8 @@ function EventCard({ event }: { event: Event }) {
             fontWeight="bold"
             letterSpacing="0.5px"
           >
-            {moment(event.startTime).format("h:mma")} –{" "}
-            {moment(event.endTime).format("h:mma")}
+            {moment(event.startTime).tz("America/Chicago").format("h:mma")} –{" "}
+            {moment(event.endTime).tz("America/Chicago").format("h:mma")} CT
           </Text>
         </Flex>
         <Flex flex="1 1 0%" alignItems="center">

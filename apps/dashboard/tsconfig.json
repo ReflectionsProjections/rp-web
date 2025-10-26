@@ -6,9 +6,10 @@
     "paths": {
       "@/*": ["./src/*"],
       "@rp/shared": ["../../shared"]
-    }
+    },
+    "types": ["vite/client"]
   },
-  "include": ["src", "vite.config.ts"],
+  "include": ["src", "vite.config.ts", "vite-env.d.ts"],
   "references": [
     {
       "path": "../../shared"

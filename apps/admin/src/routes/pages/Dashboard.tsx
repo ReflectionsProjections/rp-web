@@ -1,94 +1,100 @@
+import DisplayCard from "@/components/Dashboard/DisplayCard";
+import MessageModal from "@/components/Dashboard/MessageModal";
+import { useMirrorStyles } from "@/styles/Mirror";
 import {
-  Flex,
-  Box,
-  StatGroup,
-  CardHeader,
-  Heading,
+  Card,
   CardBody,
-  VStack
+  CardHeader,
+  Flex,
+  Heading,
+  Text,
+  Button,
+  Stack,
+  Divider,
+  useToast,
+  Spacer
 } from "@chakra-ui/react";
-import StatCard from "@/components/StatCard";
-import { motion } from "framer-motion";
-import { usePolling } from "@rp/shared";
-import EventCard from "@/components/EventCard";
-import Section from "@/components/Section";
-import { useOutletContext } from "react-router-dom";
-import { MainContext } from "../Main";
+import { api, usePolling } from "@rp/shared";
 
-const MotionHeader = motion(Heading);
+export default function Dashboard() {
+  const { data } = usePolling("/dashboard", true, 5 * 1000);
+  const mirrorStyle = useMirrorStyles();
+  const toast = useToast();
 
-function Dashboard() {
-  const { authorized, displayName } = useOutletContext<MainContext>();
-  const { data: currentEvent } = usePolling(
-    "/events/currentOrNext",
-    authorized
-  );
+  function identifyAll() {
+    api
+      .post("/dashboard/identify", undefined)
+      .then(() =>
+        toast({
+          title: `Identified all displays`,
+          status: "success"
+        })
+      )
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: `Failed to identify all displays`,
+          status: "error"
+        });
+      });
+  }
+
+  function reloadAll() {
+    api
+      .post("/dashboard/reload", undefined)
+      .then(() =>
+        toast({
+          title: `Reloaded all displays`,
+          status: "success"
+        })
+      )
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: `Failed to reload all displays`,
+          status: "error"
+        });
+      });
+  }
 
   return (
     <>
-      <MotionHeader
-        size="2xl"
-        fontWeight="bold"
-        mb={4}
-        textAlign="left"
-        initial={{ opacity: 0 }}
-        animate={
-          displayName === ""
-            ? {}
-            : {
-                opacity: 1,
-                transition: {
-                  opacity: { duration: 0.8, ease: "easeOut" }
-                }
-              }
-        }
-        backgroundSize="400%"
-      >
-        {displayName == "" ? "Welcome!" : `Welcome, ${displayName}!`}
-      </MotionHeader>
-
-      <VStack spacing={6} align="stretch">
-        <Flex direction={{ base: "column", md: "row" }} justify="space-between">
-          <Box flex="3" mr={{ base: 0, md: 2 }}>
-            <VStack spacing={4} align="stretch">
-              <Section>
-                <CardHeader>
-                  <Heading size="lg">Overall Stats</Heading>
-                </CardHeader>
-                <CardBody display="flex" flexDir="column" gap={4}>
-                  <StatGroup gap={4}>
-                    <StatCard
-                      label={"Checked-In"}
-                      endpoint={"/stats/check-in"}
-                      enabled={authorized}
-                      transformer={(data) => data.count}
-                    />
-                    <StatCard
-                      label={"Priority Status"}
-                      endpoint={"/stats/priority-attendee"}
-                      enabled={authorized}
-                      transformer={(data) => data.count}
-                    />
-                  </StatGroup>
-                </CardBody>
-              </Section>
-            </VStack>
-          </Box>
-
-          <Box flex="1" ml={{ base: 0, md: 2 }} mt={{ base: 4, md: 0 }}>
-            <Section alignItems="center" height="100%">
-              <CardHeader>
-                <Heading size="lg">Next Event</Heading>
-              </CardHeader>
-              <CardBody>
-                <EventCard event={currentEvent} />
-              </CardBody>
-            </Section>
-          </Box>
-        </Flex>
-      </VStack>
+      <Card sx={mirrorStyle} w="100%">
+        <CardHeader>
+          <Flex alignItems="end" w="100%">
+            <Stack direction={"column"}>
+              <Heading size="lg">Dashboard</Heading>
+              <Text>{data ? data.length : 0} displays connected</Text>
+            </Stack>
+            <Spacer />
+            <Stack direction="row" spacing={2}>
+              <Button
+                variant="outline"
+                colorScheme="blue"
+                onClick={identifyAll}
+              >
+                Identify All
+              </Button>
+              <Button variant="outline" colorScheme="green" onClick={reloadAll}>
+                Reload All
+              </Button>
+              <MessageModal target={null} />
+            </Stack>
+          </Flex>
+        </CardHeader>
+        <Divider />
+        <CardBody>
+          <Stack spacing={4} w="100%">
+            {data && data.length > 0 ? (
+              data.map((display) => (
+                <DisplayCard key={display.id} display={display} />
+              ))
+            ) : (
+              <Text>No displays currently connected.</Text>
+            )}
+          </Stack>
+        </CardBody>
+      </Card>
     </>
   );
 }
-
-export default Dashboard;
