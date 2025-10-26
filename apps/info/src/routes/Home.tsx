@@ -7,8 +7,22 @@ import { Stats } from "@/components/Home/Stats";
 import { TeamSection } from "@/components/Home/TeamSection";
 
 import { Box, Divider } from "@chakra-ui/react";
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 export const Home = () => {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    const section = document.getElementById(hash.slice(1));
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }
+  }, [hash]);
+
   return (
     <>
       <Box id="home">
@@ -17,7 +31,9 @@ export const Home = () => {
       <Box id="exhibits">
         <ExhibitSection />
       </Box>
-      <Stats />
+      <Box id="stats">
+        <Stats />
+      </Box>
       <Box id="team">
         <TeamSection />
       </Box>

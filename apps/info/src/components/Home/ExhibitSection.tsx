@@ -12,7 +12,7 @@ export const ExhibitSection = () => {
         h="900px"
         fit="fill"
         pos="absolute"
-        mt="-50px"
+        mt="-200px"
         zIndex={-10}
         style={{
           maskImage:
@@ -26,7 +26,7 @@ export const ExhibitSection = () => {
         alignItems={{ base: "center", md: "center" }}
         maxWidth="6xl"
         mx="auto"
-        minH="750px"
+        minH="600px"
         mt={{ base: 10, md: -4 }}
         mb={{ base: 10, md: 10 }}
         px={{ base: 5, md: 10 }}

@@ -16,7 +16,7 @@ export const TeamSection = () => {
   ];
 
   return (
-    <Box data-label="team section" minH="40vh" py={10}>
+    <Box data-label="team section" minH="40vh" overflowX={"hidden"} py={10}>
       <Container maxW="container.xl">
         <Box textAlign="center" mt={6}>
           <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
@@ -35,22 +35,20 @@ export const TeamSection = () => {
             centerItem={{ title: "Directors", image: "DIRECTORS.JPG" }}
           />
         </Flex>
-        <Button
-          as={NavLink}
-          to="/team"
-          colorScheme="teal"
-          bgColor="teal.300"
-          size="lg"
-          position="relative"
-          left="80%"
-          top="-150px"
-          mx="auto"
-          px={8}
-          _hover={{ transform: "translateY(-2px)" }}
-          transition="all 0.2s"
-        >
-          Join us!
-        </Button>
+        <Flex justify="center" w="100%">
+          <Button
+            as={NavLink}
+            to="/team"
+            colorScheme="teal"
+            bgColor="teal.300"
+            size="lg"
+            px={8}
+            _hover={{ transform: "translateY(-2px)" }}
+            transition="all 0.2s"
+          >
+            Meet the Team!
+          </Button>
+        </Flex>
       </Container>
     </Box>
   );

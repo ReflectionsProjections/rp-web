@@ -12,7 +12,7 @@ export const Header = () => {
 
   // Use responsive font sizes based on screen size
   const headingSize = useBreakpointValue({
-    base: "lg",
+    base: "md",
     sm: "xl",
     md: "2xl",
     lg: "3xl"

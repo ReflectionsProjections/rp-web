@@ -61,11 +61,12 @@ export const Footer = () => {
           w="100%"
           px={4}
         >
-          <Flex
-            display={{ base: "flex", sm: "none" }}
-            direction="column"
-            align="center"
+          <Box
+            display={{ base: "grid", sm: "none" }}
+            gridTemplateColumns="repeat(3, 1fr)"
             gap={6}
+            maxW="300px"
+            mx="auto"
           >
             {socialLinks.map((social) => (
               <Link
@@ -74,9 +75,11 @@ export const Footer = () => {
                 isExternal={!social.url.includes("mailto")}
                 _hover={{ transform: "scale(1.15)" }}
                 transition="all 0.3s ease"
+                display="flex"
+                justifyContent="center"
               >
                 <Box
-                  bg="rgba(255, 255, 255, 0.95)"
+                  bg="black"
                   borderRadius="full"
                   p={4}
                   boxShadow="xl"
@@ -91,12 +94,12 @@ export const Footer = () => {
                     as={social.icon}
                     boxSize={8}
                     color="white"
-                    _groupHover={{ color: "white" }}
+                    display={"block"}
                   />
                 </Box>
               </Link>
             ))}
-          </Flex>
+          </Box>
 
           <Box display={{ base: "none", sm: "block", md: "none" }}>
             <Flex wrap="wrap" justify="center" gap={8} maxW="400px" mx="auto">
@@ -120,7 +123,12 @@ export const Footer = () => {
                     }}
                     transition="all 0.3s ease"
                   >
-                    <Icon as={social.icon} boxSize={8} color="white" />
+                    <Icon
+                      as={social.icon}
+                      boxSize={8}
+                      color="white"
+                      display={"block"}
+                    />
                   </Box>
                 </Link>
               ))}
@@ -150,7 +158,12 @@ export const Footer = () => {
                       }}
                       transition="all 0.3s ease"
                     >
-                      <Icon as={social.icon} boxSize={10} color="white" />
+                      <Icon
+                        as={social.icon}
+                        boxSize={10}
+                        color="white"
+                        display={"block"}
+                      />
                     </Box>
                   </Link>
                 ))}
@@ -176,7 +189,12 @@ export const Footer = () => {
                       }}
                       transition="all 0.3s ease"
                     >
-                      <Icon as={social.icon} boxSize={10} color="white" />
+                      <Icon
+                        as={social.icon}
+                        boxSize={10}
+                        color="white"
+                        display={"block"}
+                      />
                     </Box>
                   </Link>
                 ))}

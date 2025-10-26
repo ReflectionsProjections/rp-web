@@ -11,7 +11,7 @@ import {
 
 export const SponsorSection = () => {
   return (
-    <Box data-label="sponsor section" minH="40vh" py={10}>
+    <Box data-label="sponsor section" minH="40vh" overflowX="hidden" py={10}>
       <Container maxW="container.xl">
         <Box textAlign="center" mt={6}>
           <Heading as="h1" size="2xl" fontWeight="bold" lineHeight="1.2">
@@ -27,7 +27,7 @@ export const SponsorSection = () => {
 
         {/* Desktop layout: three disjoint stacks (rotated left, straight middle, rotated right) */}
         <Flex
-          display={{ base: "none", md: "flex" }}
+          display={{ base: "none", lg: "flex" }}
           direction="row"
           gap={0}
           justify="center"
@@ -140,7 +140,7 @@ export const SponsorSection = () => {
         </Flex>
 
         {/* Mobile layout: keep original stacked three cards within one backdrop */}
-        <Box display={{ base: "block", md: "none" }}>
+        <Box display={{ base: "block", lg: "none" }}>
           <Box>
             {/* OUTER BACKDROP (lighter) */}
             <Box bg="#B8B8B8" p={{ base: 3 }}>

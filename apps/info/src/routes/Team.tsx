@@ -152,7 +152,7 @@ const TeamPage = () => {
   }, []);
 
   return (
-    <Box w="100vw" py={8}>
+    <Box w="100vw" pt={8}>
       <VStack spacing={8} align="stretch" maxW="none">
         <Box as="section" w="100%" pt={{ base: "80px", md: "100px" }}>
           <Container maxW="container.xl">

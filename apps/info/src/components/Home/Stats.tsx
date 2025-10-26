@@ -9,7 +9,7 @@ export const Stats = () => {
       <Box
         position="relative"
         minH="40vw"
-        backgroundImage="url('build_future.jpg')"
+        backgroundImage="url('build_future.svg')"
         backgroundSize="cover"
         backgroundPosition="center 75%"
         backgroundRepeat="no-repeat"
@@ -88,7 +88,7 @@ export const Stats = () => {
         </Container>
       </Box>
 
-      <Box data-label="stats" id="stats-section" py={10}>
+      <Box id="about" data-label="about" py={10}>
         <Container maxW="container.xl">
           <div id="stats">
             <Box textAlign="center" pt={16} mb={16}>
