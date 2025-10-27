@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Heading, Flex, Image, Text, Button } from "@chakra-ui/react";
+import { Box, Flex, Image, Text, Button } from "@chakra-ui/react";
 
 interface CarouselItem {
   title: string;
@@ -8,9 +8,13 @@ interface CarouselItem {
 
 interface CircularCarouselProps {
   items: CarouselItem[];
+  centerItem?: CarouselItem;
 }
 
-const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
+const CircularCarousel: React.FC<CircularCarouselProps> = ({
+  items,
+  centerItem
+}) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
 
@@ -67,20 +71,21 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-  const getItemStyle = (index: number) => {
+  const getItemStyle = (index: number, isMobile: boolean = false) => {
     const totalItems = items.length;
     const angleDegree = 360 / totalItems;
     const baseAngle = angleDegree * (index - activeIndex);
     const radians = (baseAngle * Math.PI) / 180;
 
-    const horizontalRadius = 300;
-    const verticalRadius = 180;
+    // Use fixed values that work well for the responsive design
+    const horizontalRadius = isMobile ? 180 : 300;
+    const verticalRadius = isMobile ? 120 : 180;
 
     const x = horizontalRadius * Math.sin(radians);
     const y = verticalRadius * Math.cos(radians);
     const zIndex = Math.round(50 - y / 10);
 
-    const scale = 0.8 + ((y + verticalRadius) / (verticalRadius * 2)) * 0.3;
+    const scale = 0.7 + ((y + verticalRadius) / (verticalRadius * 2)) * 0.25;
     const isFrontItem = index === activeIndex;
 
     return {
@@ -99,84 +104,187 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
       align="center"
       position="relative"
       w="100%"
-      h="700px"
-      pt={8}
+      h={{ base: "600px", md: "700px" }}
+      pt={{ base: 4, md: 8 }}
     >
-      <Heading fontSize="5xl" mb={10}>
-        Meet the Team
-      </Heading>
-      <Box position="relative" w="100%" h="500px" mx="auto">
+      <Box
+        position="relative"
+        w="100%"
+        h={{ base: "400px", md: "500px" }}
+        mx="auto"
+      >
+        {/* Responsive dashed border */}
         <Box
           position="absolute"
           top="50%"
           left="50%"
           transform="translate(-50%, -50%)"
-          w="620px"
-          h="380px"
+          w={{ base: "380px", md: "620px" }}
+          h={{ base: "240px", md: "380px" }}
           borderRadius="50%"
           border="2px dashed"
           borderColor="gray.200"
           zIndex={0}
         />
 
-        {items.map((item, index) => (
+        {/* Center Image */}
+        {centerItem && (
           <Box
-            key={index}
             position="absolute"
             top="50%"
             left="50%"
-            w="280px"
-            h="180px"
-            ml="-140px"
-            mt="-90px"
-            transition="all 0.5s ease-in-out"
-            cursor="pointer"
-            borderRadius="16px"
+            transform="translate(-50%, -50%)"
+            w={{ base: "120px", md: "160px" }}
+            h={{ base: "80px", md: "100px" }}
+            borderRadius="12px"
             overflow="hidden"
-            boxShadow={getItemStyle(index).boxShadow}
-            transform={getItemStyle(index).transform}
-            zIndex={getItemStyle(index).zIndex}
-            opacity={getItemStyle(index).opacity}
-            _hover={{
-              transform: `${
-                getItemStyle(index).transform.split(")")[0]
-              }) scale(${
-                parseFloat(getItemStyle(index).transform.split("scale(")[1]) +
-                0.05
-              })`,
-              boxShadow: "0 15px 35px rgba(0,0,0,0.25)"
-            }}
-            onClick={() => handleItemClick(index)}
+            boxShadow="0 8px 25px rgba(0,0,0,0.3)"
+            zIndex={100}
+            border="3px solid white"
           >
             <Image
-              src={item.image}
-              alt={item.title}
+              src={centerItem.image}
+              alt={centerItem.title}
               w="100%"
               h="100%"
               objectFit="cover"
             />
             <Text
               position="absolute"
-              bottom="16px"
-              left="16px"
+              bottom="8px"
+              left="8px"
               color="white"
-              fontSize="22px"
+              fontSize={{ base: "10px", md: "12px" }}
               fontWeight="bold"
-              textShadow="0 2px 4px rgba(0,0,0,0.5)"
+              textShadow="0 2px 4px rgba(0,0,0,0.7)"
             >
-              {item.title}
+              {centerItem.title}
             </Text>
           </Box>
-        ))}
+        )}
+
+        {/* Mobile Carousel Items */}
+        <Box display={{ base: "block", md: "none" }}>
+          {items.map((item, index) => (
+            <Box
+              key={`mobile-${index}`}
+              position="absolute"
+              top="50%"
+              left="50%"
+              w="200px"
+              h="120px"
+              ml="-100px"
+              mt="-60px"
+              transition="all 0.5s ease-in-out"
+              cursor="pointer"
+              borderRadius="16px"
+              overflow="hidden"
+              boxShadow={getItemStyle(index, true).boxShadow}
+              transform={getItemStyle(index, true).transform}
+              zIndex={getItemStyle(index, true).zIndex}
+              opacity={getItemStyle(index, true).opacity}
+              _hover={{
+                transform: `${
+                  getItemStyle(index, true).transform.split(")")[0]
+                }) scale(${
+                  parseFloat(
+                    getItemStyle(index, true).transform.split("scale(")[1]
+                  ) + 0.05
+                })`,
+                boxShadow: "0 15px 35px rgba(0,0,0,0.25)"
+              }}
+              onClick={() => handleItemClick(index)}
+            >
+              <Image
+                src={item.image}
+                alt={item.title}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+              />
+              <Text
+                position="absolute"
+                bottom="8px"
+                left="8px"
+                color="white"
+                fontSize="14px"
+                fontWeight="bold"
+                textShadow="0 2px 4px rgba(0,0,0,0.5)"
+              >
+                {item.title}
+              </Text>
+            </Box>
+          ))}
+        </Box>
+
+        {/* Desktop Carousel Items */}
+        <Box display={{ base: "none", md: "block" }}>
+          {items.map((item, index) => (
+            <Box
+              key={`desktop-${index}`}
+              position="absolute"
+              top="50%"
+              left="50%"
+              w="240px"
+              h="140px"
+              ml="-120px"
+              mt="-70px"
+              transition="all 0.5s ease-in-out"
+              cursor="pointer"
+              borderRadius="16px"
+              overflow="hidden"
+              boxShadow={getItemStyle(index, false).boxShadow}
+              transform={getItemStyle(index, false).transform}
+              zIndex={getItemStyle(index, false).zIndex}
+              opacity={getItemStyle(index, false).opacity}
+              _hover={{
+                transform: `${
+                  getItemStyle(index, false).transform.split(")")[0]
+                }) scale(${
+                  parseFloat(
+                    getItemStyle(index, false).transform.split("scale(")[1]
+                  ) + 0.05
+                })`,
+                boxShadow: "0 15px 35px rgba(0,0,0,0.25)"
+              }}
+              onClick={() => handleItemClick(index)}
+            >
+              <Image
+                src={item.image}
+                alt={item.title}
+                w="100%"
+                h="100%"
+                objectFit="cover"
+              />
+              <Text
+                position="absolute"
+                bottom="12px"
+                left="12px"
+                color="white"
+                fontSize="18px"
+                fontWeight="bold"
+                textShadow="0 2px 4px rgba(0,0,0,0.5)"
+              >
+                {item.title}
+              </Text>
+            </Box>
+          ))}
+        </Box>
       </Box>
 
-      <Flex justifyContent="center" mt={12}>
+      {/* Navigation Buttons */}
+      <Flex
+        justifyContent="center"
+        mt={{ base: 6, md: 12 }}
+        gap={{ base: 4, md: 6 }}
+        flexDirection={{ base: "column", sm: "row" }}
+        w={{ base: "200px", sm: "auto" }}
+      >
         <Button
           onClick={() => handleNavClick("prev")}
-          colorScheme="blue"
-          size="lg"
-          mr={6}
-          px={8}
+          colorScheme="teal"
+          size={{ base: "md", md: "lg" }}
+          px={{ base: 6, md: 8 }}
           isDisabled={isAnimating}
           _hover={{ transform: "translateY(-2px)" }}
           transition="all 0.2s"
@@ -185,9 +293,9 @@ const CircularCarousel: React.FC<CircularCarouselProps> = ({ items }) => {
         </Button>
         <Button
           onClick={() => handleNavClick("next")}
-          colorScheme="blue"
-          size="lg"
-          px={8}
+          colorScheme="teal"
+          size={{ base: "md", md: "lg" }}
+          px={{ base: 6, md: 8 }}
           isDisabled={isAnimating}
           _hover={{ transform: "translateY(-2px)" }}
           transition="all 0.2s"
