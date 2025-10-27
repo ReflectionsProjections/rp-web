@@ -1,6 +1,39 @@
 import { motion } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import logo2025 from "../assets/logos/logo_2025.svg?raw";
+import logo2024 from "../assets/logos/logo_2024.svg?raw";
+import logo2023 from "../assets/logos/logo_2023.svg?raw";
+import logo2022 from "../assets/logos/logo_2022.svg?raw";
+import logo2021 from "../assets/logos/logo_2021.svg?raw";
+import logo2020 from "../assets/logos/logo_2020.svg?raw";
+import logo2019 from "../assets/logos/logo_2019.svg?raw";
+import logo2018 from "../assets/logos/logo_2018.svg?raw";
+import logoInfo from "../assets/logos/logo_info.svg?raw";
+
+const CONSTANT_IMAGES = [
+  logo2025,
+  logo2024,
+  logo2023,
+  logo2022,
+  logo2021,
+  logo2020,
+  logo2019,
+  logo2018
+];
+
+const HOVER_IMAGES = [
+  logoInfo,
+  logo2025,
+  logo2024,
+  logo2023,
+  logo2022,
+  logo2021,
+  logo2020,
+  logo2019,
+  logo2018
+];
+
 export const AnimatedLogoConstant = () => {
   const changeImageFnRef = useRef<() => void>(() => {});
   const [rotation, setRotation] = useState(0);
@@ -9,29 +42,18 @@ export const AnimatedLogoConstant = () => {
   const [bottomCurrentImage, setBottomCurrentImage] = useState(-1);
   const intervalRef = useRef<number | null>(null);
 
-  const images = [
-    "logo_2025.svg",
-    "logo_2024.svg",
-    "logo_2023.svg",
-    "logo_2022.svg",
-    "logo_2021.svg",
-    "logo_2020.svg",
-    "logo_2019.svg",
-    "logo_2018.svg"
-  ];
-
   // this updates every render so the ref always has a fresh function
   changeImageFnRef.current = () => {
     // switch to bottom
     if (topOpacity) {
       setRotation((prev) => prev + 360);
-      setBottomCurrentImage((prev) => (prev + 2) % images.length); // bottom switches by 2
+      setBottomCurrentImage((prev) => (prev + 2) % CONSTANT_IMAGES.length); // bottom switches by 2
       setTopOpacity((prev) => (prev + 1) % 2); // top fades out
     }
     // switch to top
     else {
       setRotation((prev) => prev + 360);
-      setTopCurrentImage((prev) => (prev + 2) % images.length); // top switches by 2
+      setTopCurrentImage((prev) => (prev + 2) % CONSTANT_IMAGES.length); // top switches by 2
       setTopOpacity((prev) => (prev + 1) % 2); // top fades in
     }
   };
@@ -66,27 +88,29 @@ export const AnimatedLogoConstant = () => {
 
   return (
     <>
-      <motion.img
+      <motion.div
         animate={{ rotate: rotation, opacity: topOpacity }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        width="100%"
-        height="100%"
         style={{
           zIndex: 2,
-          position: "absolute"
+          position: "absolute",
+          width: "100%",
+          height: "100%"
         }}
-        src={images[topCurrentImage]}
+        dangerouslySetInnerHTML={{ __html: CONSTANT_IMAGES[topCurrentImage] }}
       />
-      <motion.img
+      <motion.div
         animate={{ rotate: rotation }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        width="100%"
-        height="100%"
         style={{
           zIndex: 1,
-          position: "absolute"
+          position: "absolute",
+          width: "100%",
+          height: "100%"
         }}
-        src={images[bottomCurrentImage % images.length]}
+        dangerouslySetInnerHTML={{
+          __html: CONSTANT_IMAGES[bottomCurrentImage % CONSTANT_IMAGES.length]
+        }}
       />
     </>
   );
@@ -101,30 +125,18 @@ export const AnimatedLogoHover = () => {
   const [bottomCurrentImage, setBottomCurrentImage] = useState(-1);
   const intervalRef = useRef<number | null>(null);
 
-  const images = [
-    "logo_info.svg",
-    "logo_2025.svg",
-    "logo_2024.svg",
-    "logo_2023.svg",
-    "logo_2022.svg",
-    "logo_2021.svg",
-    "logo_2020.svg",
-    "logo_2019.svg",
-    "logo_2018.svg"
-  ];
-
   // this updates every render so the ref always has a fresh function
   changeImageFnRef.current = () => {
     // switch to bottom
     if (topOpacity) {
       setRotation((prev) => prev + 360);
-      setBottomCurrentImage((prev) => (prev + 2) % images.length); // bottom switches by 2
+      setBottomCurrentImage((prev) => (prev + 2) % HOVER_IMAGES.length); // bottom switches by 2
       setTopOpacity((prev) => (prev + 1) % 2); // top fades out
     }
     // switch to top
     else {
       setRotation((prev) => prev + 360);
-      setTopCurrentImage((prev) => (prev + 2) % images.length); // top switches by 2
+      setTopCurrentImage((prev) => (prev + 2) % HOVER_IMAGES.length); // top switches by 2
       setTopOpacity((prev) => (prev + 1) % 2); // top fades in
     }
   };
@@ -153,29 +165,31 @@ export const AnimatedLogoHover = () => {
 
   return (
     <>
-      <motion.img
+      <motion.div
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
         animate={{ rotate: rotation, opacity: topOpacity }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        width="100%"
-        height="100%"
         style={{
           zIndex: 2,
-          position: "absolute"
+          position: "absolute",
+          width: "100%",
+          height: "100%"
         }}
-        src={images[topCurrentImage]}
+        dangerouslySetInnerHTML={{ __html: HOVER_IMAGES[topCurrentImage] }}
       />
-      <motion.img
+      <motion.div
         animate={{ rotate: rotation }}
         transition={{ duration: 0.5, ease: "easeInOut" }}
-        width="100%"
-        height="100%"
         style={{
           zIndex: 1,
-          position: "absolute"
+          position: "absolute",
+          width: "100%",
+          height: "100%"
         }}
-        src={images[bottomCurrentImage % images.length]}
+        dangerouslySetInnerHTML={{
+          __html: HOVER_IMAGES[bottomCurrentImage % HOVER_IMAGES.length]
+        }}
       />
     </>
   );
