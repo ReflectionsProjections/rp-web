@@ -209,7 +209,7 @@ const TeamPage = () => {
                 >
                   <VStack spacing={3}>
                     <Image
-                      src="/Directors/Shreenija.JPG"
+                      src="/Directors/Shreenija.webp"
                       alt="Shreenija"
                       w={{ base: "160px", md: "180px" }}
                       h={{ base: "160px", md: "180px" }}
@@ -222,7 +222,7 @@ const TeamPage = () => {
 
                   <VStack spacing={3}>
                     <Image
-                      src="/Directors/Cole.JPG"
+                      src="/Directors/Cole.webp"
                       alt="Cole"
                       w={{ base: "160px", md: "180px" }}
                       h={{ base: "160px", md: "180px" }}
@@ -255,12 +255,12 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Ronit Anandani"
-                      imagePath="/Dev/Ronit.JPG"
+                      imagePath="/Dev/Ronit.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Aryan Bahl"
-                      imagePath="/Dev/Aryan.JPG"
+                      imagePath="/Dev/Aryan.webp"
                       isLead={true}
                     />
                   </Flex>
@@ -270,7 +270,7 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Aditya Kshirsagar"
-                          imagePath="/Dev/Aditya.JPG"
+                          imagePath="/Dev/Aditya.webp"
                         />
                       </WrapItem>
                       <WrapItem>
@@ -282,19 +282,19 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Jacob Edley"
-                          imagePath="/Dev/Jacob.JPG"
+                          imagePath="/Dev/Jacob.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Miguel Aenlle"
-                          imagePath="/Dev/Miguel.JPG"
+                          imagePath="/Dev/Miguel.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Nathan Wang"
-                          imagePath="/Dev/Nathan.JPG"
+                          imagePath="/Dev/Nathan.webp"
                         />
                       </WrapItem>
                     </Wrap>
@@ -303,31 +303,31 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Quinten Schafer"
-                          imagePath="/Dev/Quinten 2.JPG"
+                          imagePath="/Dev/Quinten 2.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Ritam Nandi"
-                          imagePath="/Dev/Ritam.JPG"
+                          imagePath="/Dev/Ritam.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Siri Nallamothu"
-                          imagePath="/Dev/Siri.png"
+                          imagePath="/Dev/Siri.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Timothy Gonzalez"
-                          imagePath="/Dev/Timothy.JPG"
+                          imagePath="/Dev/Timothy.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Vani Ramesh"
-                          imagePath="/Dev/Vani.JPG"
+                          imagePath="/Dev/Vani.webp"
                         />
                       </WrapItem>
                     </Wrap>
@@ -353,42 +353,45 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Aashna Mauskar"
-                      imagePath="/Design/Aashna.JPG"
+                      imagePath="/Design/Aashna.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Lily Ge"
-                      imagePath="/Design/Lily.JPG"
+                      imagePath="/Design/Lily.webp"
                       isLead={true}
                     />
                   </Flex>
 
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
-                      <ProfileBox name="Hua Tong" imagePath="/Design/Hua.JPG" />
+                      <ProfileBox
+                        name="Hua Tong"
+                        imagePath="/Design/Hua.webp"
+                      />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Leqi Huang"
-                        imagePath="/Design/Leqi.JPG"
+                        imagePath="/Design/Leqi.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Pari Shah"
-                        imagePath="/Design/Pari.JPG"
+                        imagePath="/Design/Pari.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Ritsika Medury"
-                        imagePath="/Design/Ritsika.JPG"
+                        imagePath="/Design/Ritsika.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Sada Challa"
-                        imagePath="/Design/Sada.JPG"
+                        imagePath="/Design/Sada.webp"
                       />
                     </WrapItem>
                   </Wrap>
@@ -413,12 +416,12 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Rohan Nunugonda"
-                      imagePath="/Content/Rohan N.JPG"
+                      imagePath="/Content/Rohan N.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Lucy Wu"
-                      imagePath="/Content/Lucy.JPG"
+                      imagePath="/Content/Lucy.webp"
                       isLead={true}
                     />
                   </Flex>
@@ -428,25 +431,25 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Amey Gupta"
-                          imagePath="/Content/Amey.JPG"
+                          imagePath="/Content/Amey.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Anushree Atmakuri"
-                          imagePath="/Content/Anushree.JPG"
+                          imagePath="/Content/Anushree.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Apoorva Sannasi"
-                          imagePath="/Content/Apoorva.JPG"
+                          imagePath="/Content/Apoorva.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Carol Yin"
-                          imagePath="/Content/Carol.JPG"
+                          imagePath="/Content/Carol.webp"
                         />
                       </WrapItem>
                     </Wrap>
@@ -455,19 +458,19 @@ const TeamPage = () => {
                       <WrapItem>
                         <ProfileBox
                           name="Maya Ajit"
-                          imagePath="/Content/Maya.JPG"
+                          imagePath="/Content/Maya.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Rini Khandelwal"
-                          imagePath="/Content/Rini.JPG"
+                          imagePath="/Content/Rini.webp"
                         />
                       </WrapItem>
                       <WrapItem>
                         <ProfileBox
                           name="Rohan Kumar"
-                          imagePath="/Content/Rohan K.JPG"
+                          imagePath="/Content/Rohan K.webp"
                         />
                       </WrapItem>
                     </Wrap>
@@ -493,12 +496,12 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Kaavya Mahajan"
-                      imagePath="/Corporate/Kaavya.JPG"
+                      imagePath="/Corporate/Kaavya.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Shreya Jangada"
-                      imagePath="/Corporate/Shreya J.JPG"
+                      imagePath="/Corporate/Shreya J.webp"
                       isLead={true}
                     />
                   </Flex>
@@ -507,13 +510,19 @@ const TeamPage = () => {
                     <WrapItem>
                       <ProfileBox
                         name="Shahanaasree Sivakumar"
-                        imagePath="/Corporate/Shahanaa.JPG"
+                        imagePath="/Corporate/Shahanaa.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Shreya Gosavi"
-                        imagePath="/Corporate/Shreya G.JPG"
+                        imagePath="/Corporate/Shreya G.webp"
+                      />
+                    </WrapItem>
+                    <WrapItem>
+                      <ProfileBox
+                        name="Adit Agarwal"
+                        imagePath="/Corporate/Adit.webp"
                       />
                     </WrapItem>
                   </Wrap>
@@ -538,12 +547,12 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Savannah Lau"
-                      imagePath="/Marketing/Savannah.JPG"
+                      imagePath="/Marketing/Savannah.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Atharva Sindwani"
-                      imagePath="/Marketing/Atharva.JPG"
+                      imagePath="/Marketing/Atharva.webp"
                       isLead={true}
                     />
                   </Flex>
@@ -552,19 +561,19 @@ const TeamPage = () => {
                     <WrapItem>
                       <ProfileBox
                         name="Angelina Deol"
-                        imagePath="/Marketing/Angelina.JPG"
+                        imagePath="/Marketing/Angelina.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Jenica Jeevan"
-                        imagePath="/Marketing/Jenica.JPG"
+                        imagePath="/Marketing/Jenica.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Mahnoor Aetzaz"
-                        imagePath="/Marketing/Mahnoor.JPG"
+                        imagePath="/Marketing/Mahnoor.webp"
                       />
                     </WrapItem>
                     <WrapItem>
@@ -595,30 +604,30 @@ const TeamPage = () => {
                   <Flex justify="center" wrap="wrap" gap={4}>
                     <ProfileBox
                       name="Rishit Chatterjee"
-                      imagePath="/Ops/Rishit 1.JPG"
+                      imagePath="/Ops/Rishit 1.webp"
                       isLead={true}
                     />
                     <ProfileBox
                       name="Ranjana Rajagopalan"
-                      imagePath="/Ops/Ranjana.JPG"
+                      imagePath="/Ops/Ranjana.webp"
                       isLead={true}
                     />
                   </Flex>
 
                   <Wrap justify="center" spacing={4}>
                     <WrapItem>
-                      <ProfileBox name="Hazel Lu" imagePath="/Ops/Hazel.JPG" />
+                      <ProfileBox name="Hazel Lu" imagePath="/Ops/Hazel.webp" />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Madhav Agrawal"
-                        imagePath="/Ops/Madhav.JPG"
+                        imagePath="/Ops/Madhav.webp"
                       />
                     </WrapItem>
                     <WrapItem>
                       <ProfileBox
                         name="Vidipta Roy"
-                        imagePath="/Ops/Vidipta.JPG"
+                        imagePath="/Ops/Vidipta.webp"
                       />
                     </WrapItem>
                   </Wrap>
