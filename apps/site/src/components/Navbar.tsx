@@ -134,7 +134,7 @@ const Navbar: React.FC<NavbarProps> = ({ isFlush }) => {
   return (
     <Flex
       position={isFlush ? "sticky" : "fixed"}
-      top={0}
+      top={isFlush ? 0 : "37px"}
       w="100%"
       justifyContent="center"
       zIndex={15}

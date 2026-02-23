@@ -138,7 +138,7 @@ export const Landing = () => {
           {/* Flex grow 1 */}
 
           {/* subdate */}
-          <MotionText
+          {/* <MotionText
             fontSize={{ base: "2xl", md: "4xl" }}
             fontFamily="Magistral"
             color="gray.200"
@@ -149,7 +149,7 @@ export const Landing = () => {
             transition={{ delay: 3, duration: 0.6, ease: "easeOut" }}
           >
             September 16–20, 2025
-          </MotionText>
+          </MotionText> */}
         </Box>
 
         {/* register button */}
@@ -160,7 +160,9 @@ export const Landing = () => {
         >
           <Button
             as="a"
-            href="/register"
+            href="https://docs.google.com/forms/d/e/1FAIpQLSdRfU2T4qJDBKvHDWvMLKufP8iJ6zSfq6hhypPxVHPvr2S8xA/viewform"
+            target="_blank"
+            rel="noopener noreferrer"
             size={{
               base: "md",
               md: "lg"
@@ -183,7 +185,7 @@ export const Landing = () => {
               fontStyle="italic"
               letterSpacing="0.01em"
             >
-              REGISTER
+              REGISTER FOR STAFF
             </Text>
           </Button>
         </MotionBox>
