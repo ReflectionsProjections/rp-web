@@ -48,7 +48,7 @@ export const Footer = () => {
         <Image
           src="/footer/CONTACT.svg"
           width="100%"
-          height={{ base: "400px", sm: "500px", md: "600px", lg: "700px" }}
+          height="auto"
           objectFit="cover"
         />
 
