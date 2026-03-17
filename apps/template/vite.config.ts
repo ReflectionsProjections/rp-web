@@ -5,6 +5,7 @@ import { resolve } from "path";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
+  envPrefix: ["VITE_", "ENV"],
   envDir: resolve(__dirname, "../.."),
   resolve: {
     alias: {

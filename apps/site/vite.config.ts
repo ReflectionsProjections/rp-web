@@ -8,6 +8,7 @@ export default defineConfig({
     port: 3001
   },
   plugins: [react()],
+  envPrefix: ["VITE_", "ENV"],
   envDir: resolve(__dirname, "../.."),
   resolve: {
     alias: {

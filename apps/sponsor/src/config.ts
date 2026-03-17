@@ -1,6 +1,5 @@
 export const Config = {
   MAX_DROPDOWN_OPTIONS: 1000,
-  API_BASE_URL: "https://api.reflectionsprojections.org",
   RESUME_BOOK_URL: "https://sponsor.reflectionsprojections.org",
   STAFF_UIDs: [
     "194cd6b5-1edf-47ff-b078-998290637fd8",
