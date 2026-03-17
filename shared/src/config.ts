@@ -15,10 +15,7 @@ declare global {
 // Validation using zup
 
 const envSchema = yup.object({
-  ENV: yup
-    .string()
-    .oneOf(["PRODUCTION", "DEVELOPMENT", "TESTING"])
-    .optional(),
+  ENV: yup.string().oneOf(["PRODUCTION", "DEVELOPMENT", "TESTING"]).optional(),
   VITE_ENV: yup
     .string()
     .oneOf(["PRODUCTION", "DEVELOPMENT", "TESTING"])
