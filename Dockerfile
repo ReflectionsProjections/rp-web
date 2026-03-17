@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:24-alpine
 
 # Install system dependencies (only what's absolutely necessary)
 RUN apk add \
