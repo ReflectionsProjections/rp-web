@@ -1,158 +1,740 @@
-/* Global Styles */
-body {
-  background-color: black;
-  color: white;
+@font-face {
+  font-family: "Ethnocentric Rg";
+  src: url("/fonts/Ethnocentric-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --black: #0a0a0a;
+  --pink: #ff2d75;
+  --purple: #b829dd;
+  --pink-dim: rgba(255, 45, 117, 0.3);
+  --purple-dim: rgba(184, 41, 221, 0.25);
+  --train-duration: 4s;
+  --train2-duration: 1.6s;
+}
+
+*,
+*::before,
+*::after {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  font-family: "Nunito", sans-serif;
+  box-sizing: border-box;
 }
 
-.app-wrapper {
-  position: relative;
-  min-height: 100vh;
-  background-color: black;
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
   overflow: hidden;
+  background: var(--black);
+  color: #fff;
+  font-family:
+    "Ethnocentric Rg",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji";
 }
 
-/* Background Grid with a Stronger, Closer-Spaced Pattern */
-.background-grid {
-  min-width: 100vw;
-  min-height: 100vh;
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-
-  /* Increase line opacity, decrease spacing to 50px for a denser grid */
-  background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.3) 2px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.3) 2px, transparent 1px);
-  background-size: 100px 100px;
-
-  background-position: center;
-
-  /* Larger spotlight radius (250px) and more abrupt fade */
-  mask-image: radial-gradient(
-    circle 250px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
-    white 0%,
-    transparent 70%
-  );
-  -webkit-mask-image: radial-gradient(
-    circle 250px at var(--mouse-x, 50vw) var(--mouse-y, 50vh),
-    white 0%,
-    transparent 70%
-  );
-
-  z-index: 2;
-}
-
-/* Main Container */
-.app-container {
-  background-color: black;
-  color: white;
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 100vh;
-  width: 100%;
-  position: relative;
-  z-index: 1;
-}
-
-.gif-container {
-  position: relative;
-  width: 60vh;
-  display: flex;
   justify-content: center;
-  top: 0;
   overflow: hidden;
 }
 
-.centered-gif {
-  /* width: 80%; */
-  max-width: 60vh;
-  height: auto;
-  object-position: center 15%;
-  object-fit: cover;
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 99;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(10, 10, 10, 0.7) 100%
+  );
+}
+
+.logo-link {
+  position: fixed;
+  top: 40px;
+  left: 40px;
+  z-index: 101;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.logo-link:hover {
+  opacity: 1;
+}
+
+.rp-logo {
+  width: 64px;
+  height: 64px;
+}
+
+.train {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-100%, -50%);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  gap: 0;
+  opacity: 0;
+  will-change: transform;
+}
+
+.animate .train {
+  animation: trainPass var(--train-duration) cubic-bezier(0.1, 0.7, 0.3, 1) 0.2s
+    forwards;
+}
+
+.train--second {
+  top: calc(100% - 100px);
+  transform: translate(calc(100vw + 100%), -50%) scale(1.1);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.animate2 .train--second.active {
+  opacity: 1;
+  visibility: visible;
+  animation: trainPassReverse var(--train2-duration)
+    cubic-bezier(0.1, 0.7, 0.3, 1) 0s forwards;
+}
+
+@keyframes trainPass {
+  0% {
+    transform: translate(-100%, -50%);
+    opacity: 1;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate(calc(100vw + 100%), -50%);
+    opacity: 1;
+  }
+}
+
+@keyframes trainPassReverse {
+  0% {
+    transform: translate(calc(100vw + 100%), -50%) scale(1.1);
+  }
+
+  100% {
+    transform: translate(-150%, -50%) scale(1.1);
+  }
+}
+
+.train-engine {
+  width: 320px;
+  height: 200px;
+  background: var(--black);
+  border: 2px solid var(--purple);
+  border-radius: 4px 120px 10px 4px;
+  position: relative;
+}
+
+.train-engine--front {
+  border-radius: 120px 4px 4px 10px;
+  transform: scaleX(-1);
+}
+
+.train-engine--front-reverse {
+  border-radius: 120px 4px 4px 10px;
+}
+
+.train-engine--alt {
+  border-color: var(--pink);
+}
+
+.train-engine--alt .train-engine-cockpit {
+  background: var(--pink-dim);
+  border-color: var(--pink);
+}
+
+.train-engine--alt .train-engine-headlight {
+  border-color: var(--pink);
+  box-shadow:
+    0 0 20px 10px var(--pink-dim),
+    10px 0 15px 3px var(--pink);
+}
+
+.train-engine--alt .train-engine-grill {
+  border-color: var(--pink);
+}
+
+.train-engine--alt .grill-line {
+  background: var(--pink);
+}
+
+.train-engine-cockpit {
+  position: absolute;
+  right: 50px;
+  top: 50px;
+  width: 90px;
+  height: 35px;
+  background: var(--purple-dim);
+  border: 1px solid var(--purple);
+  border-radius: 20px 4px 4px 4px;
+  transform: skewX(-30deg);
+}
+
+.train-engine-headlight {
+  position: absolute;
+  right: -6px;
+  bottom: 80px;
+  width: 12px;
+  height: 25px;
+  background: #fff;
+  border: 2px solid var(--purple);
+  border-radius: 4px;
+  box-shadow:
+    0 0 20px 10px var(--purple-dim),
+    10px 0 15px 3px var(--purple);
+}
+
+.train-engine-grill {
+  position: absolute;
+  right: 0px;
+  bottom: 15px;
+  width: 40px;
+  height: 50px;
+  background: var(--black);
+  border-left: 2px solid var(--purple);
+  border-top: 2px solid var(--purple);
+  border-radius: 10px 0 0 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 4px 0 4px 8px;
+}
+
+.grill-line {
+  width: 100%;
+  height: 4px;
+  background: var(--purple);
+  border-radius: 2px 0 0 2px;
+}
+
+.train-body {
+  width: 520px;
+  height: 180px;
+  background: var(--black);
+  border: 2px solid var(--purple);
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 36px;
+}
+
+.train-body--alt {
+  border-color: var(--pink);
+  width: 420px;
+  height: 160px;
+}
+
+.train-connector {
+  width: 20px;
+  height: 40px;
+  bottom: 20px;
+  position: relative;
+  background: var(--purple);
+  border-radius: 2px;
+}
+
+.train-car {
+  width: 400px;
+  height: 155px;
+  background: var(--black);
+  border: 2px solid var(--purple);
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 36px;
+}
+
+.train-car--alt {
+  border-color: var(--pink);
+  width: 320px;
+  height: 140px;
+}
+
+.train-car-half {
+  width: 320px;
+  height: 90px;
+  background: var(--black);
+  border: 2px solid var(--purple);
+  border-radius: 4px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 0 36px;
+}
+
+.train-window {
+  width: 56px;
+  height: 44px;
+  background: var(--purple-dim);
+  border: 1px solid var(--purple);
+  border-radius: 4px;
+}
+
+.train-window--half {
+  width: 48px;
+  height: 28px;
+  background: var(--purple-dim);
+  border: 1px solid var(--purple);
+  border-radius: 4px;
+}
+
+.train-car .train-window,
+.train-car-half .train-window--half,
+.train-body .train-window,
+.train-engine .train-window {
+  border-color: var(--purple);
+}
+
+.train-stripe {
+  position: absolute;
+  bottom: 16px;
+  left: 24px;
+  right: 24px;
+  height: 3px;
+  background: var(--purple);
+  border-radius: 2px;
+}
+
+.train-car-half .train-stripe {
+  bottom: 10px;
+}
+
+.train-wheel {
+  width: 36px;
+  height: 36px;
+  background: var(--black);
+  border: 3px solid var(--purple);
+  border-radius: 50%;
+  position: absolute;
+  bottom: -18px;
+}
+
+.animate .train-wheel {
+  animation: wheelSpin 0.2s linear infinite;
+}
+
+@keyframes wheelSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.train-wheel--front {
+  left: 40px;
+}
+
+.train-wheel--rear {
+  right: 40px;
+}
+
+.bottom-buttons {
+  position: fixed;
+  bottom: 40px;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.bottom-buttons.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.social-links {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+
+.social-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 1px solid var(--purple);
+  background: rgba(10, 10, 10, 0.6);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.social-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+.social-item:hover {
+  border-color: #fff;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .bottom-buttons {
+    bottom: 25px;
+    gap: 1em;
+  }
 }
 
 .title-container {
-  transform: translateY(-5vh);
+  position: relative;
+  z-index: 30;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  clip-path: inset(-200px 100% -200px -200px);
+  will-change: clip-path;
   width: 100%;
-  color: #b9b8b8;
-  z-index: 3;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.title {
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  color: #fff;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 0.3em;
+  white-space: nowrap;
+  width: 100%;
 }
 
-@keyframes glowSweep {
-  0% {
-    background-position: -200%;
-  }
-  100% {
-    background-position: 200%;
-  }
+.title span:first-child {
+  text-align: right;
 }
 
-.fade-in {
-  animation: fadeIn 1.8s ease-out both;
+.title span:last-child {
+  text-align: left;
 }
 
-.glow-text {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.8) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  background-size: 200% auto;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: glowSweep 14s linear infinite;
+.title-sep {
+  color: #fff;
+  font-weight: 400;
+}
+
+.subtitle {
+  font-size: clamp(0.7rem, 1.5vw, 1rem);
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  padding-left: 0.35em;
+
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-top: 1.5em;
+  opacity: 0;
+}
+
+.subtitle.visible {
+  opacity: 1;
+}
+
+#skyline-canvas {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  opacity: 0;
+  image-rendering: pixelated;
+}
+
+#skyline-canvas.visible {
+  opacity: 1;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  margin-top: 2em;
+  opacity: 0;
+  z-index: 40;
+}
+
+.button-group.visible {
+  opacity: 1;
+}
+
+.cta-button {
+  position: relative;
+  font-family:
+    "Ethnocentric Rg",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji";
+  font-size: clamp(0.6rem, 1vw, 0.8rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--pink);
+  border: 1px solid var(--pink);
+  padding: 1.04em 0;
+  width: 18em;
+  text-align: center;
+  text-indent: 0.2em;
+  border-radius: 2px;
+  background: var(--black);
   display: inline-block;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
-/* Mobile Styles */
+.cta-button:hover {
+  background: var(--pink);
+  color: var(--black);
+  box-shadow:
+    0 0 15px var(--pink-dim),
+    0 0 40px rgba(255, 45, 117, 0.15);
+}
+
+.about-button {
+  margin-left: 0;
+}
+
+.about-button:hover {
+  box-shadow:
+    0 0 15px var(--pink-dim),
+    0 0 40px rgba(255, 45, 117, 0.15);
+}
+
 @media (max-width: 768px) {
-  .gif-container {
-    top: 10vh;
+  .logo-link {
+    top: 25px;
+    left: 25px;
   }
 
-  .centered-gif {
-    max-width: 90%;
-    object-position: center 20%;
+  .rp-logo {
+    width: 48px;
+    height: 48px;
   }
 
-  .title-container {
-    margin-top: 8vh;
+  .train-engine {
+    width: 220px;
+    height: 140px;
+  }
+
+  .train-engine-cockpit {
+    right: 30px;
+    top: 30px;
+    width: 60px;
+    height: 25px;
+  }
+
+  .train-engine-headlight {
+    right: -4px;
+    bottom: 50px;
+    width: 8px;
+    height: 15px;
+  }
+
+  .train-engine-grill {
+    bottom: 10px;
+    width: 25px;
+    height: 35px;
+  }
+
+  .train-body {
+    width: 340px;
+    height: 130px;
+  }
+
+  .train-car {
+    width: 260px;
+    height: 110px;
+  }
+
+  .train-car-half {
+    width: 210px;
+    height: 75px;
+  }
+
+  .train-window {
+    width: 40px;
+    height: 30px;
+  }
+
+  .train-window--half {
+    width: 32px;
+    height: 22px;
+  }
+
+  .train-wheel {
+    width: 28px;
+    height: 28px;
+    bottom: -14px;
+  }
+
+  .train-wheel--front {
+    left: 20px;
+  }
+
+  .train-wheel--rear {
+    right: 20px;
+  }
+
+  .title {
+    gap: 0.2em;
   }
 }
 
-@media (max-height: 600px) {
-  .gif-container {
-    top: 0vh;
-    width: 80vh;
+@media (max-width: 480px) {
+  .logo-link {
+    top: 15px;
+    left: 15px;
   }
 
-  .centered-gif {
-    max-width: 90%;
-    object-position: center 20%;
+  .rp-logo {
+    width: 40px;
+    height: 40px;
   }
 
-  .title-container {
-    margin-top: 0vh;
-    transform: translateY(-50px);
+  .train-engine {
+    width: 160px;
+    height: 100px;
+    border-radius: 4px 60px 5px 4px;
+  }
+
+  .train-engine-cockpit {
+    right: 20px;
+    top: 20px;
+    width: 40px;
+    height: 15px;
+  }
+
+  .train-engine-headlight {
+    right: -3px;
+    bottom: 35px;
+    width: 6px;
+    height: 10px;
+  }
+
+  .train-engine-grill {
+    bottom: 5px;
+    width: 15px;
+    height: 25px;
+  }
+
+  .train-body {
+    width: 240px;
+    height: 95px;
+    padding: 0 16px;
+    gap: 14px;
+  }
+
+  .train-car {
+    width: 190px;
+    height: 80px;
+    padding: 0 16px;
+    gap: 14px;
+  }
+
+  .train-car-half {
+    width: 150px;
+    height: 60px;
+    padding: 0 16px;
+    gap: 14px;
+  }
+
+  .train-window {
+    width: 28px;
+    height: 20px;
+  }
+
+  .train-window--half {
+    width: 24px;
+    height: 16px;
+  }
+
+  .train-connector {
+    width: 14px;
+    height: 26px;
+    bottom: 10px;
+  }
+
+  .train-wheel {
+    width: 20px;
+    height: 20px;
+    bottom: -10px;
+  }
+
+  .train-wheel--front {
+    left: 16px;
+  }
+
+  .train-wheel--rear {
+    right: 16px;
+  }
+
+  .title {
+    gap: 0.2em;
+  }
+
+  .title-sep {
+    display: inline;
   }
 }
