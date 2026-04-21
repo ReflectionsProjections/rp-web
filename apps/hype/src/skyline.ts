@@ -1,5 +1,3 @@
-// skyline.ts
-
 export interface WindowData {
   ox: number;
   oy: number;
@@ -9,6 +7,8 @@ export interface WindowData {
   burstGroup: number;
   isStraggler: boolean;
   stragglerDelay: number;
+  sparkleSpeed: number;
+  sparkleOffset: number;
 }
 
 export interface BuildingData {
@@ -71,7 +71,7 @@ export function buildSkylineData(): BuildingData[] {
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        if (seededRandom() > 0.30) continue;
+        if (seededRandom() > 0.3) continue;
 
         const burstGroup = Math.floor(seededRandom() * 3);
         const isStraggler = seededRandom() < 0.04;
@@ -81,10 +81,12 @@ export function buildSkylineData(): BuildingData[] {
           oy: 10 + r * winGapY,
           size: winSize,
           on: false,
-          brightness: rand(0.5, 1),
+          brightness: rand(0.3, 0.8),
           burstGroup,
           isStraggler,
           stragglerDelay: isStraggler ? rand(1.5, 4.0) : 0,
+          sparkleSpeed: rand(0.8, 2.0),
+          sparkleOffset: rand(0, Math.PI * 2),
         });
       }
     }
@@ -96,7 +98,14 @@ export function buildSkylineData(): BuildingData[] {
   return buildings;
 }
 
-export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]) {
+function interpolateColor(t: number) {
+  const r = Math.floor(0 + t * (184 - 0));
+  const g = Math.floor(100 + t * (41 - 100));
+  const b = Math.floor(255 + t * (221 - 255));
+  return `${r}, ${g}, ${b}`;
+}
+
+export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[], elapsed: number = 0) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
 
@@ -110,7 +119,7 @@ export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]
 
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
-  
+
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, vw, canvasH);
 
@@ -122,7 +131,7 @@ export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]
     ctx.fillStyle = bgColor;
     ctx.fillRect(b.x, by, b.w, b.h);
 
-    ctx.strokeStyle = 'rgba(184, 41, 221, 0.08)';
+    ctx.strokeStyle = 'rgba(158, 25, 191, 0.24)';
     ctx.lineWidth = 1;
 
     ctx.beginPath();
@@ -144,10 +153,20 @@ export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]
       if (!win.on) continue;
       const wx = b.x + win.ox;
       const wy = by + win.oy;
-      const color = `rgba(184, 41, 221, ${win.brightness})`;
 
-      ctx.fillStyle = color;
+      const sinVal = (Math.sin(elapsed * win.sparkleSpeed + win.sparkleOffset) + 1) / 2;
+      const sparkle = Math.pow(sinVal, 10);
+      const t = (Math.sin(elapsed * 0.3 + win.sparkleOffset) + 1) / 2;
+      const rgb = interpolateColor(t);
+      const alpha = win.brightness * (0.1 + sparkle * 0.9);
+
+      ctx.fillStyle = `rgba(${rgb}, ${alpha})`;
       ctx.fillRect(wx, wy, win.size, win.size);
+
+      if (alpha > 0.8) {
+        ctx.fillStyle = `rgba(${rgb}, 0.2)`;
+        ctx.fillRect(wx - 1, wy - 1, win.size + 2, win.size + 2);
+      }
     }
   }
 }
@@ -157,53 +176,47 @@ export function animateWindowsOn(canvas: HTMLCanvasElement, buildings: BuildingD
   const flickerDuration = 0.2;
   const startTime = performance.now();
   const burstState = [0, 0, 0];
-  let allMainDone = false;
-  let allStragglersDone = false;
 
   function frame() {
-    const elapsed = (performance.now() - startTime) / 1000;
+    const now = performance.now();
+    const elapsed = (now - startTime) / 1000;
 
-    if (!allMainDone) {
-      allMainDone = true;
-      for (let g = 0; g < 3; g++) {
-        if (burstState[g] === 2) continue;
+    let allMainDone = true;
+    for (let g = 0; g < 3; g++) {
+      if (burstState[g] === 2) continue;
+      allMainDone = false;
 
-        if (burstState[g] === 0 && elapsed >= burstStartTimes[g]) {
-          burstState[g] = 1;
-        }
+      if (burstState[g] === 0 && elapsed >= burstStartTimes[g]) {
+        burstState[g] = 1;
+      }
 
-        if (burstState[g] === 1) {
-          const flickerElapsed = elapsed - burstStartTimes[g];
-          const flickerProgress = flickerElapsed / flickerDuration;
+      if (burstState[g] === 1) {
+        const flickerElapsed = elapsed - burstStartTimes[g];
+        const flickerProgress = flickerElapsed / flickerDuration;
 
-          if (flickerProgress >= 1) {
-            burstState[g] = 2;
-            for (const b of buildings) {
-              for (const win of b.windows) {
-                if (!win.isStraggler && win.burstGroup === g) win.on = true;
-              }
+        if (flickerProgress >= 1) {
+          burstState[g] = 2;
+          for (const b of buildings) {
+            for (const win of b.windows) {
+              if (!win.isStraggler && win.burstGroup === g) win.on = true;
             }
-          } else {
-            const step = Math.floor(flickerProgress * 5);
-            const isOn = step % 2 === 0;
-            for (const b of buildings) {
-              for (const win of b.windows) {
-                if (!win.isStraggler && win.burstGroup === g) win.on = isOn;
-              }
+          }
+        } else {
+          const step = Math.floor(flickerProgress * 5);
+          const isOn = step % 2 === 0;
+          for (const b of buildings) {
+            for (const win of b.windows) {
+              if (!win.isStraggler && win.burstGroup === g) win.on = isOn;
             }
           }
         }
-
-        if (burstState[g] !== 2) allMainDone = false;
       }
     }
 
-    allStragglersDone = true;
     for (const b of buildings) {
       for (const win of b.windows) {
         if (!win.isStraggler) continue;
         if (win.on) continue;
-        allStragglersDone = false;
 
         if (elapsed >= win.stragglerDelay) {
           const flickerElapsed = elapsed - win.stragglerDelay;
@@ -219,11 +232,9 @@ export function animateWindowsOn(canvas: HTMLCanvasElement, buildings: BuildingD
       }
     }
 
-    drawSkyline(canvas, buildings);
+    drawSkyline(canvas, buildings, elapsed);
 
-    if (!allMainDone || !allStragglersDone) {
-      requestAnimationFrame(frame);
-    }
+    requestAnimationFrame(frame);
   }
 
   requestAnimationFrame(frame);
