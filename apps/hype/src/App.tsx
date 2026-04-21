@@ -1,6 +1,12 @@
-import { useEffect, useRef } from 'react';
-import './App.css';
-import { buildSkylineData, drawSkyline, animateWindowsOn, BuildingData } from './skyline';
+import { useEffect, useRef } from "react";
+
+import {
+  buildSkylineData,
+  drawSkyline,
+  animateWindowsOn,
+  resizeSkylineCanvas,
+  BuildingData
+} from "./skyline";
 
 function App() {
   const appRef = useRef<HTMLDivElement>(null);
@@ -12,6 +18,7 @@ function App() {
   const bottomButtonsRef = useRef<HTMLDivElement>(null);
   const skylineCanvasRef = useRef<HTMLCanvasElement>(null);
   const titleSepRef = useRef<HTMLSpanElement>(null);
+  const buttonGroupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const app = appRef.current;
@@ -24,33 +31,65 @@ function App() {
 
     const train2 = train2Ref.current;
     const bottomButtons = bottomButtonsRef.current;
+    const buttonGroup = buttonGroupRef.current;
 
-    if (!app || !train || !train2 || !titleContainer || !subtitle || !ctaButton || !bottomButtons || !skylineCanvas || !titleSep) return;
+    if (
+      !app ||
+      !train ||
+      !train2 ||
+      !titleContainer ||
+      !subtitle ||
+      !ctaButton ||
+      !bottomButtons ||
+      !skylineCanvas ||
+      !titleSep ||
+      !buttonGroup
+    )
+      return;
+
+    let rafId: number;
+    let timeout1: ReturnType<typeof setTimeout>;
+    let timeout2: ReturnType<typeof setTimeout>;
+    let cleanupReveal: (() => void) | undefined;
+    let cleanupReveal2: (() => void) | undefined;
 
     const skylineData: BuildingData[] = buildSkylineData();
+    resizeSkylineCanvas(skylineCanvas);
     drawSkyline(skylineCanvas, skylineData);
 
-    const rafId = requestAnimationFrame(() => {
-      setTimeout(() => {
-        app.classList.add('animate');
-        runRevealLoop(train, titleContainer, titleSep, subtitle, ctaButton, skylineCanvas, skylineData);
-        setTimeout(() => {
-          app.classList.add('animate2');
-          train2.classList.add('active');
-          runRevealLoop2(train2, bottomButtons);
-        }, 600);
+    rafId = requestAnimationFrame(() => {
+      timeout1 = setTimeout(() => {
+        app.classList.add("animate");
+        cleanupReveal = runRevealLoop(
+          train,
+          titleContainer,
+          subtitle,
+          buttonGroup,
+          skylineCanvas,
+          skylineData
+        );
+        timeout2 = setTimeout(() => {
+          app.classList.add("animate2");
+          train2.classList.add("active");
+          cleanupReveal2 = runRevealLoop2(train2, bottomButtons);
+        }, 1200);
       }, 200);
     });
 
-    return () => cancelAnimationFrame(rafId);
+    return () => {
+      cancelAnimationFrame(rafId);
+      clearTimeout(timeout1);
+      clearTimeout(timeout2);
+      if (cleanupReveal) cleanupReveal();
+      if (cleanupReveal2) cleanupReveal2();
+    };
   }, []);
 
   function runRevealLoop(
     train: HTMLDivElement,
     titleContainer: HTMLDivElement,
-    titleSep: HTMLSpanElement,
     subtitle: HTMLDivElement,
-    ctaButton: HTMLAnchorElement,
+    buttonGroup: HTMLDivElement,
     skylineCanvas: HTMLCanvasElement,
     skylineData: BuildingData[]
   ) {
@@ -60,6 +99,8 @@ function App() {
     let titleLeft = 0;
     let titleWidth = 0;
     let cached = false;
+    let rafId: number;
+    let cleanupWindows: (() => void) | undefined;
     const vw = window.innerWidth;
 
     function tick() {
@@ -74,39 +115,46 @@ function App() {
 
       if (cached) {
         const revealPx = trainRect.left - titleLeft;
-        const revealPercent = Math.max(0, Math.min(100, (revealPx / titleWidth) * 100));
+        const revealPercent = Math.max(
+          0,
+          Math.min(100, (revealPx / titleWidth) * 100)
+        );
         const clipRight = 100 - revealPercent;
         titleContainer.style.clipPath = `inset(-200px ${clipRight}% -200px -200px)`;
 
-        if (revealPercent >= 50 && !revealed) {
+        if (revealPercent >= 10 && !revealed) {
           revealed = true;
-          subtitle.classList.add('visible');
-          ctaButton.classList.add('visible');
+          subtitle.classList.add("visible");
+          buttonGroup.classList.add("visible");
         }
 
         if (revealPercent >= 100) {
-          titleContainer.style.clipPath = 'inset(-200px -200px -200px -200px)';
+          titleContainer.style.clipPath = "inset(-200px -200px -200px -200px)";
         }
       }
 
       if (!skylineShown && trainRect.left > vw * 0.15) {
         skylineShown = true;
-        skylineCanvas.classList.add('visible');
+        skylineCanvas.classList.add("visible");
       }
 
       if (skylineShown && !windowsTriggered) {
         windowsTriggered = true;
-        animateWindowsOn(skylineCanvas, skylineData);
+        cleanupWindows = animateWindowsOn(skylineCanvas, skylineData);
       }
 
       if (trainRect.left > vw) {
         return;
       }
 
-      requestAnimationFrame(tick);
+      rafId = requestAnimationFrame(tick);
     }
 
-    requestAnimationFrame(tick);
+    rafId = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (cleanupWindows) cleanupWindows();
+    };
   }
 
   function runRevealLoop2(
@@ -114,6 +162,7 @@ function App() {
     bottomButtons: HTMLDivElement
   ) {
     let revealed = false;
+    let rafId: number;
     const vw = window.innerWidth;
 
     function tick2() {
@@ -121,43 +170,29 @@ function App() {
 
       if (!revealed && trainRect.left < vw * 0.6) {
         revealed = true;
-        bottomButtons.classList.add('visible');
+        bottomButtons.classList.add("visible");
       }
 
       if (trainRect.right < 0) return;
-      requestAnimationFrame(tick2);
+      rafId = requestAnimationFrame(tick2);
     }
 
-    requestAnimationFrame(tick2);
+    rafId = requestAnimationFrame(tick2);
+    return () => cancelAnimationFrame(rafId);
   }
 
   return (
     <div id="app" ref={appRef}>
       <div className="vignette"></div>
 
-      <a href="https://reflectionsprojections.org" className="logo-link">
-        <svg className="rp-logo" width="51" height="51" viewBox="0 0 51 51" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <g clipPath="url(#clip0_419_85)">
-            <path d="M13.0564 25.401C13.7217 23.9209 14.9554 22.7704 16.4779 22.2073C14.0585 19.8552 12.6482 16.6565 12.5431 13.2854C7.64914 13.4853 3.36232 16.6218 1.69188 21.2241C0.76941 24.4462 2.63475 27.8051 5.85829 28.7272C8.75426 29.5554 11.8196 28.1366 13.0605 25.3928L13.0574 25.401H13.0564Z" fill="#7A91EE" />
-            <path d="M24.5893 28.8251C24.5066 29.3637 24.3505 29.89 24.127 30.3867C21.3729 36.4986 14.1839 39.222 8.06852 36.469C1.95411 33.716 -0.77043 26.5301 1.98371 20.4172C0.647965 23.4915 2.0582 27.0666 5.13479 28.4018C8.1522 29.7115 11.6645 28.3814 13.0554 25.401C13.7207 23.9209 14.9544 22.7704 16.4769 22.2073C18.5953 24.28 21.3576 25.5693 24.3076 25.86C24.5658 25.8844 24.827 25.9008 25.0913 25.911C25.0454 26.9065 24.876 27.8928 24.5872 28.8475C24.5882 28.8414 24.5882 28.8343 24.5893 28.8251Z" fill="#1134B4" />
-            <path d="M25.5903 25.9244C25.3648 25.9244 25.1434 25.9183 24.925 25.907C24.6464 32.4595 19.1065 37.5452 12.5513 37.2668C5.99605 36.9883 0.908191 31.4507 1.18677 24.8983C1.44902 18.7375 6.38483 13.8017 12.5492 13.5385C12.538 13.3182 12.5319 13.0969 12.5319 12.8735C12.5319 12.7021 12.539 12.5359 12.5441 12.3645C5.34093 12.646 -0.271424 18.712 0.0102138 25.9132C0.291852 33.1144 6.35932 38.7244 13.5635 38.4428C20.3739 38.1766 25.8332 32.7196 26.0985 25.9121C25.9281 25.9193 25.7607 25.9244 25.5903 25.9244Z" fill="#090D28" />
-            <path d="M25.425 13.052C26.9056 13.717 28.0567 14.9502 28.62 16.4721C30.9731 14.0537 34.1731 12.644 37.5456 12.5389C37.3467 7.64499 34.2068 3.35691 29.6006 1.68717C26.3771 0.765091 23.0168 2.62965 22.0943 5.85183C21.2657 8.74659 22.6851 11.8107 25.4301 13.051H25.426L25.425 13.052Z" fill="#7ADFEE" />
-            <path d="M22.0015 24.579C21.4627 24.4964 20.9361 24.3403 20.4392 24.1169C14.3248 21.3639 11.6002 14.178 14.3544 8.06518C17.1085 1.95334 24.2974 -0.770061 30.4118 1.98292C27.3363 0.647739 23.7597 2.05738 22.4239 5.13268C21.1137 8.14882 22.4443 11.6597 25.426 13.0499C26.9067 13.715 28.0577 14.9481 28.621 16.47C26.5475 18.5875 25.2577 21.3486 24.9668 24.2975C24.9423 24.5565 24.926 24.8177 24.9158 25.0808C23.9199 25.0349 22.9331 24.8656 21.978 24.5769L22.0004 24.579H22.0015Z" fill="#049AEB" />
-            <path d="M24.9025 25.5785C24.9025 25.3531 24.9087 25.1318 24.9199 24.9135C18.3646 24.6422 13.2696 19.1107 13.5411 12.5582C13.8043 6.19038 19.0504 1.16586 25.426 1.17402C31.8078 1.17402 37.0273 6.24444 37.2946 12.5552C37.515 12.544 37.7365 12.5378 37.9599 12.5378C38.1314 12.5378 38.2977 12.545 38.4691 12.5501C38.1997 5.5947 32.4537 0 25.426 0C18.2167 0.00204 12.3727 5.8446 12.3747 13.0519C12.3757 20.0573 17.9116 25.8121 24.9148 26.0875C24.9148 25.9182 24.9035 25.7479 24.9035 25.5785H24.9025Z" fill="#090D28" />
-            <path d="M25.5781 37.9501C24.0974 37.285 22.9464 36.0519 22.3831 34.53C20.029 36.9433 16.8289 38.3479 13.4584 38.4468C13.6493 43.3469 16.7891 47.6431 21.4014 49.3139C24.625 50.236 27.9853 48.3714 28.9077 45.1493C29.7363 42.2545 28.3169 39.1904 25.5719 37.9501H25.5781Z" fill="#C731D6" />
-            <path d="M29.0026 26.421C29.5414 26.5036 30.0679 26.6597 30.5649 26.8831C36.6793 29.6361 39.4038 36.822 36.6497 42.9348C33.8956 49.0467 26.7066 51.7701 20.5912 49.0171C23.6668 50.3523 27.2434 48.9426 28.5791 45.8673C29.8894 42.8512 28.5587 39.3403 25.577 37.9501C24.0964 37.285 22.9453 36.0519 22.3821 34.53C24.4576 32.4135 25.7485 29.6524 26.0403 26.7026C26.0648 26.4435 26.0811 26.1823 26.0913 25.9192C27.0873 25.9651 28.074 26.1344 29.0291 26.4231L29.0016 26.421H29.0026Z" fill="#A511B4" />
-            <path d="M26.0883 26.0803C25.7046 26.1762 25.3036 26.1762 24.9199 26.0803C24.8168 25.6978 24.8168 25.2949 24.9199 24.9124C25.2974 24.7798 25.7097 24.7798 26.0883 24.9124C26.2362 25.2878 26.2362 25.705 26.0883 26.0803Z" fill="#1C2562" />
-            <path d="M37.9436 25.5898C37.2783 27.0698 36.0446 28.2203 34.5221 28.7834C36.9416 31.1355 38.3518 34.3342 38.4569 37.7053C43.3529 37.5064 47.6428 34.3679 49.3132 29.7636C50.2357 26.5414 48.3704 23.1826 45.1468 22.2605C42.2509 21.4322 39.1855 22.8511 37.9446 25.5949V25.5908L37.9436 25.5898Z" fill="#8F31D6" />
-            <path d="M26.4097 22.1666C26.4924 21.628 26.6485 21.1017 26.872 20.6049C29.6271 14.4931 36.817 11.7707 42.9315 14.5247C49.0459 17.2787 51.7694 24.4656 49.0142 30.5775C50.35 27.5032 48.9397 23.9281 45.8632 22.5929C42.8457 21.2832 39.3334 22.6133 37.9426 25.5938C37.2773 27.0738 36.0436 28.2243 34.5221 28.7874C32.4027 26.7147 29.6404 25.4255 26.6903 25.1348C26.4862 25.1144 26.2811 25.1011 26.074 25.0909C26.0189 25.0909 26.074 24.9899 26.0219 24.9879C26.0219 24.9216 25.9097 24.9512 25.9168 24.8838C25.976 23.9556 26.1413 23.0366 26.4107 22.1472C26.4107 22.1502 26.4097 22.1584 26.4087 22.1666H26.4097Z" fill="#5511B4" />
-            <path d="M25.4117 25.0665C25.6373 25.0665 25.8556 25.0757 26.0771 25.0869C26.3536 18.5344 31.8915 13.4447 38.4467 13.7201C45.0019 13.9965 50.0918 19.532 49.8163 26.0845C49.5561 32.2484 44.6182 37.1872 38.4518 37.4483C38.463 37.6686 38.4691 37.89 38.4691 38.1134C38.4691 38.2847 38.462 38.451 38.4569 38.6223C45.6611 38.3408 51.2735 32.2759 50.9918 25.0747C50.7102 17.8735 44.6427 12.2635 37.4385 12.545C30.6282 12.8112 25.1679 18.2693 24.9036 25.0767C25.074 25.0706 25.2434 25.0645 25.4138 25.0645H25.4117Z" fill="#090D28" />
-            <path d="M26.1015 25.4216C26.1015 25.647 26.0954 25.8683 26.0842 26.0866C32.6394 26.3579 37.7344 31.8894 37.463 38.4419C37.1997 44.8097 31.9537 49.8343 25.5781 49.8261C19.1963 49.8261 13.9768 44.7475 13.7095 38.4327C13.4839 38.4439 13.2788 38.4531 13.0554 38.4531C12.8839 38.4531 12.7033 38.4429 12.5349 38.4358C12.8043 45.3962 18.5504 51.0001 25.5781 51.0001C32.7874 50.9971 38.6304 45.1525 38.6273 37.9462C38.6242 30.9418 33.0894 25.189 26.0873 24.9126C26.0944 25.0819 26.1005 25.2523 26.1005 25.4216H26.1015Z" fill="#090D28" />
-          </g>
-          <defs>
-            <clipPath id="clip0_419_85">
-              <rect width="51" height="51" fill="white" />
-            </clipPath>
-          </defs>
-        </svg>
+      <a
+        href="https://reflectionsprojections.org"
+        className="logo-link"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Reflections Projections Home"
+      >
+        <img src="/rp_logo.svg" className="rp-logo" alt="RP Logo" />
       </a>
 
       <div className="train" ref={trainRef}>
@@ -213,7 +248,10 @@ function App() {
 
         <div className="train-engine train-engine--front">
           <div className="train-engine-cockpit"></div>
-          <div className="train-window" style={{ position: 'absolute', left: '40px', top: '90px' }}></div>
+          <div
+            className="train-window"
+            style={{ position: "absolute", left: "40px", top: "90px" }}
+          ></div>
           <div className="train-engine-headlight"></div>
           <div className="train-engine-grill">
             <div className="grill-line"></div>
@@ -230,7 +268,10 @@ function App() {
       <div className="train train--second" ref={train2Ref}>
         <div className="train-engine train-engine--front-reverse">
           <div className="train-engine-cockpit"></div>
-          <div className="train-window" style={{ position: 'absolute', right: '40px', top: '90px' }}></div>
+          <div
+            className="train-window"
+            style={{ position: "absolute", right: "40px", top: "90px" }}
+          ></div>
           <div className="train-engine-headlight"></div>
           <div className="train-engine-grill">
             <div className="grill-line"></div>
@@ -292,34 +333,135 @@ function App() {
 
       <div className="title-container" ref={titleContainerRef}>
         <h1 className="title">
-          <span>reflections</span><span className="title-sep" ref={titleSepRef}>|</span><span>projections</span>
+          <span>reflections</span>
+          <span className="title-sep" ref={titleSepRef}>
+            |
+          </span>
+          <span>projections</span>
         </h1>
-        <h2 className="subtitle" ref={subtitleRef}>coming soon 2026</h2>
-        <a href="https://2025.reflectionsprojections.org" className="cta-button" ref={ctaButtonRef}>
-          Visit 2025 Site
-        </a>
+        <h2 className="subtitle" ref={subtitleRef}>
+          coming soon 2026
+        </h2>
+        <div className="button-group" ref={buttonGroupRef}>
+          <a
+            href="https://reflectionsprojections.org"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-button"
+            ref={ctaButtonRef}
+          >
+            2025 Site
+          </a>
+          <a
+            href="https://info.reflectionsprojections.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-button about-button"
+          >
+            About Us
+          </a>
+        </div>
       </div>
-
-      <a href="https://info.reflectionsprojections.org/" target="_blank" rel="noopener noreferrer" className="about-link">
-        About Us
-      </a>
 
       <div className="bottom-buttons" ref={bottomButtonsRef}>
         <div className="social-links">
-          <a href="https://www.instagram.com/uiuc_rp/" target="_blank" rel="noopener noreferrer" className="social-item" title="Instagram">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+          <a
+            href="https://www.instagram.com/uiuc_rp/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-item"
+            title="Instagram"
+            aria-label="Instagram"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+            </svg>
           </a>
-          <a href="https://www.tiktok.com/@uiuc_rp" target="_blank" rel="noopener noreferrer" className="social-item" title="TikTok">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+          <a
+            href="https://www.tiktok.com/@uiuc_rp"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-item"
+            title="TikTok"
+            aria-label="TikTok"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+            </svg>
           </a>
-          <a href="https://www.linkedin.com/company/reflections-projections-uiuc/" target="_blank" rel="noopener noreferrer" className="social-item" title="LinkedIn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+          <a
+            href="https://www.linkedin.com/company/reflections-projections-uiuc/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-item"
+            title="LinkedIn"
+            aria-label="LinkedIn"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+              <rect x="2" y="9" width="4" height="12"></rect>
+              <circle cx="4" cy="4" r="2"></circle>
+            </svg>
           </a>
-          <a href="https://github.com/ReflectionsProjections" target="_blank" rel="noopener noreferrer" className="social-item" title="GitHub">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+          <a
+            href="https://github.com/ReflectionsProjections"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="social-item"
+            title="GitHub"
+            aria-label="GitHub"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+            </svg>
           </a>
-          <a href="mailto:contact@reflectionsprojections.org" className="social-item" title="Email">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+          <a
+            href="mailto:contact@reflectionsprojections.org"
+            className="social-item"
+            title="Email"
+            aria-label="Email"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
           </a>
         </div>
       </div>

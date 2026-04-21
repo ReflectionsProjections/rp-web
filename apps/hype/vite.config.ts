@@ -5,7 +5,7 @@ import { resolve } from "path";
 export default defineConfig({
   server: {
     port: 3004,
-    allowedHosts: ["rp.rthak.com"]
+    allowedHosts: true
   },
   plugins: [react()],
   envDir: resolve(__dirname, "../.."),

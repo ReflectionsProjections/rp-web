@@ -21,7 +21,7 @@ export interface BuildingData {
 let _seed = 2026;
 export function seededRandom() {
   _seed |= 0;
-  _seed = (_seed + 0x6D2B79F5) | 0;
+  _seed = (_seed + 0x6d2b79f5) | 0;
   let t = Math.imul(_seed ^ (_seed >>> 15), 1 | _seed);
   t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
@@ -86,7 +86,7 @@ export function buildSkylineData(): BuildingData[] {
           isStraggler,
           stragglerDelay: isStraggler ? rand(1.5, 4.0) : 0,
           sparkleSpeed: rand(0.8, 2.0),
-          sparkleOffset: rand(0, Math.PI * 2),
+          sparkleOffset: rand(0, Math.PI * 2)
         });
       }
     }
@@ -105,43 +105,60 @@ function interpolateColor(t: number) {
   return `${r}, ${g}, ${b}`;
 }
 
-export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[], elapsed: number = 0) {
+export function resizeSkylineCanvas(canvas: HTMLCanvasElement) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-
   const canvasH = Math.floor(vh * 0.9);
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-  canvas.width = vw * dpr;
-  canvas.height = canvasH * dpr;
-  canvas.style.width = vw + 'px';
-  canvas.style.height = canvasH + 'px';
+  const targetW = Math.floor(vw * dpr);
+  const targetH = Math.floor(canvasH * dpr);
 
-  const ctx = canvas.getContext('2d');
+  if (canvas.width !== targetW || canvas.height !== targetH) {
+    canvas.width = targetW;
+    canvas.height = targetH;
+    canvas.style.width = vw + "px";
+    canvas.style.height = canvasH + "px";
+    const ctx = canvas.getContext("2d");
+    if (ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+  }
+}
+
+export function drawSkyline(
+  canvas: HTMLCanvasElement,
+  buildings: BuildingData[],
+  elapsed: number = 0
+) {
+  const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, vw, canvasH);
+  const vw = canvas.clientWidth;
+  const vh = canvas.clientHeight;
 
-  const bgColor = '#0a0a0a';
+  ctx.clearRect(0, 0, vw, vh);
+
+  const bgColor = "#0a0a0a";
 
   for (const b of buildings) {
-    const by = canvasH - b.h;
+    const by = vh - b.h;
 
     ctx.fillStyle = bgColor;
     ctx.fillRect(b.x, by, b.w, b.h);
 
-    ctx.strokeStyle = 'rgba(158, 25, 191, 0.24)';
+    ctx.strokeStyle = "rgba(158, 25, 191, 0.24)";
     ctx.lineWidth = 1;
 
     ctx.beginPath();
     ctx.moveTo(b.x + 0.5, by);
-    ctx.lineTo(b.x + 0.5, canvasH);
+    ctx.lineTo(b.x + 0.5, vh);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(b.x + b.w - 0.5, by);
-    ctx.lineTo(b.x + b.w - 0.5, canvasH);
+    ctx.lineTo(b.x + b.w - 0.5, vh);
     ctx.stroke();
 
     ctx.beginPath();
@@ -154,7 +171,8 @@ export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]
       const wx = b.x + win.ox;
       const wy = by + win.oy;
 
-      const sinVal = (Math.sin(elapsed * win.sparkleSpeed + win.sparkleOffset) + 1) / 2;
+      const sinVal =
+        (Math.sin(elapsed * win.sparkleSpeed + win.sparkleOffset) + 1) / 2;
       const sparkle = Math.pow(sinVal, 10);
       const t = (Math.sin(elapsed * 0.3 + win.sparkleOffset) + 1) / 2;
       const rgb = interpolateColor(t);
@@ -171,20 +189,23 @@ export function drawSkyline(canvas: HTMLCanvasElement, buildings: BuildingData[]
   }
 }
 
-export function animateWindowsOn(canvas: HTMLCanvasElement, buildings: BuildingData[]) {
+export function animateWindowsOn(
+  canvas: HTMLCanvasElement,
+  buildings: BuildingData[]
+) {
   const burstStartTimes = [0.3, 0.8, 1.4];
   const flickerDuration = 0.2;
   const startTime = performance.now();
   const burstState = [0, 0, 0];
+  let rafId: number;
 
   function frame() {
+    resizeSkylineCanvas(canvas);
     const now = performance.now();
     const elapsed = (now - startTime) / 1000;
 
-    let allMainDone = true;
     for (let g = 0; g < 3; g++) {
       if (burstState[g] === 2) continue;
-      allMainDone = false;
 
       if (burstState[g] === 0 && elapsed >= burstStartTimes[g]) {
         burstState[g] = 1;
@@ -234,8 +255,11 @@ export function animateWindowsOn(canvas: HTMLCanvasElement, buildings: BuildingD
 
     drawSkyline(canvas, buildings, elapsed);
 
-    requestAnimationFrame(frame);
+    rafId = requestAnimationFrame(frame);
   }
 
-  requestAnimationFrame(frame);
+  rafId = requestAnimationFrame(frame);
+  return () => {
+    if (rafId) cancelAnimationFrame(rafId);
+  };
 }

@@ -1,4 +1,10 @@
-@import url('https://fonts.cdnfonts.com/css/ethnocentric');
+@font-face {
+  font-family: "Ethnocentric Rg";
+  src: url("/fonts/Ethnocentric-Regular.otf") format("opentype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --black: #0a0a0a;
@@ -6,8 +12,8 @@
   --purple: #b829dd;
   --pink-dim: rgba(255, 45, 117, 0.3);
   --purple-dim: rgba(184, 41, 221, 0.25);
-  --train-duration: 7s;
-  --train2-duration: 2s;
+  --train-duration: 4s;
+  --train2-duration: 1.6s;
 }
 
 *,
@@ -26,7 +32,17 @@ body,
   overflow: hidden;
   background: var(--black);
   color: #fff;
-  font-family: 'Ethnocentric Rg', sans-serif;
+  font-family:
+    "Ethnocentric Rg",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji";
 }
 
 #app {
@@ -45,9 +61,11 @@ body,
   inset: 0;
   pointer-events: none;
   z-index: 99;
-  background: radial-gradient(ellipse at center,
-      transparent 50%,
-      rgba(10, 10, 10, 0.7) 100%);
+  background: radial-gradient(
+    ellipse at center,
+    transparent 50%,
+    rgba(10, 10, 10, 0.7) 100%
+  );
 }
 
 .logo-link {
@@ -86,7 +104,8 @@ body,
 }
 
 .animate .train {
-  animation: trainPass var(--train-duration) cubic-bezier(0.1, 0.7, 0.3, 1) 0.2s forwards;
+  animation: trainPass var(--train-duration) cubic-bezier(0.1, 0.7, 0.3, 1) 0.2s
+    forwards;
 }
 
 .train--second {
@@ -100,7 +119,8 @@ body,
 .animate2 .train--second.active {
   opacity: 1;
   visibility: visible;
-  animation: trainPassReverse var(--train2-duration) cubic-bezier(0.1, 0.7, 0.3, 1) 0s forwards;
+  animation: trainPassReverse var(--train2-duration)
+    cubic-bezier(0.1, 0.7, 0.3, 1) 0s forwards;
 }
 
 @keyframes trainPass {
@@ -138,17 +158,14 @@ body,
   position: relative;
 }
 
-
 .train-engine--front {
   border-radius: 120px 4px 4px 10px;
   transform: scaleX(-1);
 }
 
-
 .train-engine--front-reverse {
   border-radius: 120px 4px 4px 10px;
 }
-
 
 .train-engine--alt {
   border-color: var(--pink);
@@ -161,7 +178,9 @@ body,
 
 .train-engine--alt .train-engine-headlight {
   border-color: var(--pink);
-  box-shadow: 0 0 20px 10px var(--pink-dim), 10px 0 15px 3px var(--pink);
+  box-shadow:
+    0 0 20px 10px var(--pink-dim),
+    10px 0 15px 3px var(--pink);
 }
 
 .train-engine--alt .train-engine-grill {
@@ -193,7 +212,9 @@ body,
   background: #fff;
   border: 2px solid var(--purple);
   border-radius: 4px;
-  box-shadow: 0 0 20px 10px var(--purple-dim), 10px 0 15px 3px var(--purple);
+  box-shadow:
+    0 0 20px 10px var(--purple-dim),
+    10px 0 15px 3px var(--purple);
 }
 
 .train-engine-grill {
@@ -364,33 +385,6 @@ body,
   pointer-events: auto;
 }
 
-.about-link {
-  position: fixed;
-  top: 50px;
-  right: 40px;
-  z-index: 101;
-  display: flex;
-  align-items: center;
-  font-family: 'Ethnocentric Rg', sans-serif;
-  font-size: clamp(0.6rem, 1vw, 0.8rem);
-  color: #fff;
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  padding: 1.04em 1.8em;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  background: rgba(10, 10, 10, 0.4);
-  backdrop-filter: blur(4px);
-  opacity: 0.4;
-  transition: opacity 0.3s ease, border-color 0.3s ease;
-}
-
-.about-link:hover {
-  opacity: 1;
-  border-color: rgba(255, 255, 255, 0.8);
-}
-
 .social-links {
   display: flex;
   align-items: center;
@@ -408,7 +402,9 @@ body,
   background: rgba(10, 10, 10, 0.6);
   backdrop-filter: blur(4px);
   color: #fff;
-  transition: border-color 0.3s ease, background-color 0.3s ease;
+  transition:
+    border-color 0.3s ease,
+    background-color 0.3s ease;
 }
 
 .social-item svg {
@@ -422,21 +418,9 @@ body,
 }
 
 @media (max-width: 768px) {
-  .about-link {
-    top: 32px;
-    right: 25px;
-  }
-  
   .bottom-buttons {
     bottom: 25px;
     gap: 1em;
-  }
-}
-
-@media (max-width: 480px) {
-  .about-link {
-    top: 22px;
-    right: 15px;
   }
 }
 
@@ -478,7 +462,6 @@ body,
 .title-sep {
   color: #fff;
   font-weight: 400;
-  padding-left: 0.08em;
 }
 
 .subtitle {
@@ -486,10 +469,14 @@ body,
   font-weight: 400;
   letter-spacing: 0.35em;
   padding-left: 0.35em;
-  
+
   text-transform: uppercase;
   color: var(--pink);
   margin-top: 1.5em;
+  opacity: 0;
+}
+
+.subtitle.visible {
   opacity: 1;
 }
 
@@ -507,11 +494,34 @@ body,
   opacity: 1;
 }
 
+.button-group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5em;
+  margin-top: 2em;
+  opacity: 0;
+  z-index: 40;
+}
+
+.button-group.visible {
+  opacity: 1;
+}
+
 .cta-button {
   position: relative;
-  z-index: 40;
-  margin-top: 2em;
-  font-family: 'Ethnocentric Rg', sans-serif;
+  font-family:
+    "Ethnocentric Rg",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji";
   font-size: clamp(0.6rem, 1vw, 0.8rem);
   font-weight: 400;
   letter-spacing: 0.2em;
@@ -519,23 +529,34 @@ body,
   text-decoration: none;
   color: var(--pink);
   border: 1px solid var(--pink);
-  padding: 1.04em 2em;
+  padding: 1.04em 0;
+  width: 18em;
+  text-align: center;
   text-indent: 0.2em;
   border-radius: 2px;
   background: var(--black);
-  opacity: 0;
   display: inline-block;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.cta-button.visible {
-  opacity: 1;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease,
+    box-shadow 0.3s ease,
+    border-color 0.3s ease;
 }
 
 .cta-button:hover {
   background: var(--pink);
   color: var(--black);
+  box-shadow:
+    0 0 15px var(--pink-dim),
+    0 0 40px rgba(255, 45, 117, 0.15);
+}
+
+.about-button {
+  margin-left: 0;
+}
+
+.about-button:hover {
   box-shadow:
     0 0 15px var(--pink-dim),
     0 0 40px rgba(255, 45, 117, 0.15);
