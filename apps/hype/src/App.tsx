@@ -47,7 +47,6 @@ function App() {
     )
       return;
 
-    let rafId: number;
     let timeout1: ReturnType<typeof setTimeout>;
     let timeout2: ReturnType<typeof setTimeout>;
     let cleanupReveal: (() => void) | undefined;
@@ -57,7 +56,7 @@ function App() {
     resizeSkylineCanvas(skylineCanvas);
     drawSkyline(skylineCanvas, skylineData);
 
-    rafId = requestAnimationFrame(() => {
+    const rafId = requestAnimationFrame(() => {
       timeout1 = setTimeout(() => {
         app.classList.add("animate");
         cleanupReveal = runRevealLoop(
