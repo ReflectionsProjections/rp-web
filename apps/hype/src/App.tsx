@@ -339,7 +339,7 @@ function App() {
           <span>projections</span>
         </h1>
         <h2 className="subtitle" ref={subtitleRef}>
-          coming soon 2026
+          Sept 16th - 19th 2026
         </h2>
         <div className="button-group" ref={buttonGroupRef}>
           <a
