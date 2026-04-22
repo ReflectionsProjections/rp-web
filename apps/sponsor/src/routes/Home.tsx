@@ -12,7 +12,7 @@ import "@fontsource/roboto-slab";
 import "@fontsource/nunito";
 
 const mailToUrl =
-  "mailto:jangada2@illinois.edu, kaavyam2@illinois.edu?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections&cc=corporate@reflectionsprojections.org";
+  "mailto:sponsor@reflectionsprojections.org?subject=%5BCOMPANY%20NAME%5D%20Interest%20in%20Reflections%20%7C%20Projections&cc=corporate@reflectionsprojections.org";
 
 export function Home() {
   const [isMobile] = useMediaQuery("(max-width: 850px)");
@@ -190,7 +190,7 @@ export function Home() {
               </Text>
               <Text fontSize="40" fontFamily={"Nunito"} fontWeight={"700"}>
                 {" "}
-                16-20{" "}
+                16-19{" "}
               </Text>
             </Box>
 
@@ -221,7 +221,7 @@ export function Home() {
             zIndex={"1"}
             _hover={{ bg: "#FFEF64" }}
             as="a"
-            href="/R_P_2025_Corporate_Sponsor_Packet.pdf"
+            href="/RP_CorporateSponsorPacket2026.pdf"
           >
             {" "}
             Sponsorship Packet{" "}
