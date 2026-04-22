@@ -465,12 +465,11 @@ body,
 }
 
 .subtitle {
+  font-family: "Advent Pro", sans-serif;
   font-size: clamp(0.7rem, 1.5vw, 1rem);
   font-weight: 400;
   letter-spacing: 0.35em;
   padding-left: 0.35em;
-
-  text-transform: uppercase;
   color: var(--pink);
   margin-top: 1.5em;
   opacity: 0;
@@ -511,21 +510,10 @@ body,
 
 .cta-button {
   position: relative;
-  font-family:
-    "Ethnocentric Rg",
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Helvetica,
-    Arial,
-    sans-serif,
-    "Apple Color Emoji",
-    "Segoe UI Emoji";
+  font-family: "Advent Pro", sans-serif;
   font-size: clamp(0.6rem, 1vw, 0.8rem);
   font-weight: 400;
   letter-spacing: 0.2em;
-  text-transform: uppercase;
   text-decoration: none;
   color: var(--pink);
   border: 1px solid var(--pink);
