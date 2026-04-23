@@ -221,7 +221,7 @@ export function Home() {
             zIndex={"1"}
             _hover={{ bg: "#FFEF64" }}
             as="a"
-            href="/RP2026_Corporate_Packet.pdf"
+            href="/sponsor.pdf"
           >
             {" "}
             Sponsorship Packet{" "}
