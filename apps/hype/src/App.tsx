@@ -359,6 +359,14 @@ function App() {
           >
             About Us
           </a>
+          <a
+            href="https://sponsor.reflectionsprojections.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-button about-button"
+          >
+            Sponsors
+          </a>
         </div>
       </div>
 
