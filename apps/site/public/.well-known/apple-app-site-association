@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["8VNQTQM2L6.com.reflectionsprojections"],
+        "components": [
+          {
+            "/": "/auth/mobile/login",
+            "comment": "Magic-link mobile login callback"
+          }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["8VNQTQM2L6.com.reflectionsprojections"]
+  }
+}
