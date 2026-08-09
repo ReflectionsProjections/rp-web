@@ -17,21 +17,18 @@ export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const { scrollY } = useScroll();
-
-  const offset = 2000; // Increased from 950 to account for Header + ExhibitSection height
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"]
+  });
 
   const shadowOpacity = useTransform(
-    scrollY,
-    [-350 + offset, -60 + offset, 350 + offset, 650 + offset],
+    scrollYProgress,
+    [0.2, 0.35, 0.65, 0.8],
     [0, 0.35, 0.35, 0]
   );
 
-  const heightDiff = useTransform(
-    scrollY,
-    [-250 + offset, 700 + offset],
-    [200, -750]
-  );
+  const heightDiff = useTransform(scrollYProgress, [0.15, 0.85], [200, -750]);
 
   const translateY = useTransform(heightDiff, (h) => `translateY(${h}px)`);
 
@@ -52,6 +49,7 @@ export const AnimatedPillarsSection: React.FC<AnimatedPillarsSectionProps> = ({
           top="0"
           data-label="pillars-overlay"
           pointerEvents="none"
+          display={{ base: "none", md: "block" }}
         >
           <MotionBox
             style={{
